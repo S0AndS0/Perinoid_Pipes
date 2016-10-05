@@ -1,11 +1,11 @@
-### ReadMe_Paranoid_Pipes.md Copyright notice
+## ReadMe_Paranoid_Pipes.md Copyright notice
 
  >```bash
         Copyright (C) 2016 S0AndS0.
         Permission is granted to copy, distribute and/or modify this document
         under the terms of the GNU Free Documentation License, Version 1.3
         published by the Free Software Foundation;
-        with the Invariant Sections being Title page.
+        with the Invariant Sections being "Title page".
         A copy of the license is included in the directory entitled "License".
 ```
 
@@ -70,13 +70,15 @@ Support code maintainers via thier own links found within
 
 ### Warnings
 
- 0. This project, it's scripts and those contained within this document and this document itself are all without warranty nor will the authors be held liable for damages sustained to users, their hardware or the hardware of others while using this project's scripts, guides, or examples.
+0. This project, it's scripts and those contained within this document and this document itself are all without warranty nor will the authors be held liable for damages sustained to users, their hardware or the hardware of others while using this project's scripts, guides, or examples.
 
- - - released under `` licence found under the `Licencing & Usage agreement` section within this document explains this in much greater detail.
+ - - Scripts and code are released under `GNU AGPLv3` licence found under the `Licenses` directory.
+
+ - - Documentation and guides are released under `GNU FDLv1.3` licence found under the `Licenses` directory.
 
  - - allowed use, user agreement, reproduction and modification are further explained in the `` section within this document.
 
- 1. Do not send **all** logging daemon output through this script's (or the script copy's) named pipe(s); be selective.
+1. Do not send **all** logging daemon output through this script's (or the script copy's) named pipe(s); be selective.
 
  - - first because this script likely generates system logs so sending all `rsyslog`'s data into one of these named pipes would be analogous to force feeding a snake it's own tail & the rest of the kitchen along with,
 
@@ -84,19 +86,19 @@ Support code maintainers via thier own links found within
 
  - - Be very specific as to what data you send through!
 
- 2. Do not send untrusted input into decrypting or encrypting pipes without understanding what this tool is doing!
+2. Do not send untrusted input into decrypting or encrypting pipes without understanding what this tool is doing!
 
  - -  much care has been taken to provide options towards preventing data passing through named pipes from expansion into shell commands
 
  - - still it is possible that a devoted attacker could embed malicious code within that is either expanded upon while writing or reading.
 
- 3. Do not read decrypted content on an insecure or default configured document reader.
+3. Do not read decrypted content on an insecure or default configured document reader.
 
  - - Same reasoning as `Warning 2` above and,
 
  - - default configured document readers often save caches and/or backups in clear text at some obscure location; kinda defeats the porous of keeping secrets if your reader tattles on you.
 
- 4. only enable `--output-pre-parse-yn` and/or `--padding-enable-yn` options when you are certain as to what those options do. Default values for each are `no` so do not worry about manually disabling them.
+4. only enable `--output-pre-parse-yn` and/or `--padding-enable-yn` options when you are certain as to what those options do. Default values for each are `no` so do not worry about manually disabling them.
 
  - - the `--output-pre-parse-yn` option if enabled will cause the listening loop to prepend `#` to read lines that do not have them at the start of the line already
 
@@ -106,7 +108,7 @@ Support code maintainers via thier own links found within
 
  - - The authors of this project will not aid users in recovering corrupted files if either of these options where in use on user's target systems.
 
- 5. `--padding-enable-yn` and related options can *rob* the host OS of entropy,
+5. `--padding-enable-yn` and related options can *rob* the host OS of entropy,
 
  - - consider using `haveged`, ie `apt-get install haveged && /etc/init.d/haveged restart` let your system chill then check your entropy available `cat /proc/sys/kernel/random/entropy_avail`
 
@@ -114,17 +116,17 @@ Support code maintainers via thier own links found within
 
  - - or build an entropy seeder.
 
- 6. ` --output-parse-recipient` and `--output-rotate-recipient` options are **required** if `--help` option is excluded from script command line options.
+6. ` --output-parse-recipient` and `--output-rotate-recipient` options are **required** if `--help` option is excluded from script command line options.
 
  - - these email addresses maybe the same or different, but must be passed via command line or edited in manually. See section `` within `` for automation examples.
 
- 7. Script examples contained within this document **are** under the same licencing and terms agreement as the main script of this project, **however**, note that the script examples within this document are not as well tested as the main script and they're meant as general guidance of problem solving with Bash.
+7. Script examples contained within this document **are** under the same licencing and terms agreement as the main script of this project, **however**, note that the script examples within this document are not as well tested as the main script and they're meant as general guidance of problem solving with Bash.
 
 ### Linux Asymmetric Log Encryption
 
-	The core ideals held within this script's design are; your data should be yours and only those you have authorized to access it should be allowed access, your data should be unreadable to those that gain unauthorized access. The authors of this project believe that though customized usage of this script, users that share these ideals may achieve great control over their data access rights. Currently this is achieved using some Bash magics with `mkfifo`, and via GnuPG's public/private key pare encryption methods; though with a little modification it appears this project maybe capable of sending data through other encryption software such as OpenSSL. In short while much has been finished and now works, there is still much more that could be done to improve and/or increase this project's capabilities.
+ > The core ideals held within this script's design are; your data should be yours and only those you have authorized to access it should be allowed access, your data should be unreadable to those that gain unauthorized access. The authors of this project believe that though customized usage of this script, users that share these ideals may achieve great control over their data access rights. Currently this is achieved using some Bash magics with `mkfifo`, and via GnuPG's public/private key pare encryption methods; though with a little modification it appears this project maybe capable of sending data through other encryption software such as OpenSSL. In short while much has been finished and now works, there is still much more that could be done to improve and/or increase this project's capabilities.
 
-	Encryption of arbitrary data or files is a common enough request that this tool was developed. This is not a partition encryption solution (often LUKS partitions are the goto for such Kernel level supported encryption where a file system can be mounted, read, and written to) instead this is a method of file by file and/or line by line asymmetric encryption at the host OS's software layer.
+ > Encryption of arbitrary data or files is a common enough request that this tool was developed. This is not a partition encryption solution (often LUKS partitions are the goto for such Kernel level supported encryption where a file system can be mounted, read, and written to) instead this is a method of file by file and/or line by line asymmetric encryption at the host OS's software layer.
 
 -----
 
@@ -143,17 +145,18 @@ clear
 
 -----
 
- # Hint: for both log daemon auditing (and auditing of the script) see section 'CLO Manual and documentation' within this document for listing of every Bash built-in command & external program called listed without repeats.
+#### Hint: for both log daemon auditing (and auditing of the script) see section 'CLO Manual and documentation' within this document for listing of every Bash built-in command & external program called listed without repeats.
 
 
 ### TLDR (Quick start)
 
-	Check the `Story time` section within this guide for more in-depth setup instructions specific to various threat models. Check the above warnings as they're not likely to be repeated.
+ > Check the `Story time` section within this guide for more in-depth setup instructions specific to various threat models. Check the above warnings as they're not likely to be repeated.
 
 -----
 
- # Step 1; 
-	Import public GnuPG key into server that will be running this script or one of it's written custom copies.
+#### Step 1; 
+
+Import public GnuPG key into server that will be running this script or one of it's written custom copies.
 
  - From file transfer to server
 ```bash
@@ -165,12 +168,13 @@ gpg --import /path/to/pubkey
 gpg --import user@email.domain --recv-keys https://key-server.domain
 ```
 
- Note for the most secure results with GnuPG encryption via this script the related private key should **not** ever live on the same server that is running this script.
+ > Note for the most secure results with GnuPG encryption via this script the related private key should **not** ever live on the same server that is running this script.
  For testing and special usage cases you may wish (be tempted) to generate a private/public key pare on the target server using this script, however, this would be generally a very discouraged security practice to implement on publicly accessible servers; see Section `Story time` -> `Scenario two` within this document for more information.
  If only for testing then don't forget to delete both keys again and to **not** upload test keys to pubic key servers as that would be a rude use of their services.
 
- # Step(s) 2; 
-	Download main script from GitHub
+#### Step(s) 2;
+
+Download main script from GitHub
 
  - Change to desired download directory.
 ```bash
@@ -203,18 +207,18 @@ mv <Script_Name> /usr/local/sbin/pipe_writer.sh
 cd
 pipe_writer.sh -h
 ```
- Note above will only work if you have chosen to copy or move the main script to a path that is also found within your shell's `${PATH}` variable; hint `echo -e "${PATH//:/\\n}" will display every directory within the variable one per line, choose one of those paths for saving your copy of the main script for easy access to it's powers.
+ > Note above will only work if you have chosen to copy or move the main script to a path that is also found within your shell's `${PATH}` variable; hint `echo -e "${PATH//:/\\n}"` will display every directory within the variable one per line, choose one of those paths for saving your copy of the main script for easy access to it's powers.
 
- # Step(s) 3
+#### Step(s) 3
 
-	List command line options, current values and exit with '0' status. Note replace `<Script_Name>` with the script's name if re-named
+ - List command line options, current values and exit with '0' status. Note replace `<Script_Name>` with the script's name if re-named
 ```bash
 ./<Script_Name> --help
 # Print exit status of last command/script
 echo -e "# Exit status of: !!\n# Was $?"
 ```
 
-	Test named pipe reading script by outputting to current terminal using the following options. Note if script was moved as shown above then use `script_name` instead of `./script_name`, ie without `./` when modifying bellow command because it assumes you're still in `/$HOME/Downloads/Script_dir` directory.
+ - Test named pipe reading script by outputting to current terminal using the following options. Note if script was moved as shown above then use `script_name` instead of `./script_name`, ie without `./` when modifying bellow command because it assumes you're still in `/$HOME/Downloads/Script_dir` directory.
 ```bash
 ./Script_Name --copy-save-yn=no\
  --output-save-yn=no\
@@ -225,11 +229,13 @@ echo -e "# Exit status of: !!\n# Was $?"
  --output-parse-recipient=youremail@host.domain\
  --output-rotate-recipient=youremail@host.domain -h
 ```
- Remove the '-h' option from above command to have parsed output read from above pipe name dumped to current terminal. Additionally the back-slashes (`\`) in above (and much of bellow) are only to aid in reading and you may instead enter command line options on a single line so long as your remember to remove the back-slashes while following along.
+ > Remove the '-h' option from above command to have parsed output read from above pipe name dumped to current terminal. Additionally the back-slashes (`\`) in above (and much of bellow) are only to aid in reading and you may instead enter command line options on a single line so long as your remember to remove the back-slashes while following along.
 
-	Test above by opening second terminal and writing some stings, concatenating files, and/or writing file paths to the new pipe file.
+ > Test above by opening second terminal and writing some stings, concatenating files, and/or writing file paths to the new pipe file.
 
- Here's a set of example commands that maybe used to test your new named pipe;
+#### Step(s) 4
+
+ > Here's a set of example commands that maybe used to test your new named pipe;
 
  - Example of writing single line string to named pipe
 ```bash
@@ -255,16 +261,16 @@ to named pipe
 EOF
 ```
 
-The output of all of above example pipe write commands should appear in original terminal with `----GPG Beguin...' and `-----End...` lines preceding and ending each interaction.
+ > The output of all of above example pipe write commands should appear in original terminal with `----GPG Beguin...` and `-----End...` lines preceding and ending each interaction.
 
- Next example is different though...
+ > Next example is different though...
 
  - Example of providing full file path to named pipe instead
 ```bash
 echo '/etc/rc.local' > /tmp/test.pipe
 ```
 
- ... because a known file path was used as an input to the named pipe then this script (and those that it writes) will detect this and treat'em special; even more special treatment is used on known directory paths.
+ > ... because a known file path was used as an input to the named pipe then this script (and those that it writes) will detect this and treat'em special; even more special treatment is used on known directory paths.
  Note if you have changed the '--output-bulk-dir=/tmp/test_bulk' command line option above then this directory file path will be that which was defined.
 
  - Example of providing file directory path (via built in Bash variable) to named pipe instead
@@ -272,71 +278,27 @@ echo '/etc/rc.local' > /tmp/test.pipe
 echo "${HOME}/Pictures" > /tmp/test.pipe
 ```
 
- - One *gotcha* the above two examples will only work on the first line that includes a file or directory path of a multi-line write command. This is to avoid the script main script or it's copies from misinterpreting file paths in a text document as paths to take action on. So do **not** do `cat mylist_of_files.txt > /tmp/test.pipe` and expect anything but funky things to happen.
+ > One *gotcha* the above two examples will only work on the first line that includes a file or directory path of a multi-line write command. This is to avoid the script main script or it's copies from misinterpreting file paths in a text document as paths to take action on. So do **not** do `cat mylist_of_files.txt > /tmp/test.pipe` and expect anything but funky things to happen.
 
  - Example command to list encrypted files under the bulk output directory.
 ```bash
 ls -hal /tmp/test_bulk/*.gpg
 ```
 
- # Step 4
+#### Step(s) 5
 
-	Quit by writing default quit string to named pipe from another terminal as shown bellow
+ - Quit by writing default quit string to named pipe from another terminal as shown bellow
 ```bash
 echo 'quit' > /tmp/test.pipe
 ```
 
-
- - For bulk lists of files you'll need some form of looping though a target directory and outputting files one by one to named pipe.
-```bash
-#!/usr/bin/env bash
-Var_dir="$1"
-Var_pipe="$2"
-Var_script_name="${0##*/}"
-if [ -p "${Var_pipe}" ]; then
-	echo "# Writing to [${Var_pipe}] will begin if [${Var_dir}] is a directory"
-else
-	echo "## Usage: ${Var_script_name} <dir-path> <pipe-path>"
-	echo "# Error: \$2 [${Var_pipe}] is not a pipe?"
-	echo "# Exiting with errors" && exit 1
-fi
-if [ -d "${Var_dir}" ]; then
-	for _file_to_check in $(ls -l ${Var_dir} | awk '{print $9}'); do
-		if ! [ -z "${_file_to_check}" ] && [ -f "${Var_dir}/${_file_to_check}" ]; then
-		## Un-comment bellow and comment above to instead recursively encrypt sub-dirs under
-		##  found under ${Var_dir} file path.
-#		if ! [ -z "${_file_to_check}" ] && [ -d "${Var_dir}/${_file_to_check}" ]; then
-			echo "# File path [${Var_dir}/${_file_to_check}] will be written to [${Var_pipe}] pipe "
-			echo "${Var_dir}/${_file_to_check}" > ${Var_pipe}
-		else
-			echo "# Notice: skipping [${Var_dir}/${_file_to_check}] because it is either blank or not a file."
-		fi
-	done
-	_exit_status=$?
-else
-	echo "## Usage: ${Var_script_name} <dir-path> <pipe-path>"
-	echo "# Error: \$1 [${Var_dir}] not a directory?"
-	echo "# Exiting with errors" && exit 1
-fi
-echo "# Finished: exited loop with [${_exit_status}] exit code."
-```
-
- - Note above sample script will not preform recursive file encryption, ie sub directories are ignored.
- Instead if you wish for a directory to be recursively encrypted then just pass the directory path, however, know that the data will be passed through `tar -zcf - <dir_passed> | <encryption_commands> >> <output_file>`
- command so to decrypt and expand you'll need the following commands to decrypt and expand it out again to a `/tmp` directory
-```bash
-mkdir -vp /tmp/extraction_dir
-cd /tmp/extraction_dir
-gpg -o- 011...foo.tgz.gpg | tar zxvf - 
-```
-
 -----
 
-	Decrypt output lines by copy/pasting into text reader capable of using related GnuPG privet key and decrypt files from `/tmp/test_bulk/` directory after transfer to verify script operates as expected. Then seek further documentation bellow for answers to the questions script's authors' expect.
+ > Decrypt output lines by copy/pasting into text reader capable of using related GnuPG privet key and decrypt files from `/tmp/test_bulk/` directory after transfer to verify script operates as expected. Then seek further documentation bellow for answers to the questions script's authors' expect.
 
 ### CLO Manual and documentation
 
-	# Recognized command line options, their variables and default values
+#### Recognized command line options, their variables and default values
 
  CLI option name                      | Associated variable name           | Default Value
 -------------------------------------:|:----------------------------------:|:----------------------------------------------------------------------------------------
@@ -380,7 +342,7 @@ gpg -o- 011...foo.tgz.gpg | tar zxvf -
   `--help` or `-h`                    | `Var_help_val`                     | null
   `*`                                 | `Var_extra_input`                  | null
 
-	# Recognized command line options and their optional values
+#### Recognized command line options and their optional values
 
  CLI option name                      | Regex restrictions  | Acceptable values
 -------------------------------------:|:--------------------|------------------
@@ -440,9 +402,9 @@ gpg -o- 011...foo.tgz.gpg | tar zxvf -
  > Note using `--help` with additional options may access software external to this script but installed on the same host file system.
  Additionally if any scripted documentation exists then that will also be presented to the main script's user.
 
-# Documentation for named pipe encryption scripted logics
+### Documentation for named pipe encryption scripted logics
 
-	External application usage
+#### External application usage
 
  External program | Licence type | Usage within script
 ------------------|:------------:|--------------------
@@ -459,7 +421,7 @@ gpg -o- 011...foo.tgz.gpg | tar zxvf -
  `date`           |  | Print date to script log files or in user messages.
  `bash`           | [GNU GPL v3 or greater](https://www.gnu.org/software/bash/) | Interprets *human readable* source code (this project's scripts) into compatible machine instructions, often used as the command line interpreter for user logins and scripting, rarely used or seen as a programing language.
 
-	Documentation specific to each command above can be found with `<command> --help` or `man <command>`
+#### Documentation specific to each command above can be found with `<command> --help` or `man <command>`
 
  Bash commands | Usage within script
 ---------------|--------------------
@@ -472,7 +434,7 @@ gpg -o- 011...foo.tgz.gpg | tar zxvf -
  `disown`      | Disown the PID of last function (or script) called allows for backgrounding the processes used to listen to named pipes and output to log files and bulk directory.
  `break`       | Breaks out of looped Bash logics such that the parent process can either exit or restart listening again.
 
-	Documentation specific to each command above can be found with `help <command>` and/or `man <command>`
+#### Documentation specific to each command above can be found with `help <command>` and/or `man <command>`
 
  Bash switch, loops, & operators  | Help command   | Usage within script
 ----------------------------------|----------------|--------------------
@@ -502,7 +464,7 @@ gpg -o- 011...foo.tgz.gpg | tar zxvf -
  `var=${PIPESTATUS[@]}`  | to capture exit statuses of multi piped or redirected commands
  `$!`                    | Saves PID of last command to a variable for use with `unset` command when backgrounding processes or script.
 
- # Bash function assignment and calling syntax:
+#### Bash function assignment and calling syntax:
 
  - assign a function named `func`
 ```bash
@@ -522,7 +484,7 @@ func "yo"
 func_var=$(func "yo")
 ```
 
- # Bash write file method: 
+#### Bash write file method: 
 
  - Write to `/dir/file.name` text until `EOF` is found on it's own line.
 ```bash
@@ -533,26 +495,25 @@ upon if they should be expanded on write or on re-read/execution
 EOF
 ```
 
-## Story time
+### Story time
 
-	Scenario one:
-	Logging output -> Pipe (encryption) input -> Encrypted log output -> Rotate using encrypted email and compression
+#### Scenario one:
 
-	This scenario was written with the following link's questions as it's inspiration [Serverfault - Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
+ > Logging output -> Pipe (encryption) input -> Encrypted log output -> Rotate using encrypted email and compression
 
-	Quote begin
+This scenario was written with the following link's questions as it's inspiration [Serverfault - Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
+
+#### Quote begin
 
  > I'm dealing with some data that's governed by specific regulations and that must be handled in a specific manner.
 
  > I'm finding that this data ends up in some of my log files as a result of the system operating as intended. I'd like to find a way to log messages on the server that receives that date, but to do so in such a way that the data is encrypted as it's written to disk and may not be decrypted by that same server.
 
- > ...
-
-	Quote cut-off
+#### Quote cut-off
 
 -----
 
-	As of the time of writing this document the authors of this project and the author of the above question have not found a suitable solution aside from the following command lime options being used on the project's script that is...
+ > As of the time of writing this document the authors of this project and the author of the above question have not found a suitable solution aside from the following command lime options being used on the project's script that is...
 
 ```bash
 /script/path/script_name.sh --copy-save-yn='yes'\
@@ -576,17 +537,17 @@ EOF
  --disown-yn='yes' --help
 ```
 
-	Note, if you've setup the web server within a chroot (as is assumed by example values) then future attackers will not see your server's log data from previous connections, instead they'll see a named pipe that they can not write to unless they're the same `group` as that that preforms normal log writes. Nor will future attackers gain access to the encrypted logs until they've broken out of the server's jail. Even then the encrypted logs should be useless to them so long as the private key is **not** also stored on the host.
+ > Note, if you've setup the web server within a chroot (as is assumed by example values) then future attackers will not see your server's log data from previous connections, instead they'll see a named pipe that they can not write to unless they're the same `group` as that that preforms normal log writes. Nor will future attackers gain access to the encrypted logs until they've broken out of the server's jail. Even then the encrypted logs should be useless to them so long as the private key is **not** also stored on the host.
 
- # Summery of logging data flow
+#### Summery of logging data flow
 
-  1. Client interacts with server such that logs are generated. Note, modify the server or daemon to use the same file path as defined by `--named-pipe-name` option for output of it's logs.
+1. Client interacts with server such that logs are generated. Note, modify the server or daemon to use the same file path as defined by `--named-pipe-name` option for output of it's logs.
 
-  2. Written data to named pipe is read by Bash loops contained in customized script copy defined by `--copy-save-name` option.
+2. Written data to named pipe is read by Bash loops contained in customized script copy defined by `--copy-save-name` option.
 
-  3. Using public key defined by `--output-parse-recipient` option, every data block read by the script copy will be encrypted. Note this script is capable of reading multi-line writes to it's named pipe in a single operation, thus if your logging daemon or server writes multiple lines per client interaction then the entire write action is captured up to a few thousand lines at a time.
+3. Using public key defined by `--output-parse-recipient` option, every data block read by the script copy will be encrypted. Note this script is capable of reading multi-line writes to it's named pipe in a single operation, thus if your logging daemon or server writes multiple lines per client interaction then the entire write action is captured up to a few thousand lines at a time.
 
-  4. The encrypted data is then saved (appended) to file defined by `--output-parse-name` option and the Bash loop checks it's internal write count against the count defined by `--output-rotate-check-frequency` option and usually restarts processes that listen to named pipe for more writes.
+4. The encrypted data is then saved (appended) to file defined by `--output-parse-name` option and the Bash loop checks it's internal write count against the count defined by `--output-rotate-check-frequency` option and usually restarts processes that listen to named pipe for more writes.
 
  - - If the internal write count matches that of `--output-rotate-check-frequency` or is greater then the `--output-rotate-max-bites` value is used to check the encrypted log file size.
 
@@ -603,7 +564,7 @@ EOF
 
  - - If no line matches `--listener-quit-string` option then reading named pipe for write actions from server or logging daemon is resumed and step `1` above starts again.
 
-	What does the other above options do?
+#### What does the other above options do?
 
  - Enable saving script copy saving operation, all customized options are then saved by the main script to the script copy saved to the path defined by `--copy-save-name` option.
 ```bash
@@ -654,7 +615,7 @@ EOF
 --help
 ```
 
-	Last steps are to configure the target server or log daemon to start writing to the above named pipe instead of their default locations; note if using a log daemon such as `rsyslog` then for testing you may wish to have logs written to both default location and new named pipe location. For servers such as Nginx and other web servers be sure to check the documentation for "Log Rotation" for how to properly restart the related server's logging. Next sets of links are what this document's author could find for proper server restart signals; hint nginx is easiest.
+ > Last steps are to configure the target server or log daemon to start writing to the above named pipe instead of their default locations; note if using a log daemon such as `rsyslog` then for testing you may wish to have logs written to both default location and new named pipe location. For servers such as Nginx and other web servers be sure to check the documentation for "Log Rotation" for how to properly restart the related server's logging. Next sets of links are what this document's author could find for proper server restart signals; hint nginx is easiest.
 
  - Web Server - [Nginx log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
  Modify virtual host log access and log error lines to point to related named pipes, then use the following `kill`
@@ -668,7 +629,7 @@ kill -USR1 $(cat master.nginx.pid)
 
  -Log Daemon/Server - [Rsyslog v8 `ompipe` plug-in documentation](http://www.rsyslog.com/doc/v8-stable/configuration/modules/ompipe.html)
 
-	# Automation of named pipe log encryption for nginx
+#### Automation of named pipe log encryption for nginx
 
  - Add the following line just before `daemon-start-stop` line under web server's start action; on Debian based systems this is usually under `/etc/init.d/nginx` file path.
 ```bash
@@ -686,9 +647,9 @@ echo 'sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serve
  /etc/init.d/nginx start &&\
  tail -f /jailed_logs/website_host/www_access.gpg
 ```
-	After clients reconnect you'll see the ~.gpg logs start filling up, use Ctrl^c keyboard short-cut to exit tail command and wait for emails to start rolling into the log rotation email's inbox.
+After clients reconnect you'll see the ~.gpg logs start filling up, use Ctrl^c keyboard short-cut to exit tail command and wait for emails to start rolling into the log rotation email's inbox.
 
-	Now at some point in the future you or your web-admin will need access to the logs, first decrypt the rolled logs with the second key used to encrypt them and then run have your web-admin run something like the following to have encrypted data *chunks* shoved through decryption commands.
+ > Now at some point in the future you or your web-admin will need access to the logs, first decrypt the rolled logs with the second key used to encrypt them and then run have your web-admin run something like the following to have encrypted data *chunks* shoved through decryption commands.
 
 ```bash
 #!/usr/bin/env bash
@@ -766,19 +727,17 @@ Main_func(){
 Main_func
 ```
 
-	Above should (for medium to small log files) pull each encrypted section within a previously appended to encrypted log file out into an array of arrays, then push those arrays one by one through either; decryption command & out to clear text file, or, if a pipe is detected as above script's output path then the compound array will dump there instead and it'll be up to the listening pipe's script to output to it's destination. This allows, with proper custom settings, for piping through search parameters that save only relevant or requested information to a clear text file while ignoring everything else.
+ > Above should (for medium to small log files) pull each encrypted section within a previously appended to encrypted log file out into an array of arrays, then push those arrays one by one through either; decryption command & out to clear text file, or, if a pipe is detected as above script's output path then the compound array will dump there instead and it'll be up to the listening pipe's script to output to it's destination. This allows, with proper custom settings, for piping through search parameters that save only relevant or requested information to a clear text file while ignoring everything else.
 
 -----
 
-	Scenario two:
-	Logging output -> Pipe (encryption) input -> Encryption -> Pipe (decryption) input -> Log output (rotate) -> Encrypted email
+#### Scenario two:
+
+ > Logging output -> Pipe (encryption) input -> Encryption -> Pipe (decryption) input -> Log output (rotate) -> Encrypted email
 
 -----
 
-	Let's say you're web server's threat modal is different than that described by `Scenario one` and your
- server still needs to respond to threats in near real time via Fail2Ban but you still don't wish to make it easy
- on future attackers to access your server's logs. In the following example we'll be setting up a pipe to pipe
- encryption of logs such that they only exist in plan text long enough for monitoring software to do it's thing.
+> Let's say you're web server's threat modal is different than that described by `Scenario one` and your server still needs to respond to threats in near real time via Fail2Ban but you still don't wish to make it easy on future attackers to access your server's logs. In the following example we'll be setting up a pipe to pipe encryption of logs such that they only exist in plan text long enough for monitoring software to do it's thing.
 
  - Generate server only key pare on host file system, not the chrooted web server's file system
 ```bash
@@ -816,9 +775,9 @@ su notwwwuser -c "gpg --import /tmp/.gnupg/server_secret.key"
 rm -Irf /tmp/.gnupg
 ```
 
-	# Now to write some scripts to different directories using the main script of this project.
+#### Now to write some scripts to different directories using the main script of this project.
 
-	Be sure to pay attention to the differences in command line options used and not used between runs.
+Be sure to pay attention to the differences in command line options used and not used between runs.
 
  - First is a pipe to pipe encryption named pipe listening script
 ```bash
@@ -872,7 +831,7 @@ Var_parsing_command="gpg --decrypt"
 Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
 ```
 
-	Automation is similar to `Scenario one`, however, order of operation is very important! The encryption pipe to pipe listener should be started **after** the decryption pipe listening script. Shutting down order is just as important as start order; stop encryption before stopping decryption to avoid writing logs to plan text file under the same name as named pipe.
+ > Automation is similar to `Scenario one`, however, order of operation is very important! The encryption pipe to pipe listener should be started **after** the decryption pipe listening script. Shutting down order is just as important as start order; stop encryption before stopping decryption to avoid writing logs to plan text file under the same name as named pipe.
 
  - Start stop lines for decryption pipe to log file.
 ```bash
@@ -890,32 +849,32 @@ echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs
 echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe
 ```
 
-	# Notes on differences between written script's options used above.
+#### Notes on differences between written script's options used above.
 
-	 - Input -> output first script options
+ - Input -> output first script options
 ```bash
  --named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe"\
  --output-parse-name="/jailed_logs/website_host/www_access.pipe"\
 ```
 
-	 - Input -> output second script options
+ - Input -> output second script options
 ```bash
  --named-pipe-name="/jailed_logs/website_host/www_access.pipe"\
  --output-parse-name="/jailed_logs/website_host/www_access.log"\
 ```
 
-	Above outlines taking input written by web server logging service on pipe `/jailed_servers/website_host/var/log/www/access.log.pipe` putting through encryption before outputting to pipe `/jailed_logs/website_host/www_access.pipe` file that the second script is listening for lines to parse for decryption. Data is passed through the second script's decryption loops and output in clear text file under `/jailed_logs/website_host/www_access.log` path.
+ > Above outlines taking input written by web server logging service on pipe `/jailed_servers/website_host/var/log/www/access.log.pipe` putting through encryption before outputting to pipe `/jailed_logs/website_host/www_access.pipe` file that the second script is listening for lines to parse for decryption. Data is passed through the second script's decryption loops and output in clear text file under `/jailed_logs/website_host/www_access.log` path.
 
- Now some maybe wondering what the benefit of this type of set up is. Simply if the second script dies then the first script will just make an encrypted log under the same file path as the second script's listening pipe; much like in `Scenario one`'s usage example. And if at a latter time you wish to move decryption to a separate physical server, ie over an VPN or SSH connection, then you'll only need to move the second script and private key to begin setting up pipe to pipe encrypted (doubly at that point) centralized log proxy decrypter... the authors will cover this in another scenario further on.
+ > Now some maybe wondering what the benefit of this type of set up is. Simply if the second script dies then the first script will just make an encrypted log under the same file path as the second script's listening pipe; much like in `Scenario one`'s usage example. And if at a latter time you wish to move decryption to a separate physical server, ie over an VPN or SSH connection, then you'll only need to move the second script and private key to begin setting up pipe to pipe encrypted (doubly at that point) centralized log proxy decrypter... the authors will cover this in another scenario further on.
 
-	 - Input -> output pre-parsing and log rotation options in the first script
+ - Input -> output pre-parsing and log rotation options in the first script
 ```bash
  --output-pre-parse-yn='yes'\
  --output-rotate-yn='no'\
  --output-save-yn='yes'\
 ```
 
-	 - Input -> output pre-parsing and log rotation options in the second script
+ - Input -> output pre-parsing and log rotation options in the second script
 ```bash
  --output-pre-parse-yn='no'\
  --output-rotate-actions='compress-encrypt,remove-old'\
@@ -926,28 +885,28 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
  --output-save-yn='yes'\
 ```
 
-	Above we're disabling the log rotation for the first script because it's *log* file is really the listening pipe of the second script, thus we really don't want the first script trying to preform log rotate actions on a named pipe. And we're setting low values for the log rotation of the second script to keep clear text versions of or logs from kicking around on the host's file system for any longer than they need to be, however, this will cause your web or sys admin's email to become quite full unless they've setup some form of auto retrieval script to handle the traffic automatically. This is a balance your team must strike between threat modal vs administrating the log shuffle over-head described. The `--output-pre-parse-yn='`*yes/no*`'` option differences between first and second scripts are; in the first script we set this to `yes` to restrict what input is read and encrypted, and in the second script to prevent GnuPG decryption from failing to decrypt we set this to `no` and read raw lines in.
+ > Above we're disabling the log rotation for the first script because it's *log* file is really the listening pipe of the second script, thus we really don't want the first script trying to preform log rotate actions on a named pipe. And we're setting low values for the log rotation of the second script to keep clear text versions of or logs from kicking around on the host's file system for any longer than they need to be, however, this will cause your web or sys admin's email to become quite full unless they've setup some form of auto retrieval script to handle the traffic automatically. This is a balance your team must strike between threat modal vs administrating the log shuffle over-head described. The `--output-pre-parse-yn='`*yes/no*`'` option differences between first and second scripts are; in the first script we set this to `yes` to restrict what input is read and encrypted, and in the second script to prevent GnuPG decryption from failing to decrypt we set this to `no` and read raw lines in.
 
 -----
 
 	Scenario three:
-	Save custom script copy over SSH -> Target host's Logging output -> Pipe (encryption) input -> Encrypted Log output -> Rotate encrypt and email removing old
+ > Save custom script copy over SSH -> Target host's Logging output -> Pipe (encryption) input -> Encrypted Log output -> Rotate encrypt and email removing old
 
 -----
 
-	# Write customized pipe listener script over SSH 
+#### Write customized pipe listener script over SSH 
 
-	 - These are the options used from `Scenario one` so edit as needed and be aware that file paths will be relative to that of the SSH server being logged into. Note we're only saving these variables to make the final command easier to read.
+ - These are the options used from `Scenario one` so edit as needed and be aware that file paths will be relative to that of the SSH server being logged into. Note we're only saving these variables to make the final command easier to read.
 ```bash
 Script_options="--copy-save-yn='yes' --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh' --copy-save-ownership='notwwwuser:notwwwgroup' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' --log-level='0' --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe' --named-pipe-ownership='notwwwuser:wwwgroup' --named-pipe-permissions='420' --output-parse-name='/jailed_logs/website_host/www_access.gpg' --output-parse-recipient='user@host.domain' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-requency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='user@host.domain' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
 ```
 
-	 - Run the main script from host using redirection and assigned variables.
+ - Run the main script from host using redirection and assigned variables.
 ```bash
 ssh user@remote "$(</path/to/main/script.sh ${Script_options})"
 ```
 
-	 - Restart named pipe listener script over SSH now that it is local to and configured for the target's file system.
+ - Restart named pipe listener script over SSH now that it is local to and configured for the target's file system.
 ```bash
 ## Send quit string to named pipe
 ssh user@remote "echo 'sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe"
@@ -955,7 +914,7 @@ ssh user@remote "echo 'sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD
 ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
 ```
 
-	The above steps maybe repeated for any other servers (or same server different log) that require setup of log encryption, however, if attempting to automate this for a large cluster it is advisable to define separate quit strings for each remote host. Bellow is a quick example script of what the authors would do to setup multiple remote hosts in quick succession that each only need one template written.
+ > The above steps maybe repeated for any other servers (or same server different log) that require setup of log encryption, however, if attempting to automate this for a large cluster it is advisable to define separate quit strings for each remote host. Bellow is a quick example script of what the authors would do to setup multiple remote hosts in quick succession that each only need one template written.
 
 ```bash
 #!/usr/bin/env bash
@@ -995,7 +954,7 @@ done
 echo "## Finished above at $(date)" | tee -a "${Log_file_path}"
 ```
 
- # Important variables to modify in above example script
+#### Important variables to modify in above example script
 
  - List 'remote user' `@` 'remote host' `:` 'listening server port' separated by `,` of servers that should receive a script copy for encrypting logs and files via named pipe
 ```bash
@@ -1038,9 +997,9 @@ Script_save_parse_recipient='user@host.suffix'
 Script_save_rotate_recipient='user@host.suffix'
 ```
 
-	Above will save an encrypting script to each host defined by the `Remote_hosts` variable and import the gpg keys defined by `Script_save_parse_recipient and `Script_save_rotate_recipient variables to each of them. The scripts them selves will each have variable names for pipes, output files, and listening script by parsing the individual target host. Because the script copies are much smaller than the main script of this project, after running above, coping and modifying the individual target host's scripts on a case by case basis is the suggested next course of action.
+ > Above will save an encrypting script to each host defined by the `Remote_hosts` variable and import the gpg keys defined by `Script_save_parse_recipient and `Script_save_rotate_recipient variables to each of them. The scripts them selves will each have variable names for pipes, output files, and listening script by parsing the individual target host. Because the script copies are much smaller than the main script of this project, after running above, coping and modifying the individual target host's scripts on a case by case basis is the suggested next course of action.
 
-	Bellow is a run-down of what changes per target host and what will remain constant.
+ > Bellow is a run-down of what changes per target host and what will remain constant.
 
  - Variable defined options that change per-host assigned to each script copy
 ```bash
@@ -1073,7 +1032,7 @@ Script_save_rotate_recipient='user@host.suffix'
 --disown-yn='yes'
 ```
 
-	After modifying and running the above script you should have a log file on the local host of actions preformed as defined by `Log_file_path` variable that saves each script copy's quit string as defined by the following option used in above `for` loop
+ > After modifying and running the above script you should have a log file on the local host of actions preformed as defined by `Log_file_path` variable that saves each script copy's quit string as defined by the following option used in above `for` loop
 ```bash
 --listener-quit-string='${_random_quit_string}'
 ```
@@ -1087,9 +1046,7 @@ Script_save_rotate_recipient='user@host.suffix'
 ## Finished above at Day Month Day# hh:mm:ss Zone Year 
 ```
 
-
 -----
-
 
 ### Sources of info
 
@@ -1126,26 +1083,3 @@ Script_save_rotate_recipient='user@host.suffix'
 
 [Guide to asymmetric encryption with OpenSSL](https://www.devco.net/archives/2006/02/13/public_-_private_key_encryption_using_openssl.php)
  Seems pretty snazzy but authors of this script have not tested it yet.
-
-### Licensing & Usage agreement
-
- + Main script and the script's it writes are under the following license.
-
- > ```bash
-Paranoid_Pipes, maker of named pipe parsing template Bash scripts.
- Copyright (C) 2016 S0AndS0
-
-This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU Affero General Public License as
- published by the Free Software Foundation, version 3 of the
- License.
-
-You should have received a copy of the GNU Afferno General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>.
-
-Contact authors via email <strangerthanbland@gmail.com>
-Acceptable GPG email public key for above <0x6e4c46da15b22310> 
-
-Direct link to GNU AGPL v3 <https://www.gnu.org/licenses/agpl-3.0.html>
-```
-
