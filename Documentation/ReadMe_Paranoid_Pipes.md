@@ -25,6 +25,9 @@ Support the original authors finacially via the following methods
  VTC (vertcoin)  | VvRePCWBatR5nohf2xXXwLLmvUfWG2mFE4
  RDD (reddcoin)  | Ro4CyYZWEPqjSMbmZgiyQE7VfaLmd6gh5P
 
+Support code maintainers via thier own links found within
+ the `Documentation/ReadMe_Contributing.md` file when available.
+
 ### About this project
 
  + Script name: Paranoid Pipes (Version 1)
