@@ -1,24 +1,9 @@
 #!/usr/bin/env bash
-
-## License Notice start
-# Paranoid_Pipes, maker of named pipe parsing template Bash scripts.
-#  Copyright (C) 2016 S0AndS0
-# This program is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU Affero General Public License as
-#  published by the Free Software Foundation, version 3 of the
-#  License.
-# You should have received a copy of the GNU Afferno General Public License
-#  along with this program. If not, see <http://www.gnu.org/licenses/>.
-## License Notice end
-# Contact authors via email <strangerthanbland@gmail.com>
-# Acceptable GPG email public key for above <0x6e4c46da15b22310>
-# Direct link to GNU AGPL v3 <https://www.gnu.org/licenses/agpl-3.0.html>
-# The full license may also be found within the "Licenses" directory
-#  if cloned or downloaded from GitHub.
+## For license of this script try: Paranoid_Pipes --license
 ## For help with this script try: Paranoid_Pipes --help
 
 ## Security notices for the following functions
-## Func_do_stuff_to_input : has commented echo lines that should remain commented
+## Func_do_stuff_to_input : has commented lines that should remain commented
 
 ## Note : bellow variables maybe overwritten by supplying command line
 ##  options, ei --option=value or ---var_name=var_value
@@ -34,6 +19,7 @@ Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
 Var_script_subversion='beta'
+Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
 Var_script_pid="$$"
@@ -62,7 +48,7 @@ Var_rm_exec_path="$(which rm)"
 Var_tar_exec_path="$(which tar)"
 Var_gpg_exec_path="$(which gpg)"
 ## Used for silencing output of loops, ei
-# <command_to_silence> 2>&1 ${Var_dev_null}
+# <command_to_silence> >${Var_dev_null} 2>&1 &
 # <command_to_quite> &> ${Var_dev_null}
 Var_dev_null='/dev/null'
 ## Save date command with seconds sense 1970 option for logs and messages that include timing info
@@ -141,6 +127,9 @@ Var_save_encryption_yn="yes"
 ## To whom to encrypt individual lines and recognized files to?
 ##  CLO --output-gpg-recipient
 Var_gpg_recipient="user@host.domain"
+### Note the following two are temerarally assigned here
+###  and then assigned for run time within [Func_check_args]
+###  this is to prevent the above defaults from interfearing.
 ## Options to use with above recipient?
 ##  CLO <disabled>
 Var_gpg_recipient_options="--always-trust --armor --batch --encrypt --recipient ${Var_gpg_recipient}"
@@ -288,7 +277,6 @@ Var_save_variables='no'
 ### Experimental variables and alternative variable examples
 Var_authors_contact='strangerthanbland@gmail.com'
 
-
 ## Dew to the different file permissions that maybe
 ##  assigned above, if bellow is set to a value read
 ##  as 'yes' then this script will attempt to assume
@@ -323,10 +311,7 @@ Var_messaging_user="${Var_script_current_user}"
 #Var_parsing_output_file="${Var_pipe_file_name%.*}.log"
 #Var_bulk_output_suffix="log"
 
-###  modify above to change results.
-### END of modifiable variables declarations
-### START of scripted log/functions declarations
-###  modify bellow at your own risk!
+### START of scripted log/functions declarations modify bellow at your own risk!
 
 ## The following function takes messages passed to it from script run time
 ##  and based on user set debugging levels will either print or silence
@@ -387,10 +372,9 @@ Func_trap_cleanup(){
 ## Example call for bellow function
 #Func_assign_arg "" '' "" ''
 Func_assign_arg(){
-	_var_option="${1?No option name passed to Func_assign_arg function}"
-	_var_name="${2?No variable name passed to Func_assign_arg function}"
-	_var_value="${3?No value passed to Func_assign_arg function}"
-	_var_string_type="${4?No string filtering type passed to Func_assign_arg function}"
+	_var_name="${1?No variable name passed to Func_assign_arg function}"
+	_var_value="${2?No value passed to Func_assign_arg function}"
+	_var_string_type="${3?No string filtering type passed to Func_assign_arg function}"
 	case "${_var_string_type}" in
 		number)
 			declare -g "${_var_name}=${_var_value//${Var_number_regex}/}"
@@ -500,7 +484,6 @@ Func_write_unrecognized_input_to_pipe(){
 	if [ "${#Var_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra (unrecognized as an argument) input" '1' '2'
 		Func_messages "# \${Var_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
-#		Func_messages "# ${Var_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		${Var_cat_exec_path} <<<"${Var_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
 		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
@@ -515,114 +498,114 @@ Func_check_args(){
 		_arg="${_input_array[${_arg_count}]}"
 		case "${_arg%=*}" in
 			--copy-save-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_script_copy_save' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_script_copy_save' "${_arg#*=}" 'azAZ'
 			;;
 			--copy-save-name)
-				Func_assign_arg "${_arg%=*}" 'Var_script_copy_name' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_script_copy_name' "${_arg#*=}" 'string'
 			;;
 			--copy-save-permissions)
-				Func_assign_arg "${_arg%=*}" 'Var_script_copy_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_script_copy_permissions' "${_arg#*=}" 'number'
 			;;
 			--copy-save-ownership)
-				Func_assign_arg "${_arg%=*}" 'Var_script_copy_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_script_copy_ownership' "${_arg#*=}" 'string'
 			;;
 			--debug-level)
-				Func_assign_arg "${_arg%=*}" 'Var_debugging' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_debugging' "${_arg#*=}" 'number'
 			;;
 			--disown-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_disown_parser_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_disown_parser_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--log-level)
-				Func_assign_arg "${_arg%=*}" 'Var_logging' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_logging' "${_arg#*=}" 'number'
 			;;
 			--log-file-location)
-				Func_assign_arg "${_arg%=*}" 'Var_log_file_name' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_log_file_name' "${_arg#*=}" 'string'
 			;;
 			--log-file-permissions)
-				Func_assign_arg "${_arg%=*}" 'Var_log_file_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_log_file_permissions' "${_arg#*=}" 'number'
 			;;
 			--log-file-ownership)
-				Func_assign_arg "${_arg%=*}" 'Var_log_file_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_log_file_ownership' "${_arg#*=}" 'string'
 			;;
 			--log-auto-delete-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_remove_script_log_on_exit_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_remove_script_log_on_exit_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--named-pipe-name)
-				Func_assign_arg "${_arg%=*}" 'Var_pipe_file_name' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
 			;;
 			--named-pipe-permissions)
-				Func_assign_arg "${_arg%=*}" 'Var_pipe_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_pipe_permissions' "${_arg#*=}" 'number'
 			;;
 			--named-pipe-ownership)
-				Func_assign_arg "${_arg%=*}" 'Var_pipe_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_pipe_ownership' "${_arg#*=}" 'string'
 			;;
 			--listener-quit-string)
-				Func_assign_arg "${_arg%=*}" 'Var_pipe_quit_string' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_pipe_quit_string' "${_arg#*=}" 'string'
 			;;
 			--listener-trap-command)
-				Var_trap_command="${_arg#*=}"
+				Func_assign_arg 'Var_trap_command' "${_arg#*=}" 'null'
 			;;
 			--output-pre-parse-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_preprocess_for_comments_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_preprocess_for_comments_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-pre-parse-comment-string)
-				Func_assign_arg "${_arg%=*}" 'Var_parsing_comment_pattern' "${_arg#*=}" 'null'
+				Func_assign_arg 'Var_parsing_comment_pattern' "${_arg#*=}" 'null'
 			;;
 			--output-pre-parse-allowed-chars)
-				Func_assign_arg "${_arg%=*}" 'Var_parsing_allowed_chars' "${_arg#*=}" 'null'
+				Func_assign_arg 'Var_parsing_allowed_chars' "${_arg#*=}" 'null'
 			;;
 			--output-parse-name)
-				Func_assign_arg "${_arg%=*}" 'Var_parsing_output_file' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_parsing_output_file' "${_arg#*=}" 'string'
 			;;
 			--output-gpg-recipient)
-				Func_assign_arg "${_arg%=*}" 'Var_gpg_recipient' "${_arg#*=}" 'string'
-				Func_assign_arg "${_arg%=*}" 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'string'
-				Func_assign_arg "${_arg%=*}" 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'string'
+				Func_assign_arg 'Var_gpg_recipient' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
+				Func_assign_arg 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
 			;;
 			--output-save-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-rotate-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_log_rotate_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg 'Var_log_rotate_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-rotate-max-bites)
-				Func_assign_arg "${_arg%=*}" 'Var_log_max_size' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_log_max_size' "${_arg#*=}" 'number'
 			;;
 			--output-rotate-check-requency)
-				Func_assign_arg "${_arg%=*}" 'Var_log_check_frequency' "${_arg#*=}" 'number'
+				Func_assign_arg 'Var_log_check_frequency' "${_arg#*=}" 'number'
 			;;
 			--output-rotate-actions)
-				Func_assign_arg "${_arg%=*}" 'Var_log_rotate_actions' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_log_rotate_actions' "${_arg#*=}" 'string'
 			;;
 			--output-rotate-recipient)
-				Func_assign_arg "${_arg%=*}" 'Var_log_rotate_recipient' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_log_rotate_recipient' "${_arg#*=}" 'string'
 			;;
 			--output-parse-command)
-				Var_parsing_command="${_arg#*=}"
+				Func_assign_arg 'Var_parsing_command' "${_arg#*=}" 'null'
 			;;
 			--output-bulk-dir)
-				Func_assign_arg "${_arg%=*}" 'Var_parsing_bulk_out_dir' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_parsing_bulk_out_dir' "${_arg#*=}" 'string'
 			;;
 			--output-bulk-suffix)
-				Func_assign_arg "${_arg%=*}" 'Var_bulk_output_suffix' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_bulk_output_suffix' "${_arg#*=}" 'string'
 			;;
 			--padding-enable-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_enable_padding_yn' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_enable_padding_yn' "${_arg#*=}" 'string'
 			;;
 			--padding-length)
-				Func_assign_arg "${_arg%=*}" 'Var_padding_length' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_padding_length' "${_arg#*=}" 'string'
 			;;
 			--padding-placement)
-				Func_assign_arg "${_arg%=*}" 'Var_padding_placement' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_padding_placement' "${_arg#*=}" 'string'
 			;;
 			--save-options-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_save_options' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_save_options' "${_arg#*=}" 'string'
 			;;
 			--save-variables-yn)
-				Func_assign_arg "${_arg%=*}" 'Var_save_variables' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_save_variables' "${_arg#*=}" 'string'
 			;;
 			--source-var-file)
-				Func_assign_arg "${_arg%=*}" 'Var_source_var_file' "${_arg#*=}" 'string'
+				Func_assign_arg 'Var_source_var_file' "${_arg#*=}" 'string'
 				## Check if sourcing file passed is a file else value will be used
 				##  with above options for saving variables or options to the values path
 				if [ -f "${Var_source_var_file}" ]; then
@@ -634,9 +617,7 @@ Func_check_args(){
 				Var_extra_var_value="${_arg#*=}"
 				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
 				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
-#				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} declaring: ${Var_extra_var_var/---/}=${Var_extra_var_value}"
-				Func_assign_arg "${_arg%=*}" "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
-#				declare "${Var_extra_user_input_var/---/}=${Var_extra_user_input_value}" || exit 2
+				Func_assign_arg "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
 			;;
 			--help|-h)
 				Var_help_var="${_arg%=*}"
@@ -664,7 +645,7 @@ Func_check_args(){
 		let _arg_count++
 	done
 	unset _arg_count
-	export Var_trap_command="${Var_rm_exec_path} -f ${Var_pipe_file_name}"
+	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
 	
 }
 
@@ -675,7 +656,9 @@ Func_check_recipients(){
 		Func_messages "# Warning - [\${Var_gpg_recipient}=${Var_gpg_recipient}] is improper, set with '--output-parse-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 		read -p 'Please input your pub-key email address: ' _response
 		if ! [ -z "${#_response}" ]; then
-			Func_assign_arg '--output-gpg-recipient' 'Var_gpg_recipient' "${_response}" 'string'
+			Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
+			Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
+			Func_assign_arg 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
 		else
 			Func_messages "# Error - [\${Var_gpg_recipient}] unset, quiting now" '0' '1'
 			exit 1
@@ -688,7 +671,7 @@ Func_check_recipients(){
 				Func_messages "# Warning - [\${Var_log_rotate_recipient}=${Var_log_rotate_recipient}] is improper, set with '--output-rotate-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 				read -p 'Please input your pub-key email address: ' _response
 				if ! [ -z "${#_response}" ]; then
-					Func_assign_arg '--output-rotate-recipient' 'Var_gpg_recipient' "${_response}" 'string'
+					Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
 				else
 					Func_messages "# Error - [\${Var_log_rotate_recipient}] unset, quiting now" '0' '1'
 					exit 1
@@ -696,8 +679,6 @@ Func_check_recipients(){
 			fi
 		;;
 	esac
-	export Var_gpg_recipient_options="--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt"
-	export Var_parsing_command="${Var_gpg_exec_path} ${Var_gpg_recipient_options}"
 }
 ## Check disown settings prior to setting further functions. Sets trap on exit now
 ##  or hold trapping set actions till we are inside while loop.
@@ -707,7 +688,7 @@ case "${Var_disown_parser_yn}" in
 	;;
 	*)
 		${Var_echo_exec_path} "# ${Var_script_name} will set exit trap now."
-		trap "Func_trap_cleanup '$?'" EXIT
+		trap 'Func_trap_cleanup $?' EXIT
 	;;
 esac
 ## Note "shellcheck" will return an 'SC2064' message warning to use single
@@ -738,7 +719,7 @@ Func_prompt_continue(){
 Func_script_license_customizer(){
 	Func_messages "# " '0' '42'
 	Func_messages "## Salutations ${Var_script_current_user:-${USER}}, the following license" '0' '42'
-	Func_messages "#  only applies to this script [${Var_script_name}] and the customized" '0' '42'
+	Func_messages "#  only applies to this script [${Var_script_title}] and the customized" '0' '42'
 	Func_messages '#  scripts that this script writes. Software external to but used by' '0' '42'
 	Func_messages "#  [${Var_script_name}] and the customized scripts it writes are" '0' '42'
 	Func_messages '#  protected under their own licensing usage agreements. The' '0' '42'
@@ -759,7 +740,7 @@ Func_script_license_customizer(){
 	if [ -r "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md" ]; then
 		Func_messages '## Found local license file, prompting to display...' '0' '42'
 		Func_prompt_continue "Func_script_license_customizer"
-		less "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md"
+		less -R5 "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md"
 	fi
 }
 
@@ -871,12 +852,6 @@ Func_variable_assignment_reader(){
 		Func_messages "#  ${Var_padding_placement}" '2' '3'
 		Func_messages '# Padding command [${Var_padding_command}]' '2' '3'
 		Func_messages "# Example: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)" '2' '3'
-#--save-options-yn
-#Var_save_options='no'
-#--save-variables-yn)
-#Var_save_variables='no'
-## CLO --source-var-file
-#Var_source_var_file
 	fi
 	## If debugging is equal to or grater than '3' then print prompt
 	##  to continue, otherwise let further processing to continue.
@@ -924,12 +899,6 @@ if [ -e "${Var_script_dir}/${Var_script_name}" ]; then
 	 --padding-enable-yn="${Var_enable_padding_yn}"\\
 	 --padding-length="${Var_padding_length}"\\
 	 --padding-placement="${Var_padding_placement}"
-#--save-options-yn
-#Var_save_options='no'
-#--save-variables-yn)
-#Var_save_variables='no'
-## CLO --source-var-file
-#Var_source_var_file
 else
 	echo "# Error finding executable permissions for: ${Var_script_dir}/${Var_script_name}"
 fi
@@ -1201,7 +1170,6 @@ Map_read_array_to_output(){
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
 	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
-#	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ] || [ "${_count}" -gt "${#_lines[@]}" ]; do
 		## Here is where the read input is expanded, line by line, the calling function then may make use
 		##  of entire data block; based on user set preferences is how each line read is formatted.
 		##  This first case branch checks for 'yes' like statements in ${Var_enable_padding} variable,
@@ -1294,7 +1262,7 @@ Func_mkpipe_reader(){
 	## While there is a pipe file under "${Var_pipe_file_name}" path
 	##  AND a "break" signal is undetected assign function [Map_read_array_to_output]
 	##  with above file path as first argument to a variable.
-	while [ -p "${Var_pipe_file_name}" ] && true; do
+	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
 		PID_Map_read_array_to_output=$!
 		## If above variable is not zero characters in length OR if above variable
@@ -1314,7 +1282,7 @@ Func_mkpipe_reader(){
 						_exit_status=("${PIPESTATUS[@]}")
 						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
 #						Func_messages "# Encryption command [${Var_cat_exec_path} \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[@]}]" '2' '3'
+						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 					elif [ -d "${_mapped_array}" ]; then
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
@@ -1323,7 +1291,7 @@ Func_mkpipe_reader(){
 						_exit_status=("${PIPESTATUS[@]}")
 						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 #						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[@]}]" '2' '3'
+						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
@@ -1333,7 +1301,7 @@ Func_mkpipe_reader(){
 						Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
 						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
 #						Func_messages "# Encryption command [${Var_cat_exec_path} \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[@]}]" '2' '3'
+						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 						if [ "${_count}" -gt "${Var_log_check_frequency}" ] || [ "${_count}" = "${Var_log_check_frequency}" ]; then
 							Func_messages "# Checking log file size now that count has reached [${_count}]" '2' '3'
 							Func_rotate_log "${Var_parsing_output_file}" "${Var_log_rotate_yn}" "${Var_log_max_size}" "${Var_log_rotate_actions}" "${Var_log_rotate_recipient}"
@@ -1348,7 +1316,7 @@ Func_mkpipe_reader(){
 					Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
 					Func_messages '# Encryption command [${Var_cat_exec_path} <<<"\${_mapped_array}" | ${Var_parsing_command}]' '2' '3'
 #					Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"${_mapped_array}\" | ${Var_parsing_command}]" '2' '3'
-					Func_messages "# Command exit statuses [${_exit_status[@]}]" '2' '3'
+					Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 					Func_messages "# ...finished encryption of read input" '2' '3'
 				;;
 			esac
@@ -1556,7 +1524,7 @@ Map_read_array_to_output(){
 	done
 }
 Pipe_parser_loop(){
-	while [ -p "\${Var_pipe_file_name}" ] && true; do
+	while [ -p "\${Var_pipe_file_name}" ]; do
 		_mapped_array=\$(Map_read_array_to_output "\${Var_pipe_file_name}")
 		PID_Map_read_array_to_output=\$!
 		## If above variable is not zero characters in length OR if above variable
@@ -1567,8 +1535,7 @@ Pipe_parser_loop(){
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 				fi
-				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}\${Var_bulk_output_suffix}" &> ${Var_dev_null}
-#				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}\${Var_bulk_output_suffix}"
+				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}\${Var_bulk_output_suffix}"
 
 			elif [ -d "\${_mapped_array}" ]; then
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
@@ -1578,8 +1545,7 @@ Pipe_parser_loop(){
 			else
 				## Push mapped array through 'cat' then pipe results through encryption/decryption
 				##  command, saving final results to output file.
-				${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}" &> ${Var_dev_null}
-#				${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
+				${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
 				## Check if script should load log-rotation function into this one
 				##  if disabled then this should prevent a second or third process
 				##  from being sent to the background/disown(ed)...
@@ -1596,13 +1562,11 @@ Pipe_parser_loop(){
 	_exit_code=\$?
 	case "\${Var_disown_parser_yn}" in
 		Y|y|Yes|yes|YES)
-			${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now." &> ${Var_dev_null}
-#			${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now."
+			${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now."
 			Clean_up_trap "\${_exit_code}"
 		;;
 		*)
-			${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code." &> ${Var_dev_null}
-#			${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
+			${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
 		;;
 	esac
 }
@@ -1610,10 +1574,8 @@ Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
 		Pipe_parser_loop >/dev/null 2>&1 &
-#		Pipe_parser_loop &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
-#		disown \${PID_Map_read_array_to_output}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
 	;;
 	*)
@@ -1691,7 +1653,8 @@ Func_main(){
 					Func_mkpipe_reader >/dev/null 2>&1 &
 #					Func_mkpipe_reader &
 					PID_Func_mkpipe_reader=$!
-					disown ${PID_Func_mkpipe_reader}
+					disown "${PID_Func_mkpipe_reader}"
+#					disown ${PID_Func_mkpipe_reader}
 					case "${Var_save_encryption_yn}" in
 						y|Y|yes|Yes|YES)
 							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
@@ -1727,7 +1690,6 @@ Func_main(){
 }
 ## Call "Func_main" if no errors or quit signals have been received.
 Func_main "${@:---help}"
-#Func_main
 
 ## Sources of information that explain portions of the logic of this script
 ##  in a potentially different usage context for externally sourced applications.
