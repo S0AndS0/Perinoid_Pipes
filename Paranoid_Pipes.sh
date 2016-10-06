@@ -41,7 +41,7 @@ Var_script_pid=${Var_script_pid:-$BASHPID}
 ## Assign variable that functions may use to grab their own PID in-case
 ##  auto-backrounding is selected as well as writing out custom named
 ##  pipe listener.
-Var_subshell_pid=${BASH_SUBSHELL}
+Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user name variable of current user running this script in case
 ##  we have to run commands selectively under a different user.
  : ${USER?}
@@ -60,7 +60,7 @@ Var_mkdir_exec_path="$(which mkdir)"
 Var_mv_exec_path="$(which mv)"
 Var_rm_exec_path="$(which rm)"
 Var_tar_exec_path="$(which tar)"
-Var_gpg_exec_path="$(which gpg2)"
+Var_gpg_exec_path="$(which gpg)"
 ## Used for silencing output of loops, ei
 # <command_to_silence> 2>&1 ${Var_dev_null}
 # <command_to_quite> &> ${Var_dev_null}
@@ -143,7 +143,8 @@ Var_save_encryption_yn="yes"
 Var_gpg_recipient="user@host.domain"
 ## Options to use with above recipient?
 ##  CLO <disabled>
-Var_gpg_recipient_options="--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt"
+Var_gpg_recipient_options="--always-trust --armor --batch --encrypt --recipient ${Var_gpg_recipient}"
+#Var_gpg_recipient_options="--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt"
 ## Note if your server has imported and assigned a trust value
 ##  to the recipient then remove '--always-trust' option from above!
 ## Command to use with internal variable "<(${_input_from_pipe_read})"
@@ -332,11 +333,12 @@ Var_messaging_user="${Var_script_current_user}"
 ##  certain types of messages from various levels of scripted logic.
 Func_messages(){
 	_message="$1"
-	_debug_level="${2:-$Var_debugging}"
-	_log_level="${3:-$Var_logging}"
+	_debug_level="${2:-${Var_debugging}}"
+	_log_level="${3:-${Var_logging}}"
 	## Use echo to notify script user of various levels of information if user set debug level
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
-	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${_debug_level}" -lt "${Var_debugging}" ]; then
+	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
+#	if [ "${Var_debugging}" = "${_debug_level:-0}" ] || [ "${_debug_level:-0}" -lt "${Var_debugging}" ]; then
 		## Level reserved for higher values such as errors
 		${Var_echo_exec_path} "#DBL-${_debug_level}# ${_message}"
 	fi
@@ -574,6 +576,8 @@ Func_check_args(){
 			;;
 			--output-gpg-recipient)
 				Func_assign_arg "${_arg%=*}" 'Var_gpg_recipient' "${_arg#*=}" 'string'
+				Func_assign_arg "${_arg%=*}" 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'string'
+				Func_assign_arg "${_arg%=*}" 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'string'
 			;;
 			--output-save-yn)
 				Func_assign_arg "${_arg%=*}" 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
@@ -629,7 +633,7 @@ Func_check_args(){
 				Var_extra_var_var="${_arg%=*}"
 				Var_extra_var_value="${_arg#*=}"
 				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
-				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_val}"
+				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
 #				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} declaring: ${Var_extra_var_var/---/}=${Var_extra_var_value}"
 				Func_assign_arg "${_arg%=*}" "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
 #				declare "${Var_extra_user_input_var/---/}=${Var_extra_user_input_value}" || exit 2
@@ -660,6 +664,7 @@ Func_check_args(){
 		let _arg_count++
 	done
 	unset _arg_count
+	export Var_trap_command="${Var_rm_exec_path} -f ${Var_pipe_file_name}"
 	
 }
 
@@ -691,6 +696,8 @@ Func_check_recipients(){
 			fi
 		;;
 	esac
+	export Var_gpg_recipient_options="--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt"
+	export Var_parsing_command="${Var_gpg_exec_path} ${Var_gpg_recipient_options}"
 }
 ## Check disown settings prior to setting further functions. Sets trap on exit now
 ##  or hold trapping set actions till we are inside while loop.
@@ -700,7 +707,7 @@ case "${Var_disown_parser_yn}" in
 	;;
 	*)
 		${Var_echo_exec_path} "# ${Var_script_name} will set exit trap now."
-		trap "Func_trap_cleanup $?" EXIT
+		trap "Func_trap_cleanup '$?'" EXIT
 	;;
 esac
 ## Note "shellcheck" will return an 'SC2064' message warning to use single
@@ -737,7 +744,7 @@ Func_script_license_customizer(){
 	Func_messages '#  protected under their own licensing usage agreements. The' '0' '42'
 	Func_messages '#  authors of this project assume **no** rights to modify software' '0' '42'
 	Func_messages "#  licensing agreements external to [${Var_script_name}] or the custom" '0' '42'
-	Func_messages '#  scripts that it writes '0' '42'
+	Func_messages '#  scripts that it writes' '0' '42'
 	Func_messages '## GNU AGPL v3 Notice start' '0' '42'
 	Func_messages "# ${Var_script_name}, maker of named pipe parsing template Bash scripts." '0' '42'
 	Func_messages "#  Copyright (C) 2016 S0AndS0" '0' '42'
@@ -752,7 +759,7 @@ Func_script_license_customizer(){
 	if [ -r "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md" ]; then
 		Func_messages '## Found local license file, prompting to display...' '0' '42'
 		Func_prompt_continue "Func_script_license_customizer"
-		less "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md" 
+		less "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md"
 	fi
 }
 
@@ -1193,7 +1200,8 @@ Map_read_array_to_output(){
 	## Make an array from input, note '-t' will "trim" last cerage return but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
-	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ] || [ "${_count}" -gt "${#_lines[@]}" ]; do
+	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
+#	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ] || [ "${_count}" -gt "${#_lines[@]}" ]; do
 		## Here is where the read input is expanded, line by line, the calling function then may make use
 		##  of entire data block; based on user set preferences is how each line read is formatted.
 		##  This first case branch checks for 'yes' like statements in ${Var_enable_padding} variable,
@@ -1338,7 +1346,7 @@ Func_mkpipe_reader(){
 					_exit_status=("${PIPESTATUS[@]}")
 					let _count++
 					Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
-					Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"\${_mapped_array}\" | ${Var_parsing_command}]" '2' '3'
+					Func_messages '# Encryption command [${Var_cat_exec_path} <<<"\${_mapped_array}" | ${Var_parsing_command}]' '2' '3'
 #					Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"${_mapped_array}\" | ${Var_parsing_command}]" '2' '3'
 					Func_messages "# Command exit statuses [${_exit_status[@]}]" '2' '3'
 					Func_messages "# ...finished encryption of read input" '2' '3'
@@ -1601,7 +1609,8 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop &
+		Pipe_parser_loop >/dev/null 2>&1 &
+#		Pipe_parser_loop &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 #		disown \${PID_Map_read_array_to_output}
@@ -1679,7 +1688,8 @@ Func_main(){
 			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_mkpipe_reader &
+					Func_mkpipe_reader >/dev/null 2>&1 &
+#					Func_mkpipe_reader &
 					PID_Func_mkpipe_reader=$!
 					disown ${PID_Func_mkpipe_reader}
 					case "${Var_save_encryption_yn}" in
