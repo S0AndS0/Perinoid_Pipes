@@ -532,6 +532,8 @@ Func_check_args(){
 			;;
 			--named-pipe-name)
 				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
+#				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
+#	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
 			;;
 			--named-pipe-permissions)
 				Func_assign_arg 'Var_pipe_permissions' "${_arg#*=}" 'number'
@@ -645,7 +647,7 @@ Func_check_args(){
 		let _arg_count++
 	done
 	unset _arg_count
-	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
+#	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
 	
 }
 
