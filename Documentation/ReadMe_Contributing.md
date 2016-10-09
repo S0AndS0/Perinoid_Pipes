@@ -155,6 +155,25 @@ EOF
 git commit -S -m "Signed changes to Contribution_Credits.md" Contribution_Credits.md
 ```
 
+## Import project author's public key
+```bash
+Var_author_keyid='6E4C46DA15B22310'
+gpg --search-keys ${Var_author_keyid}
+```
+
+ > The above should result in presenting you with the author's key to import
+ this public key can also be found at [Keybase.io](https://keybase.io/s0ands0)
+ for verification that your `gpg` key servers are presenting you with the corect
+ key.
+
+### Assigne a *trust* level for this new key
+```bash
+gpg --edit-keys ${Var_author_keyid}
+```
+ > The above will open an interactive menu for editing the above key ID, use
+ `trust` to open the options for assigning a trust level, then `quit` to exit
+ and save changes.
+
 # Work flow steps that will repeat
 
 ## Make custom branch for tracking local changes
@@ -191,6 +210,11 @@ nano Perinoid_Pipes.sh
 git commit --branch -S -am "Added feature or fixed bug" -m "Summery of changes"
 ```
 
+ > Hint: `git status` will show changed files and added files and preforming a
+ `git diff <file_name>` (replacing `<file_name>` with a reported modifide file)
+ will show the recent changes that are not currently tracked by `git`. This can
+ be really helpfull when making lots of small changes to many files.
+
 ## Test changes then prep for submitting a pull request
 ```bash
 ## Update local repo master branch code among other remote branches.
@@ -215,20 +239,19 @@ git request-pull -p ${Var_branch_name} ${Var_git_url} master
  via GitHub's web interface or via `hub` python command line wrapper, and then
  submitting pull requests to your own fork.
 
-## When finished merge changes back to original/master branch
+## When finished merge changes back to original/master branch with a message.
 ```bash
 git checkout master
-git merge --verify-signatures -S ${Var_local_branch_name}
+git merge --verify-signatures -S ${Var_local_branch_name}\
+ -am "Merged local testing branch ${Var_branch_name} into master branch"\
+ -m "This fixes issue <issue-id> or adds feature <feature-name>"\
+ -m "<any further details>"
 ```
  > Note if above generates merge conflicts then attempt `git mergetool` if you
  have already setup a git merge tool default.
 
-## Signoff on merged commit
-```bash
-git -S -am "Merged local testing branch into master branch"\
- -m "This fixes issue <issue-id> or adds feature <feature-name>"\
- -m "any further details"
-```
+ > Hint: use `git diff ${Var_local_branch_name}..master` to refresh your
+ memory as to what changes where made between branches.
 
 # Resolving merge conflicts
 
