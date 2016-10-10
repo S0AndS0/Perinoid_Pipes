@@ -15,7 +15,14 @@
 
 # Quick start
 
- > See full guides under the [`Documentation/`](Documentation/) directory.
+ > See full guides under the [`Documentation/`](Documentation/) directory for
+ complete explainations, long winded they maybe, of this project's target usage
+ information and command line options. This document only covers downloading
+ and intial testing of project features. Main guide for this script
+ [`ReadMe_Paranoid_Pipes.md`](Documentation/ReadMe_Paranoid_Pipes.md) expands
+ considerably upon deployment options available with this project.
+ See the Frequently asked questions document [FAQ.md](Documentation/FAQ.md)
+ for answers to common questions.
 
 ## Step 1; 
 
@@ -32,13 +39,13 @@ gpg --import /path/to/pubkey
 gpg --import user@email.domain --recv-keys https://key-server.domain
 ```
 
-Note for the most secure results with GnuPG encryption via this script the
+ > Note for the most secure results with GnuPG encryption via this script the
  related private key should **not** ever live on the same server that is
  running this script. For testing and special usage cases you may wish (be
  tempted) to generate a private/public key pare on the target server using
  this script, however, this would be generally a very discouraged security
  practice to implement on publicly accessible servers; see Section
- `Story time` -> `Scenario two` within this document for more information.
+ `Story time` -> `Scenario two` within the main guide for more information.
  If only for testing then don't forget to delete both keys again and to **not**
  upload test keys to pubic key servers as that would be a rude use of their
  services.
@@ -60,17 +67,17 @@ cd ~/Downloads/Perinoid_Pipes
 
  - Change script ownership to be owned by currently logged in user.
 ```bash
-chown ${USER}:${USER} Perinoid_Pipes.sh
+chown ${USER}:${USER} Paranoid_Pipes.sh
 ```
 
  - Change script permissions such that owning **`u`**ser may e**`x`**ecute.
 ```bash
-chmod u+x Perinoid_Pipes.sh
+chmod 700 Paranoid_Pipes.sh
 ```
 
  - Change script's name and location (optional)
 ```bash
-mv Perinoid_Pipes.sh /usr/local/sbin/pipe_writer.sh
+cp Paranoid_Pipes.sh /usr/local/sbin/pipe_writer.sh
 ```
 
  - Change current working directory to default for currently logged in user
@@ -101,7 +108,7 @@ echo -e "# Exit status of: !!\n# Was $?"
  bellow command because it assumes you're still in
  `/$HOME/Downloads/Script_dir` directory.
 ```bash
-./Perinoid_Pipes.sh --copy-save-yn=no\
+./Paranoid_Pipes.sh --copy-save-yn=no\
  --output-save-yn=no\
  --disown-yn=no\
  --debug-level=5 --log-level=0\
