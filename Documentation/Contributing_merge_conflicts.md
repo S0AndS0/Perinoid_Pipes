@@ -73,11 +73,18 @@ zR 			# Unfold ALL lines to see complete files while comparing.
 ```
 /search_string
 ```
+ > Note: entering `/` and then pressing `[up]` arrow key on your keyboard will
+ show the last search string input, pressing `[up]` arrow key will continue
+ scrolling through the history of previously entered search strings.
 
 ## Interactive editing
 ```
 i 			# Insert mode
-# [Esc] key 		# Exit insert mode
+```
+
+## Exiting interactive editing mode
+```
+[Esc] 			# Exit insert mode
 ```
  > Note above `[Esc]` literally means pressing your keyboard's escape key.
 

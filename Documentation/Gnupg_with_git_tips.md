@@ -1,11 +1,30 @@
-# Verifing signed commits and tags
+# Verifying signed commits and tags
 
 ## Import author's public GPG key
 ```bash
 gpg --recv-keys 6E4C46DA15B22310
 ```
 
-## Parse commit IDs into variable
+## Assign *trust* levels to quite `git`
+```bash
+gpg --edit-key 6E4C46DA15B22310
+## Within interactive menu
+#> trust
+## Set number value of trust to key id
+#> 5
+## Confirm with 'y' then quit with new trust
+#> quit
+```
+
+### Verify signed commits within `log` (option 1)
+```bash
+git log --show-signature --oneline
+```
+ > The above will show the title of each commit as well as the results from
+ GnuPG's verification of signatures on each commit. Quick and built in this
+ is likely more superior to `(option 2)` bellow.
+
+## Parse commit IDs into variable (option 2)
 ```bash
 Var_commit_ids=$(git log --oneline | awk '{print $1}')
 ```
@@ -35,7 +54,7 @@ for _id in ${Var_commit_ids}; do
 done
 ```
 
-## Verfying much the same for signed tags
+## Verifying much the same for signed tags
 
 ### Looping through tags
 ```bash

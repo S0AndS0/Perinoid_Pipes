@@ -9,16 +9,16 @@
     "License".
 ```
 
-[Link to title page](https://github.com/S0AndS0/Perinoid_Pipes/blob/master/Documentation/ReadMe_Paranoid_Pipes.md#title-page)
+[Link to title page](Documentation/ReadMe_Paranoid_Pipes.md#title-page)
 
-[Link to related license](https://github.com/S0AndS0/Perinoid_Pipes/blob/master/Licenses/GNU_FDLv1.3_ReadMe_Paranoid_Pipes.md)
+[Link to related license](Licenses/GNU_FDLv1.3_ReadMe_Paranoid_Pipes.md)
 
 # Quick start
 
  > See full guides under the [`Documentation/`](Documentation/) directory for
- complete explainations, long winded they maybe, of this project's target usage
+ complete explanations, long winded they maybe, of this project's target usage
  information and command line options. This document only covers downloading
- and intial testing of project features. Main guide for this script
+ and initial testing of project features. Main guide for this script
  [`ReadMe_Paranoid_Pipes.md`](Documentation/ReadMe_Paranoid_Pipes.md) expands
  considerably upon deployment options available with this project.
  See the Frequently asked questions document [FAQ.md](Documentation/FAQ.md)
@@ -97,7 +97,7 @@ pipe_writer.sh -h
  - List command line options, current values and exit with '0' status. Note
  replace `<Script_Name>` with the script's name if re-named
 ```bash
-./Perinoid_Pipes.sh --help
+./Paranoid_Pipes.sh --help
 # Print exit status of last command/script
 echo -e "# Exit status of: !!\n# Was $?"
 ```
@@ -152,7 +152,7 @@ to named pipe
 EOF
 ```
  > The output of all of above example pipe write commands should appear in
- original terminal with `----GPG Beguin...` and `-----End...` lines preceding
+ original terminal with `----GPG Begin...` and `-----End...` lines preceding
  and ending each interaction.
 
 Next example is different though...

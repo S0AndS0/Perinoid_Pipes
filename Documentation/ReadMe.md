@@ -21,6 +21,17 @@
  project requires GnuPG/PGP generated signatures to be applied to commits,
  merges and pull requests.
 
+[Contributing_merge_conflicts.md](Documentation/Contributing_merge_conflicts.md)
+ Covers steps for resolving merge conflicts between project branches using
+ `vimdiff` as the `git mergetool` on the command line.
+
+[FAQ.md](Documentation/FAQ.md)
+ Some of the questions already asked about this project as well as questions the
+ authors believed would be asked about this project along with some sample
+ answers. While not exhaustive yet this should be one of the first documents new
+ users of this project visit to get quickly acquainted with what this project is
+ all about.
+
 [Gnupg_with_git_tips.md](Documentation/Gnupg_with_git_tips.md)
  Covers the finer points of setting `git` up with GnuPG such that future code
  contributers do not run into avoidable errors.
