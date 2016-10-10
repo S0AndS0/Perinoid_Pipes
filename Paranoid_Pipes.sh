@@ -52,7 +52,7 @@ Var_gpg_exec_path="$(which gpg)"
 # <command_to_quite> &> ${Var_dev_null}
 Var_dev_null='/dev/null'
 ## Save date command with seconds sense 1970 option for logs and messages that include timing info
-Var_star_date=$(date +%s)
+Var_star_date=$(date -u +%s)
 
 ## Numerical regex variable bellow is used within user input parsing loop
 ##  to ensure variables that this script expects numbers to be contained
