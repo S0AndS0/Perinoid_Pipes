@@ -89,7 +89,7 @@ Be sure to pay attention to the differences in command line options used and not
  --output-parse-name="/jailed_logs/website_host/www_access.log"\
  --output-parse-recipient="user@host.domain"\
  --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-requency='250'\
+ --output-rotate-check-frequency='250'\
  --output-rotate-max-bites='8046'\
  --output-rotate-recipient="user@host.domain"\
  --output-rotate-yn='yes'\
@@ -162,7 +162,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 ```bash
  --output-pre-parse-yn='no'\
  --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-requency='250'\
+ --output-rotate-check-frequency='250'\
  --output-rotate-max-bites='8046'\
  --output-rotate-recipient="user@host.domain"\
  --output-rotate-yn='yes'\
@@ -171,3 +171,17 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 
  > Above we're disabling the log rotation for the first script because it's *log* file is really the listening pipe of the second script, thus we really don't want the first script trying to preform log rotate actions on a named pipe. And we're setting low values for the log rotation of the second script to keep clear text versions of or logs from kicking around on the host's file system for any longer than they need to be, however, this will cause your web or sys admin's email to become quite full unless they've setup some form of auto retrieval script to handle the traffic automatically. This is a balance your team must strike between threat modal vs administrating the log shuffle over-head described. The `--output-pre-parse-yn='`*yes/no*`'` option differences between first and second scripts are; in the first script we set this to `yes` to restrict what input is read and encrypted, and in the second script to prevent GnuPG decryption from failing to decrypt we set this to `no` and read raw lines in.
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

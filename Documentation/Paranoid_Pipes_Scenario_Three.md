@@ -9,7 +9,7 @@
  - These are the options used from `Scenario one` so edit as needed and be aware that file paths will be relative to that of the SSH server being logged into. Note we're only saving these variables to make the final command easier to read.
 
 ```bash
-Script_options="--copy-save-yn='yes' --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh' --copy-save-ownership='notwwwuser:notwwwgroup' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' --log-level='0' --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe' --named-pipe-ownership='notwwwuser:wwwgroup' --named-pipe-permissions='420' --output-parse-name='/jailed_logs/website_host/www_access.gpg' --output-parse-recipient='user@host.domain' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-requency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='user@host.domain' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
+Script_options="--copy-save-yn='yes' --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh' --copy-save-ownership='notwwwuser:notwwwgroup' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' --log-level='0' --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe' --named-pipe-ownership='notwwwuser:wwwgroup' --named-pipe-permissions='420' --output-parse-name='/jailed_logs/website_host/www_access.gpg' --output-parse-recipient='user@host.domain' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-frequency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='user@host.domain' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
 ```
 
  - Run the main script from host using redirection and assigned variables.
@@ -33,10 +33,10 @@ ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
 #!/usr/bin/env bash
 ### Define some variables for latter use.
 ## Comma separated list of SSH remote hosts to setup
-Remote_hosts="webadmin@webhost:22,sqladmin@sqlhost:9823"
+Remote_hosts="webadmin@webhost:22,]sqladmin@sqlhost:9823"
 Remote_host_shell="/bin/bash"
 ##  note the user names from above will be used for script and pipe names
-## Character lenght of quit string that will be made for each host
+## Character length of quit string that will be made for each host
 Quit_string_length='32'
 ## Log file path to save configuration to local file system
 Log_file_path='/tmp/ssh_remote_encrypted_setup.log'
@@ -52,7 +52,7 @@ echo '#--------|--------------' | tee -a "${Log_file_path}"
 for _host in ${Remote_hosts//,/ }; do
 	_random_quit_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${Quit_string_length:-32})
 	_host_name="${_host%@*}"
-	Script_options="--copy-save-yn='yes' --copy-save-name='${Script_save_dir}/${_host_name}_log_encrypter.sh' --copy-save-ownership='${_host_name}:${_host_name}' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='${_random_quit_string}' --log-level='0' --named-pipe-name='${Script_save_output_dir}/${_host_name}_access.log.pipe' --named-pipe-ownership='${_host_name}:${_host_name}' --named-pipe-permissions='420' --output-parse-name='${Script_save_output_dir}/${_host_name}_access.gpg' --output-parse-recipient='${Script_save_parse_recipient}' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-requency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='${Script_save_rotate_recipient}' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
+	Script_options="--copy-save-yn='yes' --copy-save-name='${Script_save_dir}/${_host_name}_log_encrypter.sh' --copy-save-ownership='${_host_name}:${_host_name}' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='${_random_quit_string}' --log-level='0' --named-pipe-name='${Script_save_output_dir}/${_host_name}_access.log.pipe' --named-pipe-ownership='${_host_name}:${_host_name}' --named-pipe-permissions='420' --output-parse-name='${Script_save_output_dir}/${_host_name}_access.gpg' --output-parse-recipient='${Script_save_parse_recipient}' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-frequency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='${Script_save_rotate_recipient}' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
 	if [[ "${Script_save_parse_recipient}" == "${Script_save_rotate_recipient}" ]]; then
 		ssh ${_host} -s ${Remote_host_shell} "gpg --import ${Script_save_parse_recipient} --recv-keys https://key-server.domain"
 	else
@@ -150,7 +150,7 @@ Script_save_rotate_recipient='user@host.suffix'
 --named-pipe-permissions='420'
 --output-pre-parse-yn='yes'
 --output-rotate-actions='compress-encrypt,remove-old'
---output-rotate-check-requency='25000'
+--output-rotate-check-frequency='25000'
 --output-rotate-max-bites='8388608'
 --output-rotate-yn='yes'
 --output-save-yn='yes'
@@ -173,3 +173,17 @@ Script_save_rotate_recipient='user@host.suffix'
 ## Finished above at Day Month Day# hh:mm:ss Zone Year 
 ```
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

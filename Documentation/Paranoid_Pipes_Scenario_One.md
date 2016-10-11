@@ -250,3 +250,17 @@ Main_func
 
  > Above should (for medium to small log files) pull each encrypted section within a previously appended to encrypted log file out into an array of arrays, then push those arrays one by one through either; decryption command & out to clear text file, or, if a pipe is detected as above script's output path then the compound array will dump there instead and it'll be up to the listening pipe's script to output to it's destination. This allows, with proper custom settings, for piping through search parameters that save only relevant or requested information to a clear text file while ignoring everything else.
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

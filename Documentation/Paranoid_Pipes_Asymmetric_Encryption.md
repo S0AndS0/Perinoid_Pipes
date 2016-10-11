@@ -6,7 +6,7 @@
 
 -----
 
- > Because of the differences in kernel vs software implementation of encryption, the authors of this project feal it is worth warning users that there is some risk for leakage of data destined for encryption. Often this data can be found in the form of system logs or shell history files showing the interactions between a program or user and another program, ie `tail -n4 /root/.bash_history`-
+ > Because of the differences in kernel vs software implementation of encryption, the authors of this project feel it is worth warning users that there is some risk for leakage of data destined for encryption. Often this data can be found in the form of system logs or shell history files showing the interactions between a program or user and another program, ie `tail -n4 /root/.bash_history`-
 
  - Bash's history file output example
 
@@ -24,3 +24,17 @@ clear
 
 #### Hint: for both log daemon auditing (and auditing of the script) see section 'CLO Manual and documentation' within this document for listing of every Bash built-in command & external program called listed without repeats.
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

@@ -99,3 +99,17 @@ When and if merge conflicts happen see [Contributing_code_merge_conflicts.md](Co
  file within the `Documentation/` directory of this project for detailed
  information on how to resolve using `vimdiff` command line text text editor.
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

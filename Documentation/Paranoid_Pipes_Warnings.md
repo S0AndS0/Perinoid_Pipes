@@ -2,9 +2,9 @@
 
 0. This project, it's scripts and those contained within this document and this document itself are all without warranty nor will the authors be held liable for damages sustained to users, their hardware or the hardware of others while using this project's scripts, guides, or examples.
 
- - - Scripts and code are released under `GNU AGPLv3` licence found under the `Licenses` directory.
+ - - Scripts and code are released under `GNU AGPLv3` license found under the `Licenses` directory.
 
- - - Documentation and guides are released under `GNU FDLv1.3` licence found under the `Licenses` directory.
+ - - Documentation and guides are released under `GNU FDLv1.3` license found under the `Licenses` directory.
 
  - - allowed use, user agreement, reproduction and modification are further explained in the `` section within this document.
 
@@ -51,3 +51,18 @@
  - - these email addresses maybe the same or different, but must be passed via command line or edited in manually. See section `` within `` for automation examples.
 
 7. Script examples contained within this document **are** under the same licensing and terms agreement as the main script of this project, **however**, note that the script examples within this document are not as well tested as the main script and they're meant as general guidance of problem solving with Bash.
+
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

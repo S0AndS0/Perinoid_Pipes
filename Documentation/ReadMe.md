@@ -9,9 +9,9 @@
     "License".
 ```
 
-[Link to title page](ReadMe_Paranoid_Pipes.md#title-page)
+[Link to title page](Contributing_Financially.md)
 
-[Link to related license](../Licenses/GNU_FDLv1.3_ReadMe_Paranoid_Pipes.md)
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)
 
 ## Files contained within this directory
 
@@ -63,47 +63,47 @@
 
 [Paranoid_Pipes_Asymmetric_Encryption.md](Paranoid_Pipes_Asymmetric_Encryption.md)
  Documentation for explaining what data cannot be protected by this project or
- the scripts that it writes. This file was originally appart of the
+ the scripts that it writes. This file was originally apart of the
  `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
 
 [Paranoid_Pipes_Bash_Logics.md](Paranoid_Pipes_Bash_Logics.md)
  Documentation for the internal logics of this project's main script operations.
- This file was originally appart of the `ReadMe_Paranoid_Pipes.md` file so there
+ This file was originally apart of the `ReadMe_Paranoid_Pipes.md` file so there
  maybe some editing still left to do.
 
 [Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
- Documentation for all reconised command line options (`CLO`) available to the
- `Paranoid_Pipes.sh` script. This file was originally appart of the
- `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-[Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
- Contains documentation on all know issues that new and current users of this
- project should be aware of. This file was originally appart of the
+ Documentation for all recognized command line options (`CLO`) available to the
+ `Paranoid_Pipes.sh` script. This file was originally apart of the
  `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
 
 [Paranoid_Pipes_Scenario_One.md](Paranoid_Pipes_Scenario_One.md)
  Documentation for setting up web server logging operations to write to one of
- this project's named pipes for encryption. This file was originally appart of
+ this project's named pipes for encryption. This file was originally apart of
  the `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to
  do.
 
 [Paranoid_Pipes_Scenario_Two.md](Paranoid_Pipes_Scenario_Two.md)
  Documentation for setting up named pipes for both encryption and decryption on
- the same host but on segrogated file systems. Much like `Scenario One` but with
+ the same host but on segregated file systems. Much like `Scenario One` but with
  the requirements that an IDS/IPS system is monitoring plain-text logs for the
  brief time that they're allowed to live on that host. This file was originally
- appart of the `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still
+ apart of the `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still
  left to do.
 
 [Paranoid_Pipes_Scenario_Three.md](Paranoid_Pipes_Scenario_Three.md)
  Documentation for how to setup multiple remote servers with customized script
- copies over `ssh`. This file was originally appart of the
+ copies over `ssh`. This file was originally apart of the
  `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
 
 [ReadMe_Paranoid_Pipes.md](ReadMe_Paranoid_Pipes.md)
  Covers in depth setup steps for main script within this project, last checked
  this document was well over 1000 lines long, so have a search within page tool
  handy to find information again.
+
+[Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
+ Contains documentation on all know issues that new and current users of this
+ project should be aware of. This file was originally apart of the
+ `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
 
 # External links to documentation used within this project
 
@@ -160,3 +160,4 @@
 
 [Guide to asymmetric encryption with OpenSSL](https://www.devco.net/archives/2006/02/13/public_-_private_key_encryption_using_openssl.php)
  Seems pretty snazzy but authors of this script have not tested it yet.
+Licenses/ReadMe.md

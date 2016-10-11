@@ -25,7 +25,7 @@ Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subvers
 Var_script_pid="$$"
 Var_script_pid=${Var_script_pid:-$BASHPID}
 ## Assign variable that functions may use to grab their own PID in-case
-##  auto-backrounding is selected as well as writing out custom named
+##  auto-backgrounding is selected as well as writing out custom named
 ##  pipe listener.
 Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user name variable of current user running this script in case
@@ -127,9 +127,9 @@ Var_save_encryption_yn="yes"
 ## To whom to encrypt individual lines and recognized files to?
 ##  CLO --output-gpg-recipient
 Var_gpg_recipient="user@host.domain"
-### Note the following two are temerarally assigned here
+### Note the following two are temporarily assigned here
 ###  and then assigned for run time within [Func_check_args]
-###  this is to prevent the above defaults from interfearing.
+###  this is to prevent the above defaults from interfering.
 ## Options to use with above recipient?
 ##  CLO <disabled>
 Var_gpg_recipient_options="--always-trust --armor --batch --encrypt --recipient ${Var_gpg_recipient}"
@@ -155,7 +155,7 @@ Var_parsing_bulk_out_dir="${Var_script_dir}/Bulk_${Var_script_name%.*}"
 ##  recognized files will end up in, the file name is preserved aside from appending
 ##  a '~.gpg' suffix and are otherwise unmodified... hopefully...
 ## What file suffix to append to bulk output files?
-##  Bellow variable modifies behaviour commented above, ie if you wish for a different
+##  Bellow variable modifies behavior commented above, ie if you wish for a different
 ##  file type to be appended to recognized files then place that bellow. Note for
 ##  decryption you may wish to completely unset bellow, ei "" or use '.log' as
 ##  one should unset previously suffixed '~.gpg' bulk files encrypted with another
@@ -423,7 +423,7 @@ Func_usage_options(){
 		${Var_echo_exec_path} "#  --output-save-yn		Var_save_encryption_yn=\"${Var_save_encryption_yn}\""
 		${Var_echo_exec_path} "#  --output-rotate-yn		Var_log_rotate_yn=\"${Var_log_rotate_yn}\""
 		${Var_echo_exec_path} "#  --output-rotate-max-bites	Var_log_max_size=\"${Var_log_max_size}\""
-		${Var_echo_exec_path} "#  --output-rotate-check-requency	Var_log_check_frequency=\"${Var_log_check_frequency}\""
+		${Var_echo_exec_path} "#  --output-rotate-check-frequency	Var_log_check_frequency=\"${Var_log_check_frequency}\""
 		${Var_echo_exec_path} "#  --output-rotate-actions	Var_log_rotate_actions=\"${Var_log_rotate_actions}\""
 		${Var_echo_exec_path} "#  --output-rotate-recipient	Var_log_rotate_recipient=\"${Var_log_rotate_recipient}\""
 		${Var_echo_exec_path} "#  --output-parse-command	Var_parsing_command=\"${Var_parsing_command}\""
@@ -573,7 +573,7 @@ Func_check_args(){
 			--output-rotate-max-bites)
 				Func_assign_arg 'Var_log_max_size' "${_arg#*=}" 'number'
 			;;
-			--output-rotate-check-requency)
+			--output-rotate-check-frequency)
 				Func_assign_arg 'Var_log_check_frequency' "${_arg#*=}" 'number'
 			;;
 			--output-rotate-actions)
@@ -893,7 +893,7 @@ if [ -e "${Var_script_dir}/${Var_script_name}" ]; then
 	 --output-save-yn="${Var_save_encryption_yn}"\\
 	 --output-rotate-yn="${Var_log_rotate_yn}"\\
 	 --output-rotate-max-bites="${Var_log_max_size}"\\
-	 --output-rotate-check-requency="${Var_log_check_frequency}"\\
+	 --output-rotate-check-frequency="${Var_log_check_frequency}"\\
 	 --output-rotate-actions="${Var_log_rotate_actions}"\\
 	 --output-rotate-recipient="${Var_log_rotate_recipient}"\\
 	 --output-bulk-dir="${Var_parsing_bulk_out_dir}"\\
@@ -912,7 +912,7 @@ Func_save_variables(){
 	if ! [ -f "${Var_source_var_file}" ]; then
 		cat > "${Var_source_var_file}" <<EOF
 ### This is a configuration file written by and licensed under
-##  the same licencing and usage agreement referenced in the
+##  the same licensing and usage agreement referenced in the
 ##  following script file path.
 ##  Saved by: ${Var_script_name}
 ##   at: $(date)
@@ -970,7 +970,7 @@ Var_save_encryption_yn="${Var_save_encryption_yn}"
 Var_log_rotate_yn="${Var_log_rotate_yn}"
 ## --output-rotate-max-bites="${Var_log_max_size}"
 Var_log_max_size="${Var_log_max_size}"
-## --output-rotate-check-requency="${Var_log_check_frequency}"
+## --output-rotate-check-frequency="${Var_log_check_frequency}"
 Var_log_check_frequency="${Var_log_check_frequency}"
 ## --output-rotate-actions="${Var_log_rotate_actions}"
 Var_log_rotate_actions="${Var_log_rotate_actions}"
@@ -1098,7 +1098,7 @@ Func_mkfifo(){
 	${Var_chown_exec_path} "${Var_pipe_ownership}" "${Var_pipe_file_name}" || exit 1
 }
 ## This is only called when a sufficient number of lines have been parsed, upon call
-##  this function will check the log file size and rotate with time stamp if nesasery.
+##  this function will check the log file size and rotate with time stamp if necessary.
 Func_rotate_log(){
 	_parsing_output_file="${1:-$Var_parsing_output_file}"
 	_log_rotate_yn="${2:-$Var_log_rotate_yn}"
@@ -1139,7 +1139,7 @@ Func_rotate_log(){
 								${Var_tar_exec_path} -cz "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tar.gz.gpg"
 							;;
 							encrypted-email)
-								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file to [${_log_rotate_recipient}] reciepant" '3' '4'
+								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file to [${_log_rotate_recipient}] recipient" '3' '4'
 								${Var_tar_exec_path} -cz "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tar.gz.gpg"
 								echo "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" -a "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" "${_log_rotate_recipient}"
 							;;
@@ -1168,7 +1168,7 @@ Func_rotate_log(){
 }
 Map_read_array_to_output(){
 	_file_to_map="$1"
-	## Make an array from input, note '-t' will "trim" last cerage return but otherwise not modify read lines.
+	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
 	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
@@ -1340,7 +1340,7 @@ Func_mkpipe_reader(){
 	esac
 }
 ## Note the following function is designed to take variables from above and translate them into
-##  a streamlined version of this script. Thus some variables are pre pended with back slashes ' \ '
+##  a streamlined version of this script. Thus some variables are prepended with back slashes ' \ '
 ##  while some are not, this is intentional and you may modify at your own risk. Safest course of
 ##  actions is to use this scripts main variables above to write out a customized version after
 ##  testing and then make further modifications to the customized version after it has been written.
@@ -1379,7 +1379,7 @@ Var_padding_placement="${Var_padding_placement:-bellow}"
 ${Var_echo_exec_path} "### ... Starting [\${Var_script_name}] at \$(date) ... ###"
 Clean_up_trap(){
 	_exit_code="\$1"
-	${Var_echo_exec_path} "## \${Var_script_name} detected [\${_exit_code}] exit code, cleaning up befor quiting..."
+	${Var_echo_exec_path} "## \${Var_script_name} detected [\${_exit_code}] exit code, cleaning up before quiting..."
 	if [ -p "\${Var_pipe_file_name}" ]; then
 		\${Var_trap_command}
 	fi
@@ -1443,7 +1443,7 @@ Rotate_output_file(){
 }
 Map_read_array_to_output(){
 	_file_or_pipe_to_map="\$1"
-	## Make an array from input, note '-t' will "trim" last cerage return.
+	## Make an array from input, note '-t' will "trim" last new-line.
 	mapfile -t _lines < "\${_file_or_pipe_to_map}"
 	let _count=0
 	until [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ] || [ "\${_count}" -gt "\${#_lines[@]}" ]; do

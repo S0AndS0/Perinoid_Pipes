@@ -80,7 +80,7 @@
   `--output-bulk-suffix`              | null                | `'.gpg'` or `'.log'` File suffix to append to bulk encrypted files. Note if decrypting then unset to have previously encrypted file suffixes restored.
   `--padding-enable-yn`               | `a-zA-Z`            | `yes` or `no` default `no`. Used to control if following two options are considered as options for modifying read data.
   `--padding-length`                  | `a-zA-Z0-9_@,.:~\/` | `32` or another integer (whole number) default `adaptive` which assumes the same length as line being read through loop.
-  `--padding-placement`               | `a-zA-Z0-9_@,.:~\/` | Order of presidence in loop; `append`, `prepend`, `above`, `bellow`
+  `--padding-placement`               | `a-zA-Z0-9_@,.:~\/` | Order applied within loop; `append`, `prepend`, `above`, `bellow`
   `--source-var-file`                 | `a-zA-Z0-9_@,.:~\/` | File to source for variables defined in previous table. Or file to save values to, see next two options bellow.
   `--save-options-yn`                 | null                | `yes` or `no` Enable or disable saving options file to `--source-var-file`'s path
   `--save-variables-yn`               | null                | `yes` or `no` Enable or disable saving variables file to `--source-var-file`'s path
@@ -104,3 +104,17 @@
  > Note using `--help` with additional options may access software external to this script but installed on the same host file system.
  Additionally if any scripted documentation exists then that will also be presented to the main script's user.
 
+# Licensing notice for this file
+
+ > ```
+    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+```
+
+[Link to title page](Contributing_Financially.md)
+
+[Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

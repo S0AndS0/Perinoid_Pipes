@@ -9,9 +9,9 @@
     "License".
 ```
 
-[Link to title page](https://github.com/S0AndS0/Perinoid_Pipes/blob/master/Documentation/ReadMe_Paranoid_Pipes.md#title-page)
+[Link to title page](../Documentation/Contributing_Financially.md)
 
-[Link to related license](https://github.com/S0AndS0/Perinoid_Pipes/blob/master/Licenses/GNU_FDLv1.3_ReadMe_Paranoid_Pipes.md)
+[Link to related license](GNU_FDLv1.3_Documentation.md)
 
 # Licensing notice for scripts/code examples
 
@@ -26,18 +26,19 @@
      Contact authors of [Paranoid_Pipes.sh] at: strangerthanbland@gmail.com
 ```
 
-[Link to related license](https://github.com/S0AndS0/Perinoid_Pipes/blob/master/Licenses/GNU_AGPLv3_Paranoid_Pipes.md)
+[Link to related license](GNU_AGPLv3_Code.md)
 
-## Licensing explined
+## Licensing explained
 
 The authors of this project believe that the above two licenses are the most
- compatible with preexsisting documentation and code examples most similar to
+ compatible with preexisting documentation and code examples most similar to
  this project and logic used by it's operations. While it may seem like a lot
  of *red tape* for code contributers to have to go through the above licenses
  enable all authors and users of this project to make use of and modify as
- *freely* as posible. Thus these above two licenses will apply for all current
+ *freely* as possible. Thus these above two licenses will apply for all current
  and new documentation & code within this project to preserve these freedoms
  for all current and new users of this project.
 
-See the `Documentation/` directory within this project for more information on
- contributing to this project and using it within verious usage scenerios.
+See the [`Documentation/`](../Documentation) directory within this project for
+ more information on contributing to this project and using it within various
+ usage scenarios already predicted by authors.
