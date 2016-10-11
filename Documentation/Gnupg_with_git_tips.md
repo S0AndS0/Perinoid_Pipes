@@ -1,11 +1,13 @@
 # Verifying signed commits and tags
 
 ## Import author's public GPG key
+
 ```bash
 gpg --recv-keys 6E4C46DA15B22310
 ```
 
 ## Assign *trust* levels to quite `git`
+
 ```bash
 gpg --edit-key 6E4C46DA15B22310
 ## Within interactive menu
@@ -17,6 +19,7 @@ gpg --edit-key 6E4C46DA15B22310
 ```
 
 ### Verify signed commits within `log` (option 1)
+
 ```bash
 git log --show-signature --oneline
 ```
@@ -25,6 +28,7 @@ git log --show-signature --oneline
  is likely more superior to `(option 2)` bellow.
 
 ## Parse commit IDs into variable (option 2)
+
 ```bash
 Var_commit_ids=$(git log --oneline | awk '{print $1}')
 ```
@@ -32,16 +36,19 @@ Var_commit_ids=$(git log --oneline | awk '{print $1}')
 ## Verify signed commits
 
 ### Example syntax
+
 ```bash
 git --verify-commit <commit_id>
 ```
 
 ### Looping though commit IDs
+
 ```bash
 for _id in ${Var_commit_ids}; do git --verify-commit ${_id}; done
 ```
 
 ### Looping with some logic
+
 ```bash
 for _id in ${Var_commit_ids}; do
 	if test "git verify-commit ${_id}"; then
@@ -57,6 +64,7 @@ done
 ## Verifying much the same for signed tags
 
 ### Looping through tags
+
 ```bash
 Var_tag_ids=$(git tag --list | awk 'print $1')
 for _name in ${Var_tag_ids}; do

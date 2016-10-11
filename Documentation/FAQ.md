@@ -1,6 +1,6 @@
-# What is this project? (F.A.Q.)
+# Frequently (and perhaps infrequently) asked question (F.A.Q.)
 
- - Q: What is this project?
+## Q: What is this project?
 
  > A: This project aims to expose asymmetric encryption operations (currently
  via GnuPG's PGP encryption applications) to logging daemons and/or user
@@ -8,7 +8,7 @@
  and privacy concerned users of mobile devices, that wish for one more line of
  defiance against privacy violating 0-day attacks.
 
- - Q: What does this asymmetric encryption stuff do for me?
+## Q: What does this asymmetric encryption stuff do for me?
 
  > A: When properly implemented this project aims to reduce risks associated
  with remote server exploits leading to secondary attacks being easily carried
@@ -17,7 +17,7 @@
  access to encrypted logs a simple process. However, depending upon your
  inventiveness this project is capable of much more.
 
- - Q: Do I *need* this?
+## Q: Do I *need* this?
 
  > A: If you are a server administrator or perhaps a reporter in lands
  un-friendly to "*freedom* of press" then consider this project as yet another
