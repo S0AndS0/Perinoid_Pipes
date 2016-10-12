@@ -15,25 +15,23 @@
 
 # Quick start
 
- > See full guides under the [`Documentation/`](Documentation/) directory for
- complete explanations, long winded they maybe, of this project's target usage
- information and command line options. This document only covers downloading
- and initial testing of project features. See the Frequently asked questions
- document [FAQ.md](Documentation/FAQ.md) for answers to common questions about
- this project.
-
+ > See guides under the [`Documentation/`](Documentation/) directory for
+ complete explanations of this project's target usage information and command
+ line options. This document only covers downloading and initial testing of
+ project features. See the Frequently asked questions document
+ [FAQ.md](Documentation/FAQ.md) for answers to common questions.
 ## Step 1; 
 
 Import public GnuPG key into server that will be running this script or one of
  it's written custom copies.
 
- - From file transfer to server
+### From file transfer to server
 
 ```bash
 gpg --import /path/to/pubkey
 ```
 
- - From key server instead
+### From key server instead
 
 ```bash
 gpg --import user@email.domain --recv-keys https://key-server.domain
@@ -41,51 +39,51 @@ gpg --import user@email.domain --recv-keys https://key-server.domain
 
  > Note for the most secure results with GnuPG encryption via this script the
  related private key should **not** ever live on the same server that is
- running this script. For testing and special usage cases you may wish (be
- tempted) to generate a private/public key pare on the target server using
+ running this script. For testing and special usage cases you may wish to
+ (be tempted to) generate a private/public key pare on the target server using
  this script, however, this would be generally a very discouraged security
  practice to implement on publicly accessible servers; see Section
- `Story time` -> `Scenario two` within the main guide for more information.
- If only testing then don't forget to delete both keys again and to **not**
- upload test keys to pubic key servers as that would be a rude use of their
- services.
+ `Story time` -> `Scenario two` within [`Documentation/`](Documentation/)
+ directory for more information. If only testing then don't forget to delete
+ both keys again and to **not** upload test keys to pubic key servers as that
+ would be a rude use of their services.
 
 ## Step(s) 2; 
 
 Download main script from GitHub
 
- - Change to desired download directory.
+### Change to desired download directory.
 
 ```bash
 cd ~/Downloads
 ```
 
- - Clone project from GitHub and change directories to the new repo's folder
+### Clone project from GitHub and change directories to the new repo's folder
 
 ```bash
 git clone https://github.com/S0AndS0/Perinoid_Pipes
 cd ~/Downloads/Perinoid_Pipes
 ```
 
- - Change script ownership to be owned by currently logged in user.
+### Change script ownership to be owned by currently logged in user.
 
 ```bash
 chown ${USER}:${USER} Paranoid_Pipes.sh
 ```
 
- - Change script permissions such that owning **`u`**ser may e**`x`**ecute.
+### Change script permissions such that owning **`u`**ser may e**`x`**ecute.
 
 ```bash
 chmod 700 Paranoid_Pipes.sh
 ```
 
- - Change script's name and location (optional)
+### Change script's name and location (optional)
 
 ```bash
 cp Paranoid_Pipes.sh /usr/local/sbin/pipe_writer.sh
 ```
 
- - Change current working directory to default for currently logged in user
+### Change current working directory to default for currently logged in user
  and attempt to call by name without file path.
 
 ```bash
@@ -101,7 +99,7 @@ pipe_writer.sh -h
 
 ## Step(s) 3
 
- - List command line options, current values and exit with '0' status. Note
+List command line options, current values and exit with '0' status. Note
  replace `<Script_Name>` with the script's name if re-named
 
 ```bash
@@ -110,7 +108,7 @@ pipe_writer.sh -h
 echo -e "# Exit status of: !!\n# Was $?"
 ```
 
- - Test named pipe reading script by outputting to current terminal using the
+ > Test named pipe reading script by outputting to current terminal using the
  following options. Note if script was moved as shown above then use
  `script_name` instead of `./script_name`, ie without `./` when modifying
  bellow command because it assumes you're still in
@@ -138,25 +136,25 @@ echo -e "# Exit status of: !!\n# Was $?"
 
 ### Example commands that maybe used to test your new named pipe
 
- - Example of writing single line string to named pipe
+#### Example of writing single line string to named pipe
 
 ```bash
 echo 'Testing 123 abc' >  /tmp/test.pipe
 ```
 
- - Example of writing multi-line string to named pipe
+#### Example of writing multi-line string to named pipe
 
 ```bash
 echo -e 'Testing 123 abc\nTesting cba 321' >  /tmp/test.pipe
 ```
 
- - Example of cat'ing multi-line file to named pipe
+#### Example of cat'ing multi-line file to named pipe
 
 ```bash
 cat /etc/rc.local > /tmp/test.pipe
 ```
 
- - Example of cat'ing multi-line string to named pipe
+#### Example of cat'ing multi-line string to named pipe
 
 ```bash
 cat > /tmp/test.pipe <<EOF
@@ -172,7 +170,7 @@ EOF
 
 Next example is different though...
 
- - Example of providing full file path to named pipe instead
+#### Example of providing full file path to named pipe instead
 
 ```bash
 echo '/etc/rc.local' > /tmp/test.pipe
@@ -185,7 +183,7 @@ echo '/etc/rc.local' > /tmp/test.pipe
  > Note if you have changed the '--output-bulk-dir=/tmp/test_bulk' command
  line option above then this directory file path will be that which was defined.
 
- - Example of providing file directory path (via built in Bash variable) to
+#### Example of providing file directory path (via built in Bash variable) to
  named pipe instead
 
 ```bash
@@ -199,7 +197,7 @@ echo "${HOME}/Pictures" > /tmp/test.pipe
  `cat mylist_of_files.txt > /tmp/test.pipe` and expect anything but funky
  things to happen.
 
- - Example command to list encrypted files under the bulk output directory.
+#### Example command to list encrypted files under the bulk output directory.
 
 ```bash
 ls -hal /tmp/test_bulk/*.gpg
@@ -207,7 +205,7 @@ ls -hal /tmp/test_bulk/*.gpg
 
 ## Step 4
 
- - Quit by writing default quit string to named pipe from another terminal as
+Quit by writing default quit string to named pipe from another terminal as
  shown bellow
 
 ```bash

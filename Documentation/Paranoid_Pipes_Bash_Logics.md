@@ -1,6 +1,6 @@
-### Documentation for named pipe encryption scripted logics
+# Documentation for named pipe encryption scripted logics
 
-#### External application usage
+## External application usage
 
  External program | License type | Usage within script
 ------------------|:------------:|--------------------
@@ -17,7 +17,7 @@
  `date`           |  | Print date to script log files or in user messages.
  `bash`           | [GNU GPL v3 or greater](https://www.gnu.org/software/bash/) | Interprets *human readable* source code (this project's scripts) into compatible machine instructions, often used as the command line interpreter for user logins and scripting, rarely used or seen as a programing language.
 
-#### Documentation specific to each command above can be found with `<command> --help` or `man <command>`
+## Documentation specific to each command above can be found with `<command> --help` or `man <command>`
 
  Bash commands | Usage within script
 ---------------|--------------------
@@ -30,7 +30,7 @@
  `disown`      | Disown the PID of last function (or script) called allows for backgrounding the processes used to listen to named pipes and output to log files and bulk directory.
  `break`       | Breaks out of looped Bash logics such that the parent process can either exit or restart listening again.
 
-#### Documentation specific to each command above can be found with `help <command>` and/or `man <command>`
+## Documentation specific to each command above can be found with `help <command>` and/or `man <command>`
 
  Bash switch, loops, & operators  | Help command   | Usage within script
 ----------------------------------|----------------|--------------------
@@ -60,7 +60,7 @@
  `var=${PIPESTATUS[@]}`  | to capture exit statuses of multi piped or redirected commands
  `$!`                    | Saves PID of last command to a variable for use with `unset` command when backgrounding processes or script.
 
-#### Bash function assignment and calling syntax:
+## Bash function assignment and calling syntax:
 
  - assign a function named `func`
 
@@ -71,21 +71,21 @@ func(){
 }
 ```
 
- - call above function named `func`
+### call above function named `func`
 
 ```bash
 func "yo"
 ```
 
- - manipulating via assigning function `func` with argument `yo` to variable `func_var`
+### manipulating via assigning function `func` with argument `yo` to variable `func_var`
 
 ```bash
 func_var=$(func "yo")
 ```
 
-#### Bash write file method: 
+## Bash write file method: 
 
- - Write to `/dir/file.name` text until `EOF` is found on it's own line.
+### Write to `/dir/file.name` text until `EOF` is found on it's own line.
 
 ```bash
 cat > "/dir/file.name" <<EOF

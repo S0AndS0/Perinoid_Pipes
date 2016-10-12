@@ -19,7 +19,7 @@
  Will eventually contain information on how users of this project can support
  code & documentation maintainers of this project as well as how these
  maintainers have contributed to this project. When available this will take
- the place of [title page](ReadMe_Paranoid_Pipes.md#title-page) licensing info.
+ the place of [title page](Contributing_Financially.md) info.
 
 [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
  Covers steps for setting up your local environment for contributing changes to
@@ -94,11 +94,6 @@
  Documentation for how to setup multiple remote servers with customized script
  copies over `ssh`. This file was originally apart of the
  `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-[ReadMe_Paranoid_Pipes.md](ReadMe_Paranoid_Pipes.md)
- Covers in depth setup steps for main script within this project, last checked
- this document was well over 1000 lines long, so have a search within page tool
- handy to find information again.
 
 [Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
  Contains documentation on all know issues that new and current users of this

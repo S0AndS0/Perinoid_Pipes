@@ -43,7 +43,9 @@ nano Paranoid_Pipes.sh
 ## Sign committed changes, including branch command line option is optional
 
 ```bash
-git commit --branch -S -am "Added feature or fixed bug" -m "Summery of changes"
+git commit --branch -S -am "Added feature or fixed bug"\
+ -m "Summery of changes"\
+ -m "Any further details"
 ```
 
  > Hint: `git status` will show changed files and added files and preforming a
@@ -62,10 +64,7 @@ git fetch --all
 git merge --verify-signatures -S master
 ```
 
- > Note if above caused conflicts then use `Resolving Merge Conflicts` section
- within this document for further instructions.
-
-## After testing and committing share fixes or features via pull request
+## After testing and committing, share fixes or features via pull request
 
 ```bash
 Var_branch_name=$(git branch --list | awk '/\*/{print $2}')
@@ -89,11 +88,12 @@ git merge --verify-signatures -S ${Var_local_branch_name}\
  -m "<any further details>"
 ```
 
- > Note if above generates merge conflicts then attempt `git mergetool` if you
- have already setup a git merge tool default.
+ > Edit text between `<` & `>` to reflect changes made. Note if above generates
+ merge conflicts then attempt `git mergetool` if you have already setup a git
+ merge tool default.
 
- > Hint: use `git diff ${Var_local_branch_name}..master` to refresh your
- memory as to what changes where made between branches.
+ > Hint: use `git diff ${Var_local_branch_name}..master` to refresh your memory
+ as to what changes where made between branches.
 
 When and if merge conflicts happen see [Contributing_code_merge_conflicts.md](Contributing_code_merge_conflicts.md)
  file within the `Documentation/` directory of this project for detailed

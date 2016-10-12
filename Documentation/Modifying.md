@@ -1,6 +1,10 @@
  > What follows are instructions on how to make modifications to the source
- code without making git refuse to download updates and how to incorporate
- update into your modified branch.
+ code without making git refuse to download updates as well as how to
+ incorporate updates from the `master` branch into your modified local branch.
+ Use [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
+ documentation instead if you wish to have modifications to your local branch
+ be acceptable to merge into the main project. If only cornered with local
+ modifications the continue with this documentation.
 
 ## Change directories to the downloaded project source code root directory
 
@@ -38,11 +42,8 @@ git fetch
 git merge master
 ```
 
- > See [Contributing_merge_conflicts.md](Documentation/Contributing_merge_conflicts.md)
- for how to resolve merge conflicts if errors arise from above and for how to
- contribute your modifications back to the main project for consideration to
- include in main project see [Contributing.md](Documentation/Contributing.md)
- file for `git` setup required.
+ > See [Contributing_code_merge_conflicts.md](Documentation/Contributing_code_merge_conflicts.md)
+ for how to resolve merge conflicts if errors arise from above.
 
 # Licensing notice for this file
 

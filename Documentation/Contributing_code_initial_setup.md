@@ -1,7 +1,7 @@
 # Initial `git` setup
 
- > skip any that have been completed for other code contributions and set as a
- global setting within your user's `~/.gitconfig` file.
+ > skip any steps that have been completed for other code contributions and
+ set as a global setting within your user's `~/.gitconfig` file.
 
 ## Setup GPG public key with GitHub
 
@@ -12,7 +12,7 @@ Var_git_signing_fingerprint=$(gpg --list-keys ${Var_gpg_email} | awk '/fingerpri
 git config --global user.signingkey ${Var_git_signing_fingerprint}
 ```
 
- > The associated public key should be uploaded to GitHub under your user
+ > The associated public key should be uploaded to GitHub under your own user
  profile which is very well documented by [GitHub's guide - adding a new gpg key](https://help.github.com/articles/adding-a-new-gpg-key-to-your-github-account/)
 
 ## Export GPG public key command example
@@ -55,7 +55,7 @@ cat ${Var_git_user}.pub
 
  > The `-C` (ssh key comment) should match the same email account as used by
  your GitHub account name defined by `-f` (file name) to keep things organized
- and avoid errors. Additional note, the above will request a passphrase be made
+ and avoid errors. Additional note, the above will request a passphrase be made,
  if you set one up, this passphrase will be the one required to authenticate
  via ssh to git and not the account password setup via their web site.
 
@@ -86,22 +86,18 @@ git clone git@github.com:S0AndS0/Perinoid_Pipes.git
 cd Perinoid_Pipes
 ```
 
- > Note from here on the following commands will be from the prospective of
+## Note from here on the following commands will be from the prospective of
  the above code repository directory.
 
 ## Adding GitHub username and email to git config
 
 ```bash
-Var_git_user='S0AndS0'
-Var_git_email='email@host.domain'
-## Above variable should be changed to reflect
-##  your own GitHub user and related email.
 git config --add user.name ${Var_git_user}
 git config --add user.email ${Var_git_email}
 ```
 
  > Note the above maybe set global for the currently logged in local user by
- adding `--global`, in which case configurations will be save in
+ adding `--global`, in which case configurations will be save in the
  `~/.gitconfig` file instead of `.git/config` within the project's path.
 
 ## Adding issues, pull & merge requests to local checkout of git repo
@@ -146,12 +142,14 @@ EOF
  related GPG key then authors of this project will treat this as an acceptance
  to including your code within the main/master code branch under the same
  license as it operates under currently. In short this acts as a "waiver" of
- your legal claim/obligation to contributed code at the same levels as original
- authors such that authors and future users may make use of your code
+ your legal claim/obligation to contributed work at the same levels as original
+ authors such that this project's authors and future users may make use of your
  contributions without fear of violating licensing agreements already outlined
- in this project's `Licenses/` directory. In future pull requests and mergers
- you may excluded repeating the waver and instead just focus on being concise
- with updating `Summery:` & `Support code contribution link(s):` fields.
+ in this project's `Licenses/` directory.
+
+ > In future pull requests and mergers you may excluded repeating the waver and
+ instead just focus on being concise with updating `Summery:` & `Support code
+ contribution link(s):` fields.
 
 ## Example of author's contact info writing steps.
 

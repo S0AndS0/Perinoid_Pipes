@@ -1,6 +1,6 @@
-### CLO Manual and documentation
+# CLO Manual and documentation
 
-#### Recognized command line options, their variables and default values
+## Recognized command line options, their variables and default values
 
  CLI option name                      | Associated variable name           | Default Value
 -------------------------------------:|:----------------------------------:|:----------------------------------------------------------------------------------------
@@ -28,7 +28,7 @@
   `--output-save-yn`                  | `Var_save_ecryption_yn`            | `yes`
   `--output-rotate-yn`                | `Var_log_rotate_yn`                | `yes`
   `--output-rotate-max-bites`         | `Var_log_max_size`                 | `4096`
-  `--output-rotate-check-requency`    | `Var_log_check_frequency`          | `100`
+  `--output-rotate-check-frequency`    | `Var_log_check_frequency`          | `100`
   `--output-rotate-actions`           | `Var_log_rotate_actions`           | `compress-encrypt,remove-old`
   `--output-rotate-recipient`         | `Var_log_rotate_recipient`         | `user@host.domain`
   `--output-parse-command`            | `Var_parsing_command`              | `$(which gpg) --always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt`
@@ -44,7 +44,7 @@
   `--help` or `-h`                    | `Var_help_val`                     | null
   `*`                                 | `Var_extra_input`                  | null
 
-#### Recognized command line options and their optional values
+## Recognized command line options and their optional values
 
  CLI option name                      | Regex restrictions  | Acceptable values
 -------------------------------------:|:--------------------|------------------
@@ -72,7 +72,7 @@
   `--output-save-yn`                  | `a-zA-Z`            | `yes` or `no` Enable or disable writing parsed output options and actions.
   `--output-rotate-yn`                | `a-zA-Z`            | `yes` or `no` Enable or disable log rotation options and actions.
   `--output-rotate-max-bites`         | `0-9`               | `'4096'` or `'8388608'` Output file max size (in bites) before log rotation actions are used.
-  `--output-rotate-check-requency`    | `0-9`               | `'10'` or `'100000'` Number of output file writes till above file size max vs real file size be checked.
+  `--output-rotate-check-frequency`    | `0-9`               | `'10'` or `'100000'` Number of output file writes till above file size max vs real file size be checked.
   `--output-rotate-actions`           | `a-zA-Z0-9_@,.:~\/` | `'compress-encrypt,remove-old'` or `'encrypted-email,remove-old'` List of actions, separated by commas `,` to take when output file's size and write count reaches above values.
   `--output-rotate-recipient`         | `a-zA-Z0-9_@,.:~\/` | `'admin_name@admin_domain.suffix'` or `'Admin-GPG-Key-ID'` Email address (if using email log rotation options) or GPG public key ID to re-encrypt and or send compressed output files to.
   `--output-parse-command`            | null / disabled    | Disabled to avoid errors during user input parsing when spaces are present in values.
