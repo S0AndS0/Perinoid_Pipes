@@ -230,7 +230,7 @@ Var_parsing_comment_pattern='\#*'
 ##  See very bottom of this script for examples on how this is used
 ##  and why single quotes are not included.
 ##  CLO --output-pre-parse-allowed-chars
-Var_parsing_allowed_chars='[^a-zA-Z0-9 !#%&:;$\/\^\-\"\(\)\{\}\\]'
+Var_parsing_allowed_chars='[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]'
 
 ## This magic setting enables shoving the reading loop into
 ##  a disowned subshell. If saving to template is also enabled
@@ -323,10 +323,9 @@ Func_messages(){
 	## Use echo to notify script user of various levels of information if user set debug level
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
 	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-#	if [ "${Var_debugging}" = "${_debug_level:-0}" ] || [ "${_debug_level:-0}" -lt "${Var_debugging}" ]; then
-		## Level reserved for higher values such as errors
 		${Var_echo_exec_path} "#DBL-${_debug_level}# ${_message}"
 	fi
+	## Check if log level is high enough, then check if logging is enabled.
 	if [ "${Var_logging}" = "${_log_level}" ] || [ "${_log_level}" -lt "${Var_logging}" ]; then
 		## Make log directory if not present
 		if ! [ -d "${Var_log_file_name##*/}" ] && ! [ -z "${Var_log_file_name##*/}" ]; then
@@ -339,7 +338,6 @@ Func_messages(){
 			${Var_chown_exec_path} "${Var_log_file_ownership}" "${Var_log_file_name}"
 
 		fi
-		## Level reserved for higher values such as errors
 		${Var_echo_exec_path} "#DBL-${_debug_level}# ${_message}" >> "${Var_log_file_name}"
 	fi
 }
@@ -350,7 +348,7 @@ Func_trap_cleanup(){
 	_exit_status="$1"
 	Func_messages "# Exit code [${_exit_status}] status detected..." '1' '2'
 	if [ -p "${Var_pipe_file_name}" ]; then
-		Func_messages "# ...Cleaning up [${Var_pipe_file_name}] pipe now with [${Var_trap_command}] command" '1' '2'
+		Func_messages "# ...Cleaning up [${Var_pipe_file_name}] pipe now with [eval ${Var_trap_command}] command" '1' '2'
 		${Var_trap_command}
 	else
 		Func_messages "# ...No pipe to remove at [${Var_pipe_file_name}]" '1' '2'
@@ -370,7 +368,7 @@ Func_trap_cleanup(){
 
 ## Following function is called within Func_check_args function if command line options where passed to script.
 ## Example call for bellow function
-#Func_assign_arg "" '' "" ''
+#Func_assign_arg '' "" ''
 Func_assign_arg(){
 	_var_name="${1?No variable name passed to Func_assign_arg function}"
 	_var_value="${2?No value passed to Func_assign_arg function}"
@@ -477,9 +475,8 @@ Func_usage_options(){
 	fi
 }
 ## If unrecognized input was passed to script then push it through named pipe
-##  only if the pipe file exists too. Else message user that no extra input
-##  was read that was unrecognized. This function is called within this scripts
-##  main function.
+##  only if the pipe file exists too. Else message user that extra input read
+##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
 	if [ "${#Var_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra (unrecognized as an argument) input" '1' '2'
@@ -490,7 +487,7 @@ Func_write_unrecognized_input_to_pipe(){
 	fi
 }
 ## Check if script was passed any recognized arguments
-##  that may overwrite above variable values
+##  that may overwrite default variable values
 Func_check_args(){
 	_input_array=( "${@}" )
 	let _arg_count=0
@@ -532,8 +529,7 @@ Func_check_args(){
 			;;
 			--named-pipe-name)
 				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
-#				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
-#	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
+				Func_assign_arg 'Var_trap_command' "${Var_rm_exec_path} -f ${Var_pipe_file_name}" 'null'
 			;;
 			--named-pipe-permissions)
 				Func_assign_arg 'Var_pipe_permissions' "${_arg#*=}" 'number'
@@ -647,10 +643,7 @@ Func_check_args(){
 		let _arg_count++
 	done
 	unset _arg_count
-#	declare -g "Var_trap_command=${Var_rm_exec_path} -f ${Var_pipe_file_name}"
-	
 }
-
 ## Check if gpg parser and/or log rotate recipients are set to non defaults.
 ##  Else prompt user for these values
 Func_check_recipients(){
@@ -682,6 +675,7 @@ Func_check_recipients(){
 		;;
 	esac
 }
+
 ## Check disown settings prior to setting further functions. Sets trap on exit now
 ##  or hold trapping set actions till we are inside while loop.
 case "${Var_disown_parser_yn}" in
@@ -693,10 +687,6 @@ case "${Var_disown_parser_yn}" in
 		trap 'Func_trap_cleanup $?' EXIT
 	;;
 esac
-## Note "shellcheck" will return an 'SC2064' message warning to use single
-##  quotes around above '$?' otherwise it will expand upon call. In this
-##  script the "shellcheck" warning maybe safely ignored because we do
-##  want the exit status to expand to that of the calling processes exit.
 
 ## This function is used near the beginning of scripted run time if the debug level is
 ##  high enough to warrant pausing for user interaction. Debug level [3] or greater enables
@@ -1687,8 +1677,8 @@ Func_main(){
 		;;
 	esac
 	Func_messages "# Reader [${Var_script_name}] exiting to interactive terminal with [${_exit_status}] status now" '1' '2'
-	Func_messages "## Turning bash history back on now..." '0' '1'
-	set -o history
+#	Func_messages "## Turning bash history back on now..." '0' '1'
+#	set -o history
 }
 ## Call "Func_main" if no errors or quit signals have been received.
 Func_main "${@:---help}"
