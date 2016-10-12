@@ -13,13 +13,13 @@
  into. Note we're only saving these variables to make the final command easier
  to read.
 
-```bash
+```
 Script_options="--copy-save-yn='yes' --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh' --copy-save-ownership='notwwwuser:notwwwgroup' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' --log-level='0' --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe' --named-pipe-ownership='notwwwuser:wwwgroup' --named-pipe-permissions='420' --output-parse-name='/jailed_logs/website_host/www_access.gpg' --output-parse-recipient='user@host.domain' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-frequency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='user@host.domain' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
 ```
 
 ## Run the main script from host using redirection and assigned variables.
 
-```bash
+```
 ssh user@remote "$(</path/to/main/script.sh ${Script_options})"
 ```
 
@@ -27,7 +27,7 @@ ssh user@remote "$(</path/to/main/script.sh ${Script_options})"
 
  > now that it is local to and configured for the target's file system.
 
-```bash
+```
 ## Send quit string to named pipe
 ssh user@remote "echo 'sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe"
 ## Start script over SSH
@@ -41,7 +41,7 @@ ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
  authors would do to setup multiple remote hosts in quick succession that each
  only need one template written.
 
-```bash
+```
 #!/usr/bin/env bash
 ### Define some variables for latter use.
 ## Comma separated list of SSH remote hosts to setup
@@ -85,7 +85,7 @@ echo "## Finished above at $(date)" | tee -a "${Log_file_path}"
  by `,` of servers that should receive a script copy for encrypting logs and
  files via named pipe
 
-```bash
+```
 Remote_hosts="webadmin@webhost:22,sqladmin@sqlhost:9823"
 ```
 
@@ -93,7 +93,7 @@ Remote_hosts="webadmin@webhost:22,sqladmin@sqlhost:9823"
 
  > The following default should work for most systems without modification.
 
-```bash
+```
 Remote_host_shell="/bin/bash"
 ```
 
@@ -104,7 +104,7 @@ Remote_host_shell="/bin/bash"
  system for all servers and each target should receive their own randomized
  quit string written to their script copy.
 
-```bash
+```
 Quit_string_length='32'
 ```
 
@@ -113,7 +113,7 @@ Quit_string_length='32'
  > Note this maybe an encrypting pipe path on your local file system too if you
  wish to keep quit strings and servers setup private.
 
-```bash
+```
 Log_file_path='/tmp/ssh_remote_encrypted_setup.log'
 ```
 
@@ -123,7 +123,7 @@ Log_file_path='/tmp/ssh_remote_encrypted_setup.log'
  `ssh ${_host} -s ${Remote_host_shell} "$(<${Main_script_path} ${Script_options})"`
  command will miss-fire.
 
-```bash
+```
 Main_script_path='/path/to/writer_script.sh'
 ```
 
@@ -131,7 +131,7 @@ Main_script_path='/path/to/writer_script.sh'
 
  > target directory path to save script copy to.
 
-```bash
+```
 Script_save_dir='/usr/local/sbin'
 ```
 
@@ -139,7 +139,7 @@ Script_save_dir='/usr/local/sbin'
 
  > target directory to save listening script copy's output to 
 
-```bash
+```
 Script_save_output_dir='/var/log'
 ```
 
@@ -148,7 +148,7 @@ Script_save_output_dir='/var/log'
  > and what each target host will use for line-by-line and recognized file type
  encryption.
 
-```bash
+```
 Script_save_parse_recipient='user@host.suffix'
 ```
 
@@ -157,7 +157,7 @@ Script_save_parse_recipient='user@host.suffix'
  > and what each target host will use for log rotation encryption and emailing
  compressed logs actions.
 
-```bash
+```
 Script_save_rotate_recipient='user@host.suffix'
 ```
 
@@ -167,7 +167,7 @@ Script_save_rotate_recipient='user@host.suffix'
 
 ## Variable defined options that change per-host assigned to each script copy
 
-```bash
+```
 --copy-save-name='${Script_save_dir}/${_host_name}_log_encrypter.sh'
 --named-pipe-name='${Script_save_output_dir}/${_host_name}_access.log.pipe'
 --named-pipe-ownership='${_host_name}:${_host_name}'
@@ -179,14 +179,14 @@ Script_save_rotate_recipient='user@host.suffix'
 
  > assigned to each script copy
 
-```bash
+```
 --output-parse-recipient='${Script_save_parse_recipient}'
 --output-rotate-recipient='${Script_save_rotate_recipient}'
 ```
 
 ## List of options that do not change per-host assigned to each script copy
 
-```bash
+```
 --copy-save-yn='yes'
 --copy-save-permissions='100'
 --debug-level='6'
@@ -203,13 +203,13 @@ Script_save_rotate_recipient='user@host.suffix'
 
  > After modifying and running the above script you should have a log file on the local host of actions preformed as defined by `Log_file_path` variable that saves each script copy's quit string as defined by the following option used in above `for` loop
 
-```bash
+```
 --listener-quit-string='${_random_quit_string}'
 ```
 
  - Sample output log file
 
-```bash
+```
 # <Host> | <Quit string>
 #--------|--------------
 # webadmin@webhost | somerandomstring

@@ -2,14 +2,14 @@
 
 ## Install vimdiff or other diff tools
 
-```bash
+```
 ## Debian based distributions
 sudo apt-get install vim
 ```
 
 ## Setting up `vimdiff` as git mergetool
 
-```bash
+```
 git config --add merge.tool vimdiff
 git config --add merge.conflictstyle diff3
 git config --add mergetool.promp false
@@ -17,7 +17,7 @@ git config --add mergetool.promp false
 
 ## Using `vimdiff` as git mergetool
 
-```bash
+```
 git mergetool
 ```
 
@@ -51,9 +51,9 @@ Ctrl^w + w 	# Move to next split column (clockwise)
 ## Merging short-cuts for `vim`/`vimdiff`
 
 ```
-:diffg BA 	# Merge BASE into MERGED
-:diffg LO 	# Merge LOCAL into MERGED
-:diffg RE 	# Merge REMOTE into MERGED
+:diffg BA 		# Merge BASE into MERGED
+:diffg LO 		# Merge LOCAL into MERGED
+:diffg RE 		# Merge REMOTE into MERGED
 :diffupdate 	# re-scan the files for differences
 ```
 
@@ -68,14 +68,14 @@ Ctrl^w + w 	# Move to next split column (clockwise)
 ## Diff viewing and copying short-cuts for `vim`/`vimdiff`
 
 ```
-do 			# diff obtain
-dp 			# diff put
-zo 			# open folded text
-zc 			# close folded text
+do 					# diff obtain
+dp 					# diff put
+zo 					# open folded text
+zc 					# close folded text
 :set diffopt+=iwhite 	# Turn off whitespace comparison
-:set wrap 		# Turn on line wrapping
-:syn off 		# Turn off syntax highlighting
-zR 			# Unfold ALL lines to see complete files while comparing.
+:set wrap 			# Turn on line wrapping
+:syn off 			# Turn off syntax highlighting
+zR 					# Unfold ALL lines to see complete files while comparing.
 ```
 
 ## Searching within file, hint `/` is our friend in `vim`
@@ -91,7 +91,7 @@ zR 			# Unfold ALL lines to see complete files while comparing.
 ## Interactive editing
 
 ```
-i 			# Insert mode
+i 				# Insert mode
 ```
 
 ## Exiting interactive editing mode

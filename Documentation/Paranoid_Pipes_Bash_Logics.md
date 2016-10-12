@@ -64,7 +64,7 @@
 
  - assign a function named `func`
 
-```bash
+```
 func(){
   var="${1:-value}"
   echo "${var}"
@@ -73,13 +73,13 @@ func(){
 
 ### call above function named `func`
 
-```bash
+```
 func "yo"
 ```
 
 ### manipulating via assigning function `func` with argument `yo` to variable `func_var`
 
-```bash
+```
 func_var=$(func "yo")
 ```
 
@@ -87,7 +87,7 @@ func_var=$(func "yo")
 
 ### Write to `/dir/file.name` text until `EOF` is found on it's own line.
 
-```bash
+```
 cat > "/dir/file.name" <<EOF
 some text with "EOF" on a new line to end statement
 some variables with "\" and some without depending

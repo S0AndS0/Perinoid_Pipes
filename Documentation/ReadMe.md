@@ -155,4 +155,3 @@
 
 [Guide to asymmetric encryption with OpenSSL](https://www.devco.net/archives/2006/02/13/public_-_private_key_encryption_using_openssl.php)
  Seems pretty snazzy but authors of this script have not tested it yet.
-Licenses/ReadMe.md

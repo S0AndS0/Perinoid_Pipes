@@ -34,9 +34,11 @@ gpg --armor --export ${Var_gpg_email} --output ~/${Var_gpg_email%@*}.gpg
 git commit -S -m "Message title/synopsis" -m "Detailed message" modified/file/path
 ```
 
-Note it is the `-S` command line option that tells git sign commits, the above
+Note it is the `-S` command line option that tells git to sign commits, the above
  should request your GPG private key's passphrase for unlocking that key prior
- to signing your commit.
+ to signing your commit. This will be much the same for other signing procedures
+ for this project, however, note that for signing tages `-s` (lower-case) should
+ be used instead; everything else seems to use an uper-case `S` for signing.
 
 ## Adding SSH public key to GitHub
 

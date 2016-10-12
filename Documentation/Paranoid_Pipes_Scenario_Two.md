@@ -16,7 +16,7 @@
 
  > Note not on the chrooted web server's file system
 
-```bash
+```
 gpg --homedir /tmp/.gnupg --gen-key
 # Follow the prompts and set solid passphrase.
 ```
@@ -28,7 +28,7 @@ gpg --homedir /tmp/.gnupg --gen-key
  compromised this cert will allow you to revoke these keys if they're ever
  uploaded to a key server.
 
-```bash
+```
 gpg --homedir /tmp/.gnupg --gen-revoke --output /tmp/.gnupg/server_gpg_revoke.asci
 ```
 
@@ -36,7 +36,7 @@ gpg --homedir /tmp/.gnupg --gen-revoke --output /tmp/.gnupg/server_gpg_revoke.as
 
  > This is for importation within host server file system.
 
-```bash
+```
 gpg --homedir /tmp/.gnupg --export --output /tmp/.gnupg/server_public.key
 ```
 
@@ -46,7 +46,7 @@ gpg --homedir /tmp/.gnupg --export --output /tmp/.gnupg/server_public.key
  transmitting revoke cert. But we'll also need to import this key to the
  server's host file system so don't shred it just yet.
 
-```bash
+```
 gpg --homedir /tmp/.gnupg --export-secret-keys --output /tmp/.gnupg/server_secret.key
 ```
 
@@ -57,7 +57,7 @@ gpg --homedir /tmp/.gnupg --export-secret-keys --output /tmp/.gnupg/server_secre
  the one defined by `--copy-save-ownership="notwwwuser:notwwwgroup"`
  command line option in next section.
 
-```bash
+```
 gpg --import /tmp/.gnupg/server_secret.key
 ```
 
@@ -66,7 +66,7 @@ gpg --import /tmp/.gnupg/server_secret.key
  > (the same as owner of parsing pipe listeners) command key import without
  having to login that user.
 
-```bash
+```
 su notwwwuser -c "gpg --import /tmp/.gnupg/server_secret.key"
 ```
 
@@ -75,7 +75,7 @@ su notwwwuser -c "gpg --import /tmp/.gnupg/server_secret.key"
  > Do this once you have backed up the privet key and revoke cert to another
  device,
 
-```bash
+```
 rm -Irf /tmp/.gnupg
 ```
 
@@ -86,7 +86,7 @@ rm -Irf /tmp/.gnupg
 
 ## First is a pipe to pipe encryption named pipe listening script
 
-```bash
+```
 /script/path/script_name.sh --copy-save-yn='yes'\
  --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
  --copy-save-ownership="notwwwuser:notwwwgroup"\
@@ -111,7 +111,7 @@ rm -Irf /tmp/.gnupg
  Note the log rotation settings as stated may fill your email's inbox but at
  least your logs only live in plan text for a short time on the public server.
 
-```bash
+```
 /script/path/script_name.sh --copy-save-yn='yes'\
  --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
  --copy-save-ownership="notwwwuser:notwwwgroup"\
@@ -137,13 +137,13 @@ rm -Irf /tmp/.gnupg
 
  > And command it to decrypt instead of encrypt.
 
-```bash
+```
 Var_parsing_command="gpg --decrypt"
 ```
 
 ## or for specific user with their own key ring
 
-```bash
+```
 Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
 ```
 
@@ -155,7 +155,7 @@ Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
 
 ### Start stop lines for decryption pipe to log file.
 
-```bash
+```
 # Start decryption pipe listener
 /jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh
 # Stop decryption pipe listener
@@ -164,7 +164,7 @@ echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs
 
 ### Start stop lines for encryption pipe to pipe files.
 
-```bash
+```
 # Start encryption pipe listener
 /jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh
 # Stop decryption pipe listener
@@ -175,14 +175,14 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 
 ## Input -> output first script options
 
-```bash
+```
  --named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe"\
  --output-parse-name="/jailed_logs/website_host/www_access.pipe"\
 ```
 
 ## Input -> output second script options
 
-```bash
+```
  --named-pipe-name="/jailed_logs/website_host/www_access.pipe"\
  --output-parse-name="/jailed_logs/website_host/www_access.log"\
 ```
@@ -193,7 +193,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 
 ## Input -> output pre-parsing and log rotation options in the first script
 
-```bash
+```
  --output-pre-parse-yn='yes'\
  --output-rotate-yn='no'\
  --output-save-yn='yes'\
@@ -201,7 +201,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 
 ## Input -> output pre-parsing and log rotation options in the second script
 
-```bash
+```
  --output-pre-parse-yn='no'\
  --output-rotate-actions='compress-encrypt,remove-old'\
  --output-rotate-check-frequency='250'\

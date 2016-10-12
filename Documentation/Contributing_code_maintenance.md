@@ -1,4 +1,4 @@
-# Work flow steps that will repeat
+# Work flow steps that will repeat (code maintenance)
 
  > Note the following instructions assume that your have already completed the
  steps outlined in
@@ -7,7 +7,7 @@
 
 ## Make custom branch for tracking local changes
 
-```bash
+```
 Var_custom_branch="$(git branch --list | awk '/\*/{print $2}')"
 Var_local_branch_name=$(eval "date -u +%s")_${Var_custom_branch}
 git checkout -b ${Var_local_branch_name}
@@ -22,7 +22,7 @@ git checkout -b ${Var_local_branch_name}
 
 ## Check that you are now on a local branch
 
-```bash
+```
 git branch --list | awk '/\*/{print $2}'
 ```
 
@@ -31,7 +31,7 @@ git branch --list | awk '/\*/{print $2}'
 
 ## Make changes to script or other files
 
-```bash
+```
 vim Documentation/ReadMe_Paranoid_Pipes.md
 # Or nano
 nano Paranoid_Pipes.sh
@@ -42,7 +42,7 @@ nano Paranoid_Pipes.sh
 
 ## Sign committed changes, including branch command line option is optional
 
-```bash
+```
 git commit --branch -S -am "Added feature or fixed bug"\
  -m "Summery of changes"\
  -m "Any further details"
@@ -51,11 +51,12 @@ git commit --branch -S -am "Added feature or fixed bug"\
  > Hint: `git status` will show changed files and added files and preforming a
  `git diff <file_name>` (replacing `<file_name>` with a reported modified file)
  will show the recent changes that are not currently tracked by `git`. This can
- be really helpful when making lots of small changes to many files.
+ be really helpful when making lots of small changes to many files or when coming
+ back to this project's code after a long rest.
 
 ## Test changes then prep for submitting a pull request
 
-```bash
+```
 ## Update local repo master branch code among other remote branches.
 git fetch --all
 ## Merge master branch into current working branch
@@ -66,7 +67,7 @@ git merge --verify-signatures -S master
 
 ## After testing and committing, share fixes or features via pull request
 
-```bash
+```
 Var_branch_name=$(git branch --list | awk '/\*/{print $2}')
 Var_git_url='git@github.com:S0AndS0/Paranoid_Pipes.git'
 git request-pull -p ${Var_branch_name} ${Var_git_url} master
@@ -80,7 +81,7 @@ git request-pull -p ${Var_branch_name} ${Var_git_url} master
 
 ## When finished merge changes back to original/master branch with a message.
 
-```bash
+```
 git checkout master
 git merge --verify-signatures -S ${Var_local_branch_name}\
  -am "Merged local testing branch ${Var_branch_name} into master branch"\

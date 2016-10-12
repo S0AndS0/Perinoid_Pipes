@@ -20,6 +20,7 @@
  line options. This document only covers downloading and initial testing of
  project features. See the Frequently asked questions document
  [FAQ.md](Documentation/FAQ.md) for answers to common questions.
+
 ## Step 1; 
 
 Import public GnuPG key into server that will be running this script or one of
@@ -27,13 +28,13 @@ Import public GnuPG key into server that will be running this script or one of
 
 ### From file transfer to server
 
-```bash
+```
 gpg --import /path/to/pubkey
 ```
 
 ### From key server instead
 
-```bash
+```
 gpg --import user@email.domain --recv-keys https://key-server.domain
 ```
 
@@ -43,10 +44,10 @@ gpg --import user@email.domain --recv-keys https://key-server.domain
  (be tempted to) generate a private/public key pare on the target server using
  this script, however, this would be generally a very discouraged security
  practice to implement on publicly accessible servers; see Section
- `Story time` -> `Scenario two` within [`Documentation/`](Documentation/)
- directory for more information. If only testing then don't forget to delete
- both keys again and to **not** upload test keys to pubic key servers as that
- would be a rude use of their services.
+ `Scenario two` within [`Documentation/`](Documentation/) directory for more
+ information. If only testing then don't forget to delete both keys again and
+ to **not** upload test keys to pubic key servers as that would be a rude use
+ of their services.
 
 ## Step(s) 2; 
 
@@ -54,40 +55,40 @@ Download main script from GitHub
 
 ### Change to desired download directory.
 
-```bash
+```
 cd ~/Downloads
 ```
 
-### Clone project from GitHub and change directories to the new repo's folder
+### Clone project from GitHub & change directories to the project's folder
 
-```bash
+```
 git clone https://github.com/S0AndS0/Perinoid_Pipes
 cd ~/Downloads/Perinoid_Pipes
 ```
 
+### Change script's name and location (optional)
+
+```
+cp Paranoid_Pipes.sh /usr/local/sbin/pipe_writer.sh
+```
+
 ### Change script ownership to be owned by currently logged in user.
 
-```bash
-chown ${USER}:${USER} Paranoid_Pipes.sh
+```
+chown ${USER}:${USER} /usr/local/sbin/pipe_writer.sh
 ```
 
 ### Change script permissions such that owning **`u`**ser may e**`x`**ecute.
 
-```bash
-chmod 700 Paranoid_Pipes.sh
 ```
-
-### Change script's name and location (optional)
-
-```bash
-cp Paranoid_Pipes.sh /usr/local/sbin/pipe_writer.sh
+chmod 700 /usr/local/sbin/pipe_writer.sh
 ```
 
 ### Change current working directory to default for currently logged in user
  and attempt to call by name without file path.
 
-```bash
-cd
+```
+cd ~
 pipe_writer.sh -h
 ```
 
@@ -99,23 +100,22 @@ pipe_writer.sh -h
 
 ## Step(s) 3
 
-List command line options, current values and exit with '0' status. Note
- replace `<Script_Name>` with the script's name if re-named
+List command line options, current values and exit with `0` status. Note
+ replace `pipe_writer.sh` with the script's name if re-named
 
-```bash
-./Paranoid_Pipes.sh --help
+```
+pipe_writer.sh --help
 # Print exit status of last command/script
 echo -e "# Exit status of: !!\n# Was $?"
 ```
 
  > Test named pipe reading script by outputting to current terminal using the
  following options. Note if script was moved as shown above then use
- `script_name` instead of `./script_name`, ie without `./` when modifying
- bellow command because it assumes you're still in
- `/$HOME/Downloads/Script_dir` directory.
+ `pipe_writer.sh` instead of `./Paranoid_Pipes.sh`, ie without `./` when
+ modifying bellow command.
 
-```bash
-./Paranoid_Pipes.sh --copy-save-yn=no\
+```
+pipe_writer.sh --copy-save-yn=no\
  --output-save-yn=no\
  --disown-yn=no\
  --debug-level=5 --log-level=0\
@@ -138,25 +138,25 @@ echo -e "# Exit status of: !!\n# Was $?"
 
 #### Example of writing single line string to named pipe
 
-```bash
+```
 echo 'Testing 123 abc' >  /tmp/test.pipe
 ```
 
 #### Example of writing multi-line string to named pipe
 
-```bash
+```
 echo -e 'Testing 123 abc\nTesting cba 321' >  /tmp/test.pipe
 ```
 
 #### Example of cat'ing multi-line file to named pipe
 
-```bash
+```
 cat /etc/rc.local > /tmp/test.pipe
 ```
 
 #### Example of cat'ing multi-line string to named pipe
 
-```bash
+```
 cat > /tmp/test.pipe <<EOF
 testing multi-line
 redirection
@@ -172,7 +172,7 @@ Next example is different though...
 
 #### Example of providing full file path to named pipe instead
 
-```bash
+```
 echo '/etc/rc.local' > /tmp/test.pipe
 ```
 
@@ -186,7 +186,7 @@ echo '/etc/rc.local' > /tmp/test.pipe
 #### Example of providing file directory path (via built in Bash variable) to
  named pipe instead
 
-```bash
+```
 echo "${HOME}/Pictures" > /tmp/test.pipe
 ```
 
@@ -199,7 +199,7 @@ echo "${HOME}/Pictures" > /tmp/test.pipe
 
 #### Example command to list encrypted files under the bulk output directory.
 
-```bash
+```
 ls -hal /tmp/test_bulk/*.gpg
 ```
 
@@ -208,7 +208,7 @@ ls -hal /tmp/test_bulk/*.gpg
 Quit by writing default quit string to named pipe from another terminal as
  shown bellow
 
-```bash
+```
 echo 'quit' > /tmp/test.pipe
 ```
 

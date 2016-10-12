@@ -28,7 +28,7 @@
 
 ## Bash's history file output example
 
-```bash
+```
 cd /some/file/path
 gpg -r emailuser@host.domain -e some_file -o /tmp/some_file.gpg
 echo 'Email body about attached file' | mutt -s 'Subject of encrypted files attached' -a /tmp/some_file.gpg

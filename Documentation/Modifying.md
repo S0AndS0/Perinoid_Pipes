@@ -8,13 +8,13 @@
 
 ## Change directories to the downloaded project source code root directory
 
-```bash
+```
 cd ~/Downloads/Paranoid_Pipes
 ```
 
 ### Pick a name to call your testing branch
 
-```bash
+```
 Var_branch_name="${USER}_mod"
 git checkout -b ${Var_branch_name}
 ```
@@ -24,7 +24,7 @@ git checkout -b ${Var_branch_name}
 
 ### Delete custom branch if modifications are not wanted
 
-```bash
+```
 git checkout master
 git branch -D ${Var_branch_name}
 ```
@@ -34,7 +34,7 @@ git branch -D ${Var_branch_name}
 
 ### Modify freely and update your branch occasionally via the following
 
-```bash
+```
 cd ~/Downloads/Paranoid_Pipes
 ## Download available changes from remote
 git fetch
