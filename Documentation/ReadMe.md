@@ -48,6 +48,11 @@
  authors are happy to add your info to a `Contributing_Financially_credits.md`
  file within this project's `Documentation/` directory.
 
+[Education_resources.md](Education_resources.md)
+ Documentation of verious resources that authors of this project found useful
+ when developing this project's script as well as useful resources for describing
+ the finer points of the encryption subject as a whole.
+
 [FAQ.md](FAQ.md)
  Some of the questions already asked about this project as well as questions the
  authors believed would be asked about this project along with some sample
@@ -55,9 +60,35 @@
  users of this project visit to get quickly acquainted with what this project is
  all about.
 
+[Gnupg_installation_options.md](Gnupg_installation_options.md)
+ Documentation of various options available to non-Linux & Linux based operating
+ systems. Note the only platform that this project is known to work on are Linux
+ based OSs and the only platform that this project is likely not able to work on
+ are IOS based devices.
+
+[Gnupg_configuration.md](Gnupg_configuration.md)
+ Documentation of *best practices* configruation of GnuPG, the attached configs
+ are very similar to what contributers and authors of this project make or should
+ make use of.
+
+[Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
+ Documentation of daily use command line command for GnuPG; in other words a
+ "cheet sheet" for GnuPG.
+
+[Gnupg_key_management.md](Gnupg_key_management.md)
+ Documentation of key management command line commands to use with GnuPG. Topics
+ covered include; generating new private keys, revocation certificates, signing
+ other GnuPG user's public keys, and editing *`trust`* settings for keys.
+
 [Gnupg_with_git_tips.md](Gnupg_with_git_tips.md)
  Covers the finer points of setting `git` up with GnuPG such that future code
  contributers do not run into avoidable errors.
+
+[Gnupg_usefull_tools.md](Gnupg_usefull_tools.md)
+ Documentation of tools other than those found within this project that the
+ authors of this project believe are worth notifing readers of. While not all
+ have been tested by the authors of this project, some where just *too cool* and
+ not mentioning'em would be a shame.
 
 [Modifying.md](Modifying.md)
  Covers steps for making local/private changes to this project that prevent
@@ -104,59 +135,3 @@
  Contains documentation on all know issues that new and current users of this
  project should be aware of. This file was originally apart of the
  `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-# External links to documentation used within this project
-
- > Note the bellow links are **not** directly related to the project and serve
- as the author of this project crediting the following authors for having solved
- or documented techniques prior to the publication of this project. In other
- words **do not** bother them because of bugs within this project; instead
- communicate with this project's authors to resolve this project's bugs.
-
-[General GitHub guide for contributing code](https://guides.github.com/activities/contributing-to-open-source/)
-
-[Git guide - Signing your work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
-
-[Source for `hub` command line tool for `git` with GitHub](https://github.com/github/hub)
-
-[Beautiful `git` with `vimdiff` tutorial in markdown format](https://gist.github.com/karenyyng/f19ff75c60f18b4b8149)
-
-[Cheat sheet for `vimdiff` with some good comments](https://gist.github.com/mattratleph/4026987)
-
-[Mergetool `vimdiff` cheat sheat](http://devmartin.com/blog/2014/06/basic-vimdiff-commands-for-git-mergetool/)
-
-[Spell checking `vim` tutorial](https://www.linux.com/learn/using-spell-checking-vim)
-
-[Grab last command used on Bash](http://stackoverflow.com/a/9502698)
-
-[Methods of generating random strings of specified length](https://gist.github.com/earthgecko/3089509)
-
-[Nginx log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
-
-[Appache2.4 log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
-
-[Stack Exchange - Rsyslog to fifo answered](http://unix.stackexchange.com/questions/134896/how-to-redirect-logs-to-a-fifo-device)
-
-[Server Fault - Run local script over SSH to remote](http://serverfault.com/a/595256)
-
-[Fair Source License - Home page](https://fair.io/)
-
-[Fair License](http://fairlicense.org/)
-
-[Wiki - Derivative works defined](https://en.wikipedia.org/wiki/Derivative_work)
-
-## Others seeking tools similar to this
-
-[Security Stac Exchange - Write only one way encrypted directory](http://security.stackexchange.com/questions/6218/is-there-any-asymmetrically-encrypted-file-system)
- Currently only one tool offered seems to fit their requirements but accepted answer doesn't provide solution; just reasons as to why there's no solution.
-
-[Serverfault - Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
- No solutions posted!
-
-[Stack Overflow - Android asymmetric encryption line by line](http://stackoverflow.com/questions/29131427/efficient-asymmetric-log-encryption-in-android/29134101)
- No solutions posted!
-
-## Similar tools & guides
-
-[Guide to asymmetric encryption with OpenSSL](https://www.devco.net/archives/2006/02/13/public_-_private_key_encryption_using_openssl.php)
- Seems pretty snazzy but authors of this script have not tested it yet.
