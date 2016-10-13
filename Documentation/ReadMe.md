@@ -37,6 +37,11 @@
  Covers steps for resolving merge conflicts between project branches using
  `vimdiff` as the `git mergetool` on the command line.
 
+[Contributing_documentation.md](Contributing_documentation.md)
+ How to have your own documentation merged into the `master` branch of this
+ project. Note steps found in the `Contributing_code_initial_setup.md` file
+ should be followed prior following the above documentation.
+
 [Contributing_Financially.md](Contributing_Financially.md)
  Documentation for how users of this project may contribute to the author's
  of this project financially. If you wish to have your contribution known the
