@@ -5,7 +5,7 @@
 
 ## Setup GPG public key with GitHub
 
-```bash
+```
 Var_gpg_email='email@host.domain'
 Var_git_signing_fingerprint=$(gpg --list-keys ${Var_gpg_email} | awk '/fingerprint/{print $10""$11""$12""$13}')
 ## Above variables are for grabbing the last 16 bits of your fingerprint.
@@ -17,7 +17,7 @@ git config --global user.signingkey ${Var_git_signing_fingerprint}
 
 ## Export GPG public key command example
 
-```bash
+```
 ## To terminal
 gpg --armor --export ${Var_gpg_email}
 ## or to file
@@ -30,7 +30,7 @@ gpg --armor --export ${Var_gpg_email} --output ~/${Var_gpg_email%@*}.gpg
 
 ### Git commits may now be signed via the following method
 
-```bash
+```
 git commit -S -m "Message title/synopsis" -m "Detailed message" modified/file/path
 ```
 
@@ -42,7 +42,7 @@ Note it is the `-S` command line option that tells git to sign commits, the abov
 
 ## Adding SSH public key to GitHub
 
-```bash
+```
 Var_git_user='S0AndS0'
 Var_git_email='email@host.domain'
 mkdir -p ~/.ssh
@@ -63,7 +63,7 @@ cat ${Var_git_user}.pub
 
 ### Add git client `ssh_config` settings configuration block
 
-```bash
+```
 cat >> /etc/ssh/ssh_config <<EOF
 host github.com
     HostName github.com
@@ -83,7 +83,7 @@ EOF
 
 ## Downloading source via ssh link
 
-```bash
+```
 git clone git@github.com:S0AndS0/Perinoid_Pipes.git
 cd Perinoid_Pipes
 ```
@@ -93,7 +93,7 @@ cd Perinoid_Pipes
 
 ## Adding GitHub username and email to git config
 
-```bash
+```
 git config --add user.name ${Var_git_user}
 git config --add user.email ${Var_git_email}
 ```
@@ -104,7 +104,7 @@ git config --add user.email ${Var_git_email}
 
 ## Adding issues, pull & merge requests to local checkout of git repo
 
-```bash
+```
 git config --add remote.origin.fetch '+refs/pull/*/head:refs/remotes/origin/pr/*'
 git config --add remote.origin.fetch '+refs/pull/*/merge:refs/remotes/origin/pr/*/merge'
 ```
@@ -114,7 +114,7 @@ git config --add remote.origin.fetch '+refs/pull/*/merge:refs/remotes/origin/pr/
 
 ## Fetch everything not currently downloaded
 
-```bash
+```
 git fetch --all
 ```
 
@@ -123,7 +123,7 @@ git fetch --all
 
 ## Add contact info, changes info, and if so desired "tips" info
 
-```bash
+```
 Var_gpg_fingerprint=$(gpg --fingerprint --keyid-format long ${Var_gpg_email} | awk '/pub/{print $2}')
 cat >> Documentation/Contributing_code_credits.md <<EOF
 ${Var_git_user} - ${Var_gpg_fingerprint#*/}
@@ -155,7 +155,7 @@ EOF
 
 ## Example of author's contact info writing steps.
 
-```bash
+```
 cat >> Documentation/Contributing_code_credits.md <<EOF
 S0AndS0 - 6E4C46DA15B22310
         By signing changes made to this document with private key related to
@@ -174,13 +174,13 @@ EOF
 
 ## Sign commit of changes to `Documentation/Contributing_code_credits.md` file
 
-```bash
+```
 git commit -S -m "Signed changes to Contributing_code_credits.md" Documentation/Contributing_code_credits.md
 ```
 
 ## Import project author's public key
 
-```bash
+```
 Var_author_keyid='6E4C46DA15B22310'
 gpg --search-keys ${Var_author_keyid}
 ```
@@ -192,7 +192,7 @@ gpg --search-keys ${Var_author_keyid}
 
 ### Assign a *trust* level for this new key
 
-```bash
+```
 gpg --edit-keys ${Var_author_keyid}
 ```
 
