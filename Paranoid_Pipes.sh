@@ -18,7 +18,7 @@ set +o history
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='beta'
+Var_script_subversion='1476464123'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -34,6 +34,8 @@ Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user home directory variable for saving logs and script copies to
  : ${HOME?}
 Var_script_current_user="${USER}"
+## Columns of terminal width, defaults to 80 if not readable
+Var_columns_width="${COLUMNS:-80}"
 ## Variables that find file paths to required executables. Note these maybe useful
 ##  if using mounted read only binary directory, ie "tin-foil top-hat" levels of paranoia.
 ##  Or useful if attempting to "remote control" a chroot jailed file system from the host.
@@ -251,8 +253,19 @@ Var_disown_parser_yn="yes"
 ##  using the '-e' with echo.
 ##  Additional note for use and resetting of colors within echoed strings
 Var_color_red='\033[0:31m'
+Var_color_green='\033[0:32m'
+Var_color_yellow='\033[0:33m'
+Var_color_blue='\033[0:34m'
+Var_color_purple='\033[0:35m'
+Var_color_cyan='\033[0:36m'
+Var_color_gray='\033[0:37m'
 Var_color_lred='\033[1:31m'
+Var_color_lgreen='\033[1:32m'
+Var_color_lyellow='\033[1:33m'
+Var_color_lblue='\033[1:34m'
 Var_color_lpurple='\033[1:35m'
+Var_color_lcyan='\033[1:36m'
+Var_color_lgray='\033[1:37m'
 Var_color_null='\033[0m'
 ##  Example of usage:
 ##   echo -e "${Var_color_lpurple}This should be light purple\n${Var_color_null}And this should be colorless."
@@ -323,7 +336,17 @@ Func_messages(){
 	## Use echo to notify script user of various levels of information if user set debug level
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
 	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-		${Var_echo_exec_path} "#DBL-${_debug_level}# ${_message}"
+		## Set colors of hashmarks in messages based on diferances in debugging levels.
+		if [ "${Var_debugging}" = "${_debug_level}" ]; then
+			_custom_color="${Var_color_lgreen}"
+		elif [ "${Var_debugging}" -gt "${_debug_level}" ]; then
+			_custom_color="${Var_color_lyellow}"
+		else
+			_custom_color="${Var_color_red}"
+		fi
+		## Note this ugly line is what makes messages line wrap at word boundries.
+		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
+		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
 	## Check if log level is high enough, then check if logging is enabled.
 	if [ "${Var_logging}" = "${_log_level}" ] || [ "${_log_level}" -lt "${Var_logging}" ]; then
