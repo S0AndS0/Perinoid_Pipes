@@ -1,0 +1,18 @@
+engines:
+  shellcheck:
+    enabled: true
+  markdownlint:
+    enabled: true
+ratings:
+  paths:
+    - ".gitignore"
+    - "Documentation/**"
+    - "Licenses/**"
+    - "Paranoid_Pipes.sh"
+    - "ReadMe.md"
+exclude_paths:
+  - ".git/**"
+  - "**.gpg"
+  - "**.log"
+  - "**.pipe"
+  - "Bulk_**/**"
