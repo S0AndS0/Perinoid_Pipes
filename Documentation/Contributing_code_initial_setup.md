@@ -88,7 +88,7 @@ git clone git@github.com:S0AndS0/Perinoid_Pipes.git
 cd Perinoid_Pipes
 ```
 
-## Note from here on the following commands will be from the prospective of
+ > Note from here on the following commands will be from the prospective of
  the above code repository directory.
 
 ## Adding GitHub username and email to git config
@@ -129,11 +129,11 @@ cat >> Documentation/Contributing_code_credits.md <<EOF
 ${Var_git_user} - ${Var_gpg_fingerprint#*/}
         By signing changes made to this document with private key related to
         above public key fingerprint the user name above signs acceptance that
-        pull requests and change submitting made under the above user name will
-        become licensed under the licensing agreements found in the
-        Documentation directory of this project that most closely matches the
-        changes made; ie code under code licensing and documentation under
-        doc-centric licensing.
+        pull requests and change submitting made under the above user name to
+        this project will become licensed under the licensing agreements found
+        in the Documentation directory of this project that most closely
+        matches the changes made; ie code under code licensing and
+        documentation under doc-centric licensing.
     Summery: <Working on feature/Fixing bug or issue>
     Support code contribution link(s): <your_BTC_address>
 EOF
@@ -160,11 +160,11 @@ cat >> Documentation/Contributing_code_credits.md <<EOF
 S0AndS0 - 6E4C46DA15B22310
         By signing changes made to this document with private key related to
         above public key fingerprint the user name above signs acceptance that
-        pull requests and change submitting made under the above user name will
-        become licensed under the licensing agreements found in the
-        Documentation directory of this project that most closely matches the
-        changes made; ie code under code licensing and documentation under
-        doc-centric licensing.
+        pull requests and change submitting made under the above user name to
+        this project will become licensed under the licensing agreements found
+        in the Documentation directory of this project that most closely
+        matches the changes made; ie code under code licensing and
+        documentation under doc-centric licensing.
     Summery: Working on features & fixing any bugs that can be fixed.
     Support code contribution link(s):
         Found in "Title page" section of Documentation/ReadMe_Paranoid_Pipes.md

@@ -37,11 +37,8 @@ There are three main categories of encryption;
 ## Links to definitions
 
  - Wikipedia - [Public key cryptography](https://en.wikipedia.org/wiki/Public-key_cryptography)
-
  - Wikipedia - [Hashing algorithms](https://en.wikipedia.org/wiki/Hash_function)
-
  - Wikipedia - [Cryptography](https://en.wikipedia.org/wiki/Cryptography)
-
  - Wikipedia - [Algoririthm](https://en.wikipedia.org/wiki/Algorithm)
 
 [Wiki - Derivative works defined](https://en.wikipedia.org/wiki/Derivative_work)
@@ -55,10 +52,8 @@ There are three main categories of encryption;
  - Security Stack Exchange - [Write only one way encrypted directory](http://security.stackexchange.com/questions/6218/is-there-any-asymmetrically-encrypted-file-system)
  Currently only one tool offered seems to fit their requirements but accepted
  answer doesn't provide solution; just reasons as to why there's no solution.
-
  - Serverfault - [Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
  No solutions posted!
-
  - Stack Overflow - [Android asymmetric encryption line by line](http://stackoverflow.com/questions/29131427/efficient-asymmetric-log-encryption-in-android/29134101)
  No solutions posted!
 
@@ -72,19 +67,14 @@ There are three main categories of encryption;
 ### Links to GnuPG video guides
 
  - YouTube - [Elliptic curve encryption algorithm overview, by F5 DevCentral 11:29](https://youtu.be/dCvB-mhkT0w)
-
  - YouTube - [Overview of public/privet key encryption, by Computerphile 6:20](https://youtu.be/GSIDS_lvRv4)
-
  - YouTube - [Quick explanation of PGP/GPG signing processes, by O Miller 3:54](https://youtu.be/HubAvQg6SPM)
-
  - YouTube - [In depth series on data encryption and security (part 9 of 12) 28:15](https://youtu.be/IyafQPFxgjU)
 
 ### Links to GnuPG written resources
 
  - RiseUp - [List of **best practices** for GPG/PGP key security and setup](https://riseup.net/en/security/message-security/openpgp/best-practices)
-
  - Ekaia - [Quick guide on making new or renewing privet PGP/GPG keys](https://ekaia.org/blog/2009/05/10/creating-new-gpgkey/)
-
  - GnuPG - [GnuGP commonly used command line commands](https://www.gnupg.org/documentation/manuals/gnupg/Operational-GPG-Commands.html)
 
 ## Guides for `git`
@@ -93,12 +83,10 @@ There are three main categories of encryption;
  authors maintain it, then skip this section.
 
  - GitHub - [General GitHub guide for contributing code](https://guides.github.com/activities/contributing-to-open-source/)
-
  - Git-scm - [Git guide - Signing your work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
-
  - GitHub - [Source for `hub` command line tool for `git` with GitHub](https://github.com/github/hub)
-
  - GitHub - [Beautiful `git` with `vimdiff` tutorial in markdown format](https://gist.github.com/karenyyng/f19ff75c60f18b4b8149)
+ - CodeClimate - [Getting started with automated repository checks](https://docs.codeclimate.com/docs/getting-started-configuration)
 
 ## Guides for command line text editers `vim`, `vimdiff`, `nano`,...
 
@@ -117,7 +105,6 @@ There are three main categories of encryption;
 ## Guides for web servers
 
  - Nginx - [log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
-
  - Apache - [log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
 
 ## Guides for logging daemons

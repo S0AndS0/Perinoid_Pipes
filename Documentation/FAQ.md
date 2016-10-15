@@ -1,5 +1,12 @@
 # Frequently (and perhaps infrequently) asked question (F.A.Q.)
 
+## Q: How is the code checked for bugs?
+
+ > Both localy and remotely this repository is checked via a wonderful program,
+ `shellcheck`, remote tests are fasilitated via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
+ which is also how this project recieves updated *badges* on the main [ReadMe.md](../ReadMe.md)
+ file.
+
 ## Q: What is this project?
 
  > A: This project aims to expose asymmetric encryption operations (currently

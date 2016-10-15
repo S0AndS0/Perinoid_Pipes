@@ -42,7 +42,7 @@
 ```
 
  > Note within blocks of text that reference a line within a code block should
- use single backticks (```) to encapsulate the word or string referenced. For
+ use single backticks (````) to encapsulate the word or string referenced. For
  example if one where to reference the third line above for some informational
  reason it would look like; `# rendered in client browsers.` within a text block.
 

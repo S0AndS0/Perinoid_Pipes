@@ -13,6 +13,12 @@
 
 [Link to related license](Licenses/GNU_FDLv1.3_Documentation.md)
 
+# Code statistics
+
+[![Code Climate](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/gpa.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
+ [![Test Coverage](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/coverage.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/coverage)
+ [![Issue Count](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/issue_count.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
+
 # Quick start
 
  > See guides under the [`Documentation/`](Documentation/) directory for
