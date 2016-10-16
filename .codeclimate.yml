@@ -8,6 +8,7 @@ ratings:
     - ".gitignore"
     - "Documentation/**"
     - "Licenses/**"
+    - "Script_Helpers/**"
     - "Paranoid_Pipes.sh"
     - "ReadMe.md"
 exclude_paths:
@@ -16,3 +17,6 @@ exclude_paths:
   - "**.log"
   - "**.pipe"
   - "Bulk_**/**"
+  - "bulk_**/**"
+  - "Licenses/GNU_AGPLv3_Code.md"
+  - "Licenses/GNU_FDLv1.3_Documentation.md"
