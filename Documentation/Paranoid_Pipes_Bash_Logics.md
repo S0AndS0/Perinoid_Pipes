@@ -51,7 +51,7 @@
  `arr=( "value1" "value two" "3" )`             | Assign `value1` and `value two` to array named `arr`. Arrays are a whole'nuther can'o'worms but are one of the *magic* things that makes this script tick. Note above tricks of replacing a target character with another also work with arrays.
  `echo "${arr[@]}"`                             | Expand all indexes in array named `arr`. More often you'll find this written as `until [ "${#arr[@]}" = "${_count}" ] || [ "${arr[${_count}]}" = "${_quit_line}" ]; do echo "# Doing stuff to ${arr[${_count}]}" && let _count++; done` to loop through an indexed array much like a `for` loop would loop over a list.
  `echo "${arr[@]:1}"`                           | Expand all indexes in array `arr` after index `1`. This can be used similarly to the looping example above but we can get fancy. Here's is a tip on how to *dump* everything in above array after `${_count}`+`1`
- `_arr_remiander=( ${arr[$((${_count}+1))]}  )` | When you see how above loop has evolved (hint, check `Senerio one` within this document) ya might just chuckle at the work-around.
+ `_arr_remainder=( ${arr[$((${_count}+1))]}  )` | When you see how above loop has evolved (hint, check `Scenario one` within this document) ya might just chuckle at the work-around.
  `command <<<${var}`                            | for one-way redirection of `${var}`'s value into `command`'s input
 
  Bash internal variables | Usage within script
@@ -95,9 +95,9 @@ upon if they should be expanded on write or on re-read/execution
 EOF
 ```
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
