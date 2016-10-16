@@ -65,9 +65,9 @@ gpg --edit-key <key_ID>
  > Note for the above command, this method allows for either of the above
  options to be used and thus the method of updating the owner's keys will vary.
 
-# Sending signed public keys
+## Sending signed public keys
 
-## Publish signed pubic key
+### Publish signed pubic key
 
 ```
 gpg --send-keys <key_ID>
@@ -76,7 +76,7 @@ gpg --send-keys <key_ID>
  > Note for the above command, the above uses key server mirrors to accomplish
  updating another's public key
 
-## Or share signed public key via exported file
+### Or share signed public key via exported file
 
 ```
 gpg --armor --export <key_ID> --output <signed_key_file_path>
@@ -87,7 +87,7 @@ gpg --armor --export <key_ID> --output <signed_key_file_path>
  option to; publish the changes, request a different trust level, or other
  options be changed before allowing the changes to be published.
 
-# Updating local private keys
+## Updating local private keys
 
  > Updating your own private/public keys allows for other GnuPG user's
  signatures of trust levels to become present on your system. Additionally
@@ -98,7 +98,7 @@ gpg --armor --export <key_ID> --output <signed_key_file_path>
  to a stranger that now owns the previously lost private key... bad days have
  been had on those types of issues so update your keys regularly.
 
-## Refresh existing keys in key ring
+### Refresh existing keys in key ring
 
 ```
 gpg --refresh-keys
@@ -119,7 +119,7 @@ gpg --check-trustdb
  Note this is non-interactive, use the next command if you wish to have menus
  and options.
 
-## Or interactively update trust data base
+### Or interactively update trust data base
 
 ```
 gpg --update-trustdb
@@ -129,9 +129,9 @@ gpg --update-trustdb
  interaction for updating the trust data base.
 
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by

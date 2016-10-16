@@ -24,7 +24,7 @@
  locations. In general it's *safer* to set `user` specific settings because
  updating the executables *usually* includes overwriting `global` settings.
 
-## Best practices (with enhancements) GnuGP config example
+## Best practices (with enhancements) GnuPG config example
 
 ```
 ## Custom settings from the following link
@@ -84,9 +84,9 @@ Var_gpg_config_location="${HOME}/.gnupg/gpg.conf"
 grep -vE '##' ${Var_gpg_config_location} | tee ${Var_gpg_config_location}
 ```
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by

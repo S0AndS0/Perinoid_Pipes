@@ -6,7 +6,7 @@
  contained within this project and are only provided for completeness of GnuPG
  applications known to be available.
 
-# Notice of external links
+## Notice of external links
 
  > throughout this document there are embedded URLs to domains external to this
  project. These external links' authors should **not** be bothered by bugs
@@ -120,7 +120,7 @@ apt-cache policy gnupg
 apt-cache search gnupg | less
 ```
 
- > Note the use of ` | less` piping above. Press `q` to exit `less`; other
+ > Note the use of `|` piping above. Press `q` to exit `less`; other
  useful keyboard commands within `less` are; the *arrow* keys,
  `page up`/`page down` and *`space bar`* for scrolling through output.
 
@@ -132,7 +132,7 @@ apt-cache search gnupg | less
 bash
 ```
 
- > ... or
+ > or
 
 ```
 Ubuntu
@@ -155,7 +155,7 @@ Ubuntu
 
 ### Mac `config` location for GnuPG
 
- > much like Windows and Linux this'll be under a hidden directory within your
+ > Much like Windows and Linux this'll be under a hidden directory within your
  logged in user's home directory/folder; on Mac, Linux, & Android these
  directories are prefixed by a period (`.`) ei `/home/username/.gnupg`
 
@@ -178,7 +178,7 @@ Ubuntu
  satisfied; likely you'll need to install `BusyBox` as well as a *terminal
  emulator* for Android to make full use of this project's scripts on mobile.
 
- 3. [ProtonMail](https://protonmail.com/)
+3. [ProtonMail](https://protonmail.com/)
 
  > The above service is one of the cooler companies to emerge from the open
  source crypto communities and appears to be one of the most secure email
@@ -210,7 +210,7 @@ Ubuntu
 sudo apt-get install gnupg
 ```
 
-### Linux file path for user `${USER}` GPG configuration.
+### Linux GnuPG configuration file path for users
 
 ```
 /home/${USER}/.gnupg/gpg.conf
@@ -243,9 +243,9 @@ sudo apt-get install gnupg
  OpenBSD >5.4 | `/usr/local/share/examples/mutt/gpg.rc`
  Debian       | `/usr/share/doc/mutt/examples/gpg.rc`
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
