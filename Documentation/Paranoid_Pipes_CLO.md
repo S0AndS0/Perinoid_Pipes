@@ -28,7 +28,7 @@
   `--output-save-yn`                  | `Var_save_ecryption_yn`            | `yes`
   `--output-rotate-yn`                | `Var_log_rotate_yn`                | `yes`
   `--output-rotate-max-bites`         | `Var_log_max_size`                 | `4096`
-  `--output-rotate-check-frequency`    | `Var_log_check_frequency`          | `100`
+  `--output-rotate-check-frequency`   | `Var_log_check_frequency`          | `100`
   `--output-rotate-actions`           | `Var_log_rotate_actions`           | `compress-encrypt,remove-old`
   `--output-rotate-recipient`         | `Var_log_rotate_recipient`         | `user@host.domain`
   `--output-parse-command`            | `Var_parsing_command`              | `$(which gpg) --always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt`
@@ -72,10 +72,10 @@
   `--output-save-yn`                  | `a-zA-Z`            | `yes` or `no` Enable or disable writing parsed output options and actions.
   `--output-rotate-yn`                | `a-zA-Z`            | `yes` or `no` Enable or disable log rotation options and actions.
   `--output-rotate-max-bites`         | `0-9`               | `'4096'` or `'8388608'` Output file max size (in bites) before log rotation actions are used.
-  `--output-rotate-check-frequency`    | `0-9`               | `'10'` or `'100000'` Number of output file writes till above file size max vs real file size be checked.
+  `--output-rotate-check-frequency`   | `0-9`               | `'10'` or `'100000'` Number of output file writes till above file size max vs real file size be checked.
   `--output-rotate-actions`           | `a-zA-Z0-9_@,.:~\/` | `'compress-encrypt,remove-old'` or `'encrypted-email,remove-old'` List of actions, separated by commas `,` to take when output file's size and write count reaches above values.
   `--output-rotate-recipient`         | `a-zA-Z0-9_@,.:~\/` | `'admin_name@admin_domain.suffix'` or `'Admin-GPG-Key-ID'` Email address (if using email log rotation options) or GPG public key ID to re-encrypt and or send compressed output files to.
-  `--output-parse-command`            | null / disabled    | Disabled to avoid errors during user input parsing when spaces are present in values.
+  `--output-parse-command`            | null / disabled     | Disabled to avoid errors during user input parsing when spaces are present in values.
   `--output-bulk-dir`                 | `a-zA-Z0-9_@,.:~\/` | `'/tmp/encrypted_files'` or `"${HOME}/encrypted_files"` Directory path to save recognized files to. Note these files are not rotated but maybe appended to if not careful.
   `--output-bulk-suffix`              | null                | `'.gpg'` or `'.log'` File suffix to append to bulk encrypted files. Note if decrypting then unset to have previously encrypted file suffixes restored.
   `--padding-enable-yn`               | `a-zA-Z`            | `yes` or `no` default `no`. Used to control if following two options are considered as options for modifying read data.
@@ -89,24 +89,39 @@
   `--help=<command>` or `-h=<var>`    | null                | `null` Attempts to search for `-h=value` within host system's help documentation and within main script's detailed documentation.
   `*`                                 | null                | `null` Writes any unrecognized arguments as lines or words that should be written to named pipe if available.
 
- > Note using `--output-pre-parse-yn` or `--padding-enable-yn` options above will disable the script's ability to recognize file or directory paths and are available for further securing your encrypted server logs.
- **Do Not** use pipes with these options enabled with bulk file writes because that will corrupt your data, ie `cat picture.file > logging.pipe` will not result in happy decryption.
- Instead consider using two pipes; one for logging and one for general usage, and naming them such that they're not ever mixed up.
+ > Note using `--output-pre-parse-yn` or `--padding-enable-yn` options above
+ will disable the script's ability to recognize file or directory paths and are
+ available for further securing your encrypted server logs. **Do Not** use pipes
+ with these options enabled with bulk file writes because that will corrupt your
+ data, ie `cat picture.file > logging.pipe` will not result in happy decryption.
+ Instead consider using two pipes; one for logging and one for general usage,
+ and naming them such that they're not ever mixed up.
 
- > Note using `--source-var-file` CLI option maybe used to assign variable names found in Recognized command line options, their variables and default values table's middle column. This allows for `script_name.sh --source-var-file=/some/path/to/vars` to be used to assign script variables instead of defining them at run-time.
- Additionally this option maybe combined with `--save-options-yn` and `--save-variables-yn` options for saving values to a file instead; but only if the specified file does **not** already exist.
+ > Note using `--source-var-file` CLI option maybe used to assign variable names
+ found in Recognized command line options, their variables and default values
+ table's middle column. This allows for
+ `script_name.sh --source-var-file=/some/path/to/vars`
+ to be used to assign script variables instead of defining them at run-time.
+ Additionally this option maybe combined with
+ `--save-options-yn` and `--save-variables-yn` options for saving values to a
+ file instead; but only if the specified file does **not** already exist.
 
- > Note using unknown commands ie `'some string within quotes' some words outside quotes` will cause the main script to write those
- unrecognized values to the named pipe if/when available. This is for advanced users of the main script that wish to
- have a *header* or set of lines be the first things parsed by the processes of the pipe parser functions or custom script.
- This is only enabled within the script's main function if `--disown-yn` option has also been set to a *yes* like value.
+ > Note using unknown commands ie `'some string within quotes' some words
+ outside quotes` will cause the main script to write those unrecognized values
+ to the named pipe if/when available. This is for advanced users of the main
+ script that wish to have a *header* or set of lines be the first things parsed
+ by the processes of the pipe parser functions or custom script.
+ This is only enabled within the script's main function if `--disown-yn` option
+ has also been set to a *yes* like value.
 
- > Note using `--help` with additional options may access software external to this script but installed on the same host file system.
- Additionally if any scripted documentation exists then that will also be presented to the main script's user.
+ > Note using `--help` with additional options may access software external to
+ this script but installed on the same host file system. Additionally if any
+ scripted documentation exists then that will also be presented to the main
+ script's user.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
