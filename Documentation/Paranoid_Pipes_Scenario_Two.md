@@ -1,5 +1,7 @@
 # Scenario two:
 
+-----
+
  > `Logging output` -> `Pipe (encryption) input` -> `Encryption` ->
  `Pipe (decryption) input` -> `Log output (rotate)` -> `Encrypted email`
 
@@ -79,12 +81,12 @@ su notwwwuser -c "gpg --import /tmp/.gnupg/server_secret.key"
 rm -Irf /tmp/.gnupg
 ```
 
-# Write some scripts to different directories
+## Write some scripts to different directories
 
  > When using the main script of this project; be sure to pay attention to the
  differences in command line options used and not used between runs.
 
-## First is a pipe to pipe encryption named pipe listening script
+### First is a pipe to pipe encryption named pipe listening script
 
 ```
 /script/path/script_name.sh --copy-save-yn='yes'\
@@ -104,7 +106,7 @@ rm -Irf /tmp/.gnupg
  --disown-yn='yes' --help
 ```
 
-## Second pipe will decrypt
+### Second pipe will decrypt
 
  > With a little modification, anything written to it's listening pipe will
  output to a log file that fail2ban and other log monitoring services may read.
@@ -133,7 +135,7 @@ rm -Irf /tmp/.gnupg
  --disown-yn='yes' --help
 ```
 
-## Modify the second pipe listener's `Var_parsing_command` variable
+### Modify the second pipe listener's `Var_parsing_command` variable
 
  > And command it to decrypt instead of encrypt.
 
@@ -141,7 +143,7 @@ rm -Irf /tmp/.gnupg
 Var_parsing_command="gpg --decrypt"
 ```
 
-## or for specific user with their own key ring
+### or for specific user with their own key ring
 
 ```
 Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
@@ -153,7 +155,7 @@ Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
  as start order; stop encryption before stopping decryption to avoid writing
  logs to plan text file under the same name as named pipe.
 
-### Start stop lines for decryption pipe to log file.
+#### Start stop lines for decryption pipe to log file.
 
 ```
 # Start decryption pipe listener
@@ -162,25 +164,25 @@ Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
 echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs/website_host/www_access.pipe
 ```
 
-### Start stop lines for encryption pipe to pipe files.
+#### Start stop lines for encryption pipe to pipe files.
 
 ```
-# Start encryption pipe listener
+## Start encryption pipe listener
 /jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh
 # Stop decryption pipe listener
 echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe
 ```
 
-# Notes on differences between written script's options used above.
+## Notes on differences between written script's options used above.
 
-## Input -> output first script options
+### Input -> output first script options
 
 ```
  --named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe"\
  --output-parse-name="/jailed_logs/website_host/www_access.pipe"\
 ```
 
-## Input -> output second script options
+### Input -> output second script options
 
 ```
  --named-pipe-name="/jailed_logs/website_host/www_access.pipe"\
@@ -191,7 +193,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 
  > Now some maybe wondering what the benefit of this type of set up is. Simply if the second script dies then the first script will just make an encrypted log under the same file path as the second script's listening pipe; much like in `Scenario one`'s usage example. And if at a latter time you wish to move decryption to a separate physical server, ie over an VPN or SSH connection, then you'll only need to move the second script and private key to begin setting up pipe to pipe encrypted (doubly at that point) centralized log proxy decrypter... the authors will cover this in another scenario further on.
 
-## Input -> output pre-parsing and log rotation options in the first script
+### Input -> output pre-parsing and log rotation options in the first script
 
 ```
  --output-pre-parse-yn='yes'\
@@ -199,7 +201,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
  --output-save-yn='yes'\
 ```
 
-## Input -> output pre-parsing and log rotation options in the second script
+### Input -> output pre-parsing and log rotation options in the second script
 
 ```
  --output-pre-parse-yn='no'\
@@ -226,9 +228,9 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
  script to prevent GnuPG decryption from failing to decrypt we set this to `no`
  and read raw lines in.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by

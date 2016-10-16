@@ -1,5 +1,7 @@
 # Scenario three:
 
+-----
+
  > `Save custom script copy over SSH` -> `Target host's Logging output` ->
  `Pipe (encryption) input` -> `Encrypted Log output` ->
  `Rotate encrypt and email removing old`
@@ -217,9 +219,9 @@ Script_save_rotate_recipient='user@host.suffix'
 ## Finished above at Day Month Day# hh:mm:ss Zone Year 
 ```
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
