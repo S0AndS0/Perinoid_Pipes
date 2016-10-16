@@ -2,9 +2,9 @@
 
 ## Q: How is the code checked for bugs?
 
- > Both localy and remotely this repository is checked via a wonderful program,
- `shellcheck`, remote tests are fasilitated via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
- which is also how this project recieves updated *badges* on the main [ReadMe.md](../ReadMe.md)
+ > Both locally and remotely this repository is checked via a wonderful program,
+ `shellcheck`, remote tests are facilitate via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
+ which is also how this project receives updated *badges* on the main [ReadMe.md](../ReadMe.md)
  file.
 
 ## Q: What is this project?
@@ -27,7 +27,7 @@
 ## Q: Do I *need* this?
 
  > A: If you are a server administrator or perhaps a reporter in lands
- un-friendly to "*freedom* of press" then consider this project as yet another
+ unfriendly to "*freedom* of press" then consider this project as yet another
  tool to use for frustrating would be attackers of your servers or
  journalistic freedoms. Otherwise you likely do not need this project's
  services, the authors will acknowledge that the core goals of this project
@@ -35,9 +35,9 @@
  ways. However if you find a new usage for this project the authors would
  certainly enjoy knowing how you've found a need for this.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
