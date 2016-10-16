@@ -1,4 +1,4 @@
-## Scenario one:
+# Scenario one:
 
  > `Logging output` -> `Pipe (encryption) input` -> `Encrypted log output` ->
  `Rotate using encrypted email and compression`
@@ -8,15 +8,17 @@ This scenario was written with the following link's questions as it's
 
 -----
 
-### Quote begin
+## Quote begin
 
  > I'm dealing with some data that's governed by specific regulations and that
  must be handled in a specific manner.
 
- > I'm finding that this data ends up in some of my log files as a result of the system operating as intended. I'd like to find a way to log messages on the server that receives that date, but to do so in such a way that the data is encrypted as it's written to disk and may not be decrypted by
- that same server.
+ > I'm finding that this data ends up in some of my log files as a result of the
+ system operating as intended. I'd like to find a way to log messages on the
+ server that receives that date, but to do so in such a way that the data is
+ encrypted as it's written to disk and may not be decrypted by that same server.
 
-### Quote cut-off
+## Quote cut-off
 
 -----
 
@@ -57,9 +59,9 @@ This scenario was written with the following link's questions as it's
 
 ### Summery of logging data flow
 
-1. Client interacts with server such that logs are generated. Modify the
- server or daemon to use the same file path as defined by `--named-pipe-name`
- option for output of it's logs.
+1. Client interacts with server such that logs are generated. Modify the server
+ or daemon to use the same file path as defined by `--named-pipe-name` option
+ for output of it's logs.
 
 2. Written data to named pipe is read by Bash loops contained in customized
  script copy defined by `--copy-save-name` option.
@@ -75,11 +77,11 @@ This scenario was written with the following link's questions as it's
  count against the count defined by `--output-rotate-check-frequency` option
  and usually restarts processes that listen to named pipe for more writes.
 
- - If the internal write count matches that of
+ > If the internal write count matches that of
  `--output-rotate-check-frequency` or is greater then the
  `--output-rotate-max-bites` value is used to check the encrypted log file size.
 
- - If the encrypted log file size matches that of `--output-rotate-max-bites`
+ > If the encrypted log file size matches that of `--output-rotate-max-bites`
  or is greater then the actions defined by `--output-rotate-actions` option is
  considered.
 
@@ -157,7 +159,7 @@ This scenario was written with the following link's questions as it's
 
  > and the `Group` allowed to write to named pipe file. Tip the owner in bellow
  should be the same as the script copy's owner and the group should be the same
- as one that the chrooted web server's logger is apart of. 
+ as one that the chrooted web server's logger is apart of.
 
 ```
 --named-pipe-ownership='notwwwuser:wwwgroup'
@@ -181,18 +183,19 @@ This scenario was written with the following link's questions as it's
  that the target server currently uses, make use of the old log file's
  `group`'s permissions for defining the above command line `wwwgroup` value.
 
-#### Cause script, once written, to be run in the background via
- (internally called) `disown` command. This option is the last in above example
- options that will be written to the script copy.
+#### Cause script, once written, to be run in the background
+
+ > Note this uses (internally called) `disown` command. This option is the last
+ in above example options that will be written to the script copy.
 
 ```
 --disown-yn='yes'
 ```
 
-#### Cause main script to exit after printing set options and without writing
- custom script. Remove this option after reviewing that options are set for
- your needs and the script will be saved and started prior to the main script
- exiting.
+#### Printing set options & exit without writing scirpt copy
+
+ > Remove this option after reviewing that options are set for your needs and
+ the script will be saved and started prior to the main script exiting.
 
 ```
 --help
@@ -207,7 +210,7 @@ This scenario was written with the following link's questions as it's
  sets of links are what this document's author could find for proper server
  restart signals; hint nginx is easiest.
 
- - Web Server - [Nginx log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
+ > Web Server : [Nginx log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
  Modify virtual host log access and log error lines to point to related named
  pipes, then use the following `kill` signal to restart the server's logging.
  Note `master.nginx.pid` should contain the full file path if not within Nginx's
@@ -217,9 +220,9 @@ This scenario was written with the following link's questions as it's
 kill -USR1 $(cat master.nginx.pid)
 ```
 
- - Web Server - [Apache 2.4 log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
+ > Web Server : [Apache 2.4 log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
 
- -Log Daemon/Server - [Rsyslog v8 `ompipe` plug-in documentation](http://www.rsyslog.com/doc/v8-stable/configuration/modules/ompipe.html)
+ > Log Daemon/Server : [Rsyslog v8 `ompipe` plug-in documentation](http://www.rsyslog.com/doc/v8-stable/configuration/modules/ompipe.html)
 
 #### Automation of named pipe log encryption for nginx
 
@@ -254,97 +257,21 @@ After clients reconnect you'll see the `~.gpg` logs start filling up, use
  > Now at some point in the future you or your web-admin will need access to the
  logs, first decrypt the rolled logs with the second key used to encrypt them
  and then have your web-admin run something like the following to have
- encrypted data *chunks* shoved through decryption commands.
+ encrypted data *chunks* shoved through decryption commands. This *helper* script
+ can now be found named [Paranoid_Pipes_Scenario_One.sh](../Script_Helpers/Paranoid_Pipes_Scenario_One.sh)
+ and used by your decrypting server to accomplish this goal. Which should (for
+ medium to small log files) pull each encrypted section within a previously
+ appended to encrypted log file out into an array of arrays, then push those
+ arrays one by one through either; decryption command & out to clear text file,
+ or, if a pipe is detected as above script's output path then the compound array
+ will dump there instead and it'll be up to the listening pipe's script to output
+ to it's destination. This allows, with proper custom settings, for piping
+ through search parameters that save only relevant or requested information to a
+ clear text file while ignoring everything else.
+
+## Licensing notice for this file
 
 ```
-#!/usr/bin/env bash
-## The following variable should be your encrypted file that has been appended to.
-Var_input_file="${1?No input file to read?}"
-## The following variable should be your named pipe for decrypting
-Var_output_file="${2:-/tmp/out.log}"
-## You may assign the above at run-time using the following example call to this script
-#	script_name.sh "/path/to/input" "/path/to/output"
-Var_search_output="$3"
-Func_spoon_feed_pipe_decryption(){
-	_input="${@?No input file or strings to parse}"
-	_end_of_line=''
-	## If input is a file then use standard redirection to mapfile command.
-	##  Else use variable as file redirection trick to get mapfile to build an array from input.
-	if [ -f "${_input}" ]; then
-		mapfile -t _arr_input < "${_input}"
-	else
-		mapfile -t _arr_input <<<"${_input}"
-	fi
-	## Initialize internal count that is either reset or added to in the following loop.
-	let _count=0
-	until [ "${_count}" = "${#_arr_input[@]}" ]; do
-		## If current index in array equals ${_end_of_line} value then append end of line
-		##  to ${_arr_to_parse[@]} and reset ${_arr_input} to include everything not parsed
-		##  and reset the counter. Else we should append the current index to ${_arr_to_parse}
-		##  and loop again until the count and array amount are equal.
-		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
-			_arr_to_parse+=( "${_arr_input[${_count}]}" )
-			_arr_input=( "${_arr_input[@]:$((${_count}+1))}" )
-			let _count=0
-		else
-			_arr_to_parse+=( "${_arr_input[${_count}]}" )
-			let _count++
-		fi
-	done
-	unset _count
-	## If above array has some values to parse then start feeding parsing
-	##  function with an array of arrays, one array at a time.
-	if ! [ -z "${_arr_to_parse[@]}" ]; then
-		let _count=0
-		until [ "${_count}" = "${#_arr_to_parse[@]}" ]; do
-			Do_stuff_with_lines "${_arr_to_parse[${_count}]}"
-			let _count++
-		done
-		unset _count
-	fi
-}
-Do_stuff_with_lines(){
-	_enc_input=( "$@" )
-	_decryption_command="$(which gpg) -d"
-	_search_command="$(which grep) -E \"${Var_search_output}\""
-	## If using a named pipe to preform decryption then push encrypted array through
-	##   named pipe's input for use, if output is a file then use above decrypting command
-	##  and append to the file. Else output decryption to terminal.
-	if [ -p "${Var_output_file}" ]; then
-		cat <<<"${_enc_input[@]}" > ${Var_output_file}
-	elif [ -f "${Var_output_file}" ]; then
-		if [ -z "${#Var_search_output}" ]; then
-			cat <<<"${_enc_input[@]}" | ${_decryption_command} >> ${Var_output_file}
-		else
-			cat <<<"${_enc_input[@]}" | ${_decryption_command} | ${_search_command} >> ${Var_output_file}
-		fi
-	else
-		if [ -z "${#Var_search_output}" ]; then
-			cat <<<"${_enc_input[@]}" | ${_decryption_command}
-		else
-			cat <<<"${_enc_input[@]}" | ${_decryption_command} | ${_search_command}
-		fi
-	fi
-}
-Main_func(){
-	Func_spoon_feed_pipe_decryption "${Var_input_file}"
-}
-Main_func
-```
-
- > Above should (for medium to small log files) pull each encrypted section
- within a previously appended to encrypted log file out into an array of
- arrays, then push those arrays one by one through either; decryption command &
- out to clear text file, or, if a pipe is detected as above script's output
- path then the compound array will dump there instead and it'll be up to the
- listening pipe's script to output to it's destination. This allows, with
- proper custom settings, for piping through search parameters that save only
- relevant or requested information to a clear text file while ignoring
- everything else.
-
-# Licensing notice for this file
-
- > ```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
