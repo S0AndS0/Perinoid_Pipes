@@ -6,6 +6,46 @@
  words **do not** bother them because of bugs within this project; instead
  communicate with this project's authors to resolve this project's bugs.
 
+## Sources of information used in project's script
+
+ - LinuxJournal - [Guide for Linux named pipes](http://www.linuxjournal.com/content/using-named-pipes-fifos-bash)
+ - DigitalOcean - [Guide for Linux GPG command line options](https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps)
+ - Stack Exchange - [Q&A turn on/off logging](http://unix.stackexchange.com/questions/10922/temporarily-suspend-bash-history-on-a-given-shell)
+ - Stack Exchange - [Log rotate within bash script](http://unix.stackexchange.com/questions/231486/how-to-implement-logrotate-in-shell-script)
+ - CommandLineFu - [Compress and encrypt files CommandLineFu](http://www.commandlinefu.com/commands/view/7952/tar.gz-with-gpg-encryption-on-the-fly)
+ - CommandLineFu - [Compress and encrypt directory CommandLineFu](http://www.commandlinefu.com/commands/view/12007/encrypt-directory-with-gnupg-and-tar)
+ - CommandLineFu - [Send email with one or more attacments](http://www.commandlinefu.com/commands/view/2886/send-email-with-one-or-more-binary-attachments)
+ - Stack Overflow - [Modify Bash built in IFS (in field separator)](http://stackoverflow.com/questions/4128235/what-is-the-exact-meaning-of-ifs-n)
+ - Stack Overflow - [Disown PID & grab PID of last command or function Bash magics](http://stackoverflow.com/questions/5719030/bash-silently-kill-background-function-process)
+ - GitHub - [Mapfile (or variable with "heredoc") to array](https://gist.github.com/akwala/9013023)
+ - Stack Overflow - [Grab terminal column and line values](http://stackoverflow.com/questions/1780483/lines-and-columns-environmental-variables-lost-in-a-script)
+ - Stack Overflow - [Make terminal output pritier](http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
+ - Wikipedia - [Wiki of 'echo -e ""' <color> to <code>](https://en.wikipedia.org/wiki/ANSI_escape_code)
+ - Stack Overflow - [Sanitize user input with Bash substitutions.](http://stackoverflow.com/a/89970)
+
+### Examples of string *scrubbing*
+
+ - alpha numeric only: `var_test="${var_test//[^a-zA-Z0-9]/}"`
+ - alpha numeric with comments, spaces, and underscores allowed only:
+ `var_test="${var_test//[^a-zA-Z0-9# _]/}"`
+
+ > Note one *gotcha* for allowing double quotes as well as other special
+ characters; use `\` (backslash) to escape them.
+
+ - allow double quotes `var_test="${var_test//[^a-zA-Z0-9# _\"]/}"`
+
+ > Other special characters that require '\' backslash in order to allow
+
+```
+\/ \^ \( \) \\ \{ \} \- \' \"
+```
+
+ - Example of all above substitution tricks
+
+```
+ var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
+```
+
 ## Security encryption notes
 
 [DSA is broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity) use [RSA](https://en.wikipedia.org/wiki/RSA_(algorithm)) instead.
@@ -24,13 +64,13 @@ There are three main categories of encryption;
  uses two (or more keys) that *usually* can only decrypt what their related key
  partner has encrypted; in special use cases there's ways of making keys with
  specific permissions but that's usually only required for very specific threat
- modals or usage scenerios.
+ modules or usage scenarios.
 
 [Hybrid or `sharing symmetric key via public key`](https://en.wikipedia.org/wiki/Hybrid_cryptosystem)
  *usually* uses asymmetric encryption to relay a one time (or limited time)
  symmetric key. The symmetric key is then used for the bulk of encryption to
  save time and processing power. This is one of the most common types of
- encryption now deploied readers should at least make an attempt at understanding
+ encryption now deployed readers should at least make an attempt at understanding
  the finer points of this encryption option in order to make the best use of this
  project.
 
@@ -45,17 +85,13 @@ There are three main categories of encryption;
 
 ## Others seeking tools similar to this
 
- > The authors have now preposed this project as a posible solution or at the very
- least a *band-aid* while the following question posters look for something
+ > The authors have now proposed this project as a possible solution or at the
+ very least a *band-aid* while the following question posters look for something
  better suited.
 
  - Security Stack Exchange - [Write only one way encrypted directory](http://security.stackexchange.com/questions/6218/is-there-any-asymmetrically-encrypted-file-system)
- Currently only one tool offered seems to fit their requirements but accepted
- answer doesn't provide solution; just reasons as to why there's no solution.
  - Serverfault - [Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
- No solutions posted!
  - Stack Overflow - [Android asymmetric encryption line by line](http://stackoverflow.com/questions/29131427/efficient-asymmetric-log-encryption-in-android/29134101)
- No solutions posted!
 
 ## Similar tools & guides
 
@@ -88,18 +124,15 @@ There are three main categories of encryption;
  - GitHub - [Beautiful `git` with `vimdiff` tutorial in markdown format](https://gist.github.com/karenyyng/f19ff75c60f18b4b8149)
  - CodeClimate - [Getting started with automated repository checks](https://docs.codeclimate.com/docs/getting-started-configuration)
 
-## Guides for command line text editers `vim`, `vimdiff`, `nano`,...
+## Guides for command line text editors `vim`, `vimdiff`, `nano`,...
 
  - GitHub - [Cheat sheet for `vimdiff` with some good comments](https://gist.github.com/mattratleph/4026987)
+ - DevMartin - [Mergetool `vimdiff` cheat sheat](http://devmartin.com/blog/2014/06/basic-vimdiff-commands-for-git-mergetool/)
+ - Linux - [Spell checking `vim` tutorial](https://www.linux.com/learn/using-spell-checking-vim)
 
-[Mergetool `vimdiff` cheat sheat](http://devmartin.com/blog/2014/06/basic-vimdiff-commands-for-git-mergetool/)
-
-- Linux - [Spell checking `vim` tutorial](https://www.linux.com/learn/using-spell-checking-vim)
-
-## Guides for `bash` shell intrupriter
+## Guides for `bash` shell interpreter
 
  - Stack Overflow - [Grab last command used on Bash](http://stackoverflow.com/a/9502698)
-
  - GitHub - [Methods of generating random strings of specified length](https://gist.github.com/earthgecko/3089509)
 
 ## Guides for web servers
@@ -111,7 +144,7 @@ There are three main categories of encryption;
 
  - Stack Exchange - [Rsyslog to fifo answered](http://unix.stackexchange.com/questions/134896/how-to-redirect-logs-to-a-fifo-device)
 
-## Guides for remote adminastration
+## Guides for remote administrator
 
  - Server Fault - [Run local script over SSH to remote](http://serverfault.com/a/595256)
 
