@@ -153,8 +153,8 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 
 ### Formatting numbered lists (example three)
 
- > Occasionally there is cause to combine both bullited lists and numbered, 
- however, doing this will dissable the markdown recongition of numbers so
+ > Occasionally there is cause to combine both bulleted lists and numbered,
+ however, doing this will disable the markdown recognition of numbers so
  `example two` above will no longer apply.
 
 1. Number one
@@ -198,9 +198,9 @@ This pattern should continue to ensure that readers of both `raw` formatted text
  > Note also in above's `raw` formatting how extra empty new-lines where needed
  to insure that each numbered entry remains on it's own line once rendered.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by

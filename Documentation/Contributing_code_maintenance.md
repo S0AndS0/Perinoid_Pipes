@@ -17,7 +17,7 @@ Fold_Message(){
 ```
 
  > The above function maybe written into your terminal or saved to a file, so
- long as it is `source`d into your current terminal's shell enviroment the above
+ long as it is `source`d into your current terminal's shell environment the above
  function can then be used to format git commits.
 
 ### Example of formatted commit with above function
@@ -28,15 +28,15 @@ git commit --branch -S -m "Title of changes"\
  Documentation/Contributing_code_maintenance.md
 ```
 
- > Inportant bit from above example is the ` -m "$(Fold_Message 'commit text')"
+ > Important bit from above example is the ` -m "$(Fold_Message 'commit text')"
  part as the `$()` opens a sub-shell to push message text through the previously
- assigned function. While this is **not** required it does help with readabiloty.
+ assigned function. While this is **not** required it does help with readability.
 
 ## Make custom branch for tracking local changes
 
 ```
 Var_custom_branch="$(git branch --list | awk '/\*/{print $2}')"
-Var_local_branch_name=$(eval "date -u +%s")_${Var_custom_branch}
+Var_local_branch_name=$(date -u +%s)_${Var_custom_branch}
 git checkout -b ${Var_local_branch_name}
 ```
 
@@ -129,7 +129,7 @@ When and if merge conflicts happen see [Contributing_code_merge_conflicts.md](Co
 
 # Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by

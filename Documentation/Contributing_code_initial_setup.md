@@ -206,9 +206,9 @@ Next read up on [Contributing_code_maintenance.md](Contributing_code_maintenance
  documentation for instructions on how to resolve local merge conflicts on the
  off chance that those arise.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
- > ```
+```
     Copyright (C) 2016 S0AndS0.
     Permission is granted to copy, distribute and/or modify this document under
     the terms of the GNU Free Documentation License, Version 1.3 published by
