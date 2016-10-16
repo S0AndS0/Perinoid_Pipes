@@ -15,6 +15,76 @@
 
 ## Files contained within this directory
 
+### GnuPG installation and configuration
+
+[Gnupg_installation_options.md](Gnupg_installation_options.md)
+ Documentation of various options available to non-Linux & Linux based operating
+ systems. Note the only platform that this project is known to work on are Linux
+ based OSs and the only platform that this project is likely not able to work on
+ are IOS based devices.
+
+[Gnupg_configuration.md](Gnupg_configuration.md)
+ Documentation of *best practices* configuration of GnuPG, the attached configs
+ are very similar to what contributers and authors of this project make or should
+ make use of.
+
+[Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
+ Documentation of daily use command line command for GnuPG; in other words a
+ "cheet sheet" for GnuPG.
+
+[Gnupg_key_management.md](Gnupg_key_management.md)
+ Documentation of key management command line commands to use with GnuPG. Topics
+ covered include; generating new private keys, revocation certificates, signing
+ other GnuPG user's public keys, and editing *`trust`* settings for keys.
+
+[Gnupg_with_git_tips.md](Gnupg_with_git_tips.md)
+ Covers the finer points of setting `git` up with GnuPG such that future code
+ contributers do not run into avoidable errors.
+
+[Gnupg_usefull_tools.md](Gnupg_usefull_tools.md)
+ Documentation of tools other than those found within this project that the
+ authors of this project believe are worth notifying readers of. While not all
+ have been tested by the authors of this project, some where just *too cool* and
+ not mentioning'em would be a shame.
+
+### Documentation for [Paranoid_Pipes.sh](../Paranoid_Pipes.sh)
+
+[Paranoid_Pipes_Quick_Start.md](Paranoid_Pipes_Quick_Start.md)
+ Documentation on getting this project's main script up and running with test
+ data. Note the steps documented are only for testing the features available,
+ see `Paranoid_Pipes_CLO.md` for a full list of all known command line options.
+
+[Paranoid_Pipes_Asymmetric_Encryption.md](Paranoid_Pipes_Asymmetric_Encryption.md)
+ Documentation for explaining what data cannot be protected by this project or
+ the scripts that it writes.
+
+[Paranoid_Pipes_Bash_Logics.md](Paranoid_Pipes_Bash_Logics.md)
+ Documentation for the internal logics of this project's main script operations.
+
+[Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
+ Documentation for all recognized command line options (`CLO`) available to the
+ `Paranoid_Pipes.sh` script.
+
+[Paranoid_Pipes_Scenario_One.md](Paranoid_Pipes_Scenario_One.md)
+ Documentation for setting up web server logging operations to write to one of
+ this project's named pipes for encryption.
+
+[Paranoid_Pipes_Scenario_Two.md](Paranoid_Pipes_Scenario_Two.md)
+ Documentation for setting up named pipes for both encryption and decryption on
+ the same host but on segregated file systems. Much like `Scenario One` but with
+ the requirements that an IDS/IPS system is monitoring plain-text logs for the
+ brief time that they're allowed to live on that host.
+
+[Paranoid_Pipes_Scenario_Three.md](Paranoid_Pipes_Scenario_Three.md)
+ Documentation for how to setup multiple remote servers with customized script
+ copies over `ssh`.
+
+[Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
+ Contains documentation on all know issues that new and current users of this
+ project should be aware of.
+
+### Documentation for code & documet contributions to this project
+
 [Contributing_code_credits.md](Contributing_code_credits.md)
  Will eventually contain information on how users of this project can support
  code & documentation maintainers of this project as well as how these
@@ -48,10 +118,14 @@
  authors are happy to add your info to a `Contributing_Financially_credits.md`
  file within this project's `Documentation/` directory.
 
+### Self education on encryption & scripting resources
+
 [Education_resources.md](Education_resources.md)
  Documentation of verious resources that authors of this project found useful
  when developing this project's script as well as useful resources for describing
  the finer points of the encryption subject as a whole.
+
+### Miscalanious documentation
 
 [FAQ.md](FAQ.md)
  Some of the questions already asked about this project as well as questions the
@@ -60,78 +134,9 @@
  users of this project visit to get quickly acquainted with what this project is
  all about.
 
-[Gnupg_installation_options.md](Gnupg_installation_options.md)
- Documentation of various options available to non-Linux & Linux based operating
- systems. Note the only platform that this project is known to work on are Linux
- based OSs and the only platform that this project is likely not able to work on
- are IOS based devices.
-
-[Gnupg_configuration.md](Gnupg_configuration.md)
- Documentation of *best practices* configruation of GnuPG, the attached configs
- are very similar to what contributers and authors of this project make or should
- make use of.
-
-[Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
- Documentation of daily use command line command for GnuPG; in other words a
- "cheet sheet" for GnuPG.
-
-[Gnupg_key_management.md](Gnupg_key_management.md)
- Documentation of key management command line commands to use with GnuPG. Topics
- covered include; generating new private keys, revocation certificates, signing
- other GnuPG user's public keys, and editing *`trust`* settings for keys.
-
-[Gnupg_with_git_tips.md](Gnupg_with_git_tips.md)
- Covers the finer points of setting `git` up with GnuPG such that future code
- contributers do not run into avoidable errors.
-
-[Gnupg_usefull_tools.md](Gnupg_usefull_tools.md)
- Documentation of tools other than those found within this project that the
- authors of this project believe are worth notifing readers of. While not all
- have been tested by the authors of this project, some where just *too cool* and
- not mentioning'em would be a shame.
-
 [Modifying.md](Modifying.md)
  Covers steps for making local/private changes to this project that prevent
  private modifications from causing `git` to *lock-up* and refuse to `fetch`
  updates from the authors. Note following this document will cause your commits
  or changes to become un-signed and thus these private changes will become very
  difficult to merge with the main project.
-
-[Paranoid_Pipes_Asymmetric_Encryption.md](Paranoid_Pipes_Asymmetric_Encryption.md)
- Documentation for explaining what data cannot be protected by this project or
- the scripts that it writes. This file was originally apart of the
- `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-[Paranoid_Pipes_Bash_Logics.md](Paranoid_Pipes_Bash_Logics.md)
- Documentation for the internal logics of this project's main script operations.
- This file was originally apart of the `ReadMe_Paranoid_Pipes.md` file so there
- maybe some editing still left to do.
-
-[Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
- Documentation for all recognized command line options (`CLO`) available to the
- `Paranoid_Pipes.sh` script. This file was originally apart of the
- `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-[Paranoid_Pipes_Scenario_One.md](Paranoid_Pipes_Scenario_One.md)
- Documentation for setting up web server logging operations to write to one of
- this project's named pipes for encryption. This file was originally apart of
- the `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to
- do.
-
-[Paranoid_Pipes_Scenario_Two.md](Paranoid_Pipes_Scenario_Two.md)
- Documentation for setting up named pipes for both encryption and decryption on
- the same host but on segregated file systems. Much like `Scenario One` but with
- the requirements that an IDS/IPS system is monitoring plain-text logs for the
- brief time that they're allowed to live on that host. This file was originally
- apart of the `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still
- left to do.
-
-[Paranoid_Pipes_Scenario_Three.md](Paranoid_Pipes_Scenario_Three.md)
- Documentation for how to setup multiple remote servers with customized script
- copies over `ssh`. This file was originally apart of the
- `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
-
-[Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
- Contains documentation on all know issues that new and current users of this
- project should be aware of. This file was originally apart of the
- `ReadMe_Paranoid_Pipes.md` file so there maybe some editing still left to do.
