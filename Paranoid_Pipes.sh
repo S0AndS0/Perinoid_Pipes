@@ -18,7 +18,7 @@ set +o history
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='1476464123'
+Var_script_subversion='1476651714'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -30,9 +30,9 @@ Var_script_pid=${Var_script_pid:-$BASHPID}
 Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user name variable of current user running this script in case
 ##  we have to run commands selectively under a different user.
- : ${USER?}
+ : "${USER?}"
 ## Refresh user home directory variable for saving logs and script copies to
- : ${HOME?}
+ : "${HOME?}"
 Var_script_current_user="${USER}"
 ## Columns of terminal width, defaults to 80 if not readable
 Var_columns_width="${COLUMNS:-80}"
@@ -52,7 +52,7 @@ Var_gpg_exec_path="$(which gpg)"
 ## Used for silencing output of loops, ei
 # <command_to_silence> >${Var_dev_null} 2>&1 &
 # <command_to_quite> &> ${Var_dev_null}
-Var_dev_null='/dev/null'
+Var_dev_null="${Var_dev_null}"
 ## Save date command with seconds sense 1970 option for logs and messages that include timing info
 Var_star_date=$(date -u +%s)
 
@@ -60,7 +60,7 @@ Var_star_date=$(date -u +%s)
 ##  to ensure variables that this script expects numbers to be contained
 ##  are only allowed to contain numbers if set at the command line.
 Var_number_regex='[^0-9]'
-## Non-simbol non-numerical regex variable bellow is used much like above
+## Non-symbol non-numerical regex variable bellow is used much like above
 ##  for only matching letters
 Var_azAZ_regex='[^a-zA-Z]'
 ## Another for file paths, emails, and user permissions
@@ -251,21 +251,22 @@ Var_disown_parser_yn="yes"
 ##  codes, this also enables the contained string to preform new lines '\n'
 ##  and other features; be aware of what is allowed to be expanded when
 ##  using the '-e' with echo.
-##  Additional note for use and resetting of colors within echoed strings
+## Note commented color assignments are currently not used by this script
+##  and are commented to keep 'shellcheck' *happier* with this script.
 Var_color_red='\033[0:31m'
-Var_color_green='\033[0:32m'
-Var_color_yellow='\033[0:33m'
-Var_color_blue='\033[0:34m'
-Var_color_purple='\033[0:35m'
-Var_color_cyan='\033[0:36m'
-Var_color_gray='\033[0:37m'
+#Var_color_green='\033[0:32m'
+#Var_color_yellow='\033[0:33m'
+#Var_color_blue='\033[0:34m'
+#Var_color_purple='\033[0:35m'
+#Var_color_cyan='\033[0:36m'
+#Var_color_gray='\033[0:37m'
 Var_color_lred='\033[1:31m'
 Var_color_lgreen='\033[1:32m'
 Var_color_lyellow='\033[1:33m'
-Var_color_lblue='\033[1:34m'
-Var_color_lpurple='\033[1:35m'
-Var_color_lcyan='\033[1:36m'
-Var_color_lgray='\033[1:37m'
+#Var_color_lblue='\033[1:34m'
+#Var_color_lpurple='\033[1:35m'
+#Var_color_lcyan='\033[1:36m'
+#Var_color_lgray='\033[1:37m'
 Var_color_null='\033[0m'
 ##  Example of usage:
 ##   echo -e "${Var_color_lpurple}This should be light purple\n${Var_color_null}And this should be colorless."
@@ -289,21 +290,6 @@ Var_save_variables='no'
 
 ### Experimental variables and alternative variable examples
 Var_authors_contact='strangerthanbland@gmail.com'
-
-## Dew to the different file permissions that maybe
-##  assigned above, if bellow is set to a value read
-##  as 'yes' then this script will attempt to assume
-##  the correct user to preform scripted actions.
-Var_assume_users_yn="no"
-## If above is enabled then bellow is used to compare
-##  commands run under a specific user. Generally commands
-##  that do not error out exit with a value of '0'
-Var_good_exit_status='0'
-## The above maybe used in combination with [Func_run_command_under_user]
-##  function by assigning a user as first argument and command to attempt
-##  as second argument; example call to 'echo' executable path.
-#	Func_run_command_under_user "${Var_messaging_user%*:}" "# Testing echo as [${Var_messaging_user%*:}] user"
-Var_messaging_user="${Var_script_current_user}"
 
 ## Do the reverse of above encryption saving output to '${Var_pipe_file_name%.*}.log'
 ##  instead. Note doing this requires that you either have password caching
@@ -336,7 +322,7 @@ Func_messages(){
 	## Use echo to notify script user of various levels of information if user set debug level
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
 	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-		## Set colors of hashmarks in messages based on diferances in debugging levels.
+		## Set colors of hash marks in messages based on differences in debugging levels.
 		if [ "${Var_debugging}" = "${_debug_level}" ]; then
 			_custom_color="${Var_color_lgreen}"
 		elif [ "${Var_debugging}" -gt "${_debug_level}" ]; then
@@ -344,7 +330,7 @@ Func_messages(){
 		else
 			_custom_color="${Var_color_red}"
 		fi
-		## Note this ugly line is what makes messages line wrap at word boundries.
+		## Note this ugly line is what makes messages line wrap at word boundaries.
 		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
 		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
@@ -772,35 +758,21 @@ Func_variable_assignment_reader(){
 	## End: Template of adding messages to read out current settings
 	## Print and/or log variables that are not editable by user input first.
 	Func_messages '## File path variables to file system executables used by this script ##' '2' '3'
-	Func_messages '# GPG or GPG2 [${Var_gpg_exec_path}] executable file path' '2' "3"
-	Func_messages "#  ${Var_gpg_exec_path}" '2' "3"
-	Func_messages '# Change permissions (chmod) executable file path [${Var_chmod_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_chmod_exec_path}" '2' '3'
-	Func_messages '# Change Ownership (chown) executable file path [${Var_chown_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_chown_exec_path}" '2' '3'
-	Func_messages '# Echo (echo) executable file path [${Var_echo_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_echo_exec_path}" '2' '3'
-	Func_messages '# Make First in First out named pipe (mkfifo) executable file path [${Var_mkfifo_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_mkfifo_exec_path}" '2' '3'
-	Func_messages '# Concatenate (cat) executable file path [${Var_cat_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_cat_exec_path}" '2' '3'
-	Func_messages '# Make directory (mkdir) executable file path variable [${Var_mkdir_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_mkdir_exec_path}" '2' '3'
-	Func_messages '# Move directory or file (mv) executable file path variable [${Var_mv_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_mv_exec_path}" '2' '3'
-	Func_messages '# Remove directory or file (rm) executable file path variable [${Var_rm_exec_path}]' '2' '3'
-	Func_messages "#  ${Var_rm_exec_path}" '2' '3'
+	Func_messages "# Parsing executable file path: [${Var_gpg_exec_path}]" '2' "3"
+	Func_messages "# Change permissions (chmod) executable file path: [${Var_chmod_exec_path}]" '2' '3'
+	Func_messages "# Change Ownership (chown) executable file path: [${Var_chown_exec_path}]" '2' '3'
+	Func_messages "# Echo (echo) executable file path: [${Var_echo_exec_path}]" '2' '3'
+	Func_messages "# Make First in First out named pipe (mkfifo) executable file path: [${Var_mkfifo_exec_path}]" '2' '3'
+	Func_messages "# Concatenate (cat) executable file path: [${Var_cat_exec_path}]" '2' '3'
+	Func_messages "# Make directory (mkdir) executable file path: [${Var_mkdir_exec_path}]" '2' '3'
+	Func_messages "# Move directory or file (mv) executable file path: [${Var_mv_exec_path}]" '2' '3'
+	Func_messages "# Remove directory or file (rm) executable file path: [${Var_rm_exec_path}]" '2' '3'
 	Func_messages '## Bash shell built in variables used by this script ##' '2' '3'
-	Func_messages '# Script directory variable [${Var_script_dir}]' '2' "3"
-	Func_messages "#  ${Var_script_dir}" '2' "${Var_logging}"
-	Func_messages '# Script name variable [${Var_script_name}]' '2' "3"
-	Func_messages "#  ${Var_script_name}" '2' "${Var_logging}"
-	Func_messages '# Function PID variable [${Var_subshell_pid}]' '2' '3'
-	Func_messages "#  ${Var_subshell_pid}" '2' '3'
-	Func_messages '# PID variable of this script [${Var_script_pid}]' '2' '3'
-	Func_messages "#  ${Var_script_pid}" '2' '3'
-	Func_messages '# User executing this script [${Var_script_current_user}]' '2' '3'
-	Func_messages "#  ${Var_script_current_user}" '2' '3'
+	Func_messages "# Script directory: [${Var_script_dir}]" '2' "3"
+	Func_messages "# Script name: [${Var_script_name}]" '2' "3"
+	Func_messages "# Function PID: [${Var_subshell_pid}]" '2' '3'
+	Func_messages "# PID of this script: [${Var_script_pid}]" '2' '3'
+	Func_messages "# User executing this script: [${Var_script_current_user}]" '2' '3'
 	## If user input was provided then print and/or log user editable variables,
 	##  else print and/or log script assigned variables.
 	if [ "${#_user_input}" -gt "0" ]; then
@@ -809,64 +781,38 @@ Func_variable_assignment_reader(){
 		### Recognized commands can be printed with "${Var_script_name} --help"
 	else
 		Func_messages '## Logging & settings internal to this script ##' '2' '3'
-		Func_messages '# Script debugging level [${Var_debugging}]' '2' "3"
-		Func_messages "#  ${Var_debugging}" '2' "3"
-		Func_messages '# Save parsed input to file? [${Var_save_encryption_yn}' '2' "3"
-		Func_messages "#  ${Var_save_encryption_yn}" '2' "3"
-		Func_messages '# Encrypt lines and files sent to named pipe to following recipient [${Var_gpg_recipient}]' '2' "3"
-		Func_messages "#  ${Var_gpg_recipient}" '2' "3"
-		Func_messages '# GPG options to use [${Var_gpg_recipient_options}]' '2' "3"
-		Func_messages "#  ${Var_gpg_recipient_options}" '2' "3"
-		Func_messages '# Named pipe file path and name [${Var_pipe_file_name}]' '2' "3"
-		Func_messages "#  ${Var_pipe_file_name}" '2' "3"
-		Func_messages '# File path and name to save logs (parsed from named pipe) to [${Var_parsing_output_file}]' '2' "3"
-		Func_messages "#  ${Var_parsing_output_file}" '2' "3"
+		Func_messages "# Script debugging level: [${Var_debugging}]" '2' "3"
+		Func_messages "# Save parsed input to file: [${Var_save_encryption_yn}" '2' "3"
+		Func_messages "# Encrypt lines and files sent to named pipe to recipient: [${Var_gpg_recipient}]" '2' "3"
+		Func_messages "# GPG options to use: [${Var_gpg_recipient_options}]" '2' "3"
+		Func_messages "# Named pipe file path: [${Var_pipe_file_name}]" '2' "3"
+		Func_messages "# File path and name to save logs (parsed from named pipe) to: [${Var_parsing_output_file}]" '2' "3"
 		Func_messages '## Script &/or template shared settings ##' '2' '3'
-		Func_messages '# Script quit listening string' '2' "3"
-		Func_messages "#  ${Var_pipe_quit_string}" '2' "3"
-		Func_messages '# Named pipe permissions [${Var_pipe_permissions}]' '2' "3"
-		Func_messages "#  ${Var_pipe_permissions}" '2' "3"
-		Func_messages '# Named pipe ownership [${Var_pipe_ownership}]' '2' "3"
-		Func_messages "#  ${Var_pipe_ownership}" '2' "3"
-		Func_messages '# Command to run on exit [${Var_trap_command}]' '2' "3"
-		Func_messages "#  ${Var_trap_command}" '2' "${Var_logging}"
-		Func_messages '# Command to use when parsing input from named pipe [${Var_parsing_command}]' '2' "3"
-		Func_messages "#  ${Var_parsing_command}" '2' "3"
-		Func_messages '# Enable or disable log rotation [${Var_log_rotate_yn}]' '2' '3'
-		Func_messages "#  ${Var_log_rotate_yn}" '2' '3'
-		Func_messages '# Log file maximum variable [${Var_log_max_size}]' '2' '3'
-		Func_messages "#  ${Var_log_max_size}" '2' '3'
-		Func_messages '# Log file check frequency variable [${Var_log_check_frequency}]' '2' '3'
-		Func_messages "#  ${Var_log_check_frequency}" '2' '3'
-		Func_messages '# Log rotation actions variable [${Var_log_rotate_actions}]' '2' '3'
-		Func_messages "#  ${Var_log_rotate_actions}" '2' '3'
-		Func_messages '# Log rotation file recipient variable [${Var_log_rotate_recipient}]' '2' '3'
-		Func_messages "#  ${Var_log_rotate_recipient}" '2' '3'
+		Func_messages "# Script quit listening string: ${Var_pipe_quit_string}" '2' "3"
+		Func_messages "# Named pipe permissions: [${Var_pipe_permissions}]" '2' "3"
+		Func_messages "# Named pipe ownership: [${Var_pipe_ownership}]" '2' "3"
+		Func_messages "# Command to run on exit: [${Var_trap_command}]" '2' "3"
+		Func_messages "# Command to use when parsing input from named pipe: [${Var_parsing_command}]" '2' "3"
+		Func_messages "# Enable or disable log rotation: [${Var_log_rotate_yn}]" '2' '3'
+		Func_messages "# Log file maximum variable: [${Var_log_max_size}]" '2' '3'
+		Func_messages "# Log file check frequency: [${Var_log_check_frequency}]" '2' '3'
+		Func_messages "# Log rotation actions: [${Var_log_rotate_actions}]" '2' '3'
+		Func_messages "# Log rotation file recipient: [${Var_log_rotate_recipient}]" '2' '3'
 		Func_messages '## Template save script variables ##' '2' '3'
-		Func_messages '# Save copy path [${Var_script_copy_name}]' '2' '3'
-		Func_messages "#  ${Var_script_copy_name}" '2' '3'
-		Func_messages '# Script copy permissions [${Var_script_copy_permissions}]' '2' '3'
-		Func_messages "#  ${Var_script_copy_permissions}" '2' '3'
-		Func_messages '# Script copy <user>:<group> owner ship [${Var_script_copy_ownership}]' '2' '3'
-		Func_messages "#  ${Var_script_copy_ownership}" '2' '3'
+		Func_messages "# Save copy path: [${Var_script_copy_name}]" '2' '3'
+		Func_messages "# Script copy permissions: [${Var_script_copy_permissions}]" '2' '3'
+		Func_messages "# Script copy owner ship: [${Var_script_copy_ownership}]" '2' '3'
 		Func_messages '## Read input specific parsing settings ##' '2' '3'
-		Func_messages '# Check for pre commented input before parsing? [${Var_preprocess_for_comments_yn}]' '2' '3'
-		Func_messages "#  ${Var_preprocess_for_comments_yn}" '2' '3'
-		Func_messages '# Recognized comments, maybe pipe (|) separated, variable [${Var_parsing_comment_pattern}]' '2' '3'
-		Func_messages '# Allowed characters without preceding comment [${Var_parsing_allowed_chars}]' '2' '3'
-		Func_messages "#  ${Var_parsing_allowed_chars}" '2' '3'
-		Func_messages "#  ${Var_parsing_comment_pattern}" '2' '3'
-		Func_messages '# Bulk output directory for recognized files [${Var_bulk_output_suffix}]' '2' '3'
-		Func_messages "#  ${Var_bulk_output_suffix}" '2' '3'
+		Func_messages "# Check for pre commented input before parsing: [${Var_preprocess_for_comments_yn}]" '2' '3'
+		Func_messages "# Recognized comments: [${Var_parsing_comment_pattern}]" '2' '3'
+		Func_messages "# Allowed characters without preceding comment: [${Var_parsing_allowed_chars}]" '2' '3'
+		Func_messages "# Bulk suffix for parsed input: [${Var_bulk_output_suffix}]" '2' '3'
 		Func_messages '## Padding output values  ##' '2' '3'
-		Func_messages '# Enable or disable padding [${Var_enable_padding_yn}]' '2' '3'
-		Func_messages "#  ${Var_enable_padding_yn}" '2' '3'
-		Func_messages '# Padding length [${Var_padding_length}]' '2' '3'
-		Func_messages "#  ${Var_padding_length}" '2' '3'
-		Func_messages '# Padding placement options [${Var_padding_placement}]' '2' '3'
-		Func_messages "#  ${Var_padding_placement}" '2' '3'
-		Func_messages '# Padding command [${Var_padding_command}]' '2' '3'
-		Func_messages "# Example: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)" '2' '3'
+		Func_messages "# Enable or disable padding: [${Var_enable_padding_yn}]" '2' '3'
+		Func_messages "# Padding length: [${Var_padding_length}]" '2' '3'
+		Func_messages "# Padding placement: [${Var_padding_placement}]" '2' '3'
+		Func_messages "# Padding example one: [${Var_padding_command}]" '2' '3'
+		Func_messages "# Padding example two: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)" '2' '3'
 	fi
 	## If debugging is equal to or grater than '3' then print prompt
 	##  to continue, otherwise let further processing to continue.
@@ -1011,7 +957,7 @@ Var_padding_placement="${Var_padding_placement}"
 ### Following variables are not settable via
 ##  command line options and are included to
 ##  allow users finer grain customization of
-##  script actions or behaviour without need
+##  script actions or behavior without need
 ##  of touching the main script's source
 
 #Var_script_dir="\${0%/*}"
@@ -1048,51 +994,6 @@ Var_parsing_command="${Var_gpg_exec_path} ${Var_gpg_recipient_options}"
 EOF
 	fi
 	
-}
-
-## Example call for bellow function
-#	case "${Var_assume_users_yn}" in
-#		y|Y|yes|Yes|YES)
-#			#Func_run_command_under_user "<UserName>" "<Command>"
-#			Func_run_command_under_user "" ""
-#		;;
-#		*)
-#			# Run command without specific user instead.
-#			
-#		;;
-#	esac
-## Note bellow is not currently implemented or checked for but by
-##  using above example you may enable calls selectively.
-Func_run_command_under_user(){
-	_user_to_assume="${1:-$Var_script_current_user}"
-	_command="${2:-$(exit 1)}"
-	case "${Var_assume_users_yn}" in
-		y|Y|yes|Yes|YES)
-			if ! [[ "${Var_script_current_user}" == "${_user_to_assume}" ]]; then
-				Func_messages "# Restricted user command [su \"${_user_to_assume}\" -c \"${_command}\"]" '3' '4'
-				su "${_user_to_assume}" -c "${_command}"
-				_exit_status=$?
-				Func_messages "# Exit status [${_exit_status}] " '3' '4'
-			else
-				Func_messages "# su \"${Var_script_current_user}\" -c \"${_command}\" " '3' '4'
-				su "${Var_script_current_user}" -c "${_command}"
-				_exit_status=$?
-				Func_messages "# Exit status [${_exit_status}] " '3' '4'
-			fi
-		;;
-		*)
-			Func_messages "# su \"${Var_script_current_user}\" -c \"${_command}\" " '3' '4'
-			su "${Var_script_current_user}" -c "${_command}"
-			_exit_status=$?
-			Func_messages "# Exit status [${_exit_status}] " '3' '4'
-		;;
-	esac
-	## 
-	##  
-	if ! [[ "${_exit_status}" == "${Var_good_exit_status}" ]]; then
-		exit 1
-	fi
-
 }
 
 ## Function for making a named pipe if not already present and setting permissions
@@ -1329,8 +1230,7 @@ Func_mkpipe_reader(){
 					_exit_status=("${PIPESTATUS[@]}")
 					let _count++
 					Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
-					Func_messages '# Encryption command [${Var_cat_exec_path} <<<"\${_mapped_array}" | ${Var_parsing_command}]' '2' '3'
-#					Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"${_mapped_array}\" | ${Var_parsing_command}]" '2' '3'
+					Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"\${_mapped_array}\" | ${Var_parsing_command}]" '2' '3'
 					Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 					Func_messages "# ...finished encryption of read input" '2' '3'
 				;;
@@ -1360,7 +1260,7 @@ Func_mkpipe_reader(){
 Func_save_copy(){
 	_script_copy_path="$1"
 	if ! [ -f "${_script_copy_path}" ]; then
-		Func_messages '# Writing new [${_script_copy_path}] file' '2' '3'
+		Func_messages "# Writing new [${_script_copy_path}] file" '2' '3'
 		${Var_cat_exec_path} > "${_script_copy_path}" <<EOF
 #!/usr/bin/env bash
 set +o history
@@ -1588,7 +1488,7 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop >/dev/null 2>&1 &
+		Pipe_parser_loop >"\${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
@@ -1607,7 +1507,7 @@ EOF
 		${Var_chmod_exec_path} "${Var_script_copy_permissions}" "${_script_copy_path}"
 		${Var_chown_exec_path} "${Var_script_copy_ownership}" "${_script_copy_path}"
 	else
-		Func_messages '# Cannot overwrite preexisting [${_script_copy_path}] file' '2' '3'
+		Func_messages "# Cannot overwrite preexisting [${_script_copy_path}] file" '2' '3'
 	fi
 }
 
@@ -1636,7 +1536,7 @@ Func_main(){
 				Func_messages '#------#' '1' '2'
 				if ! [ -f "${Var_script_copy_name}" ]; then
 					_exit_status=$?
-					Func_messages '# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable' '0' '1'
+					Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 					Func_messages "#  Attempting to check file and execute permissions on [${Var_script_copy_name}] file failed" '0' '1'
 				else
 					Func_messages "# Starting [${Var_script_copy_name}] with [${Var_script_name}] process" '1' '2'
@@ -1645,7 +1545,7 @@ Func_main(){
 				fi
 				Func_write_unrecognized_input_to_pipe
 			else
-				Func_messages '# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable' '0' '1'
+				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'
 				exit 1
 			fi
@@ -1665,7 +1565,7 @@ Func_main(){
 			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_mkpipe_reader >/dev/null 2>&1 &
+					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
 #					Func_mkpipe_reader &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
