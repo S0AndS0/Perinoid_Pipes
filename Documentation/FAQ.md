@@ -1,39 +1,40 @@
 # Frequently (and perhaps infrequently) asked question (F.A.Q.)
 
-## Q: How is the code checked for bugs?
+## Q: How is the code checked for bugs
 
- > Both locally and remotely this repository is checked via a wonderful program,
- `shellcheck`, remote tests are facilitate via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
- which is also how this project receives updated *badges* on the main [ReadMe.md](../ReadMe.md)
- file.
+> A: Both locally and remotely this repository is checked via a wonderful
+> program, `shellcheck`, remote tests are facilitate via
+> [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck) which is also
+> how this project receives updated *badges* on the main
+> [ReadMe.md](../ReadMe.md) file.
 
-## Q: What is this project?
+## Q: What is this project
 
- > A: This project aims to expose asymmetric encryption operations (currently
- via GnuPG's PGP encryption applications) to logging daemons and/or user
- processes. Being designed as a *cyber defense* tool for server administrators
- and privacy concerned users of mobile devices, that wish for one more line of
- defiance against privacy violating 0-day attacks.
+> A: This project aims to expose asymmetric encryption operations (currently
+> via GnuPG's PGP encryption applications) to logging daemons and/or user
+> processes. Being designed as a *cyber defense* tool for server administrators
+> and privacy concerned users of mobile devices, that wish for one more line of
+> defiance against privacy violating 0-day attacks.
 
-## Q: What does this asymmetric encryption stuff do for me?
+## Q: What does this asymmetric encryption stuff do for me
 
- > A: When properly implemented this project aims to reduce risks associated
- with remote server exploits leading to secondary attacks being easily carried
- out on that server's clients or admins by parsing plane text logs.
- Alternatively when properly implemented this project aims to make authorized
- access to encrypted logs a simple process. However, depending upon your
- inventiveness this project is capable of much more.
+> A: When properly implemented this project aims to reduce risks associated
+> with remote server exploits leading to secondary attacks being easily carried
+> out on that server's clients or admins by parsing plane text logs.
+> Alternatively when properly implemented this project aims to make authorized
+> access to encrypted logs a simple process. However, depending upon your
+> inventiveness this project is capable of much more.
 
-## Q: Do I *need* this?
+## Q: Do I *need* this
 
- > A: If you are a server administrator or perhaps a reporter in lands
- unfriendly to "*freedom* of press" then consider this project as yet another
- tool to use for frustrating would be attackers of your servers or
- journalistic freedoms. Otherwise you likely do not need this project's
- services, the authors will acknowledge that the core goals of this project
- are not needed my a majority of networked users and/or admins... not yet any
- ways. However if you find a new usage for this project the authors would
- certainly enjoy knowing how you've found a need for this.
+> A: If you are a server administrator or perhaps a reporter in lands
+> unfriendly to "*freedom* of press" then consider this project as yet another
+> tool to use for frustrating would be attackers of your servers or
+> journalistic freedoms. Otherwise you likely do not need this project's
+> services, the authors will acknowledge that the core goals of this project
+> are not needed my a majority of networked users and/or admins... not yet any
+> ways. However if you find a new usage for this project the authors would
+> certainly enjoy knowing how you've found a need for this.
 
 ## Licensing notice for this file
 

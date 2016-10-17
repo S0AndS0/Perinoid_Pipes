@@ -1,27 +1,28 @@
 # Contributing to documentation
 
- > This file assumes that you've already followed directions found within the
- [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md) file.
- This file contains information specific to how these docs are formatted and how
- new documents should be formatted prior to using `pull-request` or `request-pull`
- commands with `git`. These guidelines are set in place to insure that all new
- and current documents for this project are formatted similarly.
+> This file assumes that you've already followed directions found within the
+> [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md) file.
+> This file contains information specific to how these docs are formatted and how
+> new documents should be formatted prior to using `pull-request` or
+> `request-pull` commands with `git`. These guidelines are set in place to
+> insure that all new and current documents for this project are formatted
+> similarly.
 
 ## General formatting
 
- > All files within the [`Documentation/`](Documentation) directory should have
- no line other than code blocks that exceed 80 to 90 characters or columns. The
- easiest way to ensure that your additions are within this range try
- `echo "${COLUMNS}"` within your terminal window to check what it's current size
- is set at. Using `vim` and/or `nano` is encouraged when editing these documents
- but so long as your text editor does not mangle new-lines and your additions
- attempt to adhere to the following guidelines then singed pull requests are most
- welcomed.
+> All files within the [`Documentation/`](Documentation) directory should have
+> no line other than code blocks that exceed 80 to 90 characters or columns. The
+> easiest way to ensure that your additions are within this range try
+> `echo "${COLUMNS}"` within your terminal window to check what it's current size
+> is set at. Using `vim` and/or `nano` is encouraged when editing these documents
+> but so long as your text editor does not mangle new-lines and your additions
+> attempt to adhere to the following guidelines then singed pull requests are
+> most welcomed.
 
 ## Formatting code examples
 
- > Code examples generally should be placed in new-line separated *blocks* of
- text, bellow is an example.
+> Code examples generally should be placed in new-line separated *blocks* of
+> text, bellow is an example.
 
 ```
 # This block of text is easy to select
@@ -29,9 +30,9 @@
 # rendered in client browsers.
 ```
 
- > The above uses three backticks (```x3) directly before and after a block of
- code. Bellow is above with the backticks exposed and added hashes to insure that
- the markdown rendering does not get confused.
+> The above uses three backticks (```x3) directly before and after a block of
+> code. Bellow is above with the backticks exposed and added hashes to insure
+> that the markdown rendering does not get confused.
 
 ```
 #```
@@ -41,30 +42,30 @@
 #```
 ```
 
- > Note within blocks of text that reference a line within a code block should
- use single backticks (````) to encapsulate the word or string referenced. For
- example if one where to reference the third line above for some informational
- reason it would look like; `# rendered in client browsers.` within a text block.
+> Note within blocks of text that reference a line within a code block should
+> use single backticks (````) to encapsulate the word or string referenced. For
+> example if one where to reference the third line above for some informational
+> reason it would look like; `# rendered in client browsers.` within a text block.
 
 ## Formatting text blocks
 
- > Aside from rare occasions this project uses `>` to prefix the first line of
- a block of text that readers should read and uses blank new-lines to separate
- paragraphs.
+> Aside from rare occasions this project uses `>` to prefix the first line of
+> a block of text that readers should read and uses blank new-lines to separate
+> paragraphs.
 
 For text that should pop-out to readers but not be **bold** then excluding the
  `>` (greater-than) symbol is fine.
 
- > Text blocks that span more that 80 characters/columns in length  should be
- split onto separate lines with the space between words appearing on the next
- line.
+> Text blocks that span more that 80 characters/columns in length  should be
+> split onto separate lines with the space between words appearing on the next
+> line.
 
 Example of above in `raw` format
 
 ```
- > Text blocks that span more that 80 characters/columns in length  should be
- split onto separate lines with the space between words appearing on the next
- line.
+> Text blocks that span more that 80 characters/columns in length  should be
+> split onto separate lines with the space between words appearing on the next
+> line.
 ```
 
 ## Formatting headings
@@ -98,105 +99,95 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 
 ## Formatting lists
 
- > There are two options with markdown formatted text, one is to use symbols
- prefixed by a space (` `) such as ` -` or ` +` to prefix *bulleted* listed
- lines, and two is to use numbers ` 1.`, ` 2.`, ... However, note that to use
- both simultaneously we'll have to *cheat* a bit and remove the prefixed space
- from the numbered list. Bellow are some examples along with their `raw`
- formated versions bellow each.
+> There are two options with markdown formatted text, one is to use symbols
+> prefixed by a space (` `) such as ` -` or ` +` to prefix *bulleted* listed
+> lines, and two is to use numbers ` 1.`, ` 2.`, ... However, note that to use
+> both simultaneously we'll have to *cheat* a bit and remove the prefixed space
+> from the numbered list. Bellow are some examples along with their `raw`
+> formated versions bellow each.
 
 ### Formatting bulleted lists
 
- - First line
- - Second line
- - Third line
+- First line
+- Second line
+- Third line
 
 ```
- - First line
- - Second line
- - Third line
+- First line
+- Second line
+- Third line
 ```
 
- > Note using bulleted lists allow for lines to be re-ordered latter without
- effecting formatting.
+> Note using bulleted lists allow for lines to be re-ordered latter without
+> effecting formatting.
 
 ### Formatting numbered lists (example one)
 
- 1. Number one
- 2. Number two
- 3. Number three
+1. Number one
+2. Number two
+3. Number three
 
 ```
- 1. Number one
- 2. Number two
- 3. Number three
+1. Number one
+2. Number two
+3. Number three
 ```
 
- > Note the above using markdown could also be re-ordered but the `raw`
- formatting would look out of order until edited.
+> Note the above using markdown could also be re-ordered but the `raw`
+> formatting would look out of order until edited.
 
 ### Formatting numbered lists (example two)
 
- 2. Number one
- 3. Number two
- 1. Number three
+2. Number one
+3. Number two
+1. Number three
 
 ```
- 2. Number one
- 3. Number two
- 1. Number three
+2. Number one
+3. Number two
+1. Number three
 ```
 
- > As stated in the previous example, markdown rendering should handle
- *quick'n'dirty* re-ordering of numbered lists, but the `raw` formatting exposes
- that the original order was changed.
+> As stated in the previous example, markdown rendering should handle
+> *quick'n'dirty* re-ordering of numbered lists, but the `raw` formatting exposes
+> that the original order was changed.
 
 ### Formatting numbered lists (example three)
 
- > Occasionally there is cause to combine both bulleted lists and numbered,
- however, doing this will disable the markdown recognition of numbers so
- `example two` above will no longer apply.
+> Occasionally there is cause to combine both bulleted lists and numbered,
+> however, doing this will disable the markdown recognition of numbers so
+> `example two` above will no longer apply.
 
 1. Number one
-
  - First line
  - Second line
  - Third line
-
 2. Number two
-
  - First line
  - Second line
  - Third line
-
 3. Number three
-
  - First line
  - Second line
  - Third line
 
 ```
 1. Number one
-
  - First line
  - Second line
  - Third line
-
 2. Number two
-
  - First line
  - Second line
  - Third line
-
 3. Number three
-
  - First line
  - Second line
  - Third line
 ```
 
- > Note also in above's `raw` formatting how extra empty new-lines where needed
- to insure that each numbered entry remains on it's own line once rendered.
+> Note also in above's `raw` formatting how an empty space was needed (` `)
+> to insure that each numbered entry remains on it's own line once rendered.
 
 ## Licensing notice for this file
 

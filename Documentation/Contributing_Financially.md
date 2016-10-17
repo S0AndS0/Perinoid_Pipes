@@ -12,8 +12,8 @@ Support the original authors financially via the following methods
  VTC (vertcoin)  | `VvRePCWBatR5nohf2xXXwLLmvUfWG2mFE4`
  RDD (reddcoin)  | `Ro4CyYZWEPqjSMbmZgiyQE7VfaLmd6gh5P`
 
-Support code maintainers via their own links found within the
- `Contributing_code_credits.md` file when available.
+> Support code maintainers via their own links found within the
+> `Contributing_code_credits.md` file when available.
 
 ## Licensing notice for this file
 

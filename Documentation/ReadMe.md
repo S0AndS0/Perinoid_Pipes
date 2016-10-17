@@ -83,7 +83,7 @@
  Contains documentation on all know issues that new and current users of this
  project should be aware of.
 
-### Documentation for code & documet contributions to this project
+### Documentation for code & document contributions to this project
 
 [Contributing_code_credits.md](Contributing_code_credits.md)
  Will eventually contain information on how users of this project can support
@@ -121,11 +121,11 @@
 ### Self education on encryption & scripting resources
 
 [Education_resources.md](Education_resources.md)
- Documentation of verious resources that authors of this project found useful
+ Documentation of various resources that authors of this project found useful
  when developing this project's script as well as useful resources for describing
  the finer points of the encryption subject as a whole.
 
-### Miscalanious documentation
+### Miscellaneous documentation
 
 [FAQ.md](FAQ.md)
  Some of the questions already asked about this project as well as questions the

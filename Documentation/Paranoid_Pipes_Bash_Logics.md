@@ -62,7 +62,7 @@
 
 ## Bash function assignment and calling syntax:
 
- - assign a function named `func`
+### assign a function named `func`
 
 ```
 func(){

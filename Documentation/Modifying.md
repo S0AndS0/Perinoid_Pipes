@@ -1,38 +1,38 @@
- > What follows are instructions on how to make modifications to the source
- code without making git refuse to download updates as well as how to
- incorporate updates from the `master` branch into your modified local branch.
- Use [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
- documentation instead if you wish to have modifications to your local branch
- be acceptable to merge into the main project. If only cornered with local
- modifications the continue with this documentation.
+> What follows are instructions on how to make modifications to the source
+> code without making git refuse to download updates as well as how to
+> incorporate updates from the `master` branch into your modified local branch.
+> Use [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
+> documentation instead if you wish to have modifications to your local branch
+> be acceptable to merge into the main project. If only cornered with local
+> modifications the continue with this documentation.
 
-## Change directories to the downloaded project source code root directory
+# Change directories to the downloaded project source code root directory
 
 ```
 cd ~/Downloads/Paranoid_Pipes
 ```
 
-### Pick a name to call your testing branch
+## Pick a name to call your testing branch
 
 ```
 Var_branch_name="${USER}_mod"
 git checkout -b ${Var_branch_name}
 ```
 
- > Changes can now be made within this custom branch without effecting the
- original master branch.
+> Changes can now be made within this custom branch without effecting the
+> original master branch.
 
-### Delete custom branch if modifications are not wanted
+## Delete custom branch if modifications are not wanted
 
 ```
 git checkout master
 git branch -D ${Var_branch_name}
 ```
 
- > Be very certain that you no longer want the above branches changes before
- deleting your custom branch.
+> Be very certain that you no longer want the above branches changes before
+> deleting your custom branch.
 
-### Modify freely and update your branch occasionally via the following
+## Modify freely and update your branch occasionally via the following
 
 ```
 cd ~/Downloads/Paranoid_Pipes
@@ -42,8 +42,8 @@ git fetch
 git merge master
 ```
 
- > See [Contributing_code_merge_conflicts.md](Documentation/Contributing_code_merge_conflicts.md)
- for how to resolve merge conflicts if errors arise from above.
+> See [Contributing_code_merge_conflicts.md](Documentation/Contributing_code_merge_conflicts.md)
+> for how to resolve merge conflicts if errors arise from above.
 
 ## Licensing notice for this file
 

@@ -84,9 +84,9 @@ zR 					# Unfold ALL lines to see complete files while comparing.
 /search_string
 ```
 
- > Note: entering `/` and then pressing `[up]` arrow key on your keyboard will
- show the last search string input, pressing `[up]` arrow key will continue
- scrolling through the history of previously entered search strings.
+> Note: entering `/` and then pressing `[up]` arrow key on your keyboard will
+> show the last search string input, pressing `[up]` arrow key will continue
+> scrolling through the history of previously entered search strings.
 
 ## Interactive editing
 
@@ -100,27 +100,27 @@ i 				# Insert mode
 [Esc] 			# Exit insert mode
 ```
 
- > Note above `[Esc]` literally means pressing your keyboard's escape key.
+> Note above `[Esc]` literally means pressing your keyboard's escape key.
 
 ## Spell checking
 
- - Option 1; spell checking for US region English for all documents
+- Option 1; spell checking for US region English for all documents
 
 ```
 echo 'set spell spelllang=en_us' | tee -a ~/.vimrc
 ```
 
- - Option 2; spell checking from within vim edit session
+- Option 2; spell checking from within vim edit session
 
 ```
 :setlocal spell spelllang=en_us
 ```
 
- > Note `Option 1` writes to your current user's `.vimrc` file which unless
- edited becomes a *permanent* `vim` setting for enabling spell checking on any
- document opened by `vim` at a latter time. Where as `Option 2` is a temporary
- setting; only applies within current `vim` session. To turn off spell checking
- temporally within a document editing session use `:set nospell`
+> Note `Option 1` writes to your current user's `.vimrc` file which unless
+> edited becomes a *permanent* `vim` setting for enabling spell checking on any
+> document opened by `vim` at a latter time. Where as `Option 2` is a temporary
+> setting; only applies within current `vim` session. To turn off spell checking
+> temporally within a document editing session use `:set nospell`
 
 ## Navigating spell checking short cuts
 
@@ -135,9 +135,9 @@ echo 'set spell spelllang=en_us' | tee -a ~/.vimrc
 z= 			# Open vim menu of numbered suggestions
 ```
 
- > Above opens an interactive menu, press `[Enter]` to exit the menu without
- changes, or select a number prior to pressing `[Enter]` to select a suggestion
- and replace the miss-spelled word.
+> Above opens an interactive menu, press `[Enter]` to exit the menu without
+> changes, or select a number prior to pressing `[Enter]` to select a suggestion
+> and replace the miss-spelled word.
 
 ## Adding words to `vim` dictionary & marking words as miss-spelled
 
