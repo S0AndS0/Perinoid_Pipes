@@ -16,8 +16,31 @@
 > to read.
 
 ```
-Script_options="--copy-save-yn='yes' --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh' --copy-save-ownership='notwwwuser:notwwwgroup' --copy-save-permissions='100' --debug-level='6' --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' --log-level='0' --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe' --named-pipe-ownership='notwwwuser:wwwgroup' --named-pipe-permissions='420' --output-parse-name='/jailed_logs/website_host/www_access.gpg' --output-parse-recipient='user@host.domain' --output-pre-parse-yn='yes' --output-rotate-actions='compress-encrypt,remove-old' --output-rotate-check-frequency='25000' --output-rotate-max-bites='8388608' --output-rotate-recipient='user@host.domain' --output-rotate-yn='yes' --output-save-yn='yes' --disown-yn='yes'"
+Script_options="--copy-save-yn='yes'\
+ --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh'\
+ --copy-save-ownership='notwwwuser:notwwwgroup'\
+ --copy-save-permissions='100'\
+ --debug-level='6'\
+ --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --log-level='0'\
+ --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe'\
+ --named-pipe-ownership='notwwwuser:wwwgroup'\
+ --named-pipe-permissions='420'\
+ --output-parse-name='/jailed_logs/website_host/www_access.gpg'\
+ --output-parse-recipient='user@host.domain'\
+ --output-pre-parse-yn='yes'\
+ --output-rotate-actions='compress-encrypt,remove-old'\
+ --output-rotate-check-frequency='25000'\
+ --output-rotate-max-bites='8388608'\
+ --output-rotate-recipient='user@host.domain'\
+ --output-rotate-yn='yes'\
+ --output-save-yn='yes'\
+ --disown-yn='yes'"
 ```
+
+> Note the use of `\` (back-slashes) for escaping new lines above, these are not
+> neaded when you input the above on one line, in either case do not forget the
+> clossing double quote (`"`) for the variable's assignment.
 
 ## Run the main script from host using redirection and assigned variables
 
@@ -96,7 +119,7 @@ Log_file_path='/tmp/ssh_remote_encrypted_setup.log'
 Main_script_path='/path/to/writer_script.sh'
 ```
 
-## Path relative to each target host's file system
+## Paths relative to each target host's file system
 
 > target directory path to save script copy to.
 
@@ -104,9 +127,7 @@ Main_script_path='/path/to/writer_script.sh'
 Script_save_dir='/usr/local/sbin'
 ```
 
-## Path relative to each target host's file system
-
-> target directory to save listening script copy's output to 
+> target directory to save listening script copy's output to
 
 ```
 Script_save_output_dir='/var/log'

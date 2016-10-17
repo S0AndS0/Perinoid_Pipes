@@ -261,10 +261,10 @@ Var_color_red='\033[0:31m'
 #Var_color_cyan='\033[0:36m'
 #Var_color_gray='\033[0:37m'
 Var_color_lred='\033[1:31m'
-#Var_color_lgreen='\033[1:32m'
-#Var_color_lyellow='\033[1:33m'
+Var_color_lgreen='\033[1:32m'
+Var_color_lyellow='\033[1:33m'
 #Var_color_lblue='\033[1:34m'
-#Var_color_lpurple='\033[1:35m'
+Var_color_lpurple='\033[1:35m'
 #Var_color_lcyan='\033[1:36m'
 #Var_color_lgray='\033[1:37m'
 Var_color_null='\033[0m'
@@ -466,7 +466,7 @@ Func_usage_options(){
 		until [ "${_help_count}" = "${#_help_lookup[@]}" ] ; do
 			echo "# Checking if ${Var_script_name} has help on [${_help_lookup[${_help_count}]}]"
 			if [ -e "$(which ${_help_lookup[${_help_count}]})" ] && ! [ "${_help_lookup[${_help_count}]}" = "${Var_script_name}" ] && ! [ "${_help_lookup[${_help_count}]}" = "${Var_script_dir}/${Var_script_name}" ]; then
-				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})] "
+				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})]"
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
 				if test "$(which ${_help_lookup[${_help_count}]}) --help"; then
@@ -636,7 +636,7 @@ Func_check_args(){
 			--help|-h)
 				Var_help_var="${_arg%=*}"
 				Var_help_value="${_arg#*=}"
-				if ! [ -z "${#Var_help_val}" ] && ! [ "${Var_help_var}" = "${Var_help_value}" ]; then
+				if ! [ -z "${#Var_help_value}" ] && ! [ "${Var_help_var}" = "${Var_help_value}" ]; then
 					Func_usage_options "${Var_help_value}"
 					unset Var_help_var
 					unset Var_help_value
@@ -665,7 +665,7 @@ Func_check_args(){
 Func_check_recipients(){
 	if [ -z "${#Var_gpg_recipient}" ] || [[ "${Var_gpg_recipient}" == "user@host.domain" ]]; then
 		Func_messages "# Warning - [\${Var_gpg_recipient}=${Var_gpg_recipient}] is improper, set with '--output-parse-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
-		read -p 'Please input your pub-key email address: ' _response
+		read -pr 'Please input your pub-key email address: ' _response
 		if ! [ -z "${#_response}" ]; then
 			Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
 			Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
@@ -675,12 +675,13 @@ Func_check_recipients(){
 			exit 1
 		fi
 	fi
-	## Only check for second email address if log rotation options are enabled, otherwise unused
+	## Only check for second email address if log rotation options are
+	##  enabled, otherwise unused
 	case "${Var_log_rotate_yn}" in
 		Y|y|Yes|yes|YES)
 			if [ -z "${#Var_log_rotate_recipient}" ] || [[ "${Var_log_rotate_recipient}" == "user@host.domain" ]]; then
 				Func_messages "# Warning - [\${Var_log_rotate_recipient}=${Var_log_rotate_recipient}] is improper, set with '--output-rotate-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
-				read -p 'Please input your pub-key email address: ' _response
+				read -pr 'Please input your pub-key email address: ' _response
 				if ! [ -z "${#_response}" ]; then
 					Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
 				else
@@ -711,7 +712,7 @@ Func_prompt_continue(){
 	_calling_function="${1:-unassigned}"
 	Func_messages "# ${_calling_function} would like to know if you wish to continue." '0'
 	${Var_echo_exec_path} -n '# Type [Y] and enter to continue or anything else to quit now : '
-	read _user_input
+	read -r _user_input
 	case "${_user_input}" in
 		y|Y|yes|Yes|YES)
 			Func_messages "# ${Var_script_name} read [${_user_input}] and will continue now..." '0' '1'
@@ -1612,50 +1613,3 @@ Func_main(){
 }
 ## Call "Func_main" if no errors or quit signals have been received.
 Func_main "${@:---help}"
-
-## Sources of information that explain portions of the logic of this script
-##  in a potentially different usage context for externally sourced applications.
-# Guide for Linux named pipes
-#	http://www.linuxjournal.com/content/using-named-pipes-fifos-bash
-# Guide for Linux GPG commandline options
-#	https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps
-# Q&A turn on/off logging
-#	http://unix.stackexchange.com/questions/10922/temporarily-suspend-bash-history-on-a-given-shell
-# Log rotate within bash script
-#	http://unix.stackexchange.com/questions/231486/how-to-implement-logrotate-in-shell-script
-# Compress and encrypt files CommandLineFu
-#	http://www.commandlinefu.com/commands/view/7952/tar.gz-with-gpg-encryption-on-the-fly
-# Compress and encrypt directory CommandLineFu
-#	http://www.commandlinefu.com/commands/view/12007/encrypt-directory-with-gnupg-and-tar
-# Send email with one or more attacments
-#	http://www.commandlinefu.com/commands/view/2886/send-email-with-one-or-more-binary-attachments
-# Modify Bash built in IFS (in field separator)
-#	http://stackoverflow.com/questions/4128235/what-is-the-exact-meaning-of-ifs-n
-# Disown PID & grab PID of last command or function Bash magics
-#	http://stackoverflow.com/questions/5719030/bash-silently-kill-background-function-process
-# Mapfile (or variable with "heredoc") to array
-#	https://gist.github.com/akwala/9013023
-# Grab terminal column and line values
-#	http://stackoverflow.com/questions/1780483/lines-and-columns-environmental-variables-lost-in-a-script
-# Make terminal output pritier
-#	http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
-# Wiki of 'echo -e ""' <color> to <code>
-#	https://en.wikipedia.org/wiki/ANSI_escape_code
-# Sanitize user input with Bash substitutions.
-#	http://stackoverflow.com/a/89970
-#	Example alpha numeric only: var_test="${var_test//[^a-zA-Z0-9]/}"
-#	Example alpha numeric with comments, spaces, and underscores allowed only:
-#		 var_test="${var_test//[^a-zA-Z0-9# _]/}"
-#	Example (gotcha) for allowing double quotes as well as above, Note the use of '\' backslash
-#		 var_test="${var_test//[^a-zA-Z0-9# _\"]/}"
-#	Other special characters that require '\' backslash in order to allow
-#		\/ \^ \( \) \\ \{ \} \- \' \"
-#	Additional substitution tricks
-#		 var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
-# My preference assign all but single quotes (') to non expanding (literal) variable like so
-#var_allowed_expressions='[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]'
-# Then call it by name within variable input that should receive treatment like so
-#var_test="${var_test//[${var_allowed_expressions}]/}"
-## Pretty snazzy and it should work on Bash arrays if being iterated through.
-# Current Lines: ${LINES}
-# Current Columns: ${COLUMNS}

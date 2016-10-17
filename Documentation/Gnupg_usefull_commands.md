@@ -26,7 +26,9 @@ gpg --import <pub_or_private_key_file>
 ### Encrypt a file to one or more recipients
 
 ```
-gpg --armor --encrypt <unencrypted_input_file> --recipient <email_or_pubKeyID> --output <encrypted_output_file>
+gpg --armor --encrypt <unencrypted_input_file>\
+ --recipient <email_or_pubKeyID>\
+ --output <encrypted_output_file>
 ```
 
 > Replace `<email_or_pubKeyID>` with the email address or key ID to whom that
@@ -42,7 +44,9 @@ gpg --armor --encrypt <unencrypted_input_file> --recipient <email_or_pubKeyID> -
 > This allows the message to be tracked back to your key ID
 
 ```
-gpg --armor --encrypt <unencrypted_input_file> --recipient <email_or_pubKeyID> --clearsign --output <encrypted_output_file>
+gpg --armor --encrypt <unencrypted_input_file>\
+ --recipient <email_or_pubKeyID>\
+ --clearsign --output <encrypted_output_file>
 ```
 
 > The `--clearsign` option above will allow any recipient to mathematically
@@ -104,7 +108,7 @@ gpg --verify <signature_file> <some_legal_file>
 
 ## GnuPG example output
 
-### `Good` or passing signature check output from GPG.
+### `Good` or passing signature check output from GPG
 
 ```
 gpg: Signature made Wed Sep  7 20:06:29 2016 UTC
@@ -116,7 +120,7 @@ Primary key fingerprint: D915 790F 273E 2E8E 786F  0470 6E4C 46DA 15B2 2310
      Subkey fingerprint: 12D6 7DEC 7572 68B6 A30C  C948 2E25 E520 10AD 0E1F
 ```
 
-### `Bad` or failing signature check output from GPG.
+### `Bad` or failing signature check output from GPG
 
 ```
 gpg: Signature made Wed Sep  7 20:06:29 2016 UTC

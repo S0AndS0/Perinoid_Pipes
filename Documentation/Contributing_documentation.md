@@ -1,9 +1,9 @@
 # Contributing to documentation
 
-> This file assumes that you've already followed directions found within the
-> [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md) file.
-> This file contains information specific to how these docs are formatted and how
-> new documents should be formatted prior to using `pull-request` or
+> This file assumes that you've already followed directions found within
+> the [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
+> file. This file contains information specific to how these docs are formatted
+> and how new documents should be formatted prior to using `pull-request` or
 > `request-pull` commands with `git`. These guidelines are set in place to
 > insure that all new and current documents for this project are formatted
 > similarly.

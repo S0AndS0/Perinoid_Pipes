@@ -106,7 +106,7 @@ git request-pull -p ${Var_branch_name} ${Var_git_url} master
 > via GitHub's web interface or via `hub` python command line wrapper, and then
 > submitting pull requests to your own fork.
 
-## When finished merge changes back to original/master branch with a message.
+## When finished merge changes back to original/master branch with a message
 
 ```
 git checkout master
@@ -119,7 +119,6 @@ git merge --verify-signatures -S ${Var_local_branch_name}\
 > Edit text between `<` & `>` to reflect changes made. Note if above generates
 > merge conflicts then attempt `git mergetool` if you have already setup a git
 > merge tool default.
-
 > Hint: use the following to refresh your memory as to what changes where made
 > between branches.
 

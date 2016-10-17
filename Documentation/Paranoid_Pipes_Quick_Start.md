@@ -3,8 +3,8 @@
 > See guides under the [`Documentation/`](Documentation/) directory for
 > complete explanations of this project's target usage information and command
 > line options. This document only covers downloading and initial testing of
-> project features. See the Frequently asked questions document
-> [FAQ.md](Documentation/FAQ.md) for answers to common questions.
+> project features. See the Frequently asked questions
+> document [FAQ.md](Documentation/FAQ.md) for answers to common questions.
 
 ## Step 1
 
@@ -36,9 +36,7 @@ gpg --import user@email.domain --recv-keys https://key-server.domain
 
 ## Step(s) 2
 
-> Download main script from GitHub
-
-### Change to desired download directory.
+### Change to desired download directory
 
 ```
 cd ~/Downloads
@@ -98,7 +96,6 @@ pipe_writer.sh -h
 > You (the readers) will be using this switch often when testing this script's
 > variable assignments; place either `-h` or `--help` at the end of your commands
 > to test if the script is reading your other input as desired.
-
 > Note above will only work if you have chosen to copy or move the main
 > script to a path that is also found within your shell's `${PATH}` variable;
 > hint `echo -e "${PATH//:/\\n}"` will display every directory within the
@@ -107,10 +104,9 @@ pipe_writer.sh -h
 
 ### Run script with command line options
 
-> Note all command line options can be found within the
-> [Paranoid_Pipes_CLO.md](Documentation/Paranoid_Pipes_CLO.md) file listed in
-> tables that provide their default state and constraints.
-
+> Note all command line options can be found within
+> the [Paranoid_Pipes_CLO.md](Documentation/Paranoid_Pipes_CLO.md) file listed
+> in tables that provide their default state and constraints.
 > Test named pipe reading script by outputting to current terminal using the
 > following options. Note if script was moved as shown above then use
 > `pipe_writer.sh` instead of `./Paranoid_Pipes.sh`, ie without `./` when
@@ -132,7 +128,6 @@ pipe_writer.sh --copy-save-yn=no\
 > (`\`) in above (and much of bellow) are only to aid in reading and you may
 > instead enter command line options on a single line so long as your remember
 > to remove the back-slashes while following along.
-
 > Test above by opening second terminal and writing some stings, concatenating
 > files, and/or writing file paths to the new pipe file.
 
@@ -198,7 +193,7 @@ echo "${HOME}/Pictures" > /tmp/test.pipe
 > `cat mylist_of_files.txt > /tmp/test.pipe` and expect anything but funky
 > things to happen.
 
-#### Example command to list encrypted files under the bulk output directory.
+#### Example command to list encrypted files under the bulk output directory
 
 ```
 ls -hal /tmp/test_bulk/*.gpg

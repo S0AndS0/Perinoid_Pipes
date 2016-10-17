@@ -45,7 +45,6 @@ gpg --lsign-key <key_ID>
 > owner through other networks if using the above instead of the following
 > command.
 
-
 ### Signing a public key & publish to key mirroring servers
 
 ```
@@ -127,7 +126,6 @@ gpg --update-trustdb
 
 > The above command will open interactive command line menus as request user
 > interaction for updating the trust data base.
-
 
 ## Licensing notice for this file
 

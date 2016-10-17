@@ -89,35 +89,45 @@
   `--help=<command>` or `-h=<var>`    | null                | `null` Attempts to search for `-h=value` within host system's help documentation and within main script's detailed documentation.
   `*`                                 | null                | `null` Writes any unrecognized arguments as lines or words that should be written to named pipe if available.
 
- > Note using `--output-pre-parse-yn` or `--padding-enable-yn` options above
- will disable the script's ability to recognize file or directory paths and are
- available for further securing your encrypted server logs. **Do Not** use pipes
- with these options enabled with bulk file writes because that will corrupt your
- data, ie `cat picture.file > logging.pipe` will not result in happy decryption.
- Instead consider using two pipes; one for logging and one for general usage,
- and naming them such that they're not ever mixed up.
+## Notes about above
 
- > Note using `--source-var-file` CLI option maybe used to assign variable names
- found in Recognized command line options, their variables and default values
- table's middle column. This allows for
- `script_name.sh --source-var-file=/some/path/to/vars`
- to be used to assign script variables instead of defining them at run-time.
- Additionally this option maybe combined with
- `--save-options-yn` and `--save-variables-yn` options for saving values to a
- file instead; but only if the specified file does **not** already exist.
+### Note one
 
- > Note using unknown commands ie `'some string within quotes' some words
- outside quotes` will cause the main script to write those unrecognized values
- to the named pipe if/when available. This is for advanced users of the main
- script that wish to have a *header* or set of lines be the first things parsed
- by the processes of the pipe parser functions or custom script.
- This is only enabled within the script's main function if `--disown-yn` option
- has also been set to a *yes* like value.
+> Note using `--output-pre-parse-yn` or `--padding-enable-yn` options above
+> will disable the script's ability to recognize file or directory paths and are
+> available for further securing your encrypted server logs. **Do Not** use pipes
+> with these options enabled with bulk file writes because that will corrupt your
+> data, ie `cat picture.file > logging.pipe` will not result in happy decryption.
+> Instead consider using two pipes; one for logging and one for general usage,
+> and naming them such that they're not ever mixed up.
 
- > Note using `--help` with additional options may access software external to
- this script but installed on the same host file system. Additionally if any
- scripted documentation exists then that will also be presented to the main
- script's user.
+### Note two
+
+> Note using `--source-var-file` CLI option maybe used to assign variable names
+> found in Recognized command line options, their variables and default values
+> table's middle column. This allows for
+> `script_name.sh --source-var-file=/some/path/to/vars`
+> to be used to assign script variables instead of defining them at run-time.
+> Additionally this option maybe combined with
+> `--save-options-yn` and `--save-variables-yn` options for saving values to a
+> file instead; but only if the specified file does **not** already exist.
+
+### Note three
+
+> Note using unknown commands ie `'some string within quotes' some words
+> outside quotes` will cause the main script to write those unrecognized values
+> to the named pipe if/when available. This is for advanced users of the main
+> script that wish to have a *header* or set of lines be the first things parsed
+> by the processes of the pipe parser functions or custom script.
+> This is only enabled within the script's main function if `--disown-yn` option
+> has also been set to a *yes* like value.
+
+### Note four
+
+> Note using `--help` with additional options may access software external to
+> this script but installed on the same host file system. Additionally if any
+> scripted documentation exists then that will also be presented to the main
+> script's user.
 
 ## Licensing notice for this file
 

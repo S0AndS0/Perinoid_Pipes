@@ -44,38 +44,38 @@ Ctrl^w + w 	# Move to next split column (clockwise)
 ## Navigation keyboard short-cuts for `vim`/`vimdiff`
 
 ```
-]c 		# Jump to next change.
-[c 		# Jump to previous change.
+]c                # Jump to next change.
+[c                # Jump to previous change.
 ```
 
 ## Merging short-cuts for `vim`/`vimdiff`
 
 ```
-:diffg BA 		# Merge BASE into MERGED
-:diffg LO 		# Merge LOCAL into MERGED
-:diffg RE 		# Merge REMOTE into MERGED
-:diffupdate 	# re-scan the files for differences
+:diffg BA                # Merge BASE into MERGED
+:diffg LO                # Merge LOCAL into MERGED
+:diffg RE                # Merge REMOTE into MERGED
+:diffupdate              # re-scan the files for differences
 ```
 
 ## Copy/paste lines with Vimdiff
 
 ```
-<shift>+Y 	# Copy line from cursor on to buffer
-<shift>+P 	# Place/paste line from buffer to cursor position
-<shift>+D 	# Cut line from cursor on to buffer
+<shift>+Y                # Copy line from cursor on to buffer
+<shift>+P                # Place/paste line from buffer to cursor position
+<shift>+D                # Cut line from cursor on to buffer
 ```
 
 ## Diff viewing and copying short-cuts for `vim`/`vimdiff`
 
 ```
-do 					# diff obtain
-dp 					# diff put
-zo 					# open folded text
-zc 					# close folded text
-:set diffopt+=iwhite 	# Turn off whitespace comparison
-:set wrap 			# Turn on line wrapping
-:syn off 			# Turn off syntax highlighting
-zR 					# Unfold ALL lines to see complete files while comparing.
+do                       # diff obtain
+dp                       # diff put
+zo                       # open folded text
+zc                       # close folded text
+:set diffopt+=iwhite     # Turn off whitespace comparison
+:set wrap                # Turn on line wrapping
+:syn off                 # Turn off syntax highlighting
+zR                       # Unfold ALL lines to see complete files while comparing.
 ```
 
 ## Searching within file, hint `/` is our friend in `vim`
@@ -91,13 +91,13 @@ zR 					# Unfold ALL lines to see complete files while comparing.
 ## Interactive editing
 
 ```
-i 				# Insert mode
+i                        # Insert mode
 ```
 
 ## Exiting interactive editing mode
 
 ```
-[Esc] 			# Exit insert mode
+[Esc]                    # Exit insert mode
 ```
 
 > Note above `[Esc]` literally means pressing your keyboard's escape key.
@@ -125,14 +125,14 @@ echo 'set spell spelllang=en_us' | tee -a ~/.vimrc
 ## Navigating spell checking short cuts
 
 ```
-[s 			# Move to previous miss-spelled word.
-]s 			# Move to next miss-spelled word.
+[s                       # Move to previous miss-spelled word.
+]s                       # Move to next miss-spelled word.
 ```
 
 ## Selecting auto spell check suggestions
 
 ```
-z= 			# Open vim menu of numbered suggestions
+z=                       # Open vim menu of numbered suggestions
 ```
 
 > Above opens an interactive menu, press `[Enter]` to exit the menu without
@@ -142,8 +142,8 @@ z= 			# Open vim menu of numbered suggestions
 ## Adding words to `vim` dictionary & marking words as miss-spelled
 
 ```
-zg 			# Saves selected word as correct for local dictionary.
-zw 			# Mark selected word as miss-spelled.
+zg                       # Saves selected word as correct for local dictionary.
+zw                       # Mark selected word as miss-spelled.
 ```
 
 ## Turn off spell corrections within current `vim` session
@@ -155,13 +155,13 @@ zw 			# Mark selected word as miss-spelled.
 ## Saving changes
 
 ```
-:wqa 		# Write All changes and quit
+:wqa                     # Write All changes and quit
 ```
 
 ## Quiting without changes
 
 ```
-:cq 		# Cancel and quit
+:cq                      # Cancel and quit
 ```
 
 ## Committing changes

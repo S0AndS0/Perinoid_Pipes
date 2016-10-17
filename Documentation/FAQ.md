@@ -3,10 +3,9 @@
 ## Q: How is the code checked for bugs
 
 > A: Both locally and remotely this repository is checked via a wonderful
-> program, `shellcheck`, remote tests are facilitate via
-> [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck) which is also
-> how this project receives updated *badges* on the main
-> [ReadMe.md](../ReadMe.md) file.
+> program, `shellcheck`, remote tests are facilitate via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
+> which is also how this project receives updated *badges* on the
+> main [ReadMe.md](../ReadMe.md) file.
 
 ## Q: What is this project
 

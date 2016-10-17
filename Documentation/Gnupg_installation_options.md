@@ -62,7 +62,6 @@ lxrun /install /y
 > The default password for the Bash `root` user is nothing at all which is a
 > **huge security flaw** as this `root` user is equivalent to `Administrator`
 > level users in Windows environment.
-
 > Patch this variability by setting a new password; open `Start Menu` and
 > again under the search bar text input type the following...
 
@@ -161,16 +160,16 @@ Ubuntu
 
 ## Android GnuPG applications
 
-1. [Openkeychain](https://www.openkeychain.org/)
+* [Openkeychain](https://www.openkeychain.org/)
 
 > Above is an Open Source Android application available through the two most
 > used *market places* for Android apps. The above tool maybe combined with Tor
 > and K9 among other applications for a decent level of security on Android with
-> GPG, find the full list of known apps to integrate well with Openkeychain's
-> [Apps](https://www.openkeychain.org/apps/) listing. However the above will
+> GPG, find the full list of known apps to integrate well with
+> Openkeychain's [Apps](https://www.openkeychain.org/apps/) listing. However the above will
 > **not** integrate with the current scripts found within this project.
 
-2. [GnuPG for Android](https://github.com/guardianproject/gnupg-for-android)
+* [GnuPG for Android](https://github.com/guardianproject/gnupg-for-android)
 
 > Above is another application for Android but with one feature over the above,
 > this one has command line access, so running scripts and using normal GnuPG
@@ -178,24 +177,23 @@ Ubuntu
 > satisfied; likely you'll need to install `BusyBox` as well as a *terminal
 > emulator* for Android to make full use of this project's scripts on mobile.
 
-3. [ProtonMail](https://protonmail.com/)
+* [ProtonMail](https://protonmail.com/)
 
 > The above service is one of the cooler companies to emerge from the open
 > source crypto communities and appears to be one of the most secure email
-> service currently available. With
-> [ProtonMail Source](https://github.com/ProtonMail)
+> service currently available. With [ProtonMail Source](https://github.com/ProtonMail)
 > hosted publicly on GitHub and an Android client application available; they're
 > quickly building *trust* among very devoted supporters & developers.
 
 ## IOS GnuPG applications
 
-1. [Iphmail](https://ipgmail.com/)
+* [Iphmail](https://ipgmail.com/)
 
 > Above costs `$1.99` (USD) last the author of this document checked and only
 > supports email, so *no love* will be had between this app and this project's
 > scripts.
 
-2. [oPenGP](https://itunes.apple.com/us/app/opengp/id414003727?mt=8)
+* [oPenGP](https://itunes.apple.com/us/app/opengp/id414003727?mt=8)
 
 > Above costs `$4.99` (USD) last the author of this document checked but may
 > not contain all the *bells & whistles* that external apps or scripts rely upon.

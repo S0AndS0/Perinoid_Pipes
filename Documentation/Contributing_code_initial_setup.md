@@ -7,7 +7,8 @@
 
 ```
 Var_gpg_email='email@host.domain'
-Var_git_signing_fingerprint=$(gpg --list-keys ${Var_gpg_email} | awk '/fingerprint/{print $10""$11""$12""$13}')
+Var_git_signing_fingerprint=$(gpg --list-keys ${Var_gpg_email})
+Var_trim_gpg_fingerprint=$(awk '/fingerprint/{print $10""$11""$12""$13}' <<<"${Var_git_signing_fingerprint}")
 ## Above variables are for grabbing the last 16 bits of your fingerprint.
 git config --global user.signingkey ${Var_git_signing_fingerprint}
 ```
@@ -32,7 +33,8 @@ gpg --armor --export ${Var_gpg_email} --output ~/${Var_gpg_email%@*}.gpg
 ### Git commits may now be signed via the following method
 
 ```
-git commit -S -m "Message title/synopsis" -m "Detailed message" modified/file/path
+git commit -S -m "Message title/synopsis"\
+ -m "Detailed message" modified/file/path
 ```
 
 Note it is the `-S` command line option that tells git to sign commits, the above
@@ -149,13 +151,12 @@ EOF
 > authors such that this project's authors and future users may make use of your
 > contributions without fear of violating licensing agreements already outlined
 > in this project's `Licenses/` directory.
-
 > In future pull requests and mergers you may excluded repeating the waver and
 > instead just focus on being concise with updating `Summery:` & `Support code
 > contribution link(s):` fields if they need updating. Otherwise sign commits
 > and other `git` activities with reasonably descriptive messages.
 
-## Example of author's contact info writing steps.
+## Example of author's contact info writing steps
 
 ```
 cat >> Documentation/Contributing_code_credits.md <<EOF

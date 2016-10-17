@@ -1,10 +1,11 @@
-# Scenario one:
+# Scenario one
 
 > `Logging output` -> `Pipe (encryption) input` -> `Encrypted log output` ->
 > `Rotate using encrypted email and compression`
 
 This scenario was written with the following link's questions as it's
- inspiration [Serverfault - Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
+ inspiration Serverfault 
+ [Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
 
 -----
 
@@ -12,7 +13,6 @@ This scenario was written with the following link's questions as it's
 
 > I'm dealing with some data that's governed by specific regulations and that
 > must be handled in a specific manner.
-
 > I'm finding that this data ends up in some of my log files as a result of the
 > system operating as intended. I'd like to find a way to log messages on the
 > server that receives that date, but to do so in such a way that the data is
@@ -63,16 +63,16 @@ This scenario was written with the following link's questions as it's
  or daemon to use the same file path as defined by `--named-pipe-name` option
  for output of it's logs.
 
-2. Written data to named pipe is read by Bash loops contained in customized
+1. Written data to named pipe is read by Bash loops contained in customized
  script copy defined by `--copy-save-name` option.
 
-3. Using public key defined by `--output-parse-recipient` option, every data
+1. Using public key defined by `--output-parse-recipient` option, every data
  block read by the script copy will be encrypted. Note this script is capable
  of reading multi-line writes to it's named pipe in a single operation, thus if
  your logging daemon or server writes multiple lines per client interaction
  then the entire write action is captured up to a few thousand lines at a time.
 
-4. The encrypted data is then saved (appended) to file defined by
+1. The encrypted data is then saved (appended) to file defined by
  `--output-parse-name` option and the Bash loop checks it's internal write
  count against the count defined by `--output-rotate-check-frequency` option
  and usually restarts processes that listen to named pipe for more writes.
@@ -80,20 +80,17 @@ This scenario was written with the following link's questions as it's
 > If the internal write count matches that of
 > `--output-rotate-check-frequency` or is greater then the
 > `--output-rotate-max-bites` value is used to check the encrypted log file size.
-
 > If the encrypted log file size matches that of `--output-rotate-max-bites`
 > or is greater then the actions defined by `--output-rotate-actions` option is
 > considered.
-
 > Note the more actions listed in the `--output-rotate-actions` option the
 > longer that the named pipe will be blocked for writing/parsing actions.
-
 > Note if your server has `mutt` installed and configured to send emails you
 > may wish to use the following instead. Additionally when emailed log rotation
 > is enabled it will be the address defined by `--output-rotate-recipient`
 > option that receives attached encrypted logs.
 
-## Enable emailed log rotation instead.
+## Enable emailed log rotation instead
 
 ```
 --output-rotate-actions='encrypted-email,remove-old'
@@ -103,7 +100,7 @@ This scenario was written with the following link's questions as it's
 > for write actions from server or logging daemon is resumed and step `1`
 > above starts again.
 
-### What does the other above options do?
+### What does the other above options do
 
 #### Enable saving script copy saving operation
 
@@ -178,7 +175,6 @@ This scenario was written with the following link's questions as it's
 > be correct for the target server or either; the logging service will be unable
 > to write to the named pipe file, or the script copy will be unable to read
 > from the named pipe.
-
 > Tip: `ls -hal /path/to/standard.log` will reveal the `user` and `group`
 > that the target server currently uses, make use of the old log file's
 > `group`'s permissions for defining the above command line `wwwgroup` value.
@@ -209,7 +205,6 @@ This scenario was written with the following link's questions as it's
 > "Log Rotation" for how to properly restart the related server's logging. Next
 > sets of links are what this document's author could find for proper server
 > restart signals; hint nginx is easiest.
-
 > Web Server : [Nginx log rotation documentation](https://www.nginx.com/resources/wiki/start/topics/examples/logrotation/)
 > Modify virtual host log access and log error lines to point to related named
 > pipes, then use the following `kill` signal to restart the server's logging.

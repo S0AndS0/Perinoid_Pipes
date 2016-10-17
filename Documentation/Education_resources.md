@@ -17,10 +17,10 @@
 - CommandLineFu - [Send email with one or more attacments](http://www.commandlinefu.com/commands/view/2886/send-email-with-one-or-more-binary-attachments)
 - Stack Overflow - [Modify Bash built in IFS (in field separator)](http://stackoverflow.com/questions/4128235/what-is-the-exact-meaning-of-ifs-n)
 - Stack Overflow - [Disown PID & grab PID of last command or function Bash magics](http://stackoverflow.com/questions/5719030/bash-silently-kill-background-function-process)
-- GitHub - [Mapfile (or variable with "heredoc") to array](https://gist.github.com/akwala/9013023)
+- GitHub - [Mapfile, or variable with "heredoc", to array](https://gist.github.com/akwala/9013023)
 - Stack Overflow - [Grab terminal column and line values](http://stackoverflow.com/questions/1780483/lines-and-columns-environmental-variables-lost-in-a-script)
 - Stack Overflow - [Make terminal output pritier](http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
-- Wikipedia - [Wiki of 'echo -e ""' <color> to <code>](https://en.wikipedia.org/wiki/ANSI_escape_code)
+- Wikipedia - [Wiki of 'echo -e ""` color codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
 - Stack Overflow - [Sanitize user input with Bash substitutions.](http://stackoverflow.com/a/89970)
 
 ### Examples of string *scrubbing*
@@ -48,31 +48,32 @@ var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
 
 ## Security encryption notes
 
-[DSA is broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity) use [RSA](https://en.wikipedia.org/wiki/RSA_(algorithm)) instead.
+[DSA is broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity)
+ use [RSA](https://en.wikipedia.org/wiki/RSA_(algorithm)) instead.
 
 ## Encryption types
 
 There are three main categories of encryption;
 
-[Symmetric or `shared key`](https://en.wikipedia.org/wiki/Symmetric-key_algorithm)
- uses one key (or password) to both encrypt and decrypt data, most commonly
- found on personal computers or web servers for authentication for a given user
- identity. Example use; logging into an Unix like system that has encrypted
- home folders for each user.
+[Symmetric](https://en.wikipedia.org/wiki/Symmetric-key_algorithm)
+ or `shared key` uses one key (or password) to both encrypt and decrypt data,
+ most commonly found on personal computers or web servers for authentication for
+ a given user identity. Example use; logging into an Unix like system that has
+ encrypted home folders for each user.
 
-[Asymmetric or `public key cryptography`](https://en.wikipedia.org/wiki/Public-key_cryptography)
- uses two (or more keys) that *usually* can only decrypt what their related key
- partner has encrypted; in special use cases there's ways of making keys with
- specific permissions but that's usually only required for very specific threat
- modules or usage scenarios.
+[Asymmetric](https://en.wikipedia.org/wiki/Public-key_cryptography)
+ or `public key cryptography` uses two (or more keys) that *usually* can only
+ decrypt what their related key partner has encrypted; in special use cases
+ there's ways of making keys with specific permissions but that's usually only
+ required for very specific threat modules or usage scenarios.
 
-[Hybrid or `sharing symmetric key via public key`](https://en.wikipedia.org/wiki/Hybrid_cryptosystem)
- *usually* uses asymmetric encryption to relay a one time (or limited time)
- symmetric key. The symmetric key is then used for the bulk of encryption to
- save time and processing power. This is one of the most common types of
- encryption now deployed readers should at least make an attempt at understanding
- the finer points of this encryption option in order to make the best use of this
- project.
+[Hybrid](https://en.wikipedia.org/wiki/Hybrid_cryptosystem)
+ or `sharing symmetric key via public key` *usually* uses asymmetric encryption
+ to relay a one time (or limited time) symmetric key. The symmetric key is then
+ used for the bulk of encryption to save time and processing power. This is one
+ of the most common types of encryption now deployed readers should at least make
+ an attempt at understanding the finer points of this encryption option in order
+ to make the best use of this project.
 
 ## Links to definitions
 
@@ -90,7 +91,7 @@ There are three main categories of encryption;
 > better suited.
 
 - Security Stack Exchange - [Write only one way encrypted directory](http://security.stackexchange.com/questions/6218/is-there-any-asymmetrically-encrypted-file-system)
-- Serverfault - [Asymmetric encrypt server logs that end up with sensitive data written to them](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
+- Serverfault - [Asymmetric encrypt server logs](http://serverfault.com/questions/89126/asymmetrically-encrypted-filesystem)
 - Stack Overflow - [Android asymmetric encryption line by line](http://stackoverflow.com/questions/29131427/efficient-asymmetric-log-encryption-in-android/29134101)
 
 ## Similar tools & guides
@@ -109,7 +110,7 @@ There are three main categories of encryption;
 
 ### Links to GnuPG written resources
 
-- RiseUp - [List of **best practices** for GPG/PGP key security and setup](https://riseup.net/en/security/message-security/openpgp/best-practices)
+- RiseUp - [List of best practices for GPG/PGP key security and setup](https://riseup.net/en/security/message-security/openpgp/best-practices)
 - Ekaia - [Quick guide on making new or renewing privet PGP/GPG keys](https://ekaia.org/blog/2009/05/10/creating-new-gpgkey/)
 - GnuPG - [GnuGP commonly used command line commands](https://www.gnupg.org/documentation/manuals/gnupg/Operational-GPG-Commands.html)
 
