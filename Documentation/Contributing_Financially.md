@@ -15,7 +15,7 @@ Support the original authors financially via the following methods
 Support code maintainers via their own links found within the
  `Contributing_code_credits.md` file when available.
 
-# Licensing notice for this file
+## Licensing notice for this file
 
 ```
     Copyright (C) 2016 S0AndS0.
