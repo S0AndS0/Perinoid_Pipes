@@ -18,7 +18,7 @@ set +o history
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='1476651714'
+Var_script_subversion='1476673946'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -261,8 +261,8 @@ Var_color_red='\033[0:31m'
 #Var_color_cyan='\033[0:36m'
 #Var_color_gray='\033[0:37m'
 Var_color_lred='\033[1:31m'
-Var_color_lgreen='\033[1:32m'
-Var_color_lyellow='\033[1:33m'
+#Var_color_lgreen='\033[1:32m'
+#Var_color_lyellow='\033[1:33m'
 #Var_color_lblue='\033[1:34m'
 #Var_color_lpurple='\033[1:35m'
 #Var_color_lcyan='\033[1:36m'
@@ -330,9 +330,16 @@ Func_messages(){
 		else
 			_custom_color="${Var_color_red}"
 		fi
-		## Note this ugly line is what makes messages line wrap at word boundaries.
-		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
-		${Var_echo_exec_path} -e "${_line_wrap_message}"
+		## Note this ugly line is what makes messages line wrap at word
+		##  boundaries. And shellcheck will complain about quoting use.
+		##  The authors of this script believe it to be more prudent
+		##  to spicificly quote the message text
+#		_line_wrap_message=$(fold -sw "$((${Var_columns_width:-80}-8))" <<<"${_message}")
+		_colorized_prefix="${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}"
+		_line_wrap_message=$(fold -sw "$((${Var_columns_width:-80}-8))" <<<"${_message}" | sed -e "s/^.*$/${_colorized_prefix} &/g")
+#		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
+		${Var_echo_exec_path} -e "${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null} ${_line_wrap_message}"
+#		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
 	## Check if log level is high enough, then check if logging is enabled.
 	if [ "${Var_logging}" = "${_log_level}" ] || [ "${_log_level}" -lt "${Var_logging}" ]; then
@@ -462,9 +469,9 @@ Func_usage_options(){
 				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})] "
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
-				if [[ "$(which ${_help_lookup[${_help_count}]}) --help" ]]; then
+				if test "$(which ${_help_lookup[${_help_count}]}) --help"; then
 					$(which ${_help_lookup[${_help_count}]}) --help
-				elif [[ "help ${_help_lookup[${_help_count}]}" ]]; then
+				elif test "help ${_help_lookup[${_help_count}]}"; then
 					help ${_help_lookup[${_help_count}]}
 				fi
 			else
@@ -1215,7 +1222,7 @@ Func_mkpipe_reader(){
 						_exit_status=("${PIPESTATUS[@]}")
 						let _count++
 						Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
-						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
+						Func_messages "# Encryption command [${Var_cat_exec_path} \"\\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
 #						Func_messages "# Encryption command [${Var_cat_exec_path} \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
 						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 						if [ "${_count}" -gt "${Var_log_check_frequency}" ] || [ "${_count}" = "${Var_log_check_frequency}" ]; then
