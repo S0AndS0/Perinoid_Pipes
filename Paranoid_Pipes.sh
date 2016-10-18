@@ -282,11 +282,16 @@ Var_padding_length='adaptive'
 Var_padding_placement='above'
 #Var_padding_placement='above,bellow,append,prepend'
 ## CLO --source-var-file
-Var_source_var_file=""
+Var_source_var_file="${Var_script_dir}/${Var_script_name}_configs.sh"
 ## CLO --save-options-yn
 Var_save_options='no'
 ## CLO --save-variables-yn
 Var_save_variables='no'
+
+### Variables and array declorations to keep Shellcheck happier
+## Following array maybe used for setting "headers" for any new log file
+##  or is set by passing any string not reconized as an agrument.
+Arr_extra_input=""
 
 ### Experimental variables and alternative variable examples
 Var_authors_contact='strangerthanbland@gmail.com'
@@ -465,14 +470,14 @@ Func_usage_options(){
 		let _help_count=0
 		until [ "${_help_count}" = "${#_help_lookup[@]}" ] ; do
 			echo "# Checking if ${Var_script_name} has help on [${_help_lookup[${_help_count}]}]"
-			if [ -e "$(which ${_help_lookup[${_help_count}]})" ] && ! [ "${_help_lookup[${_help_count}]}" = "${Var_script_name}" ] && ! [ "${_help_lookup[${_help_count}]}" = "${Var_script_dir}/${Var_script_name}" ]; then
+			if [ "${_help_lookup[${_help_count}]}" != "${Var_script_name}" ] && [ "${_help_lookup[${_help_count}]}" != "${Var_script_dir}/${Var_script_name}" ]; then
 				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})]"
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
 				if test "$(which ${_help_lookup[${_help_count}]}) --help"; then
-					$(which ${_help_lookup[${_help_count}]}) --help
-				elif test "help ${_help_lookup[${_help_count}]}"; then
-					help ${_help_lookup[${_help_count}]}
+					"$(which ${_help_lookup[${_help_count}]}) --help"
+				elif test help "${_help_lookup[${_help_count}]}"; then
+					help "${_help_lookup[${_help_count}]}"
 				fi
 			else
 				case "${_help_lookup[${_help_count}]}" in
@@ -494,10 +499,10 @@ Func_usage_options(){
 ##  only if the pipe file exists too. Else message user that extra input read
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
-	if [ "${#Var_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
+	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra (unrecognized as an argument) input" '1' '2'
-		Func_messages "# \${Var_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
-		${Var_cat_exec_path} <<<"${Var_extra_input[@]}" > "${Var_pipe_file_name}"
+		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
+		${Var_cat_exec_path} <<<"${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
 		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
 	fi
@@ -652,8 +657,8 @@ Func_check_args(){
 			*)
 				${Var_echo_exec_path} -e "${Var_color_lred}# Unknown input read by ${Var_script_name}\n#\t Try the following for help${Var_color_null}\n${Var_color_lred}#${Var_color_null}\t${Var_script_dir}/${Var_script_name} --help"
 				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} This unknown input will be written to named pipe when available."
-				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} Current count of unknown input [${#Var_extra_input[@]}]"
-				declare -ga "Var_extra_input+=( ${_arg} )"
+				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} Current count of unknown input [${#Arr_extra_input[@]}]"
+				declare -ga "Arr_extra_input+=( ${_arg} )"
 			;;
 		esac
 		let _arg_count++
@@ -746,10 +751,19 @@ Func_script_license_customizer(){
 	Func_messages '# along with this program. If not, see <http://www.gnu.org/licenses/>.' '0' '42'
 	Func_messages "#  Contact authors of [${Var_script_name}] at: ${Var_authors_contact}" '0' '42'
 	Func_messages '# GNU AGPL v3 Notice end' '0' '42'
-	if [ -r "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md" ]; then
+	if [ -r "${Var_script_dir}/Licenses/GNU_AGPLv3_Code.md" ]; then
 		Func_messages '## Found local license file, prompting to display...' '0' '42'
 		Func_prompt_continue "Func_script_license_customizer"
-		less -R5 "${Var_script_dir}/Licenses/GNU_AGPLv3_${Var_script_name%.*}.md"
+		less -R5 "${Var_script_dir}/Licenses/GNU_AGPLv3_Code.md"
+	else
+		read -pr "Please input the downloaded source directory for ${Var_script_name} " _responce
+		if [ -d "${_responce}" ] && [ -r "${_responce}/Licenses/GNU_AGPLv3_Code.md" ]; then
+			Func_messages '## Found local license file, prompting to display...' '0' '42'
+			Func_prompt_continue "Func_script_license_customizer"
+			less -R5 "${_responce}/Licenses/GNU_AGPLv3_Code.md"
+		else
+			Func_messages '## Unable to find full license, see linke in above short version or find full license under downloaded source directory for this script.' '0' '42'
+		fi
 	fi
 }
 

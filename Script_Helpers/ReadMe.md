@@ -33,9 +33,9 @@
     [Paranoid_Pipes.sh] at: strangerthanbland@gmail.com
 ```
 
-[Link to related license](GNU_AGPLv3_Code.md)
+[Link to related license](../Licenses/GNU_AGPLv3_Code.md)
 
-> See [`..Licenses/ReadMe.md`](..Licenses/ReadMe.md) for further information as
+> See [`../Licenses/ReadMe.md`](../Licenses/ReadMe.md) for further information as
 > to the hows and whys of these licensing choices made by this project's authors.
 
 ## Licensing notice for this file
@@ -49,6 +49,6 @@
     "License".
 ```
 
-[Link to title page](Contributing_Financially.md)
+[Link to title page](../Documentation/Contributing_Financially.md)
 
 [Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)

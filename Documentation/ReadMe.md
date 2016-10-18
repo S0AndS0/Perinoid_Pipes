@@ -25,8 +25,8 @@
 
 [Gnupg_configuration.md](Gnupg_configuration.md)
  Documentation of *best practices* configuration of GnuPG, the attached configs
- are very similar to what contributers and authors of this project make or should
- make use of.
+ are very similar to what contributers and authors of this project make use of
+ or should make use of.
 
 [Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
  Documentation of daily use command line command for GnuPG; in other words a

@@ -42,7 +42,7 @@ git fetch
 git merge master
 ```
 
-> See [Contributing_code_merge_conflicts.md](Documentation/Contributing_code_merge_conflicts.md)
+> See [Contributing_code_merge_conflicts.md](Contributing_code_merge_conflicts.md)
 > for how to resolve merge conflicts if errors arise from above.
 
 ## Licensing notice for this file

@@ -10,9 +10,9 @@
 
 ## General formatting
 
-> All files within the [`Documentation/`](Documentation) directory should have
-> no line other than code blocks that exceed 80 to 90 characters or columns. The
-> easiest way to ensure that your additions are within this range try
+> All files within the [`../Documentation/`](../Documentation/) directory should
+> have no line other than code blocks that exceed 80 to 90 characters or columns.
+> The easiest way to ensure that your additions are within this range try
 > `echo "${COLUMNS}"` within your terminal window to check what it's current size
 > is set at. Using `vim` and/or `nano` is encouraged when editing these documents
 > but so long as your text editor does not mangle new-lines and your additions
