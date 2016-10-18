@@ -54,7 +54,7 @@ ssh user@remote "$(</path/to/main/script.sh ${Script_options})"
 
 ```
 ## Send quit string to named pipe
-ssh user@remote "echo 'sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe"
+ssh user@remote "echo 'sTrInG_wItHoUt_SpAcEs' > /jailed_servers/website_host/var/log/www/access.log.pipe"
 ## Start script over SSH
 ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
 ```
@@ -68,8 +68,6 @@ ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
 > the authors have provided an example of what they would do to setup
 > multiple remote hosts in quick succession that each only need one template
 > written.
-
-
 
 ## Important variables to modify in above example script
 
@@ -159,7 +157,6 @@ Script_save_rotate_recipient='user@host.suffix'
 > much smaller than the main script of this project, after running above, coping
 > and modifying the individual target host's scripts on a case by case basis is
 > the suggested next course of action.
-
 > Bellow is a run-down of what changes per target host and what will remain
 > constant.
 
@@ -200,7 +197,8 @@ Script_save_rotate_recipient='user@host.suffix'
 ```
 
 > After modifying and running the above script you should have a log file on the
-> local host of actions preformed as defined by `Log_file_path` variable that saves each script copy's quit string as defined by the following option used in
+> local host of actions preformed as defined by `Log_file_path` variable that
+> saves each script copy's quit string as defined by the following option used in
 > above `for` loop.
 
 ```
@@ -214,7 +212,7 @@ Script_save_rotate_recipient='user@host.suffix'
 #--------|--------------
 # webadmin@webhost | somerandomstring
 # sqladmin@sqlhost | someotherrandomstring
-## Finished above at Day Month Day# hh:mm:ss Zone Year 
+## Finished above at Day Month Day# hh:mm:ss Zone Year
 ```
 
 ## Licensing notice for this file

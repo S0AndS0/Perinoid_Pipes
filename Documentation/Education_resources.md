@@ -17,10 +17,10 @@
 - CommandLineFu - [Send email with one or more attacments](http://www.commandlinefu.com/commands/view/2886/send-email-with-one-or-more-binary-attachments)
 - Stack Overflow - [Modify Bash built in IFS (in field separator)](http://stackoverflow.com/questions/4128235/what-is-the-exact-meaning-of-ifs-n)
 - Stack Overflow - [Disown PID & grab PID of last command or function Bash magics](http://stackoverflow.com/questions/5719030/bash-silently-kill-background-function-process)
-- GitHub - [Mapfile, or variable with "heredoc", to array](https://gist.github.com/akwala/9013023)
+- GitHub - [Mapfile to array](https://gist.github.com/akwala/9013023)
 - Stack Overflow - [Grab terminal column and line values](http://stackoverflow.com/questions/1780483/lines-and-columns-environmental-variables-lost-in-a-script)
 - Stack Overflow - [Make terminal output pritier](http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
-- Wikipedia - [Wiki of 'echo -e ""` color codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
+- Wikipedia - [Wiki of color codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
 - Stack Overflow - [Sanitize user input with Bash substitutions.](http://stackoverflow.com/a/89970)
 
 ### Examples of string *scrubbing*
@@ -121,15 +121,15 @@ There are three main categories of encryption;
 
 - GitHub - [General GitHub guide for contributing code](https://guides.github.com/activities/contributing-to-open-source/)
 - Git-scm - [Git guide - Signing your work](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
-- GitHub - [Source for `hub` command line tool for `git` with GitHub](https://github.com/github/hub)
-- GitHub - [Beautiful `git` with `vimdiff` tutorial in markdown format](https://gist.github.com/karenyyng/f19ff75c60f18b4b8149)
+- GitHub - [Source for command line tool for GitHub](https://github.com/github/hub)
+- GitHub - [Beautiful tutorial for merge conflics with vimdiff](https://gist.github.com/karenyyng/f19ff75c60f18b4b8149)
 - CodeClimate - [Getting started with automated repository checks](https://docs.codeclimate.com/docs/getting-started-configuration)
 
-## Guides for command line text editors `vim`, `vimdiff`, `nano`,...
+## Guides for command line text editors `vim`, `vimdiff`, `nano`
 
-- GitHub - [Cheat sheet for `vimdiff` with some good comments](https://gist.github.com/mattratleph/4026987)
-- DevMartin - [Mergetool `vimdiff` cheat sheat](http://devmartin.com/blog/2014/06/basic-vimdiff-commands-for-git-mergetool/)
-- Linux - [Spell checking `vim` tutorial](https://www.linux.com/learn/using-spell-checking-vim)
+- GitHub - [Cheat sheet for vimdiff](https://gist.github.com/mattratleph/4026987)
+- DevMartin - [Mergetool vimdiff cheat sheat](http://devmartin.com/blog/2014/06/basic-vimdiff-commands-for-git-mergetool/)
+- Linux - [Spell checking with vim](https://www.linux.com/learn/using-spell-checking-vim)
 
 ## Guides for `bash` shell interpreter
 

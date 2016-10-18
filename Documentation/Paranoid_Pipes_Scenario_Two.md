@@ -195,7 +195,6 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 > file that the second script is listening for lines to parse for decryption. Data
 > is passed through the second script's decryption loops and output in clear text
 > file under `/jailed_logs/website_host/www_access.log` path.
-
 > Now some maybe wondering what the benefit of this type of set up is. Simply if
 > the second script dies then the first script will just make an encrypted log
 > under the same file path as the second script's listening pipe; much like in

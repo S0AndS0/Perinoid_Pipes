@@ -166,8 +166,8 @@ Ubuntu
 > used *market places* for Android apps. The above tool maybe combined with Tor
 > and K9 among other applications for a decent level of security on Android with
 > GPG, find the full list of known apps to integrate well with
-> Openkeychain's [Apps](https://www.openkeychain.org/apps/) listing. However the above will
-> **not** integrate with the current scripts found within this project.
+> Openkeychain's [Apps](https://www.openkeychain.org/apps/) listing. However the
+> above will **not** integrate with the current scripts found within this project.
 
 * [GnuPG for Android](https://github.com/guardianproject/gnupg-for-android)
 

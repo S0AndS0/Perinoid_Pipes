@@ -2,30 +2,41 @@
 
 ## External application usage
 
- External program | License type | Usage within script
-------------------|:------------:|--------------------
- `gpg` or `gpg2`  | [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) | Encryption, decryption and signature verification of data parsed by this project's custom scripts and named pipes.
- `mkdir`          | [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) | Makes directories if not already present for output files (bulk or otherwise) and log files.
- `cp`             |  | Copies files or directories recursively at times.
- `mutt`           | [GNU GPL v2 or greater](https://dev.mutt.org/hg/mutt/file/084fb086a0e7/COPYRIGHT#l20) | Email client used by this script for log rotation actions involving emailing admins.
- `rm`             |  | Removes files, pipes and old logs.
- `cat`            |  | Concatenates files or strings passed as files to terminal or parsing pipe input commands.
- `echo`           |  | Prints messages to scripts users and used for redirecting messages to script log files.
- `tar`            |  | Compresses parsing log files during log rotation actions if enabled.
- `chown`          |  | Change ownership `<user>:<group>` of files and/or directories.
- `mkfifo`         |  | Make *first-in-first-out* named pipe file. This is one of the *magic* commands used in this script.
- `date`           |  | Print date to script log files or in user messages.
- `bash`           | [GNU GPL v3 or greater](https://www.gnu.org/software/bash/) | Interprets *human readable* source code (this project's scripts) into compatible machine instructions, often used as the command line interpreter for user logins and scripting, rarely used or seen as a programing language.
+> Note these are organized by licensing aggrements that the applications are under
+
+### [GNU GPL v2+](https://dev.mutt.org/hg/mutt/file/084fb086a0e7/COPYRIGHT#l20) licensed applications
+
+ External program | Usage within script
+------------------|--------------------
+ `mutt`           | Email client used by this script for log rotation actions involving emailing admins.
+
+### [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) licensed applications
+
+ External program | Usage within script
+------------------|--------------------
+ `gpg` or `gpg2`  | Encryption, decryption & signature verification of data parsed by this project's custom scripts & named pipes.
+ `mkdir`          | Makes directories if not already present for output files to.
+ `cp`             | Copies files or directories recursively at times.
+ `rm`             | Removes files, pipes and old logs; never used recursively within main script.
+ `cat`            | Concatenates files or strings passed as files to terminal or parsing pipe input commands.
+ `echo`           | Prints messages to scripts users and used for redirecting messages to script log files.
+ `tar`            | Compresses parsed log files during log rotation actions if enabled.
+ `chown`          | Change ownership `<user>:<group>` of files and/or directories.
+ `mkfifo`         | Make *first-in-first-out* named pipe file. This is one of the *magic* commands used in this script.
+ `date`           | Print date to script log files or in user messages.
+ `bash`           | Interprets *human readable* source code (this project's scripts) into compatible machine instructions, often used as the command line interpreter for user logins and scripting, rarely used or seen as a programing language.
 
 ## Documentation specific to each command above can be found with `<command> --help` or `man <command>`
 
+## Internal `bash` commands used within this project's scripts
+
  Bash commands | Usage within script
 ---------------|--------------------
- `touch`       | Make or remake files, such as when rotating logs just prior to restarting permissions and ownership again.
+ `touch`       | Make empty file, such as when rotating logs just prior to restarting permissions and ownership again.
  `trap`        | Remove pipes on exiting reader and logs on exiting main script if above `--log-auto-delete-yn=<y/n>` option is set to a `yes` value.
  `read`        | Read input from users, such as prompts to continue if main script's above `--debug-level=<n>` option is set high enough.
  `mapfile`     | Read multiple lines of input from a named pipe into an array such that the data maybe reinserted into parsing commands.
- `set`         | Turn on and off Bash history logging to prevent commands such as `echo "supper secret string" | gpg -r myself@host.domain >> mysuppersecrits.gpg` from appearing in in `~/.bash_history` file.
+ `set`         | Turn on and off Bash history logging to prevent user's commands within the same terminal from appearing in in `~/.bash_history` file.
  `let`         | Set numerical values to internal variables used to keep arrays' indexes ordered in looped Bash logic.
  `disown`      | Disown the PID of last function (or script) called allows for backgrounding the processes used to listen to named pipes and output to log files and bulk directory.
  `break`       | Breaks out of looped Bash logics such that the parent process can either exit or restart listening again.
@@ -41,7 +52,7 @@
  `until`...`do`...`done`          | `help until`   | Preform actions until test statements return true, ie `until [ "0" = "1" ]; do echo "# Mathematical believes assured; 0 does not equal 1... yet..." && sleep 1; done`
  `while`...`do`...`done`          | `help while`   | Preform actions while test statements do not return false, ie `while ! [ "0" = "1" ]; do echo "# Mathematical believes assured; 0 does not equal 1... yet..." && sleep 1; done`
  `[ "`...`" =`or`!= "`...`" ]`    | `man operator` | Often seen in use with `-gt` in place of `=` or `-f` or `-p` preceding a variable, this is used in combination with `if`, `until` and others to quickly test equivalency or if a file or pipe is present.
- `first_command | second_command` | `man pipe`    | for anonymous piping output of `first_command` into input of `second_command`
+ `first_command | second_command` | `man pipe`     | for anonymous piping output of `first_command` into input of `second_command`
 
 
  Bash variable & array syntax                   | Usage within script
@@ -51,7 +62,7 @@
  `arr=( "value1" "value two" "3" )`             | Assign `value1` and `value two` to array named `arr`. Arrays are a whole'nuther can'o'worms but are one of the *magic* things that makes this script tick. Note above tricks of replacing a target character with another also work with arrays.
  `echo "${arr[@]}"`                             | Expand all indexes in array named `arr`. More often you'll find this written as `until [ "${#arr[@]}" = "${_count}" ] || [ "${arr[${_count}]}" = "${_quit_line}" ]; do echo "# Doing stuff to ${arr[${_count}]}" && let _count++; done` to loop through an indexed array much like a `for` loop would loop over a list.
  `echo "${arr[@]:1}"`                           | Expand all indexes in array `arr` after index `1`. This can be used similarly to the looping example above but we can get fancy. Here's is a tip on how to *dump* everything in above array after `${_count}`+`1`
- `_arr_remainder=( ${arr[$((${_count}+1))]} )` | When you see how above loop has evolved (hint, check `Scenario one` within this document) ya might just chuckle at the work-around.
+ `_arr_remainder=( ${arr[$((${_count}+1))]} )`  | When you see how above loop has evolved (hint, check `Scenario one` within this document) ya might just chuckle at the work-around.
  `command <<<${var}`                            | for one-way redirection of `${var}`'s value into `command`'s input
 
  Bash internal variables | Usage within script
@@ -66,8 +77,8 @@
 
 ```
 func(){
-  var="${1:-value}"
-  echo "${var}"
+    var="${1:-value}"
+    echo "${var}"
 }
 ```
 

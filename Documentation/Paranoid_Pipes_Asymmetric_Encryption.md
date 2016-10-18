@@ -11,14 +11,12 @@
 > other encryption software such as OpenSSL. In short while much has been
 > finished and now works, there is still much more that could be done to improve
 > and/or increase this project's capabilities.
-
 > Encryption of arbitrary data or files is a common enough request that this
 > tool was developed. This is not a partition encryption solution (often LUKS
 > partitions are the *goto* for such Kernel level supported encryption where a
 > file system can be mounted, read, and written to) instead this is a method of
 > file by file and/or line by line asymmetric encryption at the host OS's
 > software layer.
-
 > Because of the differences in kernel vs software implementation of
 > encryption, the authors of this project feel it is worth warning users that
 > there is some risk for leakage of data destined for encryption. Often this
@@ -39,7 +37,6 @@ clear
 > acceptable depending upon your own perceived threat modal, your system
 > permission, and physical access levels on the target server. Some logging of
 > interactions may not be preventable.
-
 > For this script's process ID both running in the background or foreground
 > the authors have selected to turn off Bash history but have not gone any
 > further to protect users from system logging services. User may mitigate

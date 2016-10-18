@@ -34,11 +34,11 @@ git mergetool
 ## Keyboard navigation short-cuts for `vim`/`vimdiff`
 
 ```
-Ctrl^w + k 	# Move to upper split
-Ctrl^w + h 	# Move to upper left split
-Ctrl^w + l 	# Move to upper right split
-Ctrl^w + j 	# Move to bottom (MERGED) split
-Ctrl^w + w 	# Move to next split column (clockwise)
+Ctrl^w + k        # Move to upper split
+Ctrl^w + h        # Move to upper left split
+Ctrl^w + l        # Move to upper right split
+Ctrl^w + j        # Move to bottom (MERGED) split
+Ctrl^w + w        # Move to next split column (clockwise)
 ```
 
 ## Navigation keyboard short-cuts for `vim`/`vimdiff`

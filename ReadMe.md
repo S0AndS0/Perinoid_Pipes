@@ -1,8 +1,5 @@
 # Code issues & Markdown formatting statistics
 
-> Note some of the bellow statistics will be *skewed* while the authors go a *bug
-> stomping* aided by Code Climate reports for better *targeting*/time-management.
-
 [![Code Climate](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/gpa.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
  [![Issue Count](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/issue_count.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
 
