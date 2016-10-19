@@ -37,16 +37,6 @@
  covered include; generating new private keys, revocation certificates, signing
  other GnuPG user's public keys, and editing *`trust`* settings for keys.
 
-[Gnupg_with_git_tips.md](Gnupg_with_git_tips.md)
- Covers the finer points of setting `git` up with GnuPG such that future code
- contributers do not run into avoidable errors.
-
-[Gnupg_usefull_tools.md](Gnupg_usefull_tools.md)
- Documentation of tools other than those found within this project that the
- authors of this project believe are worth notifying readers of. While not all
- have been tested by the authors of this project, some where just *too cool* and
- not mentioning'em would be a shame.
-
 ### Documentation for [Paranoid_Pipes.sh](../Paranoid_Pipes.sh)
 
 [Paranoid_Pipes_Quick_Start.md](Paranoid_Pipes_Quick_Start.md)
@@ -57,9 +47,6 @@
 [Paranoid_Pipes_Asymmetric_Encryption.md](Paranoid_Pipes_Asymmetric_Encryption.md)
  Documentation for explaining what data cannot be protected by this project or
  the scripts that it writes.
-
-[Paranoid_Pipes_Bash_Logics.md](Paranoid_Pipes_Bash_Logics.md)
- Documentation for the internal logics of this project's main script operations.
 
 [Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
  Documentation for all recognized command line options (`CLO`) available to the
@@ -112,6 +99,10 @@
  project. Note steps found in the `Contributing_code_initial_setup.md` file
  should be followed prior following the above documentation.
 
+[Gnupg_with_git_tips.md](Gnupg_with_git_tips.md)
+ Covers the finer points of setting `git` up with GnuPG such that future code
+ contributers do not run into avoidable errors.
+
 [Contributing_Financially.md](Contributing_Financially.md)
  Documentation for how users of this project may contribute to the author's
  of this project financially. If you wish to have your contribution known the
@@ -140,3 +131,18 @@
  updates from the authors. Note following this document will cause your commits
  or changes to become un-signed and thus these private changes will become very
  difficult to merge with the main project.
+
+[Paranoid_Pipes_Bash_Logics.md](Paranoid_Pipes_Bash_Logics.md)
+ Documentation for the internal logics (generalized) of this project's main
+ script operations.
+
+[Paranoid_Pipes_External_Applications.md](Paranoid_Pipes_External_Applications.md)
+ Documentation for programs that the main script of this project makes use of
+ and how they are used.
+
+[Gnupg_usefull_tools.md](Gnupg_usefull_tools.md)
+ Documentation of tools other than those found within this project that the
+ authors of this project believe are worth notifying readers of. While not all
+ have been tested by the authors of this project, some where just *too cool* and
+ not mentioning'em would be a shame.
+

@@ -1,79 +1,318 @@
-# Documentation for named pipe encryption scripted logics
-
-## External application usage
-
-> Note these are organized by licensing aggrements that the applications are under
-
-### [GNU GPL v2+](https://dev.mutt.org/hg/mutt/file/084fb086a0e7/COPYRIGHT#l20) licensed applications
-
- External program | Usage within script
-------------------|--------------------
- `mutt`           | Email client used by this script for log rotation actions involving emailing admins.
-
-### [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html) licensed applications
-
- External program | Usage within script
-------------------|--------------------
- `gpg` or `gpg2`  | Encryption, decryption & signature verification of data parsed by this project's custom scripts & named pipes.
- `mkdir`          | Makes directories if not already present for output files to.
- `cp`             | Copies files or directories recursively at times.
- `rm`             | Removes files, pipes and old logs; never used recursively within main script.
- `cat`            | Concatenates files or strings passed as files to terminal or parsing pipe input commands.
- `echo`           | Prints messages to scripts users and used for redirecting messages to script log files.
- `tar`            | Compresses parsed log files during log rotation actions if enabled.
- `chown`          | Change ownership `<user>:<group>` of files and/or directories.
- `mkfifo`         | Make *first-in-first-out* named pipe file. This is one of the *magic* commands used in this script.
- `date`           | Print date to script log files or in user messages.
- `bash`           | Interprets *human readable* source code (this project's scripts) into compatible machine instructions, often used as the command line interpreter for user logins and scripting, rarely used or seen as a programing language.
-
-## Documentation specific to each command above can be found with `<command> --help` or `man <command>`
+# Paranoid Pipes Bash Logics
 
 ## Internal `bash` commands used within this project's scripts
 
- Bash commands | Usage within script
----------------|--------------------
- `touch`       | Make empty file, such as when rotating logs just prior to restarting permissions and ownership again.
- `trap`        | Remove pipes on exiting reader and logs on exiting main script if above `--log-auto-delete-yn=<y/n>` option is set to a `yes` value.
- `read`        | Read input from users, such as prompts to continue if main script's above `--debug-level=<n>` option is set high enough.
- `mapfile`     | Read multiple lines of input from a named pipe into an array such that the data maybe reinserted into parsing commands.
- `set`         | Turn on and off Bash history logging to prevent user's commands within the same terminal from appearing in in `~/.bash_history` file.
- `let`         | Set numerical values to internal variables used to keep arrays' indexes ordered in looped Bash logic.
- `disown`      | Disown the PID of last function (or script) called allows for backgrounding the processes used to listen to named pipes and output to log files and bulk directory.
- `break`       | Breaks out of looped Bash logics such that the parent process can either exit or restart listening again.
+### `touch`
 
-## Documentation specific to each command above can be found with `help <command>` and/or `man <command>`
+> Make an empty file or modify the last edit time on preexisting file.
+> Within this script `touch` is used within the function `Func_rotate_log`
+> To make a new empty log file that `chmod` & `chown` commands can be run
+> against for setting correct permissions up again.
 
- Bash switch, loops, & operators  | Help command   | Usage within script
-----------------------------------|----------------|--------------------
- `&&` and `||`                    | `man operator` | Are *short-handed* tests for success or failure, known as "and"s & "or"s, ie `first command && second command` vs `first command || second command` will operate differently based upon `first command`'s exit status.
- `case`...`in`...`esac`           | `help case`    | Are used to test a variable's value against many possible outcomes, ie `case "$(date +%u)" in 1) echo "Ug, mondays";; 3) echo "hump day keep it up!";; 7) echo "get some sun";; *) echo "$(date +%u)";; esac`
- `for`...`do`...`done`            | `help for`     | Used until looping through command line options of main script finishes resetting any script variables over written at the command line.
- `if`...`then`...`fi`             | `help if`      | Are used for if *something* equals another *something*, ie numerical values and file's existence or string equivalence with another string, ie `if [ "1" = "0" ]; then echo "Mathematical believes shattered" else echo "Math still works"; fi`
- `until`...`do`...`done`          | `help until`   | Preform actions until test statements return true, ie `until [ "0" = "1" ]; do echo "# Mathematical believes assured; 0 does not equal 1... yet..." && sleep 1; done`
- `while`...`do`...`done`          | `help while`   | Preform actions while test statements do not return false, ie `while ! [ "0" = "1" ]; do echo "# Mathematical believes assured; 0 does not equal 1... yet..." && sleep 1; done`
- `[ "`...`" =`or`!= "`...`" ]`    | `man operator` | Often seen in use with `-gt` in place of `=` or `-f` or `-p` preceding a variable, this is used in combination with `if`, `until` and others to quickly test equivalency or if a file or pipe is present.
- `first_command | second_command` | `man pipe`     | for anonymous piping output of `first_command` into input of `second_command`
+### `trap`
 
+> Traps exit signals and runs a command prior to giving control back to parent.
+> Within this script `trap` is used within a few `case` statements but mainly
+> provides *clean-up* of named pipe files and script generated log files via
+> calling function `Func_trap_cleanup` at the proper time.
 
- Bash variable & array syntax                   | Usage within script
-------------------------------------------------|--------------------
- `var=value`                                    | Assign `value` to variable named `var`. Often seen assigning directory or file paths or other values to descriptive variable names.
- `echo "${var//,/ }"`                           | Expand variable named `var` replacing every comma `,` with a space ` `. Usually found in debugging messages and within loops such as `for _word in ${var//,/ }; do echo "# Read word ${_word} in ${var} list"; done` to separate words in a `,` separate list.
- `arr=( "value1" "value two" "3" )`             | Assign `value1` and `value two` to array named `arr`. Arrays are a whole'nuther can'o'worms but are one of the *magic* things that makes this script tick. Note above tricks of replacing a target character with another also work with arrays.
- `echo "${arr[@]}"`                             | Expand all indexes in array named `arr`. More often you'll find this written as `until [ "${#arr[@]}" = "${_count}" ] || [ "${arr[${_count}]}" = "${_quit_line}" ]; do echo "# Doing stuff to ${arr[${_count}]}" && let _count++; done` to loop through an indexed array much like a `for` loop would loop over a list.
- `echo "${arr[@]:1}"`                           | Expand all indexes in array `arr` after index `1`. This can be used similarly to the looping example above but we can get fancy. Here's is a tip on how to *dump* everything in above array after `${_count}`+`1`
- `_arr_remainder=( ${arr[$((${_count}+1))]} )`  | When you see how above loop has evolved (hint, check `Scenario one` within this document) ya might just chuckle at the work-around.
- `command <<<${var}`                            | for one-way redirection of `${var}`'s value into `command`'s input
+### `read`
 
- Bash internal variables | Usage within script
--------------------------|--------------------
- `$?`                    | Saves exit of previous command to a variable, ie `touch fire; _exit_var=$?; echo "Exit status [${_exit_var}] for last command"`
- `var=${PIPESTATUS[@]}`  | to capture exit statuses of multi piped or redirected commands
- `$!`                    | Saves PID of last command to a variable for use with `unset` command when backgrounding processes or script.
+> Read user input (from keyboard) and save string received as a variable
+> Within this script `read` is used for reading user input for simple `yes` or
+> `no` questions via function `Func_prompt_continue`, and usually results in
+> either continuing or exiting with an error code greater than `0`
+
+### `mapfile`
+
+> Map a file or input to an array that may contain multiple addresses or lines.
+> Within this script `mapfile` is used by first calling the function
+> `Func_mkpipe_reader` which within it's `while` loop calls the function
+> `Map_read_array_to_output` that then intern calls `mapfile` command in order
+> to read multiple write actions on a named pipe file at one time. The authors
+> admit that this one section of the main script is a little *funky* to wrap
+> ones brain around, however, it works wonderfully and without padding does
+> slim down considerably. So make an effort to understand these two functions
+> and how they preform their *magic* with `mapfile` and output redirection.
+
+### `set`
+
+> Set bash environment setting.
+> Within this script `set` is used to turn off logging of command line actions
+> to your `~/.bash_history` file within the same terminal window that it is
+> actively running in. Logging is automatically turned back on again when this
+> script exits.
+
+### `let`
+
+> Let a numerical value equal a new value.
+> Within this script `let` is used to set variables that only contain numerical
+> values; `0`, `1`,... and is used for it's built in arithmetic. Often you'll
+> find that `let` will be used in combination with arrays to iterate though
+> their address or index value.
+
+### `disown`
+
+> Disown a process by `pid` or previous process found in stack if unspecified.
+> Within this script `disown` is used to *background* specific looping functions
+> so that the terminal maybe freed-up for further user input.
+
+### `break`
+
+> Break from loop or other bash logic expression
+> Within this script `break` is used
+
+## Internal `bash` logic operators used within this project's scripts
+
+### `case`
+
+> Within other languages also known as a `switch` statement, `case` matches
+> against various conditions and then switches control to another process.
+> Within this script `case` is used to match against `yes` or `no` like
+> statements read from user input as well as in instances where the script
+> could take more than one action on input but should only take one. Used
+> within loops `case` is used to set user input variables based upon command
+> line option matching.
+
+### `for`
+
+> For each in list do something with each listed.
+> Within this script `for` loops are used for iterating over lists of options
+> and then *feeding* them one by one to another process or command.
+
+### `if`
+
+> If condition is true then do something else do something else.
+> Within this script `if` is used much like `case` statements for matching
+> various conditions equality or falseness.
+
+### `until`
+
+> Until true do something.
+> Within this script `until` is used to loop through array indexes until the
+> total number of indexes are equal to the number of processed indexes.
+
+### `while`
+
+> While true do something.
+> Within this script `while` is used to loop though commands while a condition
+> is true, such as a file existing.
+
+### `&&` and `||`
+
+> If command exits true (`&&`) then do next listed operation. Or if command
+> exits false (`||`) do next listed operation.
+> Within this script these above `operator` commands are used to test if two
+> or more listed conditions are true/false and take actions based upon the
+> summed truthfulness or falseness of listed conditions.
+
+### `[`, `=`, `!=`, `]`
+
+> If string is equal (`=`) to another or if string is not equal (`!=`) to
+> another string then do something.
+> Within this script the above `operator` commands are used within `if`, `until`
+> and `while` loops with other special operator command line options to test
+> whether or not some condition is true.
+
+### `|`
+
+> Pipe anonymously the output of one process into the input of another process.
+> Within this script `|` (pipes) are used for transmitting data from one command
+> to another (nearly the same as named pipes) and much like `mapfile` provides
+> this script with much of it's *magical* capabilities.
+
+### Getting help
+
+> Documentation specific to each command above can be found with
+> `help <command>` and/or `man <command>` for most, however those that are
+> marked with `operator` should be searched as `man operator` or `help operator`
+
+## Internal `bash` variables & arrays used within this project's scripts
+
+### Variables
+
+> Variables are used within this script to hold values from both user input as
+> well as results of commands saved as a value to variables. Below are some
+> examples of syntax used within bash scripts.
+
+- Assigning variable `foo` with `bar` value
+
+```
+foo="bar"
+```
+
+- Calling variable `foo` to display `bar` value
+
+```
+echo "${foo}"
+## Or using redirection and cat
+cat <<<"${foo}"
+## Above should print: bar
+```
+
+- Printing charicter count/length of `foo` variable
+
+```
+echo "${#foo}"
+## Above shoule print: 0
+```
+
+- Adding value `,second` to variable `foo`
+
+```
+## Using '+=' syntax
+foo+=",second"
+## And using variable within value assignment
+foo="${foo},third"
+```
+
+- Outputting only first or second values from `foo` variable
+
+```
+awk '{print $2}' <<<"${foo//,/ }"
+## Or using pipes
+echo "${foo//,/ }" | awk '{print $2}'
+## Above will print "second" value
+```
+
+> Note in above two examples how the comas (`,`) where added within variable
+> assignments and then *stripped* out again before presenting the string to
+> `awk`, this syntax of removing/replacing characters will be seen often
+> within the scripts of this project when array indexing is unnecessary for
+> holding complex strings or lists of values. Furthermore this type of complex
+> variable string assignments is not uncommon; try the following to output your
+> path's varaible values each on their own lines.
+
+```
+for _path in ${PATH//:/ }; do
+    echo "${_path}"
+done
+```
+
+> Or for a more on topic example, try the following after assigning above.
+
+```
+for _word in ${foo//,/ }; do
+    echo "${_word}"
+done
+```
+
+### Arrays
+
+> Arrays are like *supper powered* variables and come with some nifty bult in
+> options when used within the Bash scripting language.
+
+- Assigning an array `foo_bar` with `fubarz` value
+
+```
+foo_bar=( "fobarz" )
+```
+
+- Printing first value of `foo_bar` array
+
+```
+echo "${foo_bar[0]}"
+## Above should print: fobarz
+```
+
+> Note with arrays the index/address will start with `0` and add one for
+> every index/address after.
+
+- Adding values `cheese` & `cheesy` to `foo_bar` array
+
+```
+## Using '+=' syntax
+foo_bar+=( "cheese" )
+## And using the array within value assignment syntax
+foo_bar=( "${foo_bar[*]}" "cheesy" )
+```
+
+- Printing all values within `foo_bar` array
+
+```
+echo "${foo_bar[@]}"
+## Or using '*' instead
+echo "${foo_bar[*]}"
+```
+
+> Now to get into some of the fancier things that arrays can do for us.
+
+- Assign indexes after `1` to new `bars_foo` array
+
+```
+bars_foo=( "${foo_bar[@]:1}" )
+```
+
+- Assign indexes befor `2` to new `fobarz_cheese` array
+
+```
+fobarz_cheese=( "${foo_bar[@]::2}" )
+```
+
+- Print new & old arrays
+
+```
+echo "${foo_bar[*]}"
+## Above should print: fobarz cheese cheesy
+echo "${bars_foo[*]}"
+## Above should print: cheese cheesy
+echo "${fobarz_cheese[*]}"
+## Above shoule print: fobarz cheese
+```
+
+- Looping though `foo_bar` array with `until` and `let` itteration
+
+```
+let counter=0
+until [ "${#foo_bar[*]}" = "${counter}" ]; do
+    echo "${foo_bar[${counter}]}"
+    let counter++
+done
+unset counter
+```
+
+> Above should print out as shown bellow.
+
+```
+fobarz
+cheese
+cheesy
+```
+
+## Internal `bash` built-in variables used within this project's scripts
+
+> Note unlike the previous examples the following are available to any
+> bash script.
+
+### Capturing exit status of previous command
+
+- Testing for failure codes by intentionaly running a failing command
+
+```
+cat /tmp/some_non_exsistant.file
+exit_variable_one=$?
+if [ "${exit_variable_one}" != '0' ]; then
+    echo "Proccess ID errored: $!"
+fi
+```
+
+- Testing for sucess code by running a command that will succeed
+
+```
+cat /etc/hosts
+exit_variable_two=$?
+if [ "${exit_variable_two}" = '0' ]; then
+    echo "Proccess ID succeeded: $!"
+fi
+```
+
+> Note above will only capture the last command's exit status, so
+> if using piped commands try `${PIPESTATUS[@]}` built in array to
+> capture the exit statuses of all commands that where piped
 
 ## Bash function assignment and calling syntax
 
-### assign a function named `func`
+- Assign a function named `func`
 
 ```
 func(){
@@ -82,7 +321,7 @@ func(){
 }
 ```
 
-### call above function named `func`
+- Call above function named `func`
 
 ```
 func "yo"
@@ -96,10 +335,10 @@ func_var=$(func "yo")
 
 ## Bash write file method
 
-### Write to `/dir/file.name` text until `EOF` is found on it's own line
+### Write to `/tmp/file.name` text until `EOF` is found on it's own line
 
 ```
-cat > "/dir/file.name" <<EOF
+cat > "/tmp/file.name" <<EOF
 some text with "EOF" on a new line to end statement
 some variables with "\" and some without depending
 upon if they should be expanded on write or on re-read/execution
