@@ -339,12 +339,8 @@ Func_messages(){
 		##  boundaries. And shellcheck will complain about quoting use.
 		##  The authors of this script believe it to be more prudent
 		##  to spicificly quote the message text
-#		_line_wrap_message=$(fold -sw "$((${Var_columns_width:-80}-8))" <<<"${_message}")
-		_colorized_prefix="${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}"
-		_line_wrap_message=$(fold -sw "$((${Var_columns_width:-80}-8))" <<<"${_message}" | sed -e "s/^.*$/${_colorized_prefix} &/g")
-#		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
-		${Var_echo_exec_path} -e "${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null} ${_line_wrap_message}"
-#		${Var_echo_exec_path} -e "${_line_wrap_message}"
+		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
+		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
 	## Check if log level is high enough, then check if logging is enabled.
 	if [ "${Var_logging}" = "${_log_level}" ] || [ "${_log_level}" -lt "${Var_logging}" ]; then

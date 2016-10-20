@@ -1,0 +1,12 @@
+export Var_parent_dir="${Var_script_dir%/*}"
+export Var_install_path="/usr/local/sbin"
+export Var_install_name="Paranoid_Pipes.sh"
+export Var_dependancy_list="gnupg"
+export Var_gnupg_email="user@host.domain"
+export Var_pass_length='32'
+export Var_pass_location="${HOME}/gpg_test_keys.pass"
+export Var_test_location="${HOME}/test_string_raw.txt"
+export Var_encrypt_pipe_location="/tmp/Peranoid_Pipes/encrypt.pipe"
+export Var_encrypted_location="${Var_encrypt_pipe_location%.*}.gpg"
+export Var_decrypt_pipe_location="/tmp/Peranoid_Pipes/decrypt.pipe"
+export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.gpg"

@@ -1,0 +1,19 @@
+## Settings for git
+git:
+ depth: 3
+## Operating systems to test on
+os:
+ - linux
+## Settings for language that travis-ci.org will test with
+language:
+ - bash
+## Custom setup prior to testing project, install dependencies & configure
+before_install:
+ - .travis-ci/before_install.sh
+## Steps for successful install once dependencies are met.
+install:
+ - .travis-ci/install.sh
+## Run tests for travis-ci.org to report on
+script:
+ - .travis-ci/script_encrypt.sh
+ - .travis-ci/script_decrypt.sh

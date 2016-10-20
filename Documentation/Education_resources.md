@@ -97,7 +97,9 @@ There are three main categories of encryption;
 ## Similar tools & guides
 
 - Devco - [Guide to asymmetric encryption with OpenSSL](https://www.devco.net/archives/2006/02/13/public_-_private_key_encryption_using_openssl.php)
- Seems pretty snazzy but authors of this script have not tested it yet.
+
+> The above seems pretty snazzy but authors of this script have not tested
+> it yet.
 
 ## GnuPG encryption related links
 
@@ -113,6 +115,7 @@ There are three main categories of encryption;
 - RiseUp - [List of best practices for GPG/PGP key security and setup](https://riseup.net/en/security/message-security/openpgp/best-practices)
 - Ekaia - [Quick guide on making new or renewing privet PGP/GPG keys](https://ekaia.org/blog/2009/05/10/creating-new-gpgkey/)
 - GnuPG - [GnuGP commonly used command line commands](https://www.gnupg.org/documentation/manuals/gnupg/Operational-GPG-Commands.html)
+- GnuPG - [Unattended key generation](https://www.gnupg.org/documentation/manuals/gnupg-devel/Unattended-GPG-key-generation.html)
 
 ## Guides for `git`
 

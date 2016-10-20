@@ -56,13 +56,13 @@ Do_stuff_with_lines(){
 	if [ -p "${Var_output_file}" ]; then
 		cat <<<"${_enc_input[@]}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
-		if [ -z "${Var_search_output}" ]; then
+		if [ "${#Var_search_output}" = "0" ]; then
 			cat <<<"${_enc_input[@]}" | gpg -d >> "${Var_output_file}"
 		else
 			cat <<<"${_enc_input[@]}" | gpg -d | grep -E "${Var_search_output}" >> "${Var_output_file}"
 		fi
 	else
-		if [ -z "${#Var_search_output}" ]; then
+		if [ "${#Var_search_output}" = "0" ]; then
 			cat <<<"${_enc_input[@]}" | gpg -d
 		else
 			cat <<<"${_enc_input[@]}" | gpg -d | grep -E "${Var_search_output}"
