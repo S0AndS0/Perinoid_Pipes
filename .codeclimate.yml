@@ -3,6 +3,19 @@ engines:
     enabled: true
   markdownlint:
     enabled: true
+    ## Ignore long line within the following files. Because the authors either
+    ##  intentionally have some long lines within documentation or are not able
+    ##  to further shrink lines, likely do to an example within the referenced
+    ##  document file.
+    exclude_fingerprints:
+    ## Documentation/Gnupg_configuration.md
+    - 3d0b30e5ad08b22a310e570eaebb1b49
+    ## Documentation/Contributing_code_initial_setup.md
+    - c36a75ab0ce27f1dbbddf073cce76029
+    ## Documentation/Paranoid_Pipes_Asymmetric_Encryption.md
+    - f7f431e54080b0bad206655a5bd056b2
+    ## Documentation/Contributing_code_maintenance.md
+    - 236ac3d1d79365b808a5c57368f01da2
 ratings:
   paths:
     - ".gitignore"

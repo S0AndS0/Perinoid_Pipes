@@ -11,13 +11,13 @@
 ## General formatting
 
 > All files within the [`../Documentation/`](../Documentation/) directory should
-> have no line other than code blocks that exceed 80 to 90 characters or columns.
-> The easiest way to ensure that your additions are within this range try
-> `echo "${COLUMNS}"` within your terminal window to check what it's current size
-> is set at. Using `vim` and/or `nano` is encouraged when editing these documents
-> but so long as your text editor does not mangle new-lines and your additions
-> attempt to adhere to the following guidelines then singed pull requests are
-> most welcomed.
+> have no line other than code blocks that exceed 80 to 90 characters or
+> columns. The easiest way to ensure that your additions are within this range
+> try `echo "${COLUMNS}"` within your terminal window to check what it's
+> current size is set at. Using `vim` and/or `nano` is encouraged when editing
+> these documents but so long as your text editor does not mangle new-lines and
+> your additions attempt to adhere to the following guidelines then singed pull
+> requests are most welcomed.
 
 ## Formatting code examples
 
@@ -45,7 +45,8 @@
 > Note within blocks of text that reference a line within a code block should
 > use single backticks (````) to encapsulate the word or string referenced. For
 > example if one where to reference the third line above for some informational
-> reason it would look like; `# rendered in client browsers.` within a text block.
+> reason it would look like; `# rendered in client browsers.` within a text
+> block.
 
 ## Formatting text blocks
 
@@ -72,7 +73,7 @@ Example of above in `raw` format
 
 ### Formatting for title of document
 
-# Uses a single `#` at the beginning of lines
+First heading should use a single `#` at the beginning of lines
 
 ```
 # Uses a single `#` at the beginning of lines
@@ -80,13 +81,13 @@ Example of above in `raw` format
 
 ### Formatting sub-sections
 
-## Uses double `##` at the beginning of lines
+Sub headings should use double `##` at the beginning of lines
 
 ```
 ## Uses double `##` at the beginning of lines
 ```
 
-### Formatting sub-sub-sections
+And sub-sub headings should use `###` at the beginning of lines
 
 ### Uses triple `###` at the beginning of lines
 
@@ -124,13 +125,13 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 ### Formatting numbered lists (example one)
 
 1. Number one
-2. Number two
-3. Number three
+1. Number two
+1. Number three
 
 ```
 1. Number one
-2. Number two
-3. Number three
+1. Number two
+1. Number three
 ```
 
 > Note the above using markdown could also be re-ordered but the `raw`
@@ -149,45 +150,38 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 ```
 
 > As stated in the previous example, markdown rendering should handle
-> *quick'n'dirty* re-ordering of numbered lists, but the `raw` formatting exposes
-> that the original order was changed.
+> *quick'n'dirty* re-ordering of numbered lists, but the `raw` formatting
+> exposes that the original order was changed.
 
 ### Formatting numbered lists (example three)
 
-> Occasionally there is cause to combine both bulleted lists and numbered,
-> however, doing this will disable the markdown recognition of numbers so
-> `example two` above will no longer apply.
-
 1. Number one
- - First line
- - Second line
- - Third line
-2. Number two
- - First line
- - Second line
- - Third line
-3. Number three
- - First line
- - Second line
- - Third line
+- First line
+- Second line
+- Third line
+1. Number two
+- First line
+- Second line
+- Third line
+1. Number three
+- First line
+- Second line
+- Third line
 
 ```
 1. Number one
- - First line
- - Second line
- - Third line
-2. Number two
- - First line
- - Second line
- - Third line
-3. Number three
- - First line
- - Second line
- - Third line
+- First line
+- Second line
+- Third line
+1. Number two
+- First line
+- Second line
+- Third line
+1. Number three
+- First line
+- Second line
+- Third line
 ```
-
-> Note also in above's `raw` formatting how an empty space was needed (` `)
-> to insure that each numbered entry remains on it's own line once rendered.
 
 ## Licensing notice for this file
 

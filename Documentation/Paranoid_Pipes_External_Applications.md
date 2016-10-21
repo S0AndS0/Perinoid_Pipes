@@ -5,60 +5,60 @@
 > Documentation specific to each command bellow can be found with
 > `<command> --help` or `man <command>`
 
-### GNU GPL v2
+## GNU GPL v2
 
-#### `mutt`
+### `mutt`
 
 > [GNU GPL v2+](https://dev.mutt.org/hg/mutt/file/084fb086a0e7/COPYRIGHT#l20)
 > Email client used by this script for log rotation actions.
 
-### [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html)
+## [GNU GPL v3](https://www.gnu.org/copyleft/gpl.html)
 
-#### `gpg` or `gpg2`
+### `gpg` or `gpg2`
 
 > Encryption, decryption & signature verification of data parsed by this
 > project's custom scripts & named pipes.
 
-#### `mkdir`
+### `mkdir`
 
 > Makes directories if not already present for output files to.
 
-#### `cp`
+### `cp`
 
 > Copies files or directories recursively at times.
 
-#### `rm`
+### `rm`
 
 > Removes files, pipes and old logs; never used recursively within main script.
 
-#### `cat`
+### `cat`
 
 > Concatenates files or strings passed as files to terminal or parsing pipe
 > input commands.
 
-#### `echo`
+### `echo`
 
 > Prints messages to scripts users and used for redirecting messages to
 > script log files.
 
-#### `tar`
+### `tar`
 
 > Compresses parsed log files during log rotation actions if enabled.
 
-#### `chown`
+### `chown`
 
 > Change ownership `<user>:<group>` of files and/or directories.
 
-#### `mkfifo`
+### `mkfifo`
 
 > Make *first-in-first-out* named pipe file. This is one of the *magic*
 > commands used in this script.
 
-#### `date`
+### `date`
 
 > Print date to script log files or in user messages.
 
-#### `bash`
+### `bash`
 
 > Interprets *human readable* source code (this project's scripts) into
 > compatible machine instructions, often used as the command line interpreter

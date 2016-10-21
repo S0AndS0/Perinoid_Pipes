@@ -215,8 +215,8 @@ This scenario was written with the following link's questions as it's
 kill -USR1 $(cat master.nginx.pid)
 ```
 
-- Web Server : [Apache 2.4 log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
-- Log Daemon/Server : [Rsyslog v8 `ompipe` plug-in documentation](http://www.rsyslog.com/doc/v8-stable/configuration/modules/ompipe.html)
+- Apache v2.4 [log rotation documentation](https://httpd.apache.org/docs/2.4/programs/rotatelogs.html)
+- Rsyslog v8`ompipe` [plug-in documentation](http://www.rsyslog.com/doc/v8-stable/configuration/modules/ompipe.html)
 
 #### Automation of named pipe log encryption for nginx
 

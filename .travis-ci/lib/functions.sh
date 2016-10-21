@@ -27,7 +27,7 @@ Func_run_sanely(){
 			${_run_string}
 		;;
 	esac
-	_exit_status="$?"
+	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 }
 Func_check_exit_status(){

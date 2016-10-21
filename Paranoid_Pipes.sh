@@ -18,7 +18,7 @@ set +o history
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='1476673946'
+Var_script_subversion='1477079333'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -666,7 +666,8 @@ Func_check_args(){
 Func_check_recipients(){
 	if [ -z "${#Var_gpg_recipient}" ] || [[ "${Var_gpg_recipient}" == "user@host.domain" ]]; then
 		Func_messages "# Warning - [\${Var_gpg_recipient}=${Var_gpg_recipient}] is improper, set with '--output-parse-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
-		read -pr 'Please input your pub-key email address: ' _response
+		${Var_echo_exec_path} -n 'Please input your pub-key email address: '
+		read -pr _response
 		if ! [ -z "${#_response}" ]; then
 			Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
 			Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
@@ -682,7 +683,8 @@ Func_check_recipients(){
 		Y|y|Yes|yes|YES)
 			if [ -z "${#Var_log_rotate_recipient}" ] || [[ "${Var_log_rotate_recipient}" == "user@host.domain" ]]; then
 				Func_messages "# Warning - [\${Var_log_rotate_recipient}=${Var_log_rotate_recipient}] is improper, set with '--output-rotate-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
-				read -pr 'Please input your pub-key email address: ' _response
+				${Var_echo_exec_path} -en 'Please input your pub-key email address: '
+				read -pr _response
 				if ! [ -z "${#_response}" ]; then
 					Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
 				else
@@ -752,11 +754,12 @@ Func_script_license_customizer(){
 		Func_prompt_continue "Func_script_license_customizer"
 		less -R5 "${Var_script_dir}/Licenses/GNU_AGPLv3_Code.md"
 	else
-		read -pr "Please input the downloaded source directory for ${Var_script_name} " _responce
+		${Var_echo_exec_path} -en "Please input the downloaded source directory for ${Var_script_name}: "
+		read -r _responce
 		if [ -d "${_responce}" ] && [ -r "${_responce}/Licenses/GNU_AGPLv3_Code.md" ]; then
 			Func_messages '## Found local license file, prompting to display...' '0' '42'
 			Func_prompt_continue "Func_script_license_customizer"
-			less -R5 "${_responce}/Licenses/GNU_AGPLv3_Code.md"
+			fold -sw $((${Var_columns_width}-8)) "${_responce}/Licenses/GNU_AGPLv3_Code.md" | less -R5
 		else
 			Func_messages '## Unable to find full license, see linke in above short version or find full license under downloaded source directory for this script.' '0' '42'
 		fi

@@ -13,7 +13,8 @@ for _app in ${Var_dependency_list//,/ }; do
 done
 ## If array holds any values run it through 'apt-get install'
 if [ "${#Arr_needed_dependencies[*]}" -gt "0" ]; then
-	Func_run_sanely "apt-get install -qq ${Arr_needed_dependencies[*]}" "0"
+	Func_run_sanely "apt-get update -qq" "0"
+	Func_run_sanely "apt-get install ${Arr_needed_dependencies[*]}" "0"
 else
 	echo "# ${Var_script_name}: reports no unmet dependencies."
 fi
