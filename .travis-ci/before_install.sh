@@ -3,7 +3,7 @@ export Var_script_dir="${0%/*}"
 export Var_script_name="${0##*/}"
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
-Func_run_sainly "apt-get update" "0"
+Func_run_sanely "apt-get update" "0"
 ## Add up missing dependencies to an array
 for _app in ${Var_dependency_list//,/ }; do
 	grep -qiE "${_app}" <<<"$(apt-cache policy "${_app}")"
