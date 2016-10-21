@@ -5,7 +5,7 @@ export Var_script_name="${0##*/}"
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 ## Variables custom to this script using above sourced variables
-Var_install_script="../${Var_install_name}"
+Var_install_script="${Var_install_name}"
 ## Check that path found in 'Var_install_path' variable is also within
 ##  ${PATH} variable, uncomment if not running on travis-ci
 #Var_check_path=$(echo "${PATH}" | grep -q "${Var_install_path}")
