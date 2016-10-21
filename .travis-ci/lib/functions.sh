@@ -15,15 +15,15 @@ Func_run_sanely(){
 	case "${_permissions}" in
 		0)
 			if [ "${_uid}" = "0" ]; then
-				echo "${Var_script_name}: ${_run_string}"
+				echo "# ${Var_script_name} running as root: ${_run_string}"
 				${_run_string}
 			else
-				echo "${Var_script_name}: sudo \"${_run_string}\""
-				sudo "${_run_string}"
+				echo "# ${Var_script_name} running as ${USER}: sudo ${_run_string}"
+				sudo ${_run_string}
 			fi
 		;;
 		*)
-			echo "${Var_script_name}: ${_run_string}"
+			echo "# ${Var_script_name} running as ${USER}: ${_run_string}"
 			${_run_string}
 		;;
 	esac

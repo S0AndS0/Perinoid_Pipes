@@ -122,14 +122,14 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 
 ### Formatting numbered lists (example one)
 
-0. Number one
-0. Number two
-0. Number three
+1. Number one
+1. Number two
+1. Number three
 
 ```
-0. Number one
-0. Number two
-0. Number three
+1. Number one
+1. Number two
+1. Number three
 ```
 
 ### Formatting numbered lists (example two)
@@ -149,29 +149,29 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 
 ### Formatting numbered lists (example three)
 
-0. Number one
+1. Number one
  - First line
  - Second line
  - Third line
-0. Number two
+1. Number two
  - First line
  - Second line
  - Third line
-0. Number three
+1. Number three
  - First line
  - Second line
  - Third line
 
 ```
-0. Number one
+1. Number one
  - First line
  - Second line
  - Third line
-0. Number two
+1. Number two
  - First line
  - Second line
  - Third line
-0. Number three
+1. Number three
  - First line
  - Second line
  - Third line

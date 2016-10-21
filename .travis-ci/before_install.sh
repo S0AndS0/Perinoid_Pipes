@@ -6,7 +6,7 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 Func_run_sanely "apt-get update" "0"
 ## Add up missing dependencies to an array
 for _app in ${Var_dependency_list//,/ }; do
-	grep -qiE "${_app}" <<<"$(apt-cache policy "${_app}")"
+	grep -qiE "${_app}" <<<"$(apt-cache policy ${_app})"
 	if [ "$?" != "0" ]; then
 		Arr_needed_dependencies+=( "${_app}" )
 	fi
