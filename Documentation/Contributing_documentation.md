@@ -101,11 +101,12 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 ## Formatting lists
 
 > There are two options with markdown formatted text, one is to use symbols
-> prefixed by a space (` `) such as ` -` or ` +` to prefix *bulleted* listed
-> lines, and two is to use numbers ` 1.`, ` 2.`, ... However, note that to use
-> both simultaneously we'll have to *cheat* a bit and remove the prefixed space
-> from the numbered list. Bellow are some examples along with their `raw`
-> formated versions bellow each.
+> **not** prefixed by a space (` `) such as ` -` or ` +` to prefix
+> *bulleted* listed lines, and two is to use numbers ` 1.`, ` 2.`, ...
+> However, note that to use both simultaneously we'll have to instead use
+> spaces prefixing `-` bullets in order to have markdown correctly render.
+>  Bellow are some examples along with their `raw` formated versions bellow
+> each.
 
 ### Formatting bulleted lists
 
@@ -119,23 +120,17 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 - Third line
 ```
 
-> Note using bulleted lists allow for lines to be re-ordered latter without
-> effecting formatting.
-
 ### Formatting numbered lists (example one)
 
-1. Number one
-1. Number two
-1. Number three
+0. Number one
+0. Number two
+0. Number three
 
 ```
-1. Number one
-1. Number two
-1. Number three
+0. Number one
+0. Number two
+0. Number three
 ```
-
-> Note the above using markdown could also be re-ordered but the `raw`
-> formatting would look out of order until edited.
 
 ### Formatting numbered lists (example two)
 
@@ -149,38 +144,37 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 1. Number three
 ```
 
-> As stated in the previous example, markdown rendering should handle
-> *quick'n'dirty* re-ordering of numbered lists, but the `raw` formatting
-> exposes that the original order was changed.
+> Markdown rendering should handle *quick'n'dirty* re-ordering of numbered
+> lists, but the `raw` formatting exposes that the original order was changed.
 
 ### Formatting numbered lists (example three)
 
-1. Number one
-- First line
-- Second line
-- Third line
-1. Number two
-- First line
-- Second line
-- Third line
-1. Number three
-- First line
-- Second line
-- Third line
+0. Number one
+ - First line
+ - Second line
+ - Third line
+0. Number two
+ - First line
+ - Second line
+ - Third line
+0. Number three
+ - First line
+ - Second line
+ - Third line
 
 ```
-1. Number one
-- First line
-- Second line
-- Third line
-1. Number two
-- First line
-- Second line
-- Third line
-1. Number three
-- First line
-- Second line
-- Third line
+0. Number one
+ - First line
+ - Second line
+ - Third line
+0. Number two
+ - First line
+ - Second line
+ - Third line
+0. Number three
+ - First line
+ - Second line
+ - Third line
 ```
 
 ## Licensing notice for this file

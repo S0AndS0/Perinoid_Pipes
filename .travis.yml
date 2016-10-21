@@ -1,7 +1,5 @@
-## Bellow caused apt-get to fail?
-##  trying a third time without
-##  sudo level permissions.
-#sudo: required
+## Required for apt-get commands?
+sudo: required
 ## Settings for git
 git:
  depth: 3
@@ -14,11 +12,17 @@ language:
  - bash
 ## Custom setup prior to testing project, install dependencies & configure
 before_install:
+ - chmod +x .travis-ci/before_install.sh
  - .travis-ci/before_install.sh
 ## Steps for successful install once dependencies are met.
 install:
+ - chmod +x .travis-ci/install.sh
  - .travis-ci/install.sh
 ## Run tests for travis-ci.org to report on
 script:
+ - chmod +x .travis-ci/script_encrypt.sh
  - .travis-ci/script_encrypt.sh
+ - chmod +x .travis-ci/script_decrypt.sh
  - .travis-ci/script_decrypt.sh
+## Note above tricks for chmoding the scripts prior to execution where found
+##  at: http://stackoverflow.com/a/33820642/2632107

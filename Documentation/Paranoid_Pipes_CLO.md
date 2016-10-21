@@ -341,7 +341,6 @@
 - Variable name: `Var_help_val`
 - Default value: null
 - Regex restrictions: null
-- Acceptable values: `null` Prints and exits with `0` script's currently known command line options and current values.
 
 > Acceptable values: `null` Attempts to search for `-h=value` within host
 > system's help documentation and within main script's detailed documentation.
