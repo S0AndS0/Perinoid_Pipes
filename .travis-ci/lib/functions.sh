@@ -8,7 +8,7 @@ Func_source_file(){
 		exit 1
 	fi
 }
-Func_run_sainly(){
+Func_run_sanely(){
 	_run_string="${1}"
 	_permissions="${2:-0}"
 	_uid="${UID}"

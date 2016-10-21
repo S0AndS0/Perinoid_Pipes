@@ -1,6 +1,8 @@
+sudo: required
 ## Settings for git
 git:
  depth: 3
+ branch: master
 ## Operating systems to test on
 os:
  - linux

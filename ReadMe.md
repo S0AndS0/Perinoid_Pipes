@@ -11,7 +11,7 @@
 
 ## Project goals (generalized)
 
-### Provide asymmetric encryption via GnuPG to logging services and local users
+### Provide asymmetric (hybrid) encryption via GnuPG to logging services & users
 
 > See [Paranoid_Pipes_Scenario_One.md](Documentation/Paranoid_Pipes_Scenario_One.md)
 > for detailed instructions on how to set this up for Nginx or Apache2 web
