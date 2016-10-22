@@ -19,9 +19,9 @@ install:
  - chmod +x .travis-ci/install.sh
  - .travis-ci/install.sh
 ## Run tests for travis-ci.org to report on
-script:
- - chmod +x .travis-ci/script_encrypt.sh
- - .travis-ci/script_encrypt.sh
+#script:
+# - chmod +x .travis-ci/script_encrypt.sh
+# - .travis-ci/script_encrypt.sh
 ## Dissabled decryption checks until local tests are complete.
 # - chmod +x .travis-ci/script_decrypt.sh
 # - .travis-ci/script_decrypt.sh
