@@ -14,6 +14,7 @@ done
 if [ "${#Arr_needed_dependencies[*]}" -gt "0" ]; then
 	Func_run_sanely "apt-get update -qqq" "0"
 	Func_run_sanely "apt-get install -qqq ${Arr_needed_dependencies[*]}" "0"
+	Func_run_sanely "/etc/init.d/haveged restart" "0"
 else
 	echo "# ${Var_script_name}: reports no unmet dependencies."
 fi

@@ -54,7 +54,7 @@ Passphrase: ${_pass_phrase[*]}
 #%dry-run
 ## Note in production the bellow should be commented out!
 ##  This is only included to allow VMs to build in un-atteneded state.
-%transient-key
+#%transient-key
 %commit
 %echo finished
 EOF
