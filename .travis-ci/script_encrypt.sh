@@ -4,6 +4,7 @@ export Var_script_name="${0##*/}"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
+Func_source_file "${Var_script_dir}/lib/config_pipe_variables_encrypt.sh"
 ## If installed script is executable then make test keys,
 ## pipe and listener, else exit wth errors
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
@@ -13,7 +14,8 @@ if [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	Func_gen_gnupg_test_keys "${_pass_phrase}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	Func_run_sanely "${Var_install_path}/${Var_install_name} --source-var-file=${Var_script_dir}/lib/config_pipe_variables_encrypt.sh" "${USER}"
+	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "${USER}"
+#	Func_run_sanely "${Var_install_path}/${Var_install_name} --source-var-file=${Var_script_dir}/lib/config_pipe_variables_encrypt.sh" "${USER}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1

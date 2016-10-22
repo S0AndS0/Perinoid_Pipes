@@ -7,12 +7,14 @@ export Var_helper_name="decrypting_pipe_feeder.sh"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
+Func_source_file "${Var_script_dir}/lib/config_pipe_variables_decrypt.sh"
 ## Copy helper script to install path if available
 Func_run_sanely "cp -va ${Var_helper_location} ${Var_install_path}/${Var_helper_name}" "0"
 Func_run_sanely "chmod 754 ${Var_install_path}/${Var_helper_name}" "0"
 ## Install customized  decrypting named pipe listener script
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
-	Func_run_sanely "${Var_install_path}/${Var_install_name} --source-var-file=${Var_script_dir}/lib/config_pipe_variables_encrypt.sh" "${USER}"
+	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_decrypt_opts[*]}" "${USER}"
+#	Func_run_sanely "${Var_install_path}/${Var_install_name} --source-var-file=${Var_script_dir}/lib/config_pipe_variables_encrypt.sh" "${USER}"
 else
 	echo "# ${Var_script_name} could not execute: ${Var_install_path}/${Var_install_name}"
 fi
