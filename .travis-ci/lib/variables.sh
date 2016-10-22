@@ -1,5 +1,5 @@
 export Var_parent_dir="${Var_script_dir%/*}"
-export Var_install_path="${HOME}"
+export Var_install_path="/usr/local/sbin"
 export Var_install_name="Paranoid_Pipes.sh"
 export Var_dependency_list="gnupg"
 export Var_gnupg_email="user@host.domain"

@@ -22,7 +22,7 @@ fi
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
 	cat <<<"${_test_string}" > "${Var_test_location}"
-	echo "${Var_script_name}: cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\""
+	echo "# ${Var_script_name}: cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\""
 	cat <<<"${_test_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
@@ -31,8 +31,8 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
-	echo "${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
 fi
 ## Report encryption pipe tests success if we have gotten this far
-echo "${Var_script_name} finished at: $(date -u +%s)"
+echo "# ${Var_script_name} finished at: $(date -u +%s)"

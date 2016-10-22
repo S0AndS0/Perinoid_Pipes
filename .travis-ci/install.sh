@@ -13,8 +13,8 @@ Var_install_script="${Var_install_name}"
 #	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
 #	export PATH+=":${Var_install_path}"
 #fi
-Func_run_sanely "cp -va ${Var_install_script} ${Var_install_path}/${Var_install_name}" "${USER}"
-Func_run_sanely "chmod 111 ${Var_install_path}/${Var_install_name}" "${USER}"
+Func_run_sanely "cp -va ${Var_install_script} ${Var_install_path}/${Var_install_name}" "0"
+Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_name}" "0"
 ## Try running help
 Func_run_sanely "${Var_install_path}/${Var_install_name} --help" "${USER}"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
