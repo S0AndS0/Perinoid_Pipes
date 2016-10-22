@@ -1,7 +1,7 @@
 Arr_encrypt_opts+=( Var_debugging="2" )
 Arr_encrypt_opts+=( Var_script_copy_save="yes" )
 Arr_encrypt_opts+=( Var_pipe_quit_string="quit" )
-Arr_encrypt_opts+=( Var_script_copy_name="/usr/local/sbin/encrypt.sh" )
+Arr_encrypt_opts+=( Var_script_copy_name="${Var_install_path}/encrypt.sh" )
 Arr_encrypt_opts+=( Var_script_copy_ownership="${USER}:${USER}" )
 Arr_encrypt_opts+=( Var_script_copy_permissions="755" )
 Arr_encrypt_opts+=( Var_log_file_name="${Var_encrypt_pipe_location%.*}.log" )

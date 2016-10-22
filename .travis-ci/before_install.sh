@@ -11,9 +11,9 @@ for _app in ${Var_dependency_list//,/ }; do
 	##  for needed dependancies.
 #	grep -q "${_app}" <<<"$(sudo apt-cache policy ${_app})"
 #	_exit_status=$?
-	if [ "${_exit_status}" != "0" ]; then
+#	if [ "${_exit_status}" != "0" ]; then
 		Arr_needed_dependencies+=( "${_app}" )
-	fi
+#	fi
 done
 ## If array holds any values run it through 'apt-get install'
 if [ "${#Arr_needed_dependencies[*]}" -gt "0" ]; then

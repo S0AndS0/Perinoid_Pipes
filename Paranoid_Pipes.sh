@@ -497,7 +497,8 @@ Func_usage_options(){
 Func_write_unrecognized_input_to_pipe(){
 	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra (unrecognized as an argument) input" '1' '2'
-		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
+		Func_messages "# ${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
+#		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		${Var_cat_exec_path} <<<"${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
 		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
@@ -803,7 +804,7 @@ Func_variable_assignment_reader(){
 	else
 		Func_messages '## Logging & settings internal to this script ##' '2' '3'
 		Func_messages "# Script debugging level: [${Var_debugging}]" '2' "3"
-		Func_messages "# Save parsed input to file: [${Var_save_encryption_yn}" '2' "3"
+		Func_messages "# Save parsed input to file: [${Var_save_encryption_yn}]" '2' "3"
 		Func_messages "# Encrypt lines and files sent to named pipe to recipient: [${Var_gpg_recipient}]" '2' "3"
 		Func_messages "# GPG options to use: [${Var_gpg_recipient_options}]" '2' "3"
 		Func_messages "# Named pipe file path: [${Var_pipe_file_name}]" '2' "3"
@@ -1564,7 +1565,8 @@ Func_main(){
 					${Var_script_copy_name}
 					_exit_status=$?
 				fi
-				Func_write_unrecognized_input_to_pipe
+## Disabled temperaroly to check Travis-CI
+#				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'
@@ -1587,10 +1589,8 @@ Func_main(){
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
 					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
-#					Func_mkpipe_reader &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
-#					disown ${PID_Func_mkpipe_reader}
 					case "${Var_save_encryption_yn}" in
 						y|Y|yes|Yes|YES)
 							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'

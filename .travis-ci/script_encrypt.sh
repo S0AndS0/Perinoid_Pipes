@@ -5,18 +5,17 @@ export Var_script_name="${0##*/}"
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 Func_source_file "${Var_script_dir}/lib/config_pipe_variables_encrypt.sh"
+## Generate temp-key pare for testing encryption with public key operations.
+_pass_phrase=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
+echo "${_pass_phrase}" > "${Var_pass_location}"
+#echo "# ${Var_script_name}: Func_gen_gnupg_test_keys \"\${_pass_phrase}\""
+Func_run_sanely "Func_gen_gnupg_test_keys \"${_pass_phrase}\"" "${USER}"
+#_exit_status=$?
+#Func_check_exit_status "${_exit_status}"
 ## If installed script is executable then make test keys,
 ## pipe and listener, else exit wth errors
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
-	_pass_phrase=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	echo "${_pass_phrase}" > "${Var_pass_location}"
-	echo "# ${Var_script_name}: Func_gen_gnupg_test_keys \"\${_pass_phrase}\""
-	Func_gen_gnupg_test_keys "${_pass_phrase}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	## RUn main script with root permissions to make customized
-	##  script copy within install directories that maybe write protected.
-	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "0"
+	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[@]}" "0"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1
@@ -25,8 +24,8 @@ fi
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
 	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "0"
-#	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
 	Func_run_sanely "cat <<<\"quit\" > \"${Var_encrypt_pipe_location}\"" "0"
+#	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
 #	Func_run_sanely "cat <<<\"quit\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
