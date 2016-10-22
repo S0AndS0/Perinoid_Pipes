@@ -511,115 +511,115 @@ Func_check_args(){
 	until [ "${_arg_count}" = "${#_input_array[@]}" ]; do
 		_arg="${_input_array[${_arg_count}]}"
 		case "${_arg%=*}" in
-			--copy-save-yn)
+			--copy-save-yn|Var_script_copy_save)
 				Func_assign_arg 'Var_script_copy_save' "${_arg#*=}" 'azAZ'
 			;;
-			--copy-save-name)
+			--copy-save-name|Var_script_copy_name)
 				Func_assign_arg 'Var_script_copy_name' "${_arg#*=}" 'string'
 			;;
-			--copy-save-permissions)
+			--copy-save-permissions|Var_script_copy_permissions)
 				Func_assign_arg 'Var_script_copy_permissions' "${_arg#*=}" 'number'
 			;;
-			--copy-save-ownership)
+			--copy-save-ownership|Var_script_copy_ownership)
 				Func_assign_arg 'Var_script_copy_ownership' "${_arg#*=}" 'string'
 			;;
-			--debug-level)
+			--debug-level|Var_debugging)
 				Func_assign_arg 'Var_debugging' "${_arg#*=}" 'number'
 			;;
-			--disown-yn)
+			--disown-yn|Var_disown_parser_yn)
 				Func_assign_arg 'Var_disown_parser_yn' "${_arg#*=}" 'azAZ'
 			;;
-			--log-level)
+			--log-level|Var_logging)
 				Func_assign_arg 'Var_logging' "${_arg#*=}" 'number'
 			;;
-			--log-file-location)
+			--log-file-location|Var_log_file_name)
 				Func_assign_arg 'Var_log_file_name' "${_arg#*=}" 'string'
 			;;
-			--log-file-permissions)
+			--log-file-permissions|Var_log_file_permissions)
 				Func_assign_arg 'Var_log_file_permissions' "${_arg#*=}" 'number'
 			;;
-			--log-file-ownership)
+			--log-file-ownership|Var_log_file_ownership)
 				Func_assign_arg 'Var_log_file_ownership' "${_arg#*=}" 'string'
 			;;
-			--log-auto-delete-yn)
+			--log-auto-delete-yn|Var_remove_script_log_on_exit_yn)
 				Func_assign_arg 'Var_remove_script_log_on_exit_yn' "${_arg#*=}" 'azAZ'
 			;;
-			--named-pipe-name)
+			--named-pipe-name|Var_pipe_file_name)
 				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
 				Func_assign_arg 'Var_trap_command' "${Var_rm_exec_path} -f ${Var_pipe_file_name}" 'null'
 			;;
-			--named-pipe-permissions)
+			--named-pipe-permissions|Var_pipe_permissions)
 				Func_assign_arg 'Var_pipe_permissions' "${_arg#*=}" 'number'
 			;;
-			--named-pipe-ownership)
+			--named-pipe-ownership|Var_pipe_ownership)
 				Func_assign_arg 'Var_pipe_ownership' "${_arg#*=}" 'string'
 			;;
-			--listener-quit-string)
+			--listener-quit-string|Var_pipe_quit_string)
 				Func_assign_arg 'Var_pipe_quit_string' "${_arg#*=}" 'string'
 			;;
-			--listener-trap-command)
+			--listener-trap-command|Var_trap_command)
 				Func_assign_arg 'Var_trap_command' "${_arg#*=}" 'null'
 			;;
-			--output-pre-parse-yn)
+			--output-pre-parse-yn|Var_preprocess_for_comments_yn)
 				Func_assign_arg 'Var_preprocess_for_comments_yn' "${_arg#*=}" 'azAZ'
 			;;
-			--output-pre-parse-comment-string)
+			--output-pre-parse-comment-string|Var_parsing_comment_pattern)
 				Func_assign_arg 'Var_parsing_comment_pattern' "${_arg#*=}" 'null'
 			;;
-			--output-pre-parse-allowed-chars)
+			--output-pre-parse-allowed-chars|Var_parsing_allowed_chars)
 				Func_assign_arg 'Var_parsing_allowed_chars' "${_arg#*=}" 'null'
 			;;
-			--output-parse-name)
+			--output-parse-name|Var_parsing_output_file)
 				Func_assign_arg 'Var_parsing_output_file' "${_arg#*=}" 'string'
 			;;
-			--output-gpg-recipient)
+			--output-gpg-recipient|Var_gpg_recipient)
 				Func_assign_arg 'Var_gpg_recipient' "${_arg#*=}" 'string'
 				Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
 				Func_assign_arg 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
 			;;
-			--output-save-yn)
+			--output-save-yn|Var_save_encryption_yn)
 				Func_assign_arg 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
 			;;
-			--output-rotate-yn)
+			--output-rotate-yn|Var_log_rotate_yn)
 				Func_assign_arg 'Var_log_rotate_yn' "${_arg#*=}" 'azAZ'
 			;;
-			--output-rotate-max-bites)
+			--output-rotate-max-bites|Var_log_max_size)
 				Func_assign_arg 'Var_log_max_size' "${_arg#*=}" 'number'
 			;;
-			--output-rotate-check-frequency)
+			--output-rotate-check-frequency|Var_log_check_frequency)
 				Func_assign_arg 'Var_log_check_frequency' "${_arg#*=}" 'number'
 			;;
-			--output-rotate-actions)
+			--output-rotate-actions|Var_log_rotate_actions)
 				Func_assign_arg 'Var_log_rotate_actions' "${_arg#*=}" 'string'
 			;;
-			--output-rotate-recipient)
+			--output-rotate-recipient|Var_log_rotate_recipient)
 				Func_assign_arg 'Var_log_rotate_recipient' "${_arg#*=}" 'string'
 			;;
-			--output-parse-command)
+			--output-parse-command|Var_parsing_command)
 				Func_assign_arg 'Var_parsing_command' "${_arg#*=}" 'null'
 			;;
-			--output-bulk-dir)
+			--output-bulk-dir|Var_parsing_bulk_out_dir)
 				Func_assign_arg 'Var_parsing_bulk_out_dir' "${_arg#*=}" 'string'
 			;;
-			--output-bulk-suffix)
+			--output-bulk-suffix|Var_bulk_output_suffix)
 				Func_assign_arg 'Var_bulk_output_suffix' "${_arg#*=}" 'string'
 			;;
-			--padding-enable-yn)
+			--padding-enable-yn|Var_enable_padding_yn)
 				Func_assign_arg 'Var_enable_padding_yn' "${_arg#*=}" 'string'
 			;;
-			--padding-length)
+			--padding-length|Var_padding_length)
 				Func_assign_arg 'Var_padding_length' "${_arg#*=}" 'string'
 			;;
-			--padding-placement)
+			--padding-placement|Var_padding_placement)
 				Func_assign_arg 'Var_padding_placement' "${_arg#*=}" 'string'
 			;;
-			--save-options-yn)
+			--save-options-yn|Var_save_options)
 				Func_assign_arg 'Var_save_options' "${_arg#*=}" 'string'
 			;;
-			--save-variables-yn)
+			--save-variables-yn|Var_save_variables)
 				Func_assign_arg 'Var_save_variables' "${_arg#*=}" 'string'
 			;;
-			--source-var-file)
+			--source-var-file|Var_source_var_file)
 				Func_assign_arg 'Var_source_var_file' "${_arg#*=}" 'string'
 				## Check if sourcing file passed is a file else value will be used
 				##  with above options for saving variables or options to the values path
