@@ -1,5 +1,13 @@
 # CLO Manual and documentation
 
+## Notes about bellow options
+
+> If using a "Command line option" to pass values into this project's main
+> script then they should be prefixed by two dashes (`--`) as shown, however,
+> if instead you wish to pass values via the related "Variable name" then
+> just pass the variable and value without prefixed. The first command line/
+> variable assignment example bellow will include examples of both usage.
+
 ## Recognized command line options, their variables and default values
 
 ### Command line option: `--copy-save-yn`
@@ -9,6 +17,18 @@
 - Regex restrictions: `a-zA-Z`
 
 > Acceptable values: `'Yes'` or `'No'` Enable or disable writing script copy.
+
+#### Example use of command line option: `--copy-save-yn`
+
+```
+Paranoid_Pipes.sh --copy-save-yn="no"
+```
+
+#### Example use of variable name: `Var_script_copy_save`
+
+```
+Paranoid_Pipes.sh Var_script_copy_save="no"
+```
 
 ### Command line option: `--copy-save-name`
 
@@ -145,7 +165,7 @@
 > Acceptable values: `'rm /tmp/named_test.pipe'` Command to run when named
 > pipe listener reads above string.
 
-### Command line opton: `--output-pre-parse-yn`
+### Command line option: `--output-pre-parse-yn`
 
 - Variable name: `Var_preprocess_for_comments_yn`
 - Default value: `no`
@@ -154,7 +174,7 @@
 > Acceptable values: `'Yes'` or `'No'` Enable or disable reading named pipe
 > input for comments.
 
-### Command line opton: `--output-pre-parse-comment-string`
+### Command line option: `--output-pre-parse-comment-string`
 
 - Variable name: `Var_parsing_comment_pattern`
 - Default value: `\#*`
@@ -163,7 +183,7 @@
 > Acceptable values: `"\#*"` or `"\#*|\;*"` A anonymous pipe (`|`) separated
 > list of known line commenting characters.
 
-### Command line opton: `--output-pre-parse-allowed-chars`
+### Command line option: `--output-pre-parse-allowed-chars`
 
 - Variable name: `Var_parsing_allowed_chars`
 - Default value: `[^a-zA-Z0-9 !#%&:;$\/\^\-\"\(\)\{\}\\]`
@@ -172,7 +192,7 @@
 > Acceptable values: `[^a-zA-Z0-9 !#%&:;$\/\^\-\"\(\)\{\}\\]` allowed
 > characters in lines not preceded by known comment
 
-### Command line opton: `--output-parse-name`
+### Command line option: `--output-parse-name`
 
 - Variable name: `Var_parsing_output_file`
 - Default value: `${0%/*}/${Var_script_name%.*}.gpg`
@@ -180,7 +200,7 @@
 
 > Acceptable values: `/tmp/pipe_read_output.gpg`
 
-### Command line opton: `--output-parse-recipient`
+### Command line option: `--output-parse-recipient`
 
 - Variable name: `Var_gpg_recipient`
 - Default value: `user@host.domain`
@@ -189,7 +209,7 @@
 > Acceptable values: `'email_name@email_domain.suffix'` Email address or
 > GPG public key ID to encrypt lines or known file types to.
 
-### Command line opton: `--output-save-yn`
+### Command line option: `--output-save-yn`
 
 - Variable name: `Var_save_ecryption_yn`
 - Default value: `yes`
@@ -198,7 +218,7 @@
 > Acceptable values: `yes` or `no` Enable or disable writing parsed output
 > options and actions.
 
-### Command line opton: `--output-rotate-yn`
+### Command line option: `--output-rotate-yn`
 
 - Variable name: `Var_log_rotate_yn`
 - Default value: `yes`
@@ -207,7 +227,7 @@
 > Acceptable values: `yes` or `no` Enable or disable log rotation options and
 > actions.
 
-### Command line opton: `--output-rotate-max-bites`
+### Command line option: `--output-rotate-max-bites`
 
 - Variable name: `Var_log_max_size`
 - Default value: `4096`
@@ -216,7 +236,7 @@
 > Acceptable values: `'4096'` or `'8388608'` Output file max size (in bites)
 > before log rotation actions are used.
 
-### Command line opton: `--output-rotate-check-frequency`
+### Command line option: `--output-rotate-check-frequency`
 
 - Variable name: `Var_log_check_frequency`
 - Default value: `100`
@@ -225,7 +245,7 @@
 > Acceptable values: `'10'` or `'100000'` Number of output file writes till
 > above file size max vs real file size be checked.
 
-### Command line opton: `--output-rotate-actions`
+### Command line option: `--output-rotate-actions`
 
 - Variable name: `Var_log_rotate_actions`
 - Default value: `compress-encrypt,remove-old`
@@ -235,7 +255,7 @@
 > `'encrypted-email,remove-old'` List of actions, separated by commas `,` to
 > take when output file's size and write count reaches above values.
 
-### Command line opton: `--output-rotate-recipient`
+### Command line option: `--output-rotate-recipient`
 
 - Variable name: `Var_log_rotate_recipient`
 - Default value: `user@host.domain`
@@ -244,7 +264,7 @@
 > Acceptable values: `'admin_name@admin_domain.suffix'` Email address of GPG
 > public key ID to re-encrypt and or send compressed output files to.
 
-### Command line opton: `--output-parse-command`
+### Command line option: `--output-parse-command`
 
 - Variable name: `Var_parsing_command`
 - Default value: `$(which gpg) --always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt`
@@ -253,7 +273,7 @@
 > Acceptable values: Disabled to avoid errors during user input parsing when
 > spaces are present in values.
 
-### Command line opton: `--output-bulk-dir`
+### Command line option: `--output-bulk-dir`
 
 - Variable name: `Var_parcing_bulk_out_dir`
 - Default value: `${0%/*}/Bulk_${Var_script_name%.*}`
@@ -263,7 +283,7 @@
 > recognized files to. Note these files are not rotated but maybe appended to
 > if not careful.
 
-### Command line opton: `--output-bulk-suffix`
+### Command line option: `--output-bulk-suffix`
 
 - Variable name: `Var_bulk_output_suffix`
 - Default value: `.gpg`
@@ -273,7 +293,7 @@
 > encrypted files. Note if decrypting then unset to have previously encrypted
 > file suffixes restored.
 
-### Command line opton: `--padding-enable-yn`
+### Command line option: `--padding-enable-yn`
 
 - Variable name: `Var_enable_padding_yn`
 - Default value: `no`
@@ -282,7 +302,7 @@
 > Acceptable values: `yes` or `no` default `no`. Used to control if following
 > two options are considered as options for modifying read data.
 
-### Command line opton: `--padding-length`
+### Command line option: `--padding-length`
 
 - Variable name: `Var_padding_length`
 - Default value: `adaptive`
@@ -291,7 +311,7 @@
 > Acceptable values: `32` or another integer (whole number) default `adaptive`
 > which assumes the same length as line being read through loop.
 
-### Command line opton: `--padding-placement`
+### Command line option: `--padding-placement`
 
 - Variable name: `Var_padding_placement`
 - Default value: `above`
@@ -300,7 +320,7 @@
 > Acceptable values: Order applied within loop; `append`, `prepend`, `above`,
 > `bellow`
 
-### Command line opton: `--source-var-file`
+### Command line option: `--source-var-file`
 
 - Variable name: `Var_source_var_file`
 - Default value: null
@@ -309,7 +329,7 @@
 > Acceptable values: File to source for variables defined in previous table.
 > Or file to save values to, see next two options bellow.
 
-### Command line opton: `--save-options-yn`
+### Command line option: `--save-options-yn`
 
 - Variable name: `Var_save_options`
 - Default value: `no`
@@ -318,7 +338,7 @@
 > Acceptable values: `yes` or `no` Enable or disable saving options file to
 > `--source-var-file`'s path
 
-### Command line opton: `--save-variables-yn`
+### Command line option: `--save-variables-yn`
 
 - Variable name: `Var_save_variables`
 - Default value: `no`
@@ -327,7 +347,7 @@
 > Acceptable values: `yes` or `no` Enable or disable saving variables file to
 > `--source-var-file`'s path
 
-### Command line opton: `--license`
+### Command line option: `--license`
 
 - Variable name: null
 - Default value: null
@@ -336,7 +356,7 @@
 > Acceptable values: `null` Prints and exits with `0` script's current license
 > and license of scripts that this project writes.
 
-### Command line opton: `--help` or `-h`
+### Command line option: `--help` or `-h`
 
 - Variable name: `Var_help_val`
 - Default value: null
@@ -345,7 +365,7 @@
 > Acceptable values: `null` Attempts to search for `-h=value` within host
 > system's help documentation and within main script's detailed documentation.
 
-### Command line opton: `*`
+### Command line option: `*`
 
 - Variable name: Arr_extra_input
 - Default value: null
@@ -354,7 +374,7 @@
 > Acceptable values: `null` Writes any unrecognized arguments as lines or
 > words that should be written to named pipe if available.
 
-## Notes about above
+## Additional notes about above
 
 ### Note one
 
@@ -373,19 +393,20 @@
 > table's middle column. This allows for
 > `script_name.sh --source-var-file=/some/path/to/vars`
 > to be used to assign script variables instead of defining them at run-time.
-> Additionally this option maybe combined with
-> `--save-options-yn` and `--save-variables-yn` options for saving values to a
-> file instead; but only if the specified file does **not** already exist.
+> Additionally this option maybe combined with `--save-options-yn` and
+> `--save-variables-yn` options for saving values to a file instead; but only
+> if the specified file does **not** already exist.
 
 ### Note three
 
-> Note using unknown commands ie `'some string within quotes' some words
-> outside quotes` will cause the main script to write those unrecognized values
-> to the named pipe if/when available. This is for advanced users of the main
-> script that wish to have a *header* or set of lines be the first things parsed
-> by the processes of the pipe parser functions or custom script.
-> This is only enabled within the script's main function if `--disown-yn` option
-> has also been set to a *yes* like value.
+> Note using unknown commands ie
+> `'some string within quotes' some words outside quotes`
+> will cause the main script to write those unrecognized values to the named
+> pipe if/when available. This is for advanced users of the main script that
+> wish to have a *header* or set of lines be the first things parsed by the
+> processes of the pipe parser functions or custom script. This is only enabled
+> within the script's main function if `--disown-yn` option has also been set
+> to a *yes* like value.
 
 ### Note four
 
