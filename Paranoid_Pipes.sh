@@ -1565,8 +1565,8 @@ Func_main(){
 					${Var_script_copy_name}
 					_exit_status=$?
 				fi
-## Re-enabled to check Travis-CI
-				Func_write_unrecognized_input_to_pipe
+## Dissabled to allow Travis-CI to continue.
+#				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'
