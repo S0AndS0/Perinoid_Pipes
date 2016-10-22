@@ -5,8 +5,8 @@ source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 ## Add up missing dependencies to an array
 for _app in ${Var_dependency_list//,/ }; do
-	grep -qiE "${_app}" <<<"$(apt-cache policy ${_app})"
-	_exit_status=$?
+#	grep -qiE "${_app}" <<<"$(apt-cache policy ${_app})"
+#	_exit_status=$?
 	if [ "${_exit_status}" != "0" ]; then
 		Arr_needed_dependencies+=( "${_app}" )
 	fi
