@@ -22,7 +22,8 @@ install:
 script:
  - chmod +x .travis-ci/script_encrypt.sh
  - .travis-ci/script_encrypt.sh
- - chmod +x .travis-ci/script_decrypt.sh
- - .travis-ci/script_decrypt.sh
+## Dissabled decryption checks until local tests are complete.
+# - chmod +x .travis-ci/script_decrypt.sh
+# - .travis-ci/script_decrypt.sh
 ## Note above tricks for chmoding the scripts prior to execution where found
 ##  at: http://stackoverflow.com/a/33820642/2632107
