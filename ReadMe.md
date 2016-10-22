@@ -12,7 +12,9 @@
 > [Code Climate](https://codeclimate.com/).
 > The `Build Status` is provided by [Travis-CI](https://travis-ci.org/) and
 > runs tests scripts called within the [.travis.yml](.travis.yml) file and
-> reports of any bugs within this project's main script normal usage scenarios
+> reports of any bugs within this project's main script normal usage scenarios.
+> All build scripts used for Travis-CI auto-build checks can be found under the
+> [.travis-ci/](.travis-ci/) directory.
 
 ## Project goals (generalized)
 

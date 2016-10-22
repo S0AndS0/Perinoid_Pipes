@@ -8,20 +8,47 @@
 
 [before_install.sh](before_install.sh)
 
-> Setup Debian based Linux systems with all necessary dependencies.
+- Status: Passing
+
+> Setup Debian based Linux systems with all necessary dependencies. This script
+> builds a list of unmet dependacies vs known script dependancies and if any
+> are found instals and starts any needed services prior to installing the main
+> script of this project. Note for the rest of the build process to complete on
+> VMs that `haveged` was added to the dependacies list so that the host server
+> has enough entropy to generate test GPG keys latter.
 
 ## `install.sh`
 
 [install.sh](install.sh)
 
-> Copy the main script to standard install directory: `/usr/local/sbin`
-> and change permissions to allow execution of script.
+- Status: Passing
+
+> Copy the main script to standard install directory: `/usr/local/sbin` and
+> change permissions to allow execution of script by proper owner and group.
+> And test that script is able to execute it's `help` documentation.
 
 ## `script_encrypt.sh`
 
 [script_encrypt.sh](script_encrypt.sh)
 
-> Setup an encrypting named pipe file & associated custom listener script. 
+- Status: Failing
+
+> Setup an encrypting named pipe file & associated custom listener script.
+> Currently the build is failing to find custom files for the customized pipe
+> listener. Test key generation works and a custom script is writen but with
+> the *enhanced* security that Travis-CI VMs run with the customized script can
+> not either be executed or can not find it's associated named pipe file.
+
+## `script_decrypt.sh`
+
+[script_decrypt.sh](script_decrypt.sh)
+
+- Status: Failing
+
+> Further local tests are required before the authors of this project re-enable
+> this build script. While there are no apperant `shellcheck` errors popping
+> there are some issues with the helper script's capabilaty to find the
+> encrypted test file and feading it to the decryption named pipe file.
 
 ## `lib/functions.sh`
 

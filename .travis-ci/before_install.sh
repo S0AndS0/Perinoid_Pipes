@@ -5,7 +5,11 @@ source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 ## Add up missing dependencies to an array
 for _app in ${Var_dependency_list//,/ }; do
-#	grep -qiE "${_app}" <<<"$(apt-cache policy ${_app})"
+	## The following two lines may cause build to fail do to not capturing
+	##  the exit status of grep properly. Thus have been disabled for auto
+	##  building processes until authors find another simple way of checking
+	##  for needed dependancies.
+#	grep -q "${_app}" <<<"$(sudo apt-cache policy ${_app})"
 #	_exit_status=$?
 	if [ "${_exit_status}" != "0" ]; then
 		Arr_needed_dependencies+=( "${_app}" )
