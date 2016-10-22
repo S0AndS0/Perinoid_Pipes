@@ -2,12 +2,17 @@
 
 [![Code Climate](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/gpa.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
  [![Issue Count](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/issue_count.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
+ [![Build Status](https://travis-ci.org/S0AndS0/Perinoid_Pipes.svg?branch=master)](https://travis-ci.org/S0AndS0/Perinoid_Pipes)
 
-> The `Code Climate` is an over all *grade* of both code **&** documentation found
-> within this project. The `Issue Count` is the total number of code **&**
-> documentation syntax bugs. Code checking is provided by `shellcheck` and
-> Markdown formate checking provided by `markdownlint`; both remotely provided
-> by [Code Climate](https://codeclimate.com/).
+> The `Code Climate` is an over all *grade* of both code **&** documentation
+> found within this project.
+> The `Issue Count` is the total number of code **&** documentation syntax
+> bugs. Code checking is provided by `shellcheck` and Markdown formate
+> checking provided by `markdownlint`; both remotely provided by
+> [Code Climate](https://codeclimate.com/).
+> The `Build Status` is provided by [Travis-CI](https://travis-ci.org/) and
+> runs tests scripts called within the [.travis.yml](.travis.yml) file and
+> reports of any bugs within this project's main script normal usage scenarios
 
 ## Project goals (generalized)
 
