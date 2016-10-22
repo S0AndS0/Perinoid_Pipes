@@ -10,14 +10,14 @@
 
 ## General formatting
 
-> All files within the [`../Documentation/`](../Documentation/) directory should
-> have no line other than code blocks that exceed 80 to 90 characters or
-> columns. The easiest way to ensure that your additions are within this range
-> try `echo "${COLUMNS}"` within your terminal window to check what it's
+> All files within the [`../Documentation/`](../Documentation/) directory
+> should have no line other than code blocks that exceed 80 to 90 characters
+> or columns. The easiest way to ensure that your additions are within this
+> range try `echo "${COLUMNS}"` within your terminal window to check what it's
 > current size is set at. Using `vim` and/or `nano` is encouraged when editing
-> these documents but so long as your text editor does not mangle new-lines and
-> your additions attempt to adhere to the following guidelines then singed pull
-> requests are most welcomed.
+> these documents but so long as your text editor does not mangle new-lines
+> and your additions attempt to adhere to the following guidelines then
+> singed pull requests are most welcomed.
 
 ## Formatting code examples
 
@@ -43,10 +43,10 @@
 ```
 
 > Note within blocks of text that reference a line within a code block should
-> use single backticks (````) to encapsulate the word or string referenced. For
-> example if one where to reference the third line above for some informational
-> reason it would look like; `# rendered in client browsers.` within a text
-> block.
+> use single backticks (````) to encapsulate the word or string referenced.
+> For example if one where to reference the third line above for some
+> informational reason it would look like; `# rendered in client browsers.`
+> within a text block.
 
 ## Formatting text blocks
 
@@ -95,17 +95,18 @@ And sub-sub headings should use `###` at the beginning of lines
 ### Uses triple `###` at the beginning of lines
 ```
 
-This pattern should continue to ensure that readers of both `raw` formatted text
- and the markdown formatted text can visually see where in the document they are.
+This pattern should continue to ensure that readers of both `raw` formatted
+ text and the markdown formatted text can visually see where in the document
+ they are.
 
 ## Formatting lists
 
 > There are two options with markdown formatted text, one is to use symbols
-> **not** prefixed by a space (` `) such as ` -` or ` +` to prefix
-> *bulleted* listed lines, and two is to use numbers ` 1.`, ` 2.`, ...
+> **not** prefixed by two spaces (`  `) such as `  -` or `  +` to prefix
+> *bulleted* listed lines, and two is to use numbers `1.`, `2.`, ...
 > However, note that to use both simultaneously we'll have to instead use
 > spaces prefixing `-` bullets in order to have markdown correctly render.
->  Bellow are some examples along with their `raw` formated versions bellow
+> Bellow are some examples along with their `raw` formated versions bellow
 > each.
 
 ### Formatting bulleted lists
@@ -150,31 +151,34 @@ This pattern should continue to ensure that readers of both `raw` formatted text
 ### Formatting numbered lists (example three)
 
 1. Number one
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
 1. Number two
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
 1. Number three
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
+
+> Hint: use two spaces to indent the sublisted items to keep Code Climate
+> from generating bug reports on markdown formating.
 
 ```
 1. Number one
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
 1. Number two
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
 1. Number three
- - First line
- - Second line
- - Third line
+  - First line
+  - Second line
+  - Third line
 ```
 
 ## Licensing notice for this file

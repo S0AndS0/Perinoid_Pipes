@@ -53,6 +53,11 @@ engines:
     - 236ac3d1d79365b808a5c57368f01da2
     ## Documentation/Paranoid_Pines_CLO.md
     - 3c8aa6c39631ae3f67ca7b5c9e0de2df
+    ## Ignore intentional MarkDown mistake examples within the following
+    ## Documentation/Contributing_documentation.md
+    - e09b199efa7d30d856ca00a7c535cb1f
+    ## Ignore spaces inside code elements for above file too
+    - fa8416dc7ef39afe77a454584883a484
 ratings:
   paths:
     - ".gitignore"
