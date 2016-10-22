@@ -14,7 +14,7 @@ if [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	Func_gen_gnupg_test_keys "${_pass_phrase}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## RUnning main script with root permissions to make customized
+	## RUn main script with root permissions to make customized
 	##  script copy within install directories that maybe write protected.
 	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "0"
 else
@@ -24,8 +24,10 @@ fi
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
-	Func_run_sanely "cat <<<\"quit\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
+	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "0"
+#	Func_run_sanely "cat <<<\"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
+	Func_run_sanely "cat <<<\"quit\" > \"${Var_encrypt_pipe_location}\"" "0"
+#	Func_run_sanely "cat <<<\"quit\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
