@@ -52,6 +52,9 @@ Expire-Date: 0
 Passphrase: ${_pass_phrase[*]}
 ## Uncomment the next line to not generate keys
 #%dry-run
+## Note in production the bellow should be commented out!
+##  This is only included to allow VMs to build in un-atteneded state.
+%transient-key
 %commit
 %echo finished
 EOF
