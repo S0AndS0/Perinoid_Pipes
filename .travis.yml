@@ -16,6 +16,8 @@ before_install:
  - .travis-ci/before_install_depends.sh
  - chmod +x .travis-ci/before_install_gen_key.sh
  - .travis-ci/before_install_gen_key.sh
+ - chmod +x .travis-ci/before_install_test_key.sh
+ - .travis-ci/before_install_test_key.sh
 ## Steps for successful install once dependencies are met.
 install:
  - chmod +x .travis-ci/install.sh
