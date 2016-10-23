@@ -8,11 +8,11 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 Var_install_script="${Var_install_name}"
 ## Check that path found in 'Var_install_path' variable is also within
 ##  ${PATH} variable, uncomment if not running on travis-ci
-#Var_check_path=$(echo "${PATH}" | grep -q "${Var_install_path}")
-#if [ -z "${Var_check_path}" ]; then
-#	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
-#	export PATH+=":${Var_install_path}"
-#fi
+Var_check_path=$(echo "${PATH}" | grep -q "${Var_install_path}")
+if [ -z "${Var_check_path}" ]; then
+	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
+	export PATH+=":${Var_install_path}"
+fi
 Func_run_sanely "cp -va ${Var_install_script} ${Var_install_path}/${Var_install_name}" "0"
 Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_name}" "0"
 ## Try running help

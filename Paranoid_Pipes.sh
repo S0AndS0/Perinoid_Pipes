@@ -496,10 +496,11 @@ Func_usage_options(){
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
 	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
-		Func_messages "${Var_script_name} detected extra (unrecognized as an argument) input" '1' '2'
+		Func_messages "${Var_script_name} detected extra input" '1' '2'
 #		Func_messages "# ${Arr_extra_input[*]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
-		${Var_cat_exec_path} <<<"${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
+		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
+#		${Var_cat_exec_path} <<<"${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
 		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
 	fi

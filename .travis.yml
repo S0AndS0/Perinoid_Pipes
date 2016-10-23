@@ -12,8 +12,10 @@ language:
  - bash
 ## Custom setup prior to testing project, install dependencies & configure
 before_install:
- - chmod +x .travis-ci/before_install.sh
- - .travis-ci/before_install.sh
+ - chmod +x .travis-ci/before_install_depends.sh
+ - .travis-ci/before_install_depends.sh
+ - chmod +x .travis-ci/before_install_gen_key.sh
+ - .travis-ci/before_install_gen_key.sh
 ## Steps for successful install once dependencies are met.
 install:
  - chmod +x .travis-ci/install.sh
@@ -23,9 +25,9 @@ install:
 # - chmod +x 
 # - .travis-ci/
 ## Run tests for travis-ci.org to report on
-script:
- - chmod +x .travis-ci/script_encrypt.sh
- - .travis-ci/script_encrypt.sh
+#script:
+# - chmod +x .travis-ci/script_encrypt.sh
+# - .travis-ci/script_encrypt.sh
 ## Dissabled decryption checks until local tests are complete.
 # - chmod +x .travis-ci/script_decrypt.sh
 # - .travis-ci/script_decrypt.sh
