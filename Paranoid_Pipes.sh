@@ -1202,7 +1202,7 @@ Func_mkpipe_reader(){
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
-		PID_Map_read_array_to_output=$!
+		export PID_Map_read_array_to_output=$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
