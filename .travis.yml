@@ -26,10 +26,11 @@ install:
 #before_script:
 # - chmod +x 
 # - .travis-ci/
-## Run tests for travis-ci.org to report on
-#script:
-# - chmod +x .travis-ci/script_encrypt.sh
-# - .travis-ci/script_encrypt.sh
+## Run tests for travis-ci.org to report on; should no longer require root/sudo
+##  level permissions.
+script:
+ - chmod +x .travis-ci/script_encrypt.sh
+ - .travis-ci/script_encrypt.sh
 ## Dissabled decryption checks until local tests are complete.
 # - chmod +x .travis-ci/script_decrypt.sh
 # - .travis-ci/script_decrypt.sh

@@ -30,7 +30,7 @@
 
 [before_install_test_key.sh](before_install_test_key.sh)
 
-- Status: Passing?
+- Status: Passing
 
 > Test the encryption and decryption with newly generated GPG keys. The steps
 > found within this build script should be similar to the common operations that

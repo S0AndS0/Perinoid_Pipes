@@ -2,7 +2,7 @@
 export Var_script_dir="${0%/*}"
 export Var_script_name="${0##*/}"
 export Var_pipe_location="/tmp/Paranoid_Pipes/decrypt.pipe"
-export Var_helper_location="${Var_parent_dir}/Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
+export Var_helper_location="Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
 export Var_helper_name="decrypting_pipe_feeder.sh"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
