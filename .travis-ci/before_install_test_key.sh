@@ -8,9 +8,15 @@ _test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_len
 _test_encryption_opts="--recipient ${Var_gnupg_email} --encrypt"
 _test_decryption_opts="--yes --batch --passphrase-file ${Var_pass_location} --decrypt ${Var_test_gpg_location}"
 ## Try encrypting text to new key
-Func_run_sanely "echo \"${_test_string}\" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}" "${USER}"
+cat <<<"${_test_string}" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}
+#Func_run_sanely "echo \"${_test_string}\" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}" "${USER}"
+_exit_status=$?
+Func_check_exit_status "${_exit_status}"
 if [ -f "${Var_test_gpg_location}" ]; then
-	Func_run_sanely "gpg ${_test_decryption_opts} >> ${Var_test_raw_location}" "${USER}"
+	gpg ${_test_decryption_opts} >> ${Var_test_raw_location}
+#	Func_run_sanely "gpg ${_test_decryption_opts} >> ${Var_test_raw_location}" "${USER}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
 else
 	echo "# ${Var_script_name} cannot find: ${Var_test_gpg_location}"
 fi
