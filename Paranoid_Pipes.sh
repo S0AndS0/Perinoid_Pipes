@@ -1564,8 +1564,8 @@ Func_main(){
 					${Var_script_copy_name}
 					_exit_status=$?
 				fi
-## Dissabled to allow Travis-CI to continue.
-#				Func_write_unrecognized_input_to_pipe
+## Dissable to allow Travis-CI to continue when writing script copies.
+				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'
@@ -1601,7 +1601,8 @@ Func_main(){
 						;;
 					esac
 					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
-					Func_write_unrecognized_input_to_pipe
+## Dissable to allow Travis-CI to continue when not writing script copies.
+#					Func_write_unrecognized_input_to_pipe
 				;;
 				*)
 					Func_messages "# Notice: ${Var_script_name} will start parsing loop within current terminal" '1' '2'

@@ -18,6 +18,10 @@ before_install:
 install:
  - chmod +x .travis-ci/install.sh
  - .travis-ci/install.sh
+## Steps to complete prior to running further tests.
+#before_script:
+# - chmod +x 
+# - .travis-ci/
 ## Run tests for travis-ci.org to report on
 script:
  - chmod +x .travis-ci/script_encrypt.sh
@@ -25,5 +29,14 @@ script:
 ## Dissabled decryption checks until local tests are complete.
 # - chmod +x .travis-ci/script_decrypt.sh
 # - .travis-ci/script_decrypt.sh
+## Setps to complete after success or falure
+#after_success:
+#after_failure:
+## Steps to run for deployment of build if any
+#before_deploy:
+#deploy:
+#after_deploy:
+## Steps to run when script and deployment is finished; cleanup?
+#after_script:
 ## Note above tricks for chmoding the scripts prior to execution where found
 ##  at: http://stackoverflow.com/a/33820642/2632107
