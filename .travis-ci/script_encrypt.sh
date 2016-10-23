@@ -9,8 +9,8 @@ Func_source_file "${Var_script_dir}/lib/config_pipe_variables_encrypt.sh"
 ##  else exit wth errors
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
-	echo "# ${Var_script_name} running test one: ${Var_install_script} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
-	${Var_install_script} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
+	echo "# ${Var_script_name} running test one: ${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
+	${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
 	_exit_status=$?
 	echo "Func_check_exit_status \"${_exit_status}\""
 #	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "0"
