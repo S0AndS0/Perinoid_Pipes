@@ -7,8 +7,10 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 Func_source_file "${Var_script_dir}/lib/config_pipe_variables_encrypt.sh"
 ## Generate temp-key pare for testing encryption with public key operations.
 _pass_phrase=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-Func_run_sanely "echo ${_pass_phrase} > ${Var_pass_location}" "0"
-Func_run_sanely "Func_gen_gnupg_test_keys ${_pass_phrase}" "0"
+echo "${_pass_phrase}" > ${Var_pass_location}
+#Func_run_sanely "echo ${_pass_phrase} > ${Var_pass_location}" "0"
+Func_gen_gnupg_test_keys "${_pass_phrase}"
+#Func_run_sanely "Func_gen_gnupg_test_keys ${_pass_phrase}" "${USER}"
 ## If installed script is executable then make test keys,
 ## pipe and listener, else exit wth errors
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
