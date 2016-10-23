@@ -15,7 +15,9 @@ Func_gen_gnupg_test_keys "${_pass_phrase}"
 ## If installed script is executable then make test keys, pipe and listener,
 ##  else exit wth errors
 if [ -e "${Var_install_path}/${Var_install_name}" ]; then
-	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "0"
+	## Make pipe and read with cloned script options shown bellow.
+	Func_run_sanely "${Var_install_name} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email}" "${USER}"
+#	Func_run_sanely "${Var_install_path}/${Var_install_name} ${Arr_encrypt_opts[*]}" "0"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1
