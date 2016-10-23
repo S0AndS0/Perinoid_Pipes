@@ -20,14 +20,21 @@ fi
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	Func_run_sanely "echo \"${_test_string}\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
+	Func_run_sanely "echo ${_test_string} > ${Var_encrypt_pipe_location}" "${USER}"
 	if [ -r "${Var_encrypted_location}" ]; then
 		echo "# ${Var_script_name} showing preview of encrypted data #"
 		Func_run_sanely "cat ${Var_encrypted_location}" "${USER}"
 		echo "# ${Var_script_name} testing decryption of file"
 		Func_run_sanely "gpg --batch --yes --decrypt ${Var_encrypted_location} --passphrase-file ${Var_pass_location}"
+	else
+		echo "# ${Var_script_name} could not find: ${Var_encrypted_location}"
+		if [ -f "${Var_encrypted_location}" ]; then
+			echo "# ${Var_script_name} reports it is a file though: ${Var_encrypted_location}"
+		else
+			echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
+		fi
 	fi
-	Func_run_sanely "echo \"quit\" > \"${Var_encrypt_pipe_location}\"" "${USER}"
+	Func_run_sanely "echo quit > ${Var_encrypt_pipe_location}" "${USER}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
