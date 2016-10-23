@@ -6,7 +6,7 @@ source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 _test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
 _test_encryption_opts="--recipient ${Var_gnupg_email} --encrypt"
-_test_decryption_opts="--yes --batch --passphrase-file ${Var_pass_location} --decrypt ${Var_test_gpg_location}"
+_test_decryption_opts="--always-trust --passphrase-file ${Var_pass_location} --decrypt ${Var_test_gpg_location}"
 ## Try encrypting text to new key
 cat <<<"${_test_string}" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}
 #Func_run_sanely "echo \"${_test_string}\" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}" "${USER}"
