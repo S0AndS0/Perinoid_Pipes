@@ -19,6 +19,7 @@ engines:
     ##  effects tests run for finding non-local script help, however, those
     ##  are also quoted where they should be.
     - 00468cf5be0161edd724577a36ad7952
+    - 58e3ecf1d944215e5ea6518a8c1d1f1c
     ##  The following disables "Can't follow non-constant source. Use a
     ##  directive to specify location." warnings for
     ##  'source "${Var_source_var_file}"' because this set within the argument
@@ -29,6 +30,7 @@ engines:
     ##  without the curly brackets, syntax highlighting and other things go
     ##  a little funky on older Bash versions.
     - 18621e790df9a1247c47c11dfa363fe0
+    - 72fda70e362f931c96c8d770f727a3db
     ## Script_Helpers/Paranoid_Pipes_Scenario_Three.sh
     ##  The following disables the "ssh" command usage being called an error
     ##  Code Climate warns that the current usage will expand the
@@ -56,8 +58,9 @@ engines:
     ## Ignore intentional MarkDown mistake examples within the following
     ## Documentation/Contributing_documentation.md
     - e09b199efa7d30d856ca00a7c535cb1f
+    - 4c163ae9558cd876928396e940934c3b
     ## Ignore spaces inside code elements for above file too
-    - fa8416dc7ef39afe77a454584883a484
+    - 4d7ff7e9a53a98b3f0157af990b15f72
 ratings:
   paths:
     - ".gitignore"

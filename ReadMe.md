@@ -6,15 +6,15 @@
 
 > The `Code Climate` is an over all *grade* of both code **&** documentation
 > found within this project.
-> The `Issue Count` is the total number of code **&** documentation syntax
+> The 'Issue Count' is the total number of code **&** documentation syntax
 > bugs. Code checking is provided by `shellcheck` and Markdown formate
 > checking provided by `markdownlint`; both remotely provided by
 > [Code Climate](https://codeclimate.com/).
-> The `Build Status` is provided by [Travis-CI](https://travis-ci.org/) and
+> The 'Build Status' is provided by [Travis-CI](https://travis-ci.org/) and
 > runs tests scripts called within the [.travis.yml](.travis.yml) file and
 > reports of any bugs within this project's main script normal usage scenarios.
-> All build scripts used for Travis-CI auto-build checks can be found under the
-> [.travis-ci/](.travis-ci/) directory.
+> All build scripts used for Travis-CI auto-build checks can be found under
+> the [.travis-ci](.travis-ci) directory.
 
 ## Project goals (generalized)
 
