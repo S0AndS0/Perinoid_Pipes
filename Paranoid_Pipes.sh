@@ -1463,7 +1463,7 @@ Map_read_array_to_output(){
 Pipe_parser_loop(){
 	while [ -p "\${Var_pipe_file_name}" ]; do
 		_mapped_array=\$(Map_read_array_to_output "\${Var_pipe_file_name}")
-		PID_Map_read_array_to_output=\$!
+		export PID_Map_read_array_to_output=\$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
@@ -1510,7 +1510,7 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop >"\${Var_dev_null}" 2>&1 &
+		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
@@ -1518,11 +1518,10 @@ case "\${Var_disown_parser_yn}" in
 	*)
 		${Var_echo_exec_path} "## \${Var_script_name} will start parsing loop in this terminal"
 		Pipe_parser_loop
+		${Var_echo_exec_path} "# Quitting \${Var_script_name} listener"
+		set -o history
 	;;
 esac
-${Var_echo_exec_path} "# Quitting \${Var_script_name} listener"
-set -o history
-exit 0
 
 EOF
 
