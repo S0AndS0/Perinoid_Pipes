@@ -17,26 +17,6 @@
 > VMs that `haveged` was added to the dependacies list so that the host server
 > has enough entropy to generate test GPG keys latter.
 
-## `before_install_gen_key.sh`
-
-[before_install_gen_key.sh](before_install_gen_key.sh)
-
-- Status: Passing
-
-> Generate new GPG keys for use with testing the main scrip as well as the basic
-> logics used within the scripts found within this project.
-
-## `before_install_test_key.sh`
-
-[before_install_test_key.sh](before_install_test_key.sh)
-
-- Status: Passing
-
-> Test the encryption and decryption with newly generated GPG keys. The steps
-> found within this build script should be similar to the common operations that
-> the main script and helper scripts try to achive with some further looping
-> of logics.
-
 ## `install.sh`
 
 [install.sh](install.sh)
@@ -46,6 +26,26 @@
 > Copy the main script to standard install directory: `/usr/local/sbin` and
 > change permissions to allow execution of script by proper owner and group.
 > And test that script is able to execute it's `help` documentation.
+
+## `before_script_gen_key.sh`
+
+[before_script_gen_key.sh](before_script_gen_key.sh)
+
+- Status: Passing
+
+> Generate new GPG keys for use with testing the main scrip as well as the basic
+> logics used within the scripts found within this project.
+
+## `before_script_test_key.sh`
+
+[before_script_test_key.sh](before_script_test_key.sh)
+
+- Status: Passing
+
+> Test the encryption and decryption with newly generated GPG keys. The steps
+> found within this build script should be similar to the common operations that
+> the main script and helper scripts try to achive with some further looping
+> of logics.
 
 ## `script_encrypt.sh`
 
