@@ -8,7 +8,7 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 ##  if executable via full file path and name else exit with errors.
 if [ -e "${Var_install_name}" ]; then
 	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
-	${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
+	${Var_install_name} Var_debugging=2 Var_pipe_permissions=666 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
