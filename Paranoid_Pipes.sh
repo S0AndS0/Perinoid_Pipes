@@ -52,7 +52,7 @@ Var_gpg_exec_path="$(which gpg)"
 ## Used for silencing output of loops, ei
 # <command_to_silence> >${Var_dev_null} 2>&1 &
 # <command_to_quite> &> ${Var_dev_null}
-Var_dev_null="${Var_dev_null}"
+Var_dev_null="/dev/null"
 ## Save date command with seconds sense 1970 option for logs and messages that include timing info
 Var_star_date=$(date -u +%s)
 
@@ -382,14 +382,40 @@ Func_trap_cleanup(){
 	Func_messages "# ${Var_script_name} quitting and turning bash history back on now, press [Enter] to return to terminal" '1' '2'
 	set -o history
 }
-
+## Following two functions are called internally while setting values and are
+##  only used if 'Var_save_variables' is a "yes" like value. These replace the
+##  old functions that use to serve the same perpos to aid in maintanence of
+##  adding more options to this script.
+Func_save_variables(){
+	_var_name="${1?No variable name passed to Func_save_variables function}"
+	_var_value="${2?No value passed to Func_save_variables function}"
+	case "${Var_save_variables}" in
+		y|Y|yes|Yes|YES)
+	cat >> "${Var_source_var_file}" <<EOF
+declare -g "${_var_name}=${_var_value}"
+EOF
+		;;
+	esac
+}
+Func_save_options(){
+	_opt_name="${1?No variable name passed to Func_save_options function}"
+	_opt_value="${2?No value passed to Func_save_options function}"
+	case "${Var_save_options}" in
+		y|Y|yes|Yes|YES)
+	cat >> "${Var_source_var_file}" <<EOF
+${_opt_name}=${_opt_value} \\
+EOF
+		;;
+	esac
+}
 ## Following function is called within Func_check_args function if command line options where passed to script.
 ## Example call for bellow function
-#Func_assign_arg '' "" ''
+#Func_assign_arg "" '' "" ''
 Func_assign_arg(){
-	_var_name="${1?No variable name passed to Func_assign_arg function}"
-	_var_value="${2?No value passed to Func_assign_arg function}"
-	_var_string_type="${3?No string filtering type passed to Func_assign_arg function}"
+	_opt_name="${1}"
+	_var_name="${2?No variable name passed to Func_assign_arg function}"
+	_var_value="${3?No value passed to Func_assign_arg function}"
+	_var_string_type="${4?No string filtering type passed to Func_assign_arg function}"
 	case "${_var_string_type}" in
 		number)
 			declare -g "${_var_name}=${_var_value//${Var_number_regex}/}"
@@ -408,6 +434,8 @@ Func_assign_arg(){
 			Func_messages "# Func_assign_arg declared [${_var_name}=${_var_value//${Var_parsing_allowed_chars}/}]" '1' '42'
 		;;
 	esac
+	Func_save_variables "${_var_name}" "${_var_value}"
+#	Func_save_options "${_opt_name}" "${_var_value}"
 }
 ## Following function is called within Func_check_args function if '-h' or '--help' was passed to script
 Func_usage_options(){
@@ -467,6 +495,23 @@ Func_usage_options(){
 		until [ "${_help_count}" = "${#_help_lookup[@]}" ] ; do
 			echo "# Checking if ${Var_script_name} has help on [${_help_lookup[${_help_count}]}]"
 			if [ "${_help_lookup[${_help_count}]}" != "${Var_script_name}" ] && [ "${_help_lookup[${_help_count}]}" != "${Var_script_dir}/${Var_script_name}" ]; then
+				case "${_help_lookup[${_help_count}]}" in
+					#)
+					#	${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+					#	Func_messages "# " '1' '2'
+					#;;
+					--save-options-yn|Var_save_options)
+						${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						Func_messages "# Reload saved options via: ${Var_script_name} \$(cat ${Var_source_var_file})" '1' '2'
+					;;
+					--save-variables-yn|Var_save_variables)
+						${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						Func_messages "# Reload saved variables via: ${Var_script_name} --source-var-file=${Var_source_var_file}" '1' '2'
+					;;
+					*)
+						${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
+					;;
+				esac
 				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})]"
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
@@ -475,17 +520,6 @@ Func_usage_options(){
 				elif test help "${_help_lookup[${_help_count}]}"; then
 					help "${_help_lookup[${_help_count}]}"
 				fi
-			else
-				case "${_help_lookup[${_help_count}]}" in
-# TO-DO : Write help using bellow template for command line options.
-					#)
-					#	${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
-					#	${Var_echo_exec_path} '#'
-					#;;
-					*)
-						${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
-					;;
-				esac
 			fi
 			let _help_count++
 		done
@@ -495,13 +529,10 @@ Func_usage_options(){
 ##  only if the pipe file exists too. Else message user that extra input read
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
-	if [ "${#Arr_extra_input[@]}" -gt '1' ] && [ -p "${Var_pipe_file_name}" ]; then
-#	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
+	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra input" '1' '2'
-		Func_messages "# ${Arr_extra_input[*]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
-#		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
-#		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
-		${Var_cat_exec_path} <<<"${Arr_extra_input[*]}" > "${Var_pipe_file_name}"
+		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
+		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
 		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
 	fi
@@ -515,115 +546,115 @@ Func_check_args(){
 		_arg="${_input_array[${_arg_count}]}"
 		case "${_arg%=*}" in
 			--copy-save-yn|Var_script_copy_save)
-				Func_assign_arg 'Var_script_copy_save' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--copy-save-yn' 'Var_script_copy_save' "${_arg#*=}" 'azAZ'
 			;;
 			--copy-save-name|Var_script_copy_name)
-				Func_assign_arg 'Var_script_copy_name' "${_arg#*=}" 'string'
+				Func_assign_arg '--copy-save-name' 'Var_script_copy_name' "${_arg#*=}" 'string'
 			;;
 			--copy-save-permissions|Var_script_copy_permissions)
-				Func_assign_arg 'Var_script_copy_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg '--copy-save-permissions' 'Var_script_copy_permissions' "${_arg#*=}" 'number'
 			;;
 			--copy-save-ownership|Var_script_copy_ownership)
-				Func_assign_arg 'Var_script_copy_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg '--copy-save-ownership' 'Var_script_copy_ownership' "${_arg#*=}" 'string'
 			;;
 			--debug-level|Var_debugging)
-				Func_assign_arg 'Var_debugging' "${_arg#*=}" 'number'
+				Func_assign_arg '--debug-level' 'Var_debugging' "${_arg#*=}" 'number'
 			;;
 			--disown-yn|Var_disown_parser_yn)
-				Func_assign_arg 'Var_disown_parser_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--disown-yn' 'Var_disown_parser_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--log-level|Var_logging)
-				Func_assign_arg 'Var_logging' "${_arg#*=}" 'number'
+				Func_assign_arg '--log-level' 'Var_logging' "${_arg#*=}" 'number'
 			;;
 			--log-file-location|Var_log_file_name)
-				Func_assign_arg 'Var_log_file_name' "${_arg#*=}" 'string'
+				Func_assign_arg '--log-file-location' 'Var_log_file_name' "${_arg#*=}" 'string'
 			;;
 			--log-file-permissions|Var_log_file_permissions)
-				Func_assign_arg 'Var_log_file_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg '--log-file-permissions' 'Var_log_file_permissions' "${_arg#*=}" 'number'
 			;;
 			--log-file-ownership|Var_log_file_ownership)
-				Func_assign_arg 'Var_log_file_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg '--log-file-ownership' 'Var_log_file_ownership' "${_arg#*=}" 'string'
 			;;
 			--log-auto-delete-yn|Var_remove_script_log_on_exit_yn)
-				Func_assign_arg 'Var_remove_script_log_on_exit_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--log-auto-delete-yn' 'Var_remove_script_log_on_exit_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--named-pipe-name|Var_pipe_file_name)
-				Func_assign_arg 'Var_pipe_file_name' "${_arg#*=}" 'string'
-				Func_assign_arg 'Var_trap_command' "${Var_rm_exec_path} -f ${Var_pipe_file_name}" 'null'
+				Func_assign_arg '--named-pipe-name' 'Var_pipe_file_name' "${_arg#*=}" 'string'
+				Func_assign_arg '--listener-trap-command' 'Var_trap_command' "${Var_rm_exec_path} -f ${Var_pipe_file_name}" 'null'
 			;;
 			--named-pipe-permissions|Var_pipe_permissions)
-				Func_assign_arg 'Var_pipe_permissions' "${_arg#*=}" 'number'
+				Func_assign_arg '--named-pipe-permissions' 'Var_pipe_permissions' "${_arg#*=}" 'number'
 			;;
 			--named-pipe-ownership|Var_pipe_ownership)
-				Func_assign_arg 'Var_pipe_ownership' "${_arg#*=}" 'string'
+				Func_assign_arg '--named-pipe-ownership' 'Var_pipe_ownership' "${_arg#*=}" 'string'
 			;;
 			--listener-quit-string|Var_pipe_quit_string)
-				Func_assign_arg 'Var_pipe_quit_string' "${_arg#*=}" 'string'
+				Func_assign_arg '--listener-quit-string' 'Var_pipe_quit_string' "${_arg#*=}" 'string'
 			;;
 			--listener-trap-command|Var_trap_command)
-				Func_assign_arg 'Var_trap_command' "${_arg#*=}" 'null'
+				Func_assign_arg '--listener-trap-command' 'Var_trap_command' "${_arg#*=}" 'null'
 			;;
 			--output-pre-parse-yn|Var_preprocess_for_comments_yn)
-				Func_assign_arg 'Var_preprocess_for_comments_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--output-pre-parse-yn' 'Var_preprocess_for_comments_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-pre-parse-comment-string|Var_parsing_comment_pattern)
-				Func_assign_arg 'Var_parsing_comment_pattern' "${_arg#*=}" 'null'
+				Func_assign_arg '--output-pre-parse-comment-string' 'Var_parsing_comment_pattern' "${_arg#*=}" 'null'
 			;;
 			--output-pre-parse-allowed-chars|Var_parsing_allowed_chars)
-				Func_assign_arg 'Var_parsing_allowed_chars' "${_arg#*=}" 'null'
+				Func_assign_arg '--output-pre-parse-allowed-chars' 'Var_parsing_allowed_chars' "${_arg#*=}" 'null'
 			;;
 			--output-parse-name|Var_parsing_output_file)
-				Func_assign_arg 'Var_parsing_output_file' "${_arg#*=}" 'string'
+				Func_assign_arg '--output-parse-name' 'Var_parsing_output_file' "${_arg#*=}" 'string'
 			;;
 			--output-gpg-recipient|Var_gpg_recipient)
-				Func_assign_arg 'Var_gpg_recipient' "${_arg#*=}" 'string'
-				Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
-				Func_assign_arg 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
+				Func_assign_arg '--output-gpg-recipient' 'Var_gpg_recipient' "${_arg#*=}" 'string'
+				Func_assign_arg '---Var_gpg_recipient_options' 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
+				Func_assign_arg '--output-parse-command' 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
 			;;
 			--output-save-yn|Var_save_encryption_yn)
-				Func_assign_arg 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--output-save-yn' 'Var_save_encryption_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-rotate-yn|Var_log_rotate_yn)
-				Func_assign_arg 'Var_log_rotate_yn' "${_arg#*=}" 'azAZ'
+				Func_assign_arg '--output-rotate-yn' 'Var_log_rotate_yn' "${_arg#*=}" 'azAZ'
 			;;
 			--output-rotate-max-bites|Var_log_max_size)
-				Func_assign_arg 'Var_log_max_size' "${_arg#*=}" 'number'
+				Func_assign_arg '--output-rotate-max-bites' 'Var_log_max_size' "${_arg#*=}" 'number'
 			;;
 			--output-rotate-check-frequency|Var_log_check_frequency)
-				Func_assign_arg 'Var_log_check_frequency' "${_arg#*=}" 'number'
+				Func_assign_arg '--output-rotate-check-frequency' 'Var_log_check_frequency' "${_arg#*=}" 'number'
 			;;
 			--output-rotate-actions|Var_log_rotate_actions)
-				Func_assign_arg 'Var_log_rotate_actions' "${_arg#*=}" 'string'
+				Func_assign_arg '--output-rotate-actions' 'Var_log_rotate_actions' "${_arg#*=}" 'string'
 			;;
 			--output-rotate-recipient|Var_log_rotate_recipient)
-				Func_assign_arg 'Var_log_rotate_recipient' "${_arg#*=}" 'string'
+				Func_assign_arg '--output-rotate-recipient' 'Var_log_rotate_recipient' "${_arg#*=}" 'string'
 			;;
 			--output-parse-command|Var_parsing_command)
-				Func_assign_arg 'Var_parsing_command' "${_arg#*=}" 'null'
+				Func_assign_arg '--output-parse-command' 'Var_parsing_command' "${_arg#*=}" 'null'
 			;;
 			--output-bulk-dir|Var_parsing_bulk_out_dir)
-				Func_assign_arg 'Var_parsing_bulk_out_dir' "${_arg#*=}" 'string'
+				Func_assign_arg '--output-bulk-dir' 'Var_parsing_bulk_out_dir' "${_arg#*=}" 'string'
 			;;
 			--output-bulk-suffix|Var_bulk_output_suffix)
-				Func_assign_arg 'Var_bulk_output_suffix' "${_arg#*=}" 'string'
+				Func_assign_arg '--output-bulk-suffix' 'Var_bulk_output_suffix' "${_arg#*=}" 'string'
 			;;
 			--padding-enable-yn|Var_enable_padding_yn)
-				Func_assign_arg 'Var_enable_padding_yn' "${_arg#*=}" 'string'
+				Func_assign_arg '--padding-enable-yn' 'Var_enable_padding_yn' "${_arg#*=}" 'string'
 			;;
 			--padding-length|Var_padding_length)
-				Func_assign_arg 'Var_padding_length' "${_arg#*=}" 'string'
+				Func_assign_arg '--padding-length' 'Var_padding_length' "${_arg#*=}" 'string'
 			;;
 			--padding-placement|Var_padding_placement)
-				Func_assign_arg 'Var_padding_placement' "${_arg#*=}" 'string'
+				Func_assign_arg '--padding-placement' 'Var_padding_placement' "${_arg#*=}" 'string'
 			;;
 			--save-options-yn|Var_save_options)
-				Func_assign_arg 'Var_save_options' "${_arg#*=}" 'string'
+				Func_assign_arg '--save-options-yn' 'Var_save_options' "${_arg#*=}" 'string'
 			;;
 			--save-variables-yn|Var_save_variables)
-				Func_assign_arg 'Var_save_variables' "${_arg#*=}" 'string'
+				Func_assign_arg '--save-variables-yn' 'Var_save_variables' "${_arg#*=}" 'string'
 			;;
 			--source-var-file|Var_source_var_file)
-				Func_assign_arg 'Var_source_var_file' "${_arg#*=}" 'string'
+				Func_assign_arg '--source-var-file' 'Var_source_var_file' "${_arg#*=}" 'string'
 				## Check if sourcing file passed is a file else value will be used
 				##  with above options for saving variables or options to the values path
 				if [ -f "${Var_source_var_file}" ]; then
@@ -635,7 +666,7 @@ Func_check_args(){
 				Var_extra_var_value="${_arg#*=}"
 				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
 				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
-				Func_assign_arg "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
+				Func_assign_arg "${Var_extra_var_var}" "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
 			;;
 			--help|-h)
 				Var_help_var="${_arg%=*}"
@@ -672,9 +703,9 @@ Func_check_recipients(){
 		${Var_echo_exec_path} -n 'Please input your pub-key email address: '
 		read -pr _response
 		if ! [ -z "${#_response}" ]; then
-			Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
-			Func_assign_arg 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
-			Func_assign_arg 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
+			Func_assign_arg '--output-gpg-recipient' 'Var_gpg_recipient' "${_response}" 'string'
+			Func_assign_arg '---Var_gpg_recipient_options' 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
+			Func_assign_arg '--output-parse-command' 'Var_parsing_command' "${Var_gpg_exec_path} ${Var_gpg_recipient_options}" 'null'
 		else
 			Func_messages "# Error - [\${Var_gpg_recipient}] unset, quiting now" '0' '1'
 			exit 1
@@ -689,7 +720,7 @@ Func_check_recipients(){
 				${Var_echo_exec_path} -en 'Please input your pub-key email address: '
 				read -pr _response
 				if ! [ -z "${#_response}" ]; then
-					Func_assign_arg 'Var_gpg_recipient' "${_response}" 'string'
+					Func_assign_arg '--output-rotate-recipient' 'Var_log_rotate_recipient' "${_response}" 'string'
 				else
 					Func_messages "# Error - [\${Var_log_rotate_recipient}] unset, quiting now" '0' '1'
 					exit 1
@@ -843,181 +874,6 @@ Func_variable_assignment_reader(){
 	if [ "${Var_debugging}" = "3" ] || [ "${Var_debugging}" -gt "3" ]; then
 		Func_prompt_continue "Func_variable_assignment_reader"
 	fi
-}
-	
-## The following two functions are called only if Func_main function detects that it should
-##  save either a variable or option file for latter use with this script.
-Func_save_options(){
-	if ! [ -f "${Var_source_var_file}" ]; then
-		cat > "${Var_source_var_file}" <<EOF
-#!/usr/bin/env bash
-if [ -e "${Var_script_dir}/${Var_script_name}" ]; then
-	echo "# Running ${Var_script_dir}/${Var_script_name} with options from [${Var_source_var_file}]"
-	${Var_script_dir}/${Var_script_name} --copy-save-yn="${Var_script_copy_save}"\\
-	 --copy-save-name="${Var_script_copy_name}"\\
-	 --copy-save-permissions="${Var_script_copy_permissions}"\\
-	 --copy-save-ownership="${Var_script_copy_ownership}"\\
-	 --debug-level="${Var_debugging}"\\
-	 --disown-yn="${Var_disown_parser_yn}"\\
-	 --log-level="${Var_logging}"\\
-	 --log-file-location="${Var_log_file_name}"\\
-	 --log-file-permissions="${Var_log_file_permissions}"\\
-	 --log-file-ownership="${Var_log_file_ownership}"\\
-	 --log-auto-delete-yn="${Var_remove_script_log_on_exit_yn}"\\
-	 --named-pipe-name="${Var_pipe_file_name}"\\
-	 --named-pipe-permissions="${Var_pipe_permissions}"\\
-	 --named-pipe-ownership="${Var_pipe_ownership}"\\
-	 --listener-quit-string="${Var_pipe_quit_string}"\\
-	 --output-pre-parse-yn="${Var_preprocess_for_comments_yn}"\\
-	 --output-pre-parse-comment-string="${Var_parsing_comment_pattern}"\\
-	 --output-pre-parse-allowed-chars="${Var_parsing_allowed_chars}"\\
-	 --output-parse-name="${Var_parsing_output_file}"\\
-	 --output-gpg-recipient="${Var_gpg_recipient}"\\
-	 --output-save-yn="${Var_save_encryption_yn}"\\
-	 --output-rotate-yn="${Var_log_rotate_yn}"\\
-	 --output-rotate-max-bites="${Var_log_max_size}"\\
-	 --output-rotate-check-frequency="${Var_log_check_frequency}"\\
-	 --output-rotate-actions="${Var_log_rotate_actions}"\\
-	 --output-rotate-recipient="${Var_log_rotate_recipient}"\\
-	 --output-bulk-dir="${Var_parsing_bulk_out_dir}"\\
-	 --output-bulk-suffix="${Var_bulk_output_suffix}"\\
-	 --padding-enable-yn="${Var_enable_padding_yn}"\\
-	 --padding-length="${Var_padding_length}"\\
-	 --padding-placement="${Var_padding_placement}"
-else
-	echo "# Error finding executable permissions for: ${Var_script_dir}/${Var_script_name}"
-fi
-EOF
-	fi
-	
-}
-Func_save_variables(){
-	if ! [ -f "${Var_source_var_file}" ]; then
-		cat > "${Var_source_var_file}" <<EOF
-### This is a configuration file written by and licensed under
-##  the same licensing and usage agreement referenced in the
-##  following script file path.
-##  Saved by: ${Var_script_name}
-##   at: $(date)
-
-### Following variables can be controlled via command line options
-##  passed to the above script name or variables  maybe loaded
-##  into the above script via the following CLO
-##   --source-var-file="${Var_source_var_file}"
-##  each of the following will be pre-seeded by it's
-##  related command line option and is only included
-##  to aid users in understanding options available
-##  and not to encourage one method of use over an other.
-Var_script_copy_save="${Var_script_copy_save}"
-## --copy-save-name="${Var_script_copy_name}"
-Var_script_copy_name="${Var_script_copy_name}"
-## --copy-save-permissions="${Var_script_copy_permissions}"
-Var_script_copy_permissions="${Var_script_copy_permissions}"
-## --copy-save-ownership="${Var_script_copy_ownership}"
-Var_script_copy_ownership="${Var_script_copy_ownership}"
-## --debug-level="${Var_debugging}"
-Var_debugging="${Var_debugging}"
-## --disown-yn="${Var_disown_parser_yn}"
-Var_disown_parser_yn="${Var_disown_parser_yn}"
-## --log-level="${Var_logging}"
-Var_logging="${Var_logging}"
-## --log-file-location="${Var_log_file_name}"
-Var_log_file_name="${Var_log_file_name}"
-## --log-file-permissions="${Var_log_file_permissions}"
-Var_log_file_permissions="${Var_log_file_permissions}"
-## --log-file-ownership="${Var_log_file_ownership}"
-Var_log_file_ownership="${Var_log_file_ownership}"
-## --log-auto-delete-yn="${Var_remove_script_log_on_exit_yn}"
-Var_remove_script_log_on_exit_yn="${Var_remove_script_log_on_exit_yn}"
-## --named-pipe-name="${Var_pipe_file_name}"
-Var_pipe_file_name="${Var_pipe_file_name}"
-## --named-pipe-permissions="${Var_pipe_permissions}"
-Var_pipe_permissions="${Var_pipe_permissions}"
-## --named-pipe-ownership="${Var_pipe_ownership}"
-Var_pipe_ownership="${Var_pipe_ownership}"
-## --listener-quit-string="${Var_pipe_quit_string}"
-Var_pipe_quit_string="${Var_pipe_quit_string}"
-## --output-pre-parse-yn="${Var_preprocess_for_comments_yn}"
-Var_preprocess_for_comments_yn="${Var_preprocess_for_comments_yn}"
-## --output-pre-parse-comment-string="${Var_parsing_comment_pattern}"
-Var_parsing_comment_pattern="${Var_parsing_comment_pattern}"
-## --output-pre-parse-allowed-chars="${Var_parsing_allowed_chars}"
-Var_parsing_allowed_chars="${Var_parsing_allowed_chars}"
-## --output-parse-name="${Var_parsing_output_file}"
-Var_parsing_output_file="${Var_parsing_output_file}"
-## --output-gpg-recipient="${Var_gpg_recipient}"
-Var_gpg_recipient="${Var_gpg_recipient}"
-## --output-save-yn="${Var_save_encryption_yn}"
-Var_save_encryption_yn="${Var_save_encryption_yn}"
-## --output-rotate-yn="${Var_log_rotate_yn}"
-Var_log_rotate_yn="${Var_log_rotate_yn}"
-## --output-rotate-max-bites="${Var_log_max_size}"
-Var_log_max_size="${Var_log_max_size}"
-## --output-rotate-check-frequency="${Var_log_check_frequency}"
-Var_log_check_frequency="${Var_log_check_frequency}"
-## --output-rotate-actions="${Var_log_rotate_actions}"
-Var_log_rotate_actions="${Var_log_rotate_actions}"
-## --output-rotate-recipient="${Var_log_rotate_recipient}"
-Var_log_rotate_recipient="${Var_log_rotate_recipient}"
-## --output-bulk-dir="${Var_parsing_bulk_out_dir}"
-Var_parsing_bulk_out_dir="${Var_parsing_bulk_out_dir}"
-## --output-bulk-suffix="${Var_bulk_output_suffix}"
-Var_bulk_output_suffix="${Var_bulk_output_suffix}"
-## --padding-enable-yn="${Var_enable_padding_yn}"
-Var_enable_padding_yn="${Var_enable_padding_yn}"
-## --padding-length="${Var_padding_length}"
-Var_padding_length="${Var_padding_length}"
-## --padding-placement="${Var_padding_placement}"
-Var_padding_placement="${Var_padding_placement}"
-
-## --source-var-file="${Var_source_var_file}"
-#Var_source_var_file="${Var_source_var_file}"
-## --save-options-yn="${Var_save_options}"
-#Var_save_options="${Var_save_options}"
-## --save-variables-yn="${Var_save_variables}"
-#Var_save_variables="${Var_save_variables}"
-
-
-### Following variables are not settable via
-##  command line options and are included to
-##  allow users finer grain customization of
-##  script actions or behavior without need
-##  of touching the main script's source
-
-#Var_script_dir="\${0%/*}"
-#Var_script_name="\${0##*/}"
-#Var_script_pid="\$\$"
-#Var_script_pid=\${Var_script_pid:-\$BASHPID}
-# : \${USER?}
-# : \${HOME?}
-#Var_script_current_user="\${USER}"
-Var_trap_command="${Var_rm_exec_path} -f ${Var_pipe_file_name}"
-
-Var_chmod_exec_path="\$(which chmod)"
-Var_chown_exec_path="\$(which chown)"
-Var_echo_exec_path="\$(which echo)"
-Var_mkfifo_exec_path="\$(which mkfifo)"
-Var_cat_exec_path="\$(which cat)"
-Var_mkdir_exec_path="\$(which mkdir)"
-Var_mv_exec_path="\$(which mv)"
-Var_rm_exec_path="\$(which rm)"
-Var_tar_exec_path="\$(which tar)"
-Var_gpg_exec_path="\$(which gpg2)"
-Var_dev_null='/dev/null'
-Var_star_date=\$(date +%s)
-Var_number_regex='[^0-9]'
-Var_azAZ_regex='[^a-zA-Z]'
-Var_string_regex='[^a-zA-Z0-9_@,.:~\/]'
-Var_color_red='\033[0:31m'
-Var_color_lred='\033[1:31m'
-Var_color_lpurple='\033[1:35m'
-Var_color_null='\033[0m'
-Var_gpg_recipient_options="--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt"
-Var_parsing_command="${Var_gpg_exec_path} ${Var_gpg_recipient_options}"
-
-EOF
-	fi
-	
 }
 
 ## Function for making a named pipe if not already present and setting permissions
@@ -1512,7 +1368,7 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop >${Var_dev_null} 2>&1 &
+		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
@@ -1543,12 +1399,12 @@ Func_main(){
 	Func_variable_assignment_reader
 	case "${Var_save_options}" in
 		y|Y|yes|Yes|YES)
-			Func_save_options
+			Func_check_args --help=Var_save_options
 		;;
 	esac
 	case "${Var_save_variables}" in
 		y|Y|yes|Yes|YES)
-			Func_save_variables
+			Func_check_args --help=Var_save_variables
 		;;
 	esac
 	case "${Var_script_copy_save}" in
@@ -1589,7 +1445,7 @@ Func_main(){
 			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_mkpipe_reader >${Var_dev_null} 2>&1 &
+					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
 					case "${Var_save_encryption_yn}" in
@@ -1603,7 +1459,6 @@ Func_main(){
 						;;
 					esac
 					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
-## Dissable to allow Travis-CI to continue when not writing script copies.
 					Func_write_unrecognized_input_to_pipe
 				;;
 				*)
