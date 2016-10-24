@@ -11,7 +11,7 @@ if [ -e "${Var_install_name}" ]; then
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
 	echo "# ${Var_script_name} running test one: ${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
-	${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
+	${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
 	_exit_status=$?
 	echo "# ${Var_script_name} running: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
@@ -23,18 +23,19 @@ fi
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	echo "# ${Var_script_name} running: echo \"${_test_string}\" > ${Var_raw_test_location}"
-	echo "${_test_string}" > ${Var_raw_test_location}
-	_exit_status=$?
-	echo "# ${Var_script_name} running: Func_check_exit_status \"${_exit_status}\""
-	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} running: cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}"
-	cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}
-	_exit_status=$?
-	echo "# ${Var_script_name} running: Func_check_exit_status \"${_exit_status}\""
-	Func_check_exit_status "${_exit_status}"
-#	echo "${_test_string}" > ${Var_encrypt_pipe_location}
-#	Func_run_sanely "echo ${_test_string} > ${Var_encrypt_pipe_location}" "0"
+	Func_run_sanely "echo \"${_test_string}\" > ${Var_raw_test_location}" "${USER}"
+	cat ${Var_raw_test_location}
+	Func_run_sanely "cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}" "${USER}"
+#	echo "# ${Var_script_name} running: echo \"${_test_string}\" > ${Var_raw_test_location}"
+#	echo "${_test_string}" > ${Var_raw_test_location}
+#	_exit_status=$?
+#	echo "# ${Var_script_name} running: Func_check_exit_status \"${_exit_status}\""
+#	Func_check_exit_status "${_exit_status}"
+#	echo "# ${Var_script_name} running: cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}"
+#	cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}
+#	_exit_status=$?
+#	echo "# ${Var_script_name} running: Func_check_exit_status \"${_exit_status}\""
+#	Func_check_exit_status "${_exit_status}"
 	if [ -r "${Var_encrypted_location}" ]; then
 		cat ${Var_encrypted_location}
 		_exit_status=$?
