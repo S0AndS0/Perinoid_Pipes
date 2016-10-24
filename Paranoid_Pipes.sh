@@ -282,7 +282,7 @@ Var_padding_length='adaptive'
 Var_padding_placement='above'
 #Var_padding_placement='above,bellow,append,prepend'
 ## CLO --source-var-file
-Var_source_var_file="${Var_script_dir}/${Var_script_name}_configs.sh"
+Var_source_var_file="${Var_script_dir}/${Var_script_name%.*}_configs.sh"
 ## CLO --save-options-yn
 Var_save_options='no'
 ## CLO --save-variables-yn
@@ -435,7 +435,7 @@ Func_assign_arg(){
 		;;
 	esac
 	Func_save_variables "${_var_name}" "${_var_value}"
-#	Func_save_options "${_opt_name}" "${_var_value}"
+	Func_save_options "${_opt_name}" "${_var_value}"
 }
 ## Following function is called within Func_check_args function if '-h' or '--help' was passed to script
 Func_usage_options(){
@@ -529,7 +529,7 @@ Func_usage_options(){
 ##  only if the pipe file exists too. Else message user that extra input read
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
-	if [ "${#Arr_extra_input[@]}" -gt '0' ] && [ -p "${Var_pipe_file_name}" ]; then
+	if [ "${#Arr_extra_input[@]}" -gt '1' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "${Var_script_name} detected extra input" '1' '2'
 		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
