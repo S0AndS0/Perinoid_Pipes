@@ -16,8 +16,10 @@ export Var_test_raw_location="${HOME}/test_raw.txt"
 export Var_test_location="${HOME}/test_string_raw.txt"
 ## What directories to use with script tests?
 ##  The following block of variables is used in '' file.
-export Var_encrypt_pipe_location="${HOME}/encrypt.pipe"
-export Var_encrypt_pipe_log="${HOME}/encrypt.log"
-export Var_encrypted_location="${HOME}/encrypt.gpg"
+export Var_encrypt_pipe_location="${HOME}/encrypt_one.pipe"
+export Var_encrypt_pipe_log="${HOME}/encrypt_one.log"
+export Var_encrypted_location="${HOME}/encrypt_one.gpg"
+export Var_raw_test_location="${HOME}/string_one.txt"
+export Var_decrypt_raw_location="${HOME}/decrypt_one.txt"
 #export Var_decrypt_pipe_location="${HOME}/decrypt.pipe"
 #export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
