@@ -1512,7 +1512,7 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
+		Pipe_parser_loop >${Var_dev_null} 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
@@ -1567,7 +1567,7 @@ Func_main(){
 					_exit_status=$?
 				fi
 ## Dissable to allow Travis-CI to continue when writing script copies.
-				Func_write_unrecognized_input_to_pipe
+#				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'
@@ -1589,7 +1589,7 @@ Func_main(){
 			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
+					Func_mkpipe_reader >${Var_dev_null} 2>&1 &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
 					case "${Var_save_encryption_yn}" in
@@ -1604,7 +1604,7 @@ Func_main(){
 					esac
 					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 ## Dissable to allow Travis-CI to continue when not writing script copies.
-					Func_write_unrecognized_input_to_pipe
+#					Func_write_unrecognized_input_to_pipe
 				;;
 				*)
 					Func_messages "# Notice: ${Var_script_name} will start parsing loop within current terminal" '1' '2'
