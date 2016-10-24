@@ -32,22 +32,29 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
-	if [ -f "${Var_encrypted_location}" ]; then
-		chmod 666 ${Var_encrypted_location}
-		cat ${Var_encrypted_location}
-		echo "# ${Var_script_name} changed permissions (666): ${Var_encrypted_location}"
-	else
-		echo "# ${Var_script_name} could not find: ${Var_encrypted_location}"
-	fi
 	if [ -r "${Var_raw_test_location}" ]; then
 		echo "# ${Var_script_name} running as ${USER}: cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}"
 		cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}
 		_exit_status=$?
 		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 		Func_check_exit_status "${_exit_status}"
+		chmod 666 ${Var_encrypted_location}
+		cat ${Var_encrypted_location}
+		echo "# ${Var_script_name} changed permissions (666): ${Var_encrypted_location}"
 	else
 		echo "# ${Var_script_name} cannot read: ${Var_raw_test_location}"
 	fi
+	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > ${Var_encrypt_pipe_location}"
+	echo "quit" > ${Var_encrypt_pipe_location}
+	_exit_status=$?
+	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+	Func_check_exit_status "${_exit_status}"
+else
+	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
+	exit 1
+fi
+if ! [ -p "${Var_encrypt_pipe_location}" ]; then
+	echo "# ${Var_script_name} detected pipe corectly removed: ${Var_encrypt_pipe_location}"
 	if [ -r "${Var_encrypted_location}" ]; then
 		cat ${Var_encrypted_location}
 		_exit_status=$?
@@ -65,14 +72,8 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 			echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
 		fi
 	fi
-	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > ${Var_encrypt_pipe_location}"
-	echo "quit" > ${Var_encrypt_pipe_location}
-	_exit_status=$?
-	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
-	Func_check_exit_status "${_exit_status}"
 else
-	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
-	exit 1
+	echo "# ${Var_script_name} detected pipe still exsists: ${Var_encrypt_pipe_location}"
 fi
 _un_encrypted_string="$(cat ${Var_raw_test_location})"
 _decrypted_string="$(cat ${Var_decrypt_raw_location})"
