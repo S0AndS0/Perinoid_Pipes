@@ -7,7 +7,11 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 ## First test if script is installed and excessable via name alone, elif check
 ##  if executable via full file path and name else exit with errors.
 if [ -e "${Var_install_name}" ]; then
-	Func_run_sanely "${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}" "${USER}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
+	${Var_install_name} Var_debugging=2 Var_pipe_permissions=662 Var_log_file_permissions=660 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}
+	_exit_status=$?
+	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
 	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=660 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
@@ -63,12 +67,15 @@ else
 	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
 fi
-if [[ "$(cat ${Var_decrypt_raw_location})" == "$(cat ${Var_raw_test_location})" ]]; then
+_un_encrypted_string="$(cat ${Var_raw_test_location})"
+_decrypted_string="$(cat ${Var_decrypt_raw_location})"
+if [[ "${_un_encrypted_string}" == "${_decrypted_string}" ]]; then
 	echo "# ${Var_script_name} tests for encryption & decryption: OK"
-	echo "# ${Var_script_name}: [$(cat ${Var_decrypt_raw_location})] = [$(cat ${Var_raw_test_location})]"
+	echo "# ${Var_script_name}: [${_un_encrypted_string}] = [${_decrypted_string}]"
 else
 	echo "# ${Var_script_name} reports encryption & decryption: failed"
-	exit 1
+	echo "# ${Var_script_name}: [${_un_encrypted_string}] != [${_decrypted_string}]"
+#	exit 1
 fi
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
