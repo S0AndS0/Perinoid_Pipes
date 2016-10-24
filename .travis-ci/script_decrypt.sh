@@ -7,7 +7,6 @@ export Var_helper_name="decrypting_pipe_feeder.sh"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
-Func_source_file "${Var_script_dir}/lib/config_pipe_variables_decrypt.sh"
 ## Copy helper script to install path if available
 Func_run_sanely "cp -va ${Var_helper_location} ${Var_install_path}/${Var_helper_name}" "0"
 Func_run_sanely "chmod 754 ${Var_install_path}/${Var_helper_name}" "0"
