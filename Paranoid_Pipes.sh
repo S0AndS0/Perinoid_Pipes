@@ -1091,6 +1091,11 @@ Func_mkpipe_reader(){
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
+						if ! [ -f "${_parsing_output_file}" ]; then
+							touch "${_parsing_output_file}"
+							${Var_chmod_exec_path} "${Var_log_file_permissions}" "${_parsing_output_file}"
+							${Var_chown_exec_path} "${Var_log_file_ownership}" "${_parsing_output_file}"
+						fi
 						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_output_file}"
 						_exit_status=("${PIPESTATUS[@]}")
 						let _count++
@@ -1279,7 +1284,6 @@ Map_read_array_to_output(){
 							;;
 							*)
 								${Var_cat_exec_path} <<<"# \${_line[*]//\${Var_parsing_allowed_chars}/}"
-#								${Var_cat_exec_path} <<<"# \${_line[@]//\${Var_parsing_allowed_chars}/}"
 							;;
 						esac
 					;;
@@ -1313,7 +1317,6 @@ Map_read_array_to_output(){
 						${Var_cat_exec_path} <<<"\${_lines[\${_count}]}"
 					;;
 				esac
-#				echo "\${_lines[\${_count}]}"
 			;;
 		esac
 	done
@@ -1340,6 +1343,11 @@ Pipe_parser_loop(){
 			else
 				## Push mapped array through 'cat' then pipe results through encryption/decryption
 				##  command, saving final results to output file.
+				if ! [ -f "\${Var_parsing_output_file}" ]; then
+					touch "\${Var_parsing_output_file}"
+					${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
+					${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
+				fi
 				${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
 				## Check if script should load log-rotation function into this one
 				##  if disabled then this should prevent a second or third process

@@ -26,54 +26,64 @@ fi
 echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep ${Var_install_name} | grep -v grep)"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
+	## Note we are saving the test string to a file but will be cat-ing
+	##  it back out to named pipe file.
 	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
 	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > ${Var_raw_test_location}"
 	echo "${_test_string}" > ${Var_raw_test_location}
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
+	## Test if the above test string file is readable.
 	if [ -r "${Var_raw_test_location}" ]; then
 		echo "# ${Var_script_name} running as ${USER}: cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}"
 		cat ${Var_raw_test_location} > ${Var_encrypt_pipe_location}
 		_exit_status=$?
 		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 		Func_check_exit_status "${_exit_status}"
+	else
+		echo "# ${Var_script_name} cannot read: ${Var_raw_test_location}"
+	fi
+	if [ -r "${Var_encrypted_location}" ] || [ -f "${Var_encrypted_location}" ]; then
 		chmod 666 ${Var_encrypted_location}
 		cat ${Var_encrypted_location}
 		echo "# ${Var_script_name} changed permissions (666): ${Var_encrypted_location}"
 	else
-		echo "# ${Var_script_name} cannot read: ${Var_raw_test_location}"
+		echo "# ${Var_script_name} cannnot find: ${Var_encrypted_location}"
+		echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep ${Var_install_name} | grep -v grep)"
 	fi
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > ${Var_encrypt_pipe_location}"
 	echo "quit" > ${Var_encrypt_pipe_location}
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
+	ls -hal ${Var_encrypt_pipe_location} || echo "# ${Var_script_name} reports no more pipe at: ${Var_encrypt_pipe_location}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
 fi
+## Report on pipe auto-removal
 if ! [ -p "${Var_encrypt_pipe_location}" ]; then
 	echo "# ${Var_script_name} detected pipe corectly removed: ${Var_encrypt_pipe_location}"
-	if [ -r "${Var_encrypted_location}" ]; then
-		cat ${Var_encrypted_location}
-		_exit_status=$?
-		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
-		Func_check_exit_status "${_exit_status}"
-		cat ${Var_pass_location} | gpg --decrypt ${Var_encrypted_location} --passphrase-fd 0 > ${Var_decrypt_raw_location}
-		_exit_status=$?
-		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
-		Func_check_exit_status "${_exit_status}"
-	else
-		echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
-		if [ -f "${Var_encrypted_location}" ]; then
-			echo "# ${Var_script_name} reports it is a file though: ${Var_encrypted_location}"
-		else
-			echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
-		fi
-	fi
 else
 	echo "# ${Var_script_name} detected pipe still exsists: ${Var_encrypt_pipe_location}"
+fi
+if [ -r "${Var_encrypted_location}" ]; then
+	cat ${Var_encrypted_location}
+	_exit_status=$?
+	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+	Func_check_exit_status "${_exit_status}"
+	cat ${Var_pass_location} | gpg --decrypt ${Var_encrypted_location} --passphrase-fd 0 > ${Var_decrypt_raw_location}
+	_exit_status=$?
+	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+	Func_check_exit_status "${_exit_status}"
+else
+	echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
+	if [ -f "${Var_encrypted_location}" ]; then
+		echo "# ${Var_script_name} reports it is a file though: ${Var_encrypted_location}"
+	else
+		echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
+	fi
 fi
 _un_encrypted_string="$(cat ${Var_raw_test_location})"
 _decrypted_string="$(cat ${Var_decrypt_raw_location})"
