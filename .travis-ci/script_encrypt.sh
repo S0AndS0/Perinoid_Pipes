@@ -49,10 +49,15 @@ if ! [ -p "${Var_encrypt_pipe_location}" ]; then
 else
 	echo "# ${Var_script_name} detected pipe still exsists: ${Var_encrypt_pipe_location}"
 	ls -hal ${Var_encrypt_pipe_location}
+	echo "# ${Var_script_name} will cleanup: ${Var_encrypt_pipe_location}"
+	rm -v "${Var_encrypt_pipe_location}"
 fi
 ## Report on background processes
 if [ "$(pgrep -c ${Var_install_name})" -gt "0" ]; then
 	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep ${Var_install_name} | grep -v grep)\n\n Number of processes $(pgrep -c ${Var_install_name})"
+	for _pid in $(pgrep ${Var_install_name}); do
+		echo "# ${Var_script_name} killing: ${_pid}"
+	done
 else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c ${Var_install_name})"
 fi

@@ -376,6 +376,7 @@ Func_trap_cleanup(){
 			${Var_rm_exec_path} -v "${Var_log_file_name}"
 		;;
 		*)
+			Var_star_date="$(date -u +%s)"
 			Func_messages "# ...Please check [${Var_log_file_name}] log file if errors occurred. End of useful logging at [${Var_star_date}] seconds after 1970-01-01 00:00:00 UTC" '1' '2'
 		;;
 	esac
@@ -866,8 +867,7 @@ Func_variable_assignment_reader(){
 		Func_messages "# Enable or disable padding: [${Var_enable_padding_yn}]" '2' '3'
 		Func_messages "# Padding length: [${Var_padding_length}]" '2' '3'
 		Func_messages "# Padding placement: [${Var_padding_placement}]" '2' '3'
-		Func_messages "# Padding example one: [${Var_padding_command}]" '2' '3'
-		Func_messages "# Padding example two: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)" '2' '3'
+		Func_messages "# Padding example: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${Var_padding_length})" '2' '3'
 	fi
 	## If debugging is equal to or grater than '3' then print prompt
 	##  to continue, otherwise let further processing to continue.
@@ -909,7 +909,7 @@ Func_rotate_log(){
 					## Modify the '_now' variable for different time stamp formatting
 					##  ie replacing '+%s' with '+%d_%m_%Y' will result in human readable
 					##  time stamps instead of using seconds for time stamp
-					_now=${Var_star_date}
+					_now="$(date -u +%s)"
 					## Save a snap shot of above variable to bellow variable.
 					##  this allows multiple log rotate actions to be preformed without
 					##  having the time stamp change any between actions on the same rotation.
@@ -1085,6 +1085,7 @@ Func_mkpipe_reader(){
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
+						Var_star_date="$(date -u +%s)"
 						${Var_tar_exec_path} zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
 						_exit_status=("${PIPESTATUS[@]}")
 						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
@@ -1123,21 +1124,31 @@ Func_mkpipe_reader(){
 				;;
 			esac
 		else
-			break
+			_exit_status=$?
+			case "${Var_disown_parser_yn}" in
+				Y|y|Yes|yes|YES)
+					Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
+					Func_trap_cleanup "${_exit_status}"
+				;;
+				*)
+					Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
+				;;
+			esac
+#			break
 		fi
 		unset _exit_status
 		Func_messages '#------# finished' '1' '2'
 	done
-	_exit_status=$?
-	case "${Var_disown_parser_yn}" in
-		Y|y|Yes|yes|YES)
-			Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
-			Func_trap_cleanup "${_exit_status}"
-		;;
-		*)
-			Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
-		;;
-	esac
+#	_exit_status=$?
+#	case "${Var_disown_parser_yn}" in
+#		Y|y|Yes|yes|YES)
+#			Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
+#			Func_trap_cleanup "${_exit_status}"
+#		;;
+#		*)
+#			Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
+#		;;
+#	esac
 }
 ## Note the following function is designed to take variables from above and translate them into
 ##  a streamlined version of this script. Thus some variables are prepended with back slashes ' \ '
@@ -1172,7 +1183,7 @@ Var_preprocess_for_comments_yn="${Var_preprocess_for_comments_yn:-no}"
 Var_parsing_comment_pattern="${Var_parsing_comment_pattern}"
 Var_parsing_allowed_chars="${Var_parsing_allowed_chars}"
 Var_bulk_output_suffix="${Var_bulk_output_suffix:-.gpg}"
-Var_star_date=\$(date +%s)
+Var_star_date="\$(date -u +%s)"
 Var_enable_padding_yn="${Var_enable_padding_yn:-no}"
 Var_padding_length="${Var_padding_length:-32}"
 Var_padding_placement="${Var_padding_placement:-bellow}"
@@ -1208,7 +1219,7 @@ Rotate_output_file(){
 		if [ -f "\${Var_parsing_output_file}" ]; then
 			_file_size=\$(du --bytes "\${Var_parsing_output_file}" | awk '{print \$1}' | head -n1)
 			if [ "\${_file_size}" -gt "\${Var_log_max_size}" ]; then
-				_now=\$(date +%s)
+				_now=\$(date -u +%s)
 				_timestamp="\${_now}"
 				for _actions in \${Var_log_rotate_actions//,/ }; do
 					case "\${_actions}" in
@@ -1341,6 +1352,7 @@ Pipe_parser_loop(){
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 				fi
+				Var_star_date="\$(date -u +%s)"
 				${Var_tar_exec_path} zcf - "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz\${Var_bulk_output_suffix}"
 			else
 				## Push mapped array through 'cat' then pipe results through encryption/decryption
@@ -1361,6 +1373,16 @@ Pipe_parser_loop(){
 				esac
 			fi
 		else
+			_exit_code=\$?
+			case "\${Var_disown_parser_yn}" in
+				Y|y|Yes|yes|YES)
+					${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now."
+					Clean_up_trap "\${_exit_code}"
+				;;
+				*)
+					${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
+				;;
+			esac
 			break
 		fi
 	done
@@ -1378,8 +1400,8 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		${Var_echo_exec_path} "# \${Var_script_name} will set SIGHUP trap now."
-		trap 'Clean_up_trap \$?' SIGHUP
+#		${Var_echo_exec_path} "# \${Var_script_name} will set SIGHUP trap now."
+#		trap 'Clean_up_trap \$?' SIGHUP
 		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
@@ -1434,7 +1456,6 @@ Func_main(){
 					${Var_script_copy_name}
 					_exit_status=$?
 				fi
-## Dissable to allow Travis-CI to continue when writing script copies.
 				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
@@ -1449,19 +1470,16 @@ Func_main(){
 			Func_messages '#------# Func_mkpipe_reader messages' '1' '2'
 			Func_messages "# Notice: listening loop on [${Var_pipe_file_name}] file path" '1' '2'
 			Func_messages "#	Send output to the above path to have this listener on [${Var_script_name}] begin parsing" '1' '2'
-			Func_messages '#	Send this listening loop to the background with [Ctrl^z] keyboard short cut and [bg] command' '1' '2'
-			Func_messages '#	directly after to free up this terminal session' '1' '2'
 			Func_messages "# Notice: to quit listening to this pipe and remove it with [echo \"${Var_pipe_quit_string}\" > ${Var_pipe_file_name}] command" '1' '2'
 			Func_messages '#	or [Ctrl^c] keyboard shortcut while still attached to listening loop service' '1' '2'
 			Func_messages '#------#' '1' '2'
-			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
 					## Trap background process, SIGHUP detects hangup or exit a forground
 					##  running process. SIGQUIT detects Ctrl-\ and SIGINT detects Ctrl-C
 					##  SIGTERM detects software termination.
-					${Var_echo_exec_path} "# ${Var_script_name} will set SIGHUP trap now."
-					trap 'Func_trap_cleanup $?' SIGHUP SIGQUIT SIGINT
+#					${Var_echo_exec_path} "# ${Var_script_name} will set SIGHUP trap now."
+#					trap 'Func_trap_cleanup $?' SIGHUP SIGQUIT SIGINT
 					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
@@ -1480,6 +1498,8 @@ Func_main(){
 				;;
 				*)
 					Func_messages "# Notice: ${Var_script_name} will start parsing loop within current terminal" '1' '2'
+					Func_messages '#	Send this listening loop to the background with [Ctrl^z] keyboard short cut and [bg] command' '1' '2'
+					Func_messages '#	directly after to free up this terminal session' '1' '2'
 					case "${Var_save_encryption_yn}" in
 						y|Y|yes|Yes|YES)
 							Func_messages "#  Parsed output will be saved to [${Var_parsing_output_file}] file" '1' '2'
