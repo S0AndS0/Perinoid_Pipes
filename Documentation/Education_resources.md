@@ -22,6 +22,7 @@
 - Stack Overflow - [Make terminal output pritier](http://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
 - Wikipedia - [Wiki of color codes](https://en.wikipedia.org/wiki/ANSI_escape_code)
 - Stack Overflow - [Sanitize user input with Bash substitutions.](http://stackoverflow.com/a/89970)
+- IBM - [Using Bash trap with signals](https://www.ibm.com/developerworks/aix/library/au-usingtraps/)
 
 ### Examples of string *scrubbing*
 

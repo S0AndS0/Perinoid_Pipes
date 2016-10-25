@@ -1126,16 +1126,16 @@ Func_mkpipe_reader(){
 		unset _exit_status
 		Func_messages '#------# finished' '1' '2'
 	done
-#	_exit_status=$?
-#	case "${Var_disown_parser_yn}" in
-#		Y|y|Yes|yes|YES)
-#			Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
-#			Func_trap_cleanup "${_exit_status}"
-#		;;
-#		*)
-#			Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
-#		;;
-#	esac
+	_exit_status=$?
+	case "${Var_disown_parser_yn}" in
+		Y|y|Yes|yes|YES)
+			Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
+			Func_trap_cleanup "${_exit_status}"
+		;;
+		*)
+			Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
+		;;
+	esac
 }
 ## Note the following function is designed to take variables from above and translate them into
 ##  a streamlined version of this script. Thus some variables are prepended with back slashes ' \ '
@@ -1455,8 +1455,11 @@ Func_main(){
 			Func_messages "# What follows will be examples of commands about to be run as [${Var_script_name}] receives data to parse" '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
+					## Trap background process, SIGHUP detects hangup or exit a forground
+					##  running process. SIGQUIT detects Ctrl-\ and SIGINT detects Ctrl-C
+					##  SIGTERM detects software termination.
 					${Var_echo_exec_path} "# ${Var_script_name} will set SIGHUP trap now."
-					trap 'Func_trap_cleanup $?' SIGHUP
+					trap 'Func_trap_cleanup $?' SIGHUP SIGQUIT SIGINT
 					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
