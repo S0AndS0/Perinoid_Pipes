@@ -530,11 +530,11 @@ Func_usage_options(){
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
 	if [ "${#Arr_extra_input[@]}" -gt '1' ] && [ -p "${Var_pipe_file_name}" ]; then
-		Func_messages "${Var_script_name} detected extra input" '1' '2'
+		Func_messages "# ${Var_script_name} detected extra input" '1' '2'
 		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"
 	else
-		Func_messages "${Var_script_name} did note detected extra (unrecognized as an argument) input" '1' '2'
+		Func_messages "# ${Var_script_name} did not detected any extra input" '1' '2'
 	fi
 }
 ## Check if script was passed any recognized arguments
@@ -962,6 +962,7 @@ Func_rotate_log(){
 }
 Map_read_array_to_output(){
 	_file_to_map="$1"
+	declare -g "PID_Map_read_array_to_output=$!"
 	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
@@ -1060,11 +1061,12 @@ Func_mkpipe_reader(){
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
-		declare -g "PID_Map_read_array_to_output=$!"
+#		declare -g "PID_Map_read_array_to_output=$!"
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
-		if ! [ -z "${_mapped_array}" ] && ! [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]]; then
+		if [ "${#_mapped_array}" != "0" ] && [ "${Var_pipe_quit_string}" != "${_mapped_array}" ]; then
+#		if ! [ -z "${#_mapped_array}" ] && ! [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]]; then
 			case "${Var_save_encryption_yn}" in
 				y|Y|yes|Yes)
 					## Test if input is a file path otherwise push it through parsing command
