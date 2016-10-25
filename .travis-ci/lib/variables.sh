@@ -22,5 +22,8 @@ export Var_encrypted_location="${PWD}/encrypt_one.gpg"
 export Var_encrypted_bulk_dir="${PWD}/bulk_out"
 export Var_raw_test_location="${PWD}/string_one.txt"
 export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
+## Command line options for encryption and decryption via GnuPG
+export Var_gnupg_decrypt_options="--always-trust --passphrase-fd 0 --decrypt"
+export Var_gnupg_encrypt_options="--recipient ${Var_gnupg_email} --encrypt"
 #export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
 #export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
