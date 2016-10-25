@@ -73,7 +73,7 @@ if [ -r "${Var_encrypted_location}" ]; then
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
-	cat ${Var_pass_location} | gpg --decrypt ${Var_encrypted_location} --passphrase-fd 0 > ${Var_decrypt_raw_location}
+	cat ${Var_pass_location} | gpg --always-trust --passphrase-fd 0 --decrypt ${Var_encrypted_location} --passphrase-fd 0 > ${Var_decrypt_raw_location}
 	_exit_status=$?
 	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
 	Func_check_exit_status "${_exit_status}"
