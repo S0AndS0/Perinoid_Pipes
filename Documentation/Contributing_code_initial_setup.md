@@ -1,7 +1,9 @@
 # Initial `git` setup
 
 > skip any steps that have been completed for other code contributions and
-> set as a global setting within your user's `~/.gitconfig` file.
+> set as a global setting within your user's `~/.gitconfig` file. Note you may
+> also try [../Script_Helpers/Contributing_initial_setup.sh](../Script_Helpers/Contributing_initial_setup.sh)
+> script for setting up GnuPG & Git settings.
 
 ## Setup GPG public key with GitHub
 

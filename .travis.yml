@@ -1,4 +1,6 @@
-## Required for apt-get commands?
+## Authors note: add "[ci skip]" or "[skip ci]" in commit message to
+##  disable building for the next push.
+## Required for apt-get commands only
 sudo: required
 ## Settings for git
 git:
@@ -8,7 +10,12 @@ git:
 os:
  - linux
 ## Settings for language that travis-ci.org will test with
-language:
+#language:
+# - bash
+## Atempt to limit build enviroment to only what is required
+language: bash
+matrix:
+ include:
  - bash
 ## Custom setup prior to testing project, install dependencies & configure
 ##  The first installs dependancies via apt-get and uses sudo/root level

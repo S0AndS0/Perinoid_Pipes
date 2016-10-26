@@ -6,6 +6,11 @@
 
 ## Scripts available within `Script_Helpers/` directory
 
+[Contributing_initial_setup.sh](Contributing_initial_setup.sh)
+ This script is referenced within [../Documentation/Contributing_code_initial_setup.md](../Documentation/Contributing_code_initial_setup.md)
+ and maybe used to quickly customize local git configs for this project with
+ settings custom for each contributer.
+
 [Paranoid_Pipes_Scenario_One.sh](Paranoid_Pipes_Scenario_One.sh)
  This script is referenced within [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
  as an example of using customized named pipe listener scripts to decrypt log
