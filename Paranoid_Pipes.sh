@@ -441,55 +441,8 @@ Func_assign_arg(){
 ## Following function is called within Func_check_args function if '-h' or '--help' was passed to script
 Func_usage_options(){
 	if [ "${#@}" = "0" ]; then
-	#	Func_messages "# " '0' '42'
-		${Var_echo_exec_path} "## Usage options recognized by [${Var_script_name}] and their current values..."
-		${Var_echo_exec_path} "#  --copy-save-yn		Var_script_copy_save=\"${Var_script_copy_save}\""
-		${Var_echo_exec_path} "#  --copy-save-name		Var_script_copy_name=\"${Var_script_copy_name}\""
-		${Var_echo_exec_path} "#  --copy-save-permissions	Var_script_copy_permissions=\"${Var_script_copy_permissions}\""
-		${Var_echo_exec_path} "#  --copy-save-ownership	Var_script_copy_ownership=\"${Var_script_copy_ownership}\""
-		${Var_echo_exec_path} "#  --debug-level		Var_debugging=\"${Var_debugging}\""
-		${Var_echo_exec_path} "#  --disown-yn			Var_disown_parser_yn=\"${Var_disown_parser_yn}\""
-		${Var_echo_exec_path} "#  --log-level			Var_logging=\"${Var_logging}\""
-		${Var_echo_exec_path} "#  --log-file-location		Var_log_file_name=\"${Var_log_file_name}\""
-		${Var_echo_exec_path} "#  --log-file-permissions	Var_log_file_permissions=\"${Var_log_file_permissions}\""
-		${Var_echo_exec_path} "#  --log-file-ownership		Var_log_file_ownership=\"${Var_log_file_ownership}\""
-		${Var_echo_exec_path} "#  --log-auto-delete-yn		Var_remove_script_log_on_exit_yn=\"${Var_remove_script_log_on_exit_yn}\""
-		${Var_echo_exec_path} "#  --named-pipe-name		Var_pipe_file_name=\"${Var_pipe_file_name}\""
-		${Var_echo_exec_path} "#  --named-pipe-permissions	Var_pipe_permissions=\"${Var_pipe_permissions}\""
-		${Var_echo_exec_path} "#  --named-pipe-ownership	Var_pipe_ownership=\"${Var_pipe_ownership}\""
-		${Var_echo_exec_path} "#  --listener-quit-string	Var_pipe_quit_string=\"${Var_pipe_quit_string}\""
-		${Var_echo_exec_path} "#  --listener-trap-command	Var_trap_command=\"${Var_trap_command}\""
-		${Var_echo_exec_path} "#  --output-pre-parse-yn		Var_preprocess_for_comments_yn=\"${Var_preprocess_for_comments_yn}\""
-		${Var_echo_exec_path} "#  --output-pre-parse-comment-string	Var_parsing_comment_pattern=\"${Var_parsing_comment_pattern}\""
-		${Var_echo_exec_path} "#  --output-pre-parse-allowed-chars	Var_parsing_allowed_chars=\"${Var_parsing_allowed_chars}\""
-		${Var_echo_exec_path} "#  --output-parse-name		Var_parsing_output_file=\"${Var_parsing_output_file}\""
-		${Var_echo_exec_path} "#  --output-gpg-recipient	Var_gpg_recipient=\"${Var_gpg_recipient}\""
-		${Var_echo_exec_path} "#  --output-save-yn		Var_save_encryption_yn=\"${Var_save_encryption_yn}\""
-		${Var_echo_exec_path} "#  --output-rotate-yn		Var_log_rotate_yn=\"${Var_log_rotate_yn}\""
-		${Var_echo_exec_path} "#  --output-rotate-max-bites	Var_log_max_size=\"${Var_log_max_size}\""
-		${Var_echo_exec_path} "#  --output-rotate-check-frequency	Var_log_check_frequency=\"${Var_log_check_frequency}\""
-		${Var_echo_exec_path} "#  --output-rotate-actions	Var_log_rotate_actions=\"${Var_log_rotate_actions}\""
-		${Var_echo_exec_path} "#  --output-rotate-recipient	Var_log_rotate_recipient=\"${Var_log_rotate_recipient}\""
-		${Var_echo_exec_path} "#  --output-parse-command	Var_parsing_command=\"${Var_parsing_command}\""
-		${Var_echo_exec_path} "#  --output-bulk-dir		Var_parsing_bulk_out_dir=\"${Var_parsing_bulk_out_dir}\""
-		${Var_echo_exec_path} "#  --output-bulk-suffix		Var_bulk_output_suffix=\"${Var_bulk_output_suffix}\""
-		${Var_echo_exec_path} "#  --padding-enable-yn		Var_enable_padding_yn=\"${Var_enable_padding_yn}\""
-		${Var_echo_exec_path} "#  --padding-length		Var_padding_length=\"${Var_padding_length}\""
-		${Var_echo_exec_path} "#  --padding-placement		Var_padding_placement=\"${Var_padding_placement}\""
-		${Var_echo_exec_path} "#  --source-var-file		Var_source_var_file=\"${Var_source_var_file}\""
-		${Var_echo_exec_path} "#  --save-options-yn		Var_save_options=\"${Var_save_options}\""
-		${Var_echo_exec_path} "#  --save-variables-yn		Var_save_variables=\"${Var_save_variables}\""
-		${Var_echo_exec_path} "#  --license"
-		${Var_echo_exec_path} "#  --help"
-		${Var_echo_exec_path} "## Overwrite any option above with the following syntax"
-		${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null}  --<option-name>=\"<new-value>\""
-		${Var_echo_exec_path} "## Overwrite any variable found within this script & not found above with the following syntax"
-		${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null}  ---<Var_name>=\"<Var_value>\""
-		${Var_echo_exec_path} "#  Note the above '---' method does Not allow for spaces within 'Var_value' unless using sub-shell redirection; see bellow examples"
-		${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null}  ---Var_name=\$(echo \"\${HOME}\")"
-		${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null}  ---Var_name=\"\$(echo \${HOME})\""
-		${Var_echo_exec_path} "#  However, the results still must not contain spaces; escaped or otherwise."
-		${Var_echo_exec_path} "## Any unrecognized or unknown input otherwise unmatched above is then written to named pipe if/when available."
+		Func_variable_assignment_reader
+#	#	Func_messages "# " '0' '42'
 	else
 		_help_lookup=( "${@}" )
 		let _help_count=0
@@ -826,54 +779,88 @@ Func_variable_assignment_reader(){
 	Func_messages '## Bash shell built in variables used by this script ##' '2' '3'
 	Func_messages "# Script directory: [${Var_script_dir}]" '2' "3"
 	Func_messages "# Script name: [${Var_script_name}]" '2' "3"
-	Func_messages "# Function PID: [${Var_subshell_pid}]" '2' '3'
+	Func_messages "# Function PID: [$!]" '2' '3'
 	Func_messages "# PID of this script: [${Var_script_pid}]" '2' '3'
 	Func_messages "# User executing this script: [${Var_script_current_user}]" '2' '3'
-	## If user input was provided then print and/or log user editable variables,
-	##  else print and/or log script assigned variables.
-	if [ "${#_user_input}" -gt "0" ]; then
-		Func_messages '## User modifiable variables from command line maybe displayed with ##' '2' '3'
-		Func_messages "# ${Var_script_dir}/${Var_script_name} --help" '2' '3'
-		### Recognized commands can be printed with "${Var_script_name} --help"
-	else
-		Func_messages '## Logging & settings internal to this script ##' '2' '3'
-		Func_messages "# Script debugging level: [${Var_debugging}]" '2' "3"
-		Func_messages "# Save parsed input to file: [${Var_save_encryption_yn}]" '2' "3"
-		Func_messages "# Encrypt lines and files sent to named pipe to recipient: [${Var_gpg_recipient}]" '2' "3"
-		Func_messages "# GPG options to use: [${Var_gpg_recipient_options}]" '2' "3"
-		Func_messages "# Named pipe file path: [${Var_pipe_file_name}]" '2' "3"
-		Func_messages "# File path and name to save logs (parsed from named pipe) to: [${Var_parsing_output_file}]" '2' "3"
-		Func_messages '## Script &/or template shared settings ##' '2' '3'
-		Func_messages "# Script quit listening string: ${Var_pipe_quit_string}" '2' "3"
-		Func_messages "# Named pipe permissions: [${Var_pipe_permissions}]" '2' "3"
-		Func_messages "# Named pipe ownership: [${Var_pipe_ownership}]" '2' "3"
-		Func_messages "# Command to run on exit: [${Var_trap_command}]" '2' "3"
-		Func_messages "# Command to use when parsing input from named pipe: [${Var_parsing_command}]" '2' "3"
-		Func_messages "# Enable or disable log rotation: [${Var_log_rotate_yn}]" '2' '3'
-		Func_messages "# Log file maximum variable: [${Var_log_max_size}]" '2' '3'
-		Func_messages "# Log file check frequency: [${Var_log_check_frequency}]" '2' '3'
-		Func_messages "# Log rotation actions: [${Var_log_rotate_actions}]" '2' '3'
-		Func_messages "# Log rotation file recipient: [${Var_log_rotate_recipient}]" '2' '3'
-		Func_messages '## Template save script variables ##' '2' '3'
-		Func_messages "# Save copy path: [${Var_script_copy_name}]" '2' '3'
-		Func_messages "# Script copy permissions: [${Var_script_copy_permissions}]" '2' '3'
-		Func_messages "# Script copy owner ship: [${Var_script_copy_ownership}]" '2' '3'
-		Func_messages '## Read input specific parsing settings ##' '2' '3'
-		Func_messages "# Check for pre commented input before parsing: [${Var_preprocess_for_comments_yn}]" '2' '3'
-		Func_messages "# Recognized comments: [${Var_parsing_comment_pattern}]" '2' '3'
-		Func_messages "# Allowed characters without preceding comment: [${Var_parsing_allowed_chars}]" '2' '3'
-		Func_messages "# Bulk suffix for parsed input: [${Var_bulk_output_suffix}]" '2' '3'
-		Func_messages '## Padding output values  ##' '2' '3'
-		Func_messages "# Enable or disable padding: [${Var_enable_padding_yn}]" '2' '3'
-		Func_messages "# Padding length: [${Var_padding_length}]" '2' '3'
-		Func_messages "# Padding placement: [${Var_padding_placement}]" '2' '3'
-		Func_messages "# Padding example: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${Var_padding_length})" '2' '3'
-	fi
-	## If debugging is equal to or grater than '3' then print prompt
-	##  to continue, otherwise let further processing to continue.
-	if [ "${Var_debugging}" = "3" ] || [ "${Var_debugging}" -gt "3" ]; then
-		Func_prompt_continue "Func_variable_assignment_reader"
-	fi
+	Func_messages '## Logging & settings internal to this script ##' '2' '3'
+	Func_messages "# Script debugging level: [${Var_debugging}]" '2' "3"
+	Func_messages "#  --debug-level		Var_debugging=\"${Var_debugging}\"" '2' "3"
+	Func_messages "# Save parsed input to file: [${Var_save_encryption_yn}]" '2' "3"
+	Func_messages "#  --output-save-yn		Var_save_encryption_yn=\"${Var_save_encryption_yn}\"" '2' "3"
+	Func_messages "# Encrypt lines and files sent to named pipe to recipient: [${Var_gpg_recipient}]" '2' "3"
+	Func_messages "#  --output-gpg-recipient	Var_gpg_recipient=\"${Var_gpg_recipient}\"" '2' "3"
+	Func_messages "# GPG options to use: [${Var_gpg_recipient_options}]" '2' "3"
+	Func_messages "# Named pipe file path: [${Var_pipe_file_name}]" '2' "3"
+	Func_messages "#  --named-pipe-name		Var_pipe_file_name=\"${Var_pipe_file_name}\"" '2' "3"
+	Func_messages "# File path and name to save logs (parsed from named pipe) to: [${Var_parsing_output_file}]" '2' "3"
+	Func_messages "#  --output-parse-name		Var_parsing_output_file=\"${Var_parsing_output_file}\"" '2' "3"
+	Func_messages '## Script &/or template shared settings ##' '2' '3'
+	Func_messages "# Script quit listening string: ${Var_pipe_quit_string}" '2' "3"
+	Func_messages "#  --listener-quit-string	Var_pipe_quit_string=\"${Var_pipe_quit_string}\"" '2' "3"
+	Func_messages "# Named pipe permissions: [${Var_pipe_permissions}]" '2' "3"
+	Func_messages "#  --named-pipe-permissions	Var_pipe_permissions=\"${Var_pipe_permissions}\"" '2' "3"
+	Func_messages "# Named pipe ownership: [${Var_pipe_ownership}]" '2' "3"
+	Func_messages "#  --named-pipe-ownership	Var_pipe_ownership=\"${Var_pipe_ownership}\"" '2' "3"
+	Func_messages "# Command to run on exit: [${Var_trap_command}]" '2' "3"
+	Func_messages "#  --listener-trap-command	Var_trap_command=\"${Var_trap_command}\"" '2' "3"
+	Func_messages "# Command to use when parsing input from named pipe: [${Var_parsing_command}]" '2' "3"
+	Func_messages "#  --output-parse-command	Var_parsing_command=\"${Var_parsing_command}\"" '2' "3"
+	Func_messages "# Enable or disable log rotation: [${Var_log_rotate_yn}]" '2' '3'
+	Func_messages "#  --output-rotate-yn		Var_log_rotate_yn=\"${Var_log_rotate_yn}\"" '2' "3"
+	Func_messages "# Log file maximum variable: [${Var_log_max_size}]" '2' '3'
+	Func_messages "#  --output-rotate-max-bites	Var_log_max_size=\"${Var_log_max_size}\"" '2' "3"
+	Func_messages "# Log file check frequency: [${Var_log_check_frequency}]" '2' '3'
+	Func_messages "#  --output-rotate-check-frequency	Var_log_check_frequency=\"${Var_log_check_frequency}\"" '2' "3"
+	Func_messages "# Log rotation actions: [${Var_log_rotate_actions}]" '2' '3'
+	Func_messages "#  --output-rotate-actions	Var_log_rotate_actions=\"${Var_log_rotate_actions}\"" '2' "3"
+	Func_messages "# Log rotation file recipient: [${Var_log_rotate_recipient}]" '2' '3'
+	Func_messages "#  --output-rotate-recipient	Var_log_rotate_recipient=\"${Var_log_rotate_recipient}\"" '2' "3"
+	Func_messages '## Template save script variables ##' '2' '3'
+	Func_messages "# Save copy path: [${Var_script_copy_name}]" '2' '3'
+	Func_messages "#  --copy-save-name		Var_script_copy_name=\"${Var_script_copy_name}\"" '2' "3"
+	Func_messages "# Script copy permissions: [${Var_script_copy_permissions}]" '2' '3'
+	Func_messages "#  --copy-save-permissions	Var_script_copy_permissions=\"${Var_script_copy_permissions}\"" '2' "3"
+	Func_messages "# Script copy ownership: [${Var_script_copy_ownership}]" '2' '3'
+	Func_messages "#  --copy-save-ownership	Var_script_copy_ownership=\"${Var_script_copy_ownership}\"" '2' "3"
+	Func_messages '## Read input specific parsing settings ##' '2' '3'
+	Func_messages "# Check for pre commented input before parsing: [${Var_preprocess_for_comments_yn}]" '2' '3'
+	Func_messages "#  --output-pre-parse-yn		Var_preprocess_for_comments_yn=\"${Var_preprocess_for_comments_yn}\"" '2' "3"
+	Func_messages "# Recognized comments: [${Var_parsing_comment_pattern}]" '2' '3'
+	Func_messages "#  --output-pre-parse-comment-string	Var_parsing_comment_pattern=\"${Var_parsing_comment_pattern}\"" '2' "3"
+	Func_messages "# Allowed characters without preceding comment: [${Var_parsing_allowed_chars}]" '2' '3'
+	Func_messages "#  --output-pre-parse-allowed-chars	Var_parsing_allowed_chars=\"${Var_parsing_allowed_chars}\"" '2' "3"
+	Func_messages "# Bulk suffix for parsed input: [${Var_bulk_output_suffix}]" '2' '3'
+	Func_messages "#  --output-bulk-suffix		Var_bulk_output_suffix=\"${Var_bulk_output_suffix}\"" '2' "3"
+	Func_messages '## Padding output values  ##' '2' '3'
+	Func_messages "# Enable or disable padding: [${Var_enable_padding_yn}]" '2' '3'
+	Func_messages "#  --padding-enable-yn		Var_enable_padding_yn=\"${Var_enable_padding_yn}\"" '2' "3"
+	Func_messages "# Padding length: [${Var_padding_length}]" '2' '3'
+	Func_messages "#  --padding-length		Var_padding_length=\"${Var_padding_length}\"" '2' "3"
+	Func_messages "# Padding placement: [${Var_padding_placement}]" '2' '3'
+	Func_messages "#  --padding-placement		Var_padding_placement=\"${Var_padding_placement}\"" '2' "3"
+	Func_messages "# Padding example: $(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)" '2' '3'
+	Func_messages "#  --disown-yn			Var_disown_parser_yn=\"${Var_disown_parser_yn}\"" '2' "3"
+	Func_messages "#  --log-level			Var_logging=\"${Var_logging}\"" '2' "3"
+	Func_messages "#  --log-file-location		Var_log_file_name=\"${Var_log_file_name}\"" '2' "3"
+	Func_messages "#  --log-file-ownership		Var_log_file_ownership=\"${Var_log_file_ownership}\"" '2' "3"
+	Func_messages "#  --log-auto-delete-yn		Var_remove_script_log_on_exit_yn=\"${Var_remove_script_log_on_exit_yn}\"" '2' "3"
+	Func_messages "#  --copy-save-yn		Var_script_copy_save=\"${Var_script_copy_save}\"" '2' "3"
+	Func_messages "#  --log-file-permissions	Var_log_file_permissions=\"${Var_log_file_permissions}\"" '2' "3"
+	Func_messages "#  --output-bulk-dir		Var_parsing_bulk_out_dir=\"${Var_parsing_bulk_out_dir}\"" '2' "3"
+	Func_messages "#  --source-var-file		Var_source_var_file=\"${Var_source_var_file}\"" '2' "3"
+	Func_messages "#  --save-options-yn		Var_save_options=\"${Var_save_options}\"" '2' "3"
+	Func_messages "#  --save-variables-yn		Var_save_variables=\"${Var_save_variables}\"" '2' "3"
+	Func_messages "#  --license" '2' "3"
+	Func_messages "#  --help" '2' "3"
+	Func_messages "## Overwrite any option above with the following syntax" '2' "3"
+	Func_messages "${Var_color_red}#${Var_color_null}  --<option-name>=\"<new-value>\"" '2' "3"
+	Func_messages "## Overwrite any variable found within this script & not found above with the following syntax" '2' "3"
+	Func_messages "${Var_color_red}#${Var_color_null}  ---<Var_name>=\"<Var_value>\"" '2' "3"
+	Func_messages "#  Note the above '---' method does Not allow for spaces within 'Var_value' unless using sub-shell redirection; see bellow examples" '2' "3"
+	Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
+	Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
+	Func_messages "#  However, the results still must not contain spaces; escaped or otherwise." '2' "3"
+	Func_messages "## Any unrecognized or unknown input otherwise unmatched above is then written to named pipe if/when available." '2' "3"
 }
 
 ## Function for making a named pipe if not already present and setting permissions
@@ -1134,21 +1121,11 @@ Func_mkpipe_reader(){
 					Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
 				;;
 			esac
-#			break
+			break
 		fi
 		unset _exit_status
 		Func_messages '#------# finished' '1' '2'
 	done
-#	_exit_status=$?
-#	case "${Var_disown_parser_yn}" in
-#		Y|y|Yes|yes|YES)
-#			Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
-#			Func_trap_cleanup "${_exit_status}"
-#		;;
-#		*)
-#			Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
-#		;;
-#	esac
 }
 ## Note the following function is designed to take variables from above and translate them into
 ##  a streamlined version of this script. Thus some variables are prepended with back slashes ' \ '
@@ -1386,22 +1363,10 @@ Pipe_parser_loop(){
 			break
 		fi
 	done
-#	_exit_code=\$?
-#	case "\${Var_disown_parser_yn}" in
-#		Y|y|Yes|yes|YES)
-#			${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now."
-#			Clean_up_trap "\${_exit_code}"
-#		;;
-#		*)
-#			${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
-#		;;
-#	esac
 }
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-#		${Var_echo_exec_path} "# \${Var_script_name} will set SIGHUP trap now."
-#		trap 'Clean_up_trap \$?' SIGHUP
 		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
@@ -1431,6 +1396,9 @@ Func_main(){
 	fi
 	Func_check_recipients
 	Func_variable_assignment_reader
+	if [ "${Var_debugging}" = "3" ] || [ "${Var_debugging}" -gt "3" ]; then
+		Func_prompt_continue "Func_variable_assignment_reader"
+	fi
 	case "${Var_save_options}" in
 		y|Y|yes|Yes|YES)
 			Func_check_args --help=Var_save_options
@@ -1475,11 +1443,6 @@ Func_main(){
 			Func_messages '#------#' '1' '2'
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					## Trap background process, SIGHUP detects hangup or exit a forground
-					##  running process. SIGQUIT detects Ctrl-\ and SIGINT detects Ctrl-C
-					##  SIGTERM detects software termination.
-#					${Var_echo_exec_path} "# ${Var_script_name} will set SIGHUP trap now."
-#					trap 'Func_trap_cleanup $?' SIGHUP SIGQUIT SIGINT
 					Func_mkpipe_reader >"${Var_dev_null}" 2>&1 &
 					PID_Func_mkpipe_reader=$!
 					disown "${PID_Func_mkpipe_reader}"
