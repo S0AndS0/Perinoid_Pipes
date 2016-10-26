@@ -11,14 +11,14 @@
 
 ## turn off history logging temporarily, note that the trap function will
 ##  History turns logging again on upon exiting or when trap is triggered.
-echo "Turning off bash history for a moment..."
+#echo "Turning off bash history for a moment..."
 set +o history
 
 ## Assign name of this script and file path to variables for latter use
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='1477079333'
+Var_script_subversion='1477518852'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -442,7 +442,6 @@ Func_assign_arg(){
 Func_usage_options(){
 	if [ "${#@}" = "0" ]; then
 		Func_variable_assignment_reader
-#	#	Func_messages "# " '0' '42'
 	else
 		_help_lookup=( "${@}" )
 		let _help_count=0
@@ -478,6 +477,9 @@ Func_usage_options(){
 			let _help_count++
 		done
 	fi
+}
+Func_script_version(){
+	echo "# ${Var_script_name} version: ${Var_script_version}-${Var_script_subversion}"
 }
 ## If unrecognized input was passed to script then push it through named pipe
 ##  only if the pipe file exists too. Else message user that extra input read
@@ -638,6 +640,10 @@ Func_check_args(){
 				Func_script_license_customizer
 				exit 0
 			;;
+			--version)
+				Func_script_version
+				exit 0
+			;;
 			*)
 				${Var_echo_exec_path} -e "${Var_color_lred}# Unknown input read by ${Var_script_name}\n#\t Try the following for help${Var_color_null}\n${Var_color_lred}#${Var_color_null}\t${Var_script_dir}/${Var_script_name} --help"
 				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} This unknown input will be written to named pipe when available."
@@ -655,7 +661,7 @@ Func_check_recipients(){
 	if [ -z "${#Var_gpg_recipient}" ] || [[ "${Var_gpg_recipient}" == "user@host.domain" ]]; then
 		Func_messages "# Warning - [\${Var_gpg_recipient}=${Var_gpg_recipient}] is improper, set with '--output-parse-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 		${Var_echo_exec_path} -n 'Please input your pub-key email address: '
-		read -pr _response
+		read -r _response
 		if ! [ -z "${#_response}" ]; then
 			Func_assign_arg '--output-gpg-recipient' 'Var_gpg_recipient' "${_response}" 'string'
 			Func_assign_arg '---Var_gpg_recipient_options' 'Var_gpg_recipient_options' "--always-trust --armor --batch --recipient ${Var_gpg_recipient} --encrypt" 'null'
@@ -672,7 +678,7 @@ Func_check_recipients(){
 			if [ -z "${#Var_log_rotate_recipient}" ] || [[ "${Var_log_rotate_recipient}" == "user@host.domain" ]]; then
 				Func_messages "# Warning - [\${Var_log_rotate_recipient}=${Var_log_rotate_recipient}] is improper, set with '--output-rotate-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 				${Var_echo_exec_path} -en 'Please input your pub-key email address: '
-				read -pr _response
+				read -r _response
 				if ! [ -z "${#_response}" ]; then
 					Func_assign_arg '--output-rotate-recipient' 'Var_log_rotate_recipient' "${_response}" 'string'
 				else
@@ -688,7 +694,7 @@ Func_check_recipients(){
 ##  or hold trapping set actions till we are inside while loop.
 case "${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		${Var_echo_exec_path} "# ${Var_script_name} will differ trapping until just before reading loop"
+		${Var_echo_exec_path} "# ${Var_script_name} will differ trapping until just before reading loop" > "${Var_dev_null}"
 	;;
 	*)
 		${Var_echo_exec_path} "# ${Var_script_name} will set exit trap now."
