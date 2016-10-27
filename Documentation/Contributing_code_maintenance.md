@@ -5,32 +5,27 @@
 > [Contributing_code_initial_setup.md](Contributing_code_initial_setup.md)
 > and are operating within the `Parinoid_Pipes/` directory.
 
-## Write custom function for line wrapping commit messages
+## Copy script for line wrapping commit messages
+
+> This script can be found within this project's `Script_Helpers` directory
+> [../Script_Helpers/Fold_Message.sh](../Script_Helpers/Fold_Message.sh)
+> and simply *folds* messages into lines of no more than ~80 charicters long
 
 ```
-Fold_Message(){
-    _message="$@"
-    _column_width='80'
-    _folded_message=$(fold -sw ${_column_width} <<<"${_message}")
-    $(which echo) -e "${_folded_message}"
-}
+cp Script_Helpers/Fold_Message.sh /usr/local/sbin/Fold_Message.sh
 ```
 
-> The above function maybe written into your terminal or saved to a file, so
-> long as it is `source`d into your current terminal's shell environment the
-> above function can then be used to format git commits.
-
-### Example of formatted commit with above function
+### Example of formatted commit with above script
 
 ```
 git commit --branch -S -m "Title of changes"\
- -m "$(Fold_Message 'any length string within these single quotes' or even outside 'will be formatted to lines of no more than 80 columns')"\
+ -m "$(Fold_Message.sh 'any length string within these single quotes' or even outside 'will be formatted to lines of no more than 80 columns')"\
  Documentation/Contributing_code_maintenance.md
 ```
 
-> Important bit from above example is the ` -m "$(Fold_Message 'commit text')"
+> Important bit from above example is the `-m "$(Fold_Message.sh 'commit text')"`
 > part as the `$()` opens a sub-shell to push message text through the previously
-> assigned function. While this is **not** required it does help with readability.
+> assigned script. While this is **not** required it does help with readability.
 
 ## Make custom branch for tracking local changes
 

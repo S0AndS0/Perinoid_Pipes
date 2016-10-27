@@ -67,6 +67,7 @@ ratings:
     - "Documentation/**"
     - "Licenses/**"
     - "Script_Helpers/**"
+    - ".travis-ci/**"
     - "Paranoid_Pipes.sh"
     - "ReadMe.md"
 exclude_paths:

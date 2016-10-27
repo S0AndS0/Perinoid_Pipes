@@ -6,6 +6,7 @@ Var_output_file="${2:-/tmp/out.log}"
 ## You may assign the above at run-time using the following example call to
 ##  this script: script_name.sh "/path/to/input" "/path/to/output"
 Var_search_output="$3"
+Arr_gpg_opts=( --decrypt )
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
 	_end_of_line='-----END PGP MESSAGE-----'
@@ -38,7 +39,7 @@ Func_spoon_feed_pipe_decryption(){
 	unset _count
 	## If above array has some values to parse then start feeding parsing
 	##  function with an array of arrays, one array at a time.
-	if [ -n "${_arr_to_parse[@]}" ]; then
+	if [ "${#_arr_to_parse[@]}" -gt "0" ]; then
 		let _count=0
 		until [ "${_count}" = "${#_arr_to_parse[@]}" ]; do
 			Do_stuff_with_lines "${_arr_to_parse[${_count}]}"
@@ -57,15 +58,15 @@ Do_stuff_with_lines(){
 		cat <<<"${_enc_input[@]}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input[@]}" | gpg -d >> "${Var_output_file}"
+			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
 		else
-			cat <<<"${_enc_input[@]}" | gpg -d | grep -E "${Var_search_output}" >> "${Var_output_file}"
+			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 		fi
 	else
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input[@]}" | gpg -d
+			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]}
 		else
-			cat <<<"${_enc_input[@]}" | gpg -d | grep -E "${Var_search_output}"
+			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}"
 		fi
 	fi
 }
