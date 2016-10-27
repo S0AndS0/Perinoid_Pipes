@@ -253,21 +253,21 @@ Var_disown_parser_yn="yes"
 ##  using the '-e' with echo.
 ## Note commented color assignments are currently not used by this script
 ##  and are commented to keep 'shellcheck' *happier* with this script.
-Var_color_red='\033[0:31m'
+##Var_color_red='\033[0:31m'
 #Var_color_green='\033[0:32m'
 #Var_color_yellow='\033[0:33m'
 #Var_color_blue='\033[0:34m'
 #Var_color_purple='\033[0:35m'
 #Var_color_cyan='\033[0:36m'
 #Var_color_gray='\033[0:37m'
-Var_color_lred='\033[1:31m'
-Var_color_lgreen='\033[1:32m'
-Var_color_lyellow='\033[1:33m'
+##Var_color_lred='\033[1:31m'
+##Var_color_lgreen='\033[1:32m'
+##Var_color_lyellow='\033[1:33m'
 #Var_color_lblue='\033[1:34m'
-Var_color_lpurple='\033[1:35m'
+##Var_color_lpurple='\033[1:35m'
 #Var_color_lcyan='\033[1:36m'
 #Var_color_lgray='\033[1:37m'
-Var_color_null='\033[0m'
+##Var_color_null='\033[0m'
 ##  Example of usage:
 ##   echo -e "${Var_color_lpurple}This should be light purple\n${Var_color_null}And this should be colorless."
 ## Currently the above are only used on messages that
@@ -328,18 +328,19 @@ Func_messages(){
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
 	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
 		## Set colors of hash marks in messages based on differences in debugging levels.
-		if [ "${Var_debugging}" = "${_debug_level}" ]; then
-			_custom_color="${Var_color_lgreen}"
-		elif [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-			_custom_color="${Var_color_lyellow}"
-		else
-			_custom_color="${Var_color_red}"
-		fi
+		#if [ "${Var_debugging}" = "${_debug_level}" ]; then
+		#	_custom_color="${Var_color_lgreen}"
+		#elif [ "${Var_debugging}" -gt "${_debug_level}" ]; then
+		#	_custom_color="${Var_color_lyellow}"
+		#else
+		#	_custom_color="${Var_color_red}"
+		#fi
 		## Note this ugly line is what makes messages line wrap at word
 		##  boundaries. And shellcheck will complain about quoting use.
 		##  The authors of this script believe it to be more prudent
 		##  to spicificly quote the message text
-		_line_wrap_message=$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")
+		_line_wrap_message="$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -n "#DBL-${_debug_level}#") &/g")"
+		#_line_wrap_message="$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")"
 		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
 	## Check if log level is high enough, then check if logging is enabled.
