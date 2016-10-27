@@ -6,9 +6,7 @@
 
 ## `before_install.sh`
 
-[before_install_depends.sh](before_install_depends.sh)
-
-- Status: Passing
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](before_install_depends.sh)
 
 > Setup Debian based Linux systems with all necessary dependencies. This script
 > builds a list of unmet dependacies vs known script dependancies and if any
@@ -19,9 +17,7 @@
 
 ## `install.sh`
 
-[install.sh](install.sh)
-
-- Status: Passing
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](install.sh)
 
 > Copy the main script to standard install directory: `/usr/local/sbin` and
 > change permissions to allow execution of script by proper owner and group.
@@ -29,18 +25,14 @@
 
 ## `before_script_gen_key.sh`
 
-[before_script_gen_key.sh](before_script_gen_key.sh)
-
-- Status: Passing
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](before_script_gen_key.sh)
 
 > Generate new GPG keys for use with testing the main scrip as well as the basic
 > logics used within the scripts found within this project.
 
 ## `before_script_test_key.sh`
 
-[before_script_test_key.sh](before_script_test_key.sh)
-
-- Status: Passing
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](before_script_test_key.sh)
 
 > Test the encryption and decryption with newly generated GPG keys. The steps
 > found within this build script should be similar to the common operations that
@@ -49,9 +41,7 @@
 
 ## `script_encrypt.sh`
 
-[script_encrypt.sh](script_encrypt.sh)
-
-- Status: Failing
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](script_encrypt.sh)
 
 > Setup an encrypting named pipe file & associated custom listener script.
 > Currently the build is failing to find custom files for the customized pipe
@@ -61,9 +51,7 @@
 
 ## `script_decrypt.sh`
 
-[script_decrypt.sh](script_decrypt.sh)
-
-- Status: Failing
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](script_decrypt.sh)
 
 > Further local tests are required before the authors of this project re-enable
 > this build script. While there are no apperant `shellcheck` errors popping
@@ -72,13 +60,13 @@
 
 ## `lib/functions.sh`
 
-[lib/functions.sh](lib/functions.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](lib/functions.sh)
 
 > Functions that are sourced by above scripts for logics that are reusable.
 
 ## `lib/variables.sh`
 
-[lib/variables.sh](lib/variables.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](lib/variables.sh)
 
 > Variables that are sourced by above scripts for values that are reusable.
 

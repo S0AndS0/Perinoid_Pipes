@@ -6,24 +6,52 @@
 
 ## Scripts available within `Script_Helpers/` directory
 
-[Contributing_initial_setup.sh](Contributing_initial_setup.sh)
- This script is referenced within [../Documentation/Contributing_code_initial_setup.md](../Documentation/Contributing_code_initial_setup.md)
- and maybe used to quickly customize local git configs for this project with
- settings custom for each contributer.
+### `Contributing_initial_setup.sh`
 
-[Paranoid_Pipes_Scenario_One.sh](Paranoid_Pipes_Scenario_One.sh)
- This script is referenced within [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
- as an example of using customized named pipe listener scripts to decrypt log
- files that have appended encrypted contents. This is indented as a *work-around*
- for limitations of GnuPG not *seeming to* recognize listed encrypted data beyond
- the first entry.
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Contributing_initial_setup.sh)
 
-[Paranoid_Pipes_Scenario_Three.sh](Paranoid_Pipes_Scenario_Three.sh)
- This script is referenced within [../Documentation/Paranoid_Pipes_Scenario_Three.md](../Documentation/Paranoid_Pipes_Scenario_Three.md)
- as an example of using customized named pipe listener scripts written over SSH.
- This example is a bit more advanced and intended for use in VPS (Virtual Private
- Server) environments that are *rented* and perhaps less than trust worthy in their
- own operational security practices.
+> This script is referenced within
+> [../Documentation/Contributing_code_initial_setup.md](../Documentation/Contributing_code_initial_setup.md)
+> and maybe used to quickly customize local git configs for this project with
+> settings custom for each contributer.
+
+### Fold_Message.sh
+
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Fold_Message.sh)
+
+> This script is referanced within
+> [../Documentation/Contributing_code_maintenance.md](../Documentation/Contributing_code_maintenance.md)
+> and maybe used to quickly format messages to no more than a certain length.
+
+### Format_git_badge.sh
+
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Format_git_badge.sh)
+
+> This script is used to generate custom badges for this project and is provided
+> by the [Shilds.io](https://sheilds.io) site to allow for *pritier*
+> documentation.
+
+### `Paranoid_Pipes_Scenario_One.sh`
+
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Paranoid_Pipes_Scenario_One.sh)
+
+> This script is referenced within
+> [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
+> as an example of using customized named pipe listener scripts to decrypt log
+> files that have appended encrypted contents. This is indented as a *work-around*
+> for limitations of GnuPG not *seeming to* recognize listed encrypted data beyond
+> the first entry.
+
+### `Paranoid_Pipes_Scenario_Three.sh`
+
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Paranoid_Pipes_Scenario_Three.sh)
+
+> This script is referenced within
+> [../Documentation/Paranoid_Pipes_Scenario_Three.md](../Documentation/Paranoid_Pipes_Scenario_Three.md)
+> as an example of using customized named pipe listener scripts written over SSH.
+> This example is a bit more advanced and intended for use in VPS (Virtual Private
+> Server) environments that are *rented* and perhaps less than trust worthy in
+> their own operational security practices.
 
 ## Licensing notice for scripts/code examples
 
