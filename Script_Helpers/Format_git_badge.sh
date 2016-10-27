@@ -59,9 +59,11 @@ Func_check_args(){
 }
 Func_show_formated_output(){
 	if [ -z "${Var_link}" ]; then
-		echo "https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg"
+		echo "[![${Var_subject}](https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg)]"
+#		echo "https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg"
 	else
-		echo "https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg?link=${Var_link}"
+		echo "[![${Var_subject}](https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg)](${Var_link})"
+#		echo "https://img.shields.io/badge/${Var_subject}-${Var_status}-${Var_color}.svg?link=${Var_link}"
 	fi
 }
 if [ "${#@}" -gt '2' ]; then
