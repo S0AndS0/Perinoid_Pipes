@@ -10,7 +10,7 @@ Var_auto_pass_phrase="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var
 Var_prompt_for_pass_yn="yes"
 Var_gnupg_revoke_cert_yn="yes"
 Var_gnupg_conf_save_yn="yes"
-Var_gnupg_conf_location=~/.gnupg/gpg.conf
+Var_gnupg_conf_location="${HOME}/.gnupg/gpg.conf"
 Var_gnupg_comment="Test_${USER}_Keys"
 Var_gnupg_email="${USER}@${HOSTNAME}"
 Var_gnupg_expire_date="0"
@@ -25,6 +25,7 @@ Var_gnupg_export_public_key_location="${Var_current_working_dir}/GnuPG_${USER}_p
 Var_gnupg_export_private_key_yn="no"
 Var_gnupg_export_private_key_location="${Var_current_working_dir}/GnuPG_${USER}_private.asc"
 Arr_options=( "$@" )
+echo "# ${Var_script_name} started at: $(date -u +%s)"
 Func_help(){
 	echo "## ${Var_script_name} knows the following command line options"
 	echo "# --save-pass-yn		Var_save_pass_yn=${Var_save_pass_yn}"
@@ -159,6 +160,9 @@ Func_gnupg_configuration(){
 				echo "# ${Var_script_name} backing-up configuration to: ${_gnupg_conf_location}.bak"
 				cp -v "${_gnupg_conf_location}" "${_gnupg_conf_location}.bak"
 			fi
+			if ! [ -d "${_gnupg_conf_location%/*}" ]; then
+				mkdir -vp "${_gnupg_conf_location%/*}"
+			fi
 			echo "# ${Var_script_name} writing new configurations: ${_gnupg_conf_location}"
 cat > "${_gnupg_conf_location}" <<EOF
 ## Custom settings from the following link
@@ -199,7 +203,7 @@ Func_gen_revoke_cert(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_revoke_cert_yn}" in
 		y|Y|yes|Yes|YES)
-			echo "${_pass_phrase[*]}" | gpg --armor --passphrase-fd 0 --output "${Var_gnupg_revoke_location}" --gen-revoke "${Var_gnupg_email}"
+			echo "${_pass_phrase[*]}" | gpg --batch --yes --armor --passphrase-fd 0 --output "${Var_gnupg_revoke_location}" --gen-revoke "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping function: Func_gen_revoke_cert"
@@ -211,7 +215,7 @@ Func_export_keys(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_export_public_key_yn}" in
 		y|Y|yes|Yes|YES)
-			gpg --armor --output "${Var_gnupg_export_public_key_location}" --export "${Var_gnupg_email}"
+			gpg --batch --yes --armor --output "${Var_gnupg_export_public_key_location}" --export "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping exporting public key for: ${Var_gnupg_email}"
@@ -219,7 +223,7 @@ Func_export_keys(){
 	esac
 	case "${Var_gnupg_export_private_key_yn}" in
 		y|Y|yes|Yes|YES)
-			gpg --armor --output "${Var_gnupg_export_public_key_location}" --export-secret-keys "${Var_gnupg_email}"
+			gpg --batch --yes --armor --output "${Var_gnupg_export_public_key_location}" --export-secret-keys "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping exporting secret keys for: ${Var_gnupg_email}"
