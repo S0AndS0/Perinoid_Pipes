@@ -15,7 +15,7 @@
 > and maybe used to quickly customize local git configs for this project with
 > settings custom for each contributer.
 
-### Fold_Message.sh
+### `Fold_Message.sh`
 
 [![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Fold_Message.sh)
 
@@ -23,7 +23,7 @@
 > [../Documentation/Contributing_code_maintenance.md](../Documentation/Contributing_code_maintenance.md)
 > and maybe used to quickly format messages to no more than a certain length.
 
-### Format_git_badge.sh
+### `Format_git_badge.sh`
 
 [![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Format_git_badge.sh)
 
@@ -33,10 +33,11 @@
 
 ### `GnuPG_Gen_Key.sh`
 
-[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](GnuPG_Gen_Key.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](GnuPG_Gen_Key.sh)
 
 > This script is a combination of notes found for configuring and setting up GnuPG
-> with *best practices* and sane defaults taken into account by it's authors.
+> with *best practices* and sane defaults taken into account by it's authors. This
+> script is also used within the auto-build scripts for making test keys on VPSs.
 
 ### `Paranoid_Pipes_Scenario_One.sh`
 

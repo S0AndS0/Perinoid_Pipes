@@ -199,7 +199,7 @@ Func_gen_revoke_cert(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_revoke_cert_yn}" in
 		y|Y|yes|Yes|YES)
-			echo "${_pass_phrase[*]}" | gpg --passphrase-fd 0 --gen-revoke "${Var_gnupg_email}" --output "${Var_gnupg_revoke_location}"
+			echo "${_pass_phrase[*]}" | gpg --armor --passphrase-fd 0 --output "${Var_gnupg_revoke_location}" --gen-revoke "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping function: Func_gen_revoke_cert"

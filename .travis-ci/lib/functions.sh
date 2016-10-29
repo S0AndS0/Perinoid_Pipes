@@ -38,21 +38,3 @@ Func_check_exit_status(){
 		exit "${_status}"
 	fi
 }
-Func_gen_gnupg_test_keys(){
-	_pass_phrase=( "$@" )
-	gpg --batch --gen-key <<EOF
-Key-Type: RSA
-Key-Length: 4096
-Subkey-Type: RSA
-Subkey-Length: 4096
-Name-Real: ${USER}
-Name-Comment: Test_Keys
-name-Email: ${Var_gnupg_email}
-Expire-Date: 0
-Passphrase: ${_pass_phrase[*]}
-## Uncomment the next line to not generate keys
-#%dry-run
-%commit
-%echo finished
-EOF
-}
