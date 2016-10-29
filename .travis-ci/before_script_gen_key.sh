@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-#Var_script_dir="${0%/*}"
+Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
