@@ -31,6 +31,13 @@
 > by the [Shilds.io](https://sheilds.io) site to allow for *pritier*
 > documentation.
 
+### `GnuPG_Gen_Key.sh`
+
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](GnuPG_Gen_Key.sh)
+
+> This script is a combination of notes found for configuring and setting up GnuPG
+> with *best practices* and sane defaults taken into account by it's authors.
+
 ### `Paranoid_Pipes_Scenario_One.sh`
 
 [![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Paranoid_Pipes_Scenario_One.sh)
