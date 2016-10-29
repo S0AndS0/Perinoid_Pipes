@@ -2,12 +2,12 @@
 #Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_current_working_dir="${PWD}"
-Var_save_pass_yn="yes"
+Var_save_pass_yn="no"
 Var_save_pass_location="${Var_current_working_dir}/GnuPG_${USER}.pass"
 ## How many charicters for passphrase as well as length of test strings?
 Var_auto_pass_length='64'
 Var_auto_pass_phrase="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_auto_pass_length}")"
-Var_prompt_for_pass_yn="no"
+Var_prompt_for_pass_yn="yes"
 Var_gnupg_revoke_cert_yn="yes"
 Var_gnupg_conf_save_yn="yes"
 Var_gnupg_conf_location=~/.gnupg/gpg.conf
@@ -248,6 +248,8 @@ Func_main(){
 			case "${Var_prompt_for_pass_yn}" in
 				n|N|no|No|NO)
 					_current_pass_phrase="${Var_auto_pass_phrase}"
+					echo "# ${Var_script_name} please take note of your passphrase"
+					echo "#	${_current_pass_phrase}"
 				;;
 				*)
 					echo -n "# ${Var_script_name} needs a passphrase: "
