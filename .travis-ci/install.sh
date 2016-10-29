@@ -9,6 +9,7 @@ Var_install_script="${Var_install_name}"
 ## Check that path found in 'Var_install_path' variable is also within
 ##  ${PATH} variable, uncomment if not running on travis-ci
 Var_check_path=$(echo "${PATH}" | grep -q "${Var_install_path}")
+echo "# ${Var_script_name} started at: $(date -u +%s)"
 if [ -z "${Var_check_path}" ]; then
 	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
 	export PATH+=":${Var_install_path}"

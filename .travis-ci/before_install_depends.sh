@@ -3,6 +3,7 @@ export Var_script_dir="${0%/*}"
 export Var_script_name="${0##*/}"
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
+echo "# ${Var_script_name} started at: $(date -u +%s)"
 ## Add up missing dependencies to an array
 for _app in ${Var_dependency_list//,/ }; do
 	## The following two lines may cause build to fail do to not capturing
