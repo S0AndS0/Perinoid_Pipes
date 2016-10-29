@@ -455,23 +455,27 @@ Func_usage_options(){
 					#	Func_messages "# " '1' '2'
 					#;;
 					--save-options-yn|Var_save_options)
-						${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						${Var_echo_exec_path} "# ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
 						Func_messages "# Reload saved options via: ${Var_script_name} \$(cat ${Var_source_var_file})" '1' '2'
 					;;
 					--save-variables-yn|Var_save_variables)
-						${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						${Var_echo_exec_path} "# ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
+						#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
 						Func_messages "# Reload saved variables via: ${Var_script_name} --source-var-file=${Var_source_var_file}" '1' '2'
 					;;
 					*)
-						${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
+						${Var_echo_exec_path} "# ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
+						#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
 					;;
 				esac
-				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which ${_help_lookup[${_help_count}]})]"
+				${Var_echo_exec_path} "# ${Var_script_name} found [$(which "${_help_lookup[${_help_count}]}")]"
+				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which "${_help_lookup[${_help_count}]}")]"
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
-				if test "$(which ${_help_lookup[${_help_count}]}) --help"; then
-					"$(which ${_help_lookup[${_help_count}]}) --help"
-				elif test help "${_help_lookup[${_help_count}]}"; then
+				if test "$(which "${_help_lookup[${_help_count}]}") --help"; then
+					"$(which "${_help_lookup[${_help_count}]}") --help"
+				elif test "help ${_help_lookup[${_help_count}]}"; then
 					help "${_help_lookup[${_help_count}]}"
 				fi
 			fi
@@ -621,8 +625,10 @@ Func_check_args(){
 			---*)
 				Var_extra_var_var="${_arg%=*}"
 				Var_extra_var_value="${_arg#*=}"
-				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
-				${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
+				${Var_echo_exec_path} "# Custom variable: ${Var_extra_var_var/---/}"
+				${Var_echo_exec_path} "# Custom value: ${Var_extra_var_value}"
+				#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
+				#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
 				Func_assign_arg "${Var_extra_var_var}" "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
 			;;
 			--help|-h)
@@ -646,9 +652,12 @@ Func_check_args(){
 				exit 0
 			;;
 			*)
-				${Var_echo_exec_path} -e "${Var_color_lred}# Unknown input read by ${Var_script_name}\n#\t Try the following for help${Var_color_null}\n${Var_color_lred}#${Var_color_null}\t${Var_script_dir}/${Var_script_name} --help"
-				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} This unknown input will be written to named pipe when available."
-				${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} Current count of unknown input [${#Arr_extra_input[@]}]"
+				${Var_echo_exec_path} -e "# Unknown input read by ${Var_script_name}\n#\t Try the following for help\n#\t${Var_script_dir}/${Var_script_name} --help"
+				${Var_echo_exec_path} "# This unknown input will be written to named pipe when available."
+				${Var_echo_exec_path} "# Current count of unknown input [${#Arr_extra_input[@]}]"
+				#${Var_echo_exec_path} -e "${Var_color_lred}# Unknown input read by ${Var_script_name}\n#\t Try the following for help${Var_color_null}\n${Var_color_lred}#${Var_color_null}\t${Var_script_dir}/${Var_script_name} --help"
+				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} This unknown input will be written to named pipe when available."
+				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} Current count of unknown input [${#Arr_extra_input[@]}]"
 				declare -ga "Arr_extra_input+=( ${_arg} )"
 			;;
 		esac
@@ -786,7 +795,7 @@ Func_variable_assignment_reader(){
 	Func_messages '## Bash shell built in variables used by this script ##' '2' '3'
 	Func_messages "# Script directory: [${Var_script_dir}]" '2' "3"
 	Func_messages "# Script name: [${Var_script_name}]" '2' "3"
-	Func_messages "# Function PID: [$!]" '2' '3'
+	Func_messages "# Function PID: [${Var_subshell_pid:-${BASH_SUBSHELL}}]" '2' '3'
 	Func_messages "# PID of this script: [${Var_script_pid}]" '2' '3'
 	Func_messages "# User executing this script: [${Var_script_current_user}]" '2' '3'
 	Func_messages '## Logging & settings internal to this script ##' '2' '3'
@@ -860,12 +869,16 @@ Func_variable_assignment_reader(){
 	Func_messages "#  --license" '2' "3"
 	Func_messages "#  --help" '2' "3"
 	Func_messages "## Overwrite any option above with the following syntax" '2' "3"
-	Func_messages "${Var_color_red}#${Var_color_null}  --<option-name>=\"<new-value>\"" '2' "3"
+	Func_messages "#  --<option-name>=\"<new-value>\"" '2' "3"
+	#Func_messages "${Var_color_red}#${Var_color_null}  --<option-name>=\"<new-value>\"" '2' "3"
 	Func_messages "## Overwrite any variable found within this script & not found above with the following syntax" '2' "3"
-	Func_messages "${Var_color_red}#${Var_color_null}  ---<Var_name>=\"<Var_value>\"" '2' "3"
+	Func_messages "#  ---<Var_name>=\"<Var_value>\"" '2' "3"
+	#Func_messages "${Var_color_red}#${Var_color_null}  ---<Var_name>=\"<Var_value>\"" '2' "3"
 	Func_messages "#  Note the above '---' method does Not allow for spaces within 'Var_value' unless using sub-shell redirection; see bellow examples" '2' "3"
-	Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
-	Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
+	Func_messages "#  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
+	Func_messages "#  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
+	#Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
+	#Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
 	Func_messages "#  However, the results still must not contain spaces; escaped or otherwise." '2' "3"
 	Func_messages "## Any unrecognized or unknown input otherwise unmatched above is then written to named pipe if/when available." '2' "3"
 }
