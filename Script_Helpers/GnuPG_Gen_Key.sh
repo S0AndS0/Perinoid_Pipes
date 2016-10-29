@@ -203,7 +203,8 @@ Func_gen_revoke_cert(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_revoke_cert_yn}" in
 		y|Y|yes|Yes|YES)
-			echo "${_pass_phrase[*]}" | gpg --batch --yes --armor --passphrase-fd 0 --output "${Var_gnupg_revoke_location}" --gen-revoke "${Var_gnupg_email}"
+			echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --yes --armor --passphrase-fd 0 --output \"${Var_gnupg_revoke_location}\" --gen-revoke \"${Var_gnupg_email}\""
+			echo "${_pass_phrase[*]}" | gpg --yes --armor --passphrase-fd 0 --output "${Var_gnupg_revoke_location}" --gen-revoke "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping function: Func_gen_revoke_cert"
@@ -215,7 +216,8 @@ Func_export_keys(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_export_public_key_yn}" in
 		y|Y|yes|Yes|YES)
-			gpg --batch --yes --armor --output "${Var_gnupg_export_public_key_location}" --export "${Var_gnupg_email}"
+			echo "# ${Var_script_name} running: gpg --yes --armor --output \"${Var_gnupg_export_public_key_location}\" --export \"${Var_gnupg_email}\""
+			gpg --yes --armor --output "${Var_gnupg_export_public_key_location}" --export "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping exporting public key for: ${Var_gnupg_email}"
@@ -223,7 +225,8 @@ Func_export_keys(){
 	esac
 	case "${Var_gnupg_export_private_key_yn}" in
 		y|Y|yes|Yes|YES)
-			gpg --batch --yes --armor --output "${Var_gnupg_export_public_key_location}" --export-secret-keys "${Var_gnupg_email}"
+			echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --yes --armor --passphrase-fd 0 --output \"${Var_gnupg_export_public_key_location}\" --export-secret-keys \"${Var_gnupg_email}\""
+			echo "${_pass_phrase[*]}" | gpg --yes --armor --passphrase-fd 0 --output "${Var_gnupg_export_public_key_location}" --export-secret-keys "${Var_gnupg_email}"
 		;;
 		*)
 			echo "# ${Var_script_name} skipping exporting secret keys for: ${Var_gnupg_email}"
