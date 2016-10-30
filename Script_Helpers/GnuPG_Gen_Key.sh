@@ -24,6 +24,7 @@ Var_gnupg_export_public_key_yn="yes"
 Var_gnupg_export_public_key_location="${Var_current_working_dir}/GnuPG_${USER}_public.gpg"
 Var_gnupg_export_private_key_yn="no"
 Var_gnupg_export_private_key_location="${Var_current_working_dir}/GnuPG_${USER}_private.asc"
+Var_gnupg_revoke_reason="Auto-generated revoke cert at $(date -u +%s)"
 Arr_options=( "$@" )
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Func_help(){
@@ -36,6 +37,7 @@ Func_help(){
 	echo "# --gnupg-conf-save-yn	Var_gnupg_conf_save_yn=${Var_gnupg_conf_save_yn}"
 	echo "# --gnupg-conf-location	Var_gnupg_conf_location=${Var_gnupg_conf_location}"
 	echo "# --gnupg-revoke-location	Var_gnupg_revoke_location=${Var_gnupg_revoke_location}"
+	echo "# --gnupg-revoke-reason	Var_gnupg_revoke_reason=${Var_gnupg_revoke_reason}"
 	echo "# --gnupg-comment		Var_gnupg_comment=${Var_gnupg_comment}"
 	echo "# --gnupg-email		Var_gnupg_email=${Var_gnupg_email}"
 	echo "# --gnupg-expire-date	Var_gnupg_expire_date=${Var_gnupg_expire_date}"
@@ -85,6 +87,9 @@ Func_check_args(){
 			;;
 			--gnupg-revoke-location|Var_gnupg_revoke_location)
 				Func_assign_arg '--gnupg-revoke-location' "Var_gnupg_revoke_location" "${_arg#*=}"
+			;;
+			--gnupg-revoke-reason|Var_gnupg_revoke_reason)
+				Func_assign_arg '--gnupg-revoke-reason' "Var_gnupg_revoke_reason" "${_arg#*=}"
 			;;
 			--gnupg-comment|Var_gnupg_comment)
 				Func_assign_arg '--gnupg-comment' "Var_gnupg_comment" "${_arg#*=}"
@@ -203,8 +208,26 @@ Func_gen_revoke_cert(){
 	_pass_phrase=( "$@" )
 	case "${Var_gnupg_revoke_cert_yn}" in
 		y|Y|yes|Yes|YES)
-			echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}"
-			echo "${_pass_phrase[*]}" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}
+			echo "# ${Var_script_name} generating revoke cert: ${Var_gnupg_revoke_location}"
+			## Note the order is, y='Yes generate a revoke cert'
+			## 1='The revoke cert code'
+			## Var_gnupg_revoke_reason='General reason for revoke'
+			## y='Yes do it already'
+			## Note the reason will be displaid publicly if ever used.
+			gpg --no-tty --yes --command-fd 0 --passphrase ${_pass_phrase[*]} --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
+y
+1
+${Var_gnupg_revoke_reason}
+y
+EOF
+			## The above are from: https://github.com/stef/gpk/blob/master/genkey
+			## alternet instructions from: https://github.com/baird/GPG/blob/master/GPGen/gpgen
+			## Bellow command pares did not "cut-it" for generating
+			##  revoke certs automagicly.
+			#echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --no-tty --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}"
+			#echo "${_pass_phrase[*]}" | gpg --no-tty --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}
+			#echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}"
+			#echo "${_pass_phrase[*]}" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}
 		;;
 		*)
 			echo "# ${Var_script_name} skipping function: Func_gen_revoke_cert"
@@ -233,6 +256,26 @@ Func_export_keys(){
 		;;
 	esac
 	unset _pass_phrase
+}
+Func_report_on_exports(){
+	if [ -f "${Var_gnupg_revoke_location}" ]; then
+		echo "# ${Var_script_name} reports that the following should be backup: ${Var_gnupg_revoke_location}"
+		ls -hal ${Var_gnupg_revoke_location}
+	else
+		echo "# ${Var_script_name} reports that there is no revoke cert to backup."
+	fi
+	if [ -f "${Var_gnupg_export_public_key_location}" ]; then
+		echo "# ${Var_script_name} reports to share public key file: ${Var_gnupg_export_public_key_location}"
+		ls -hal ${Var_gnupg_export_public_key_location}
+	else
+		echo "# ${Var_script_name} reports no public key has been exported"
+	fi
+	if [ -f "${Var_gnupg_export_public_key_location}" ]; then
+		echo "# ${Var_script_name} reports to backup private key file: ${Var_gnupg_export_public_key_location}"
+		ls -hal ${Var_gnupg_export_public_key_location}
+	else
+		echo "# ${Var_script_name} reports no private key has been exported"
+	fi
 }
 Func_main(){
 	case "${Var_save_pass_yn}" in
@@ -272,6 +315,7 @@ Func_main(){
 	Func_gen_revoke_cert "${_current_pass_phrase}"
 	Func_export_keys "${_current_pass_phrase}"
 	unset _current_pass_phrase
+	Func_report_on_exports
 }
 if [ "${#Arr_options[@]}" = "0" ]; then
 	Func_check_args '--help'
