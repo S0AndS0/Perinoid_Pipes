@@ -214,7 +214,7 @@ Func_gen_revoke_cert(){
 			## Var_gnupg_revoke_reason='General reason for revoke'
 			## y='Yes do it already'
 			## Note the reason will be displaid publicly if ever used.
-			gpg --batch --no-tty --command-fd 0 --status-fd 2 --passphrase ${_pass_phrase[*]} --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
+			gpg --no-tty --command-fd 0 --status-fd 2 --passphrase ${_pass_phrase[*]} --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
 y
 0
 ${Var_gnupg_revoke_reason}
