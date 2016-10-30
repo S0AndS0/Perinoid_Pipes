@@ -214,11 +214,13 @@ Func_gen_revoke_cert(){
 			## Var_gnupg_revoke_reason='General reason for revoke'
 			## y='Yes do it already'
 			## Note the reason will be displaid publicly if ever used.
-			gpg --yes --no-tty --command-fd 0 --status-fd 2 --passphrase ${_pass_phrase[*]} --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
+			gpg --no-tty --command-fd 0 --status-fd 2 --passphrase <(echo "${_pass_phrase[*]}") --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
 y
 0
 ${Var_gnupg_revoke_reason}
+
 y
+
 EOF
 			## The above are from: https://github.com/stef/gpk/blob/master/genkey
 			## alternet instructions from: https://github.com/baird/GPG/blob/master/GPGen/gpgen
@@ -275,6 +277,12 @@ Func_report_on_exports(){
 		ls -hal ${Var_gnupg_export_private_key_location}
 	else
 		echo "# ${Var_script_name} reports no private key has been exported"
+	fi
+	if [ -f "${Var_save_pass_location}" ]; then
+		echo "# ${Var_script_name} reports to backup passphrase file: ${Var_save_pass_location}"
+		ls -hal ${Var_save_pass_location}
+	else
+		echo "# ${Var_script_name} reports no passphrase file to backup."
 	fi
 }
 Func_main(){
