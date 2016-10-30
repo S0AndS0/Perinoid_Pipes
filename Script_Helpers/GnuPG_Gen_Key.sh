@@ -221,7 +221,6 @@ y
 ${Var_gnupg_revoke_reason}
 
 y
-
 ${_pass_phrase[*]}
 EOF
 			## The above are from: https://github.com/stef/gpk/blob/master/genkey
