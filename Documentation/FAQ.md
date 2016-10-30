@@ -1,12 +1,5 @@
 # Frequently (and perhaps infrequently) asked question (F.A.Q.)
 
-## Q: How is the code checked for bugs
-
-> A: Both locally and remotely this repository is checked via a wonderful
-> program, `shellcheck`, remote tests are facilitate via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
-> which is also how this project receives updated *badges* on the
-> main [ReadMe.md](../ReadMe.md) file.
-
 ## Q: What is this project
 
 > A: This project aims to expose asymmetric encryption operations (currently
@@ -24,6 +17,16 @@
 > access to encrypted logs a simple process. However, depending upon your
 > inventiveness this project is capable of much more.
 
+## Q: How is the code checked for bugs
+
+> A: Both locally and remotely this repository is checked via a wonderful
+> program, `shellcheck`, remote tests are facilitate via [CodeClimate.com](https://docs.codeclimate.com/docs/shellcheck)
+> which is also how this project receives updated *badges* on the
+> main [../ReadMe.md](../ReadMe.md) file. Note local checks when passed will *bump*
+> the main script's sub-version and remote checks, auto-buils, are phasilitated
+> by [Travis-CI](https://travis-ci.org) you may click on the *`Badges`* on the
+> main [../ReadMe.md](../ReadMe.md) file of this project to view build histories.
+
 ## Q: Do I *need* this
 
 > A: If you are a server administrator or perhaps a reporter in lands
@@ -34,6 +37,37 @@
 > are not needed my a majority of networked users and/or admins... not yet any
 > ways. However if you find a new usage for this project the authors would
 > certainly enjoy knowing how you've found a need for this.
+
+## Q: How do I checkout a previously working build
+
+> A: Use the following steps for reverting your current working branch to a
+> previous build step
+
+```
+git log --oneline
+##... output example beguin
+549623a Yet more attempts at fixes
+##... output example end
+```
+
+> Find the commit ID, for this example we'll be using the above `549623a` ID from
+> above to revert to.
+
+```
+git checkout 549623a
+```
+
+> Check the status and differances with the following to ensure that changes
+> reverted are those that are wanted.
+
+```
+git status
+git diff
+```
+
+> To find working vs non-working builds check the build
+> [History](https://travis-ci.org/S0AndS0/Perinoid_Pipes/builds) provided by
+> Travis-CI which will display compatible commit IDs to `checkout` to.
 
 ## Licensing notice for this file
 
