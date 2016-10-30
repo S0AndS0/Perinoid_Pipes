@@ -248,8 +248,8 @@ Func_export_keys(){
 	esac
 	case "${Var_gnupg_export_private_key_yn}" in
 		y|Y|yes|Yes|YES)
-			echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --yes --armor --passphrase-fd 0 --output ${Var_gnupg_export_public_key_location} --export-secret-keys ${Var_gnupg_email}"
-			echo "${_pass_phrase[*]}" | gpg --yes --armor --passphrase-fd 0 --output ${Var_gnupg_export_public_key_location} --export-secret-keys ${Var_gnupg_email}
+			echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --yes --armor --passphrase-fd 0 --output ${Var_gnupg_export_private_key_location} --export-secret-keys ${Var_gnupg_email}"
+			echo "${_pass_phrase[*]}" | gpg --yes --armor --passphrase-fd 0 --output ${Var_gnupg_export_private_key_location} --export-secret-keys ${Var_gnupg_email}
 		;;
 		*)
 			echo "# ${Var_script_name} skipping exporting secret keys for: ${Var_gnupg_email}"
@@ -270,9 +270,9 @@ Func_report_on_exports(){
 	else
 		echo "# ${Var_script_name} reports no public key has been exported"
 	fi
-	if [ -f "${Var_gnupg_export_public_key_location}" ]; then
-		echo "# ${Var_script_name} reports to backup private key file: ${Var_gnupg_export_public_key_location}"
-		ls -hal ${Var_gnupg_export_public_key_location}
+	if [ -f "${Var_gnupg_export_private_key_location}" ]; then
+		echo "# ${Var_script_name} reports to backup private key file: ${Var_gnupg_export_private_key_location}"
+		ls -hal ${Var_gnupg_export_private_key_location}
 	else
 		echo "# ${Var_script_name} reports no private key has been exported"
 	fi
