@@ -222,7 +222,7 @@ ${Var_gnupg_revoke_reason}
 
 y
 
-Passphrase: ${_pass_phrase[*]}
+${_pass_phrase[*]}
 EOF
 			## The above are from: https://github.com/stef/gpk/blob/master/genkey
 			## alternet instructions from: https://github.com/baird/GPG/blob/master/GPGen/gpgen
