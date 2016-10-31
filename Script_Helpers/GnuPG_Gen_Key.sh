@@ -4,7 +4,7 @@ Var_script_name="${0##*/}"
 Var_current_working_dir="${PWD}"
 Var_save_pass_yn="no"
 Var_save_pass_location="${Var_current_working_dir}/GnuPG_${USER}.pass"
-## How many charicters for passphrase as well as length of test strings?
+## How many characters for passphrase as well as length of test strings?
 Var_auto_pass_length='64'
 Var_auto_pass_phrase="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_auto_pass_length}")"
 Var_prompt_for_pass_yn="yes"
@@ -215,7 +215,7 @@ Func_gen_revoke_cert(){
 			## Blank line to progress things in menus
 			## y='Yes do it already'
 			## _pass_phrase at the point expected
-			## Note the reason will be displaid publicly if ever used.
+			## Note the reason will be displayed publicly if ever used.
 			gpg --no-tty --command-fd 0 --status-fd 2 --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
 y
 0
@@ -283,6 +283,14 @@ Func_report_on_exports(){
 		echo "# ${Var_script_name} reports no passphrase file to backup."
 	fi
 }
+Func_check_collision(){
+	_key_fingerprint="$(gpg --fingerprint ${Var_gnupg_email} | awk -F "/" '/pub /{print $2}' | awk '{print $1}')"
+	if test "gpg --batch --search-keys --dry-run ${_key_fingerprint} | grep ${_key_fingerprint}"; then
+		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
+	else
+		echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
+	fi
+}
 Func_main(){
 	case "${Var_save_pass_yn}" in
 		y|Y|yes|Yes|YES)
@@ -293,9 +301,9 @@ Func_main(){
 				;;
 				*)
 					echo -n "# ${Var_script_name} needs a passphrase: "
-					read -a _responce
-					echo "${_responce[*]}" > "${Var_save_pass_location}"
-					unset _responce
+					read -a _response
+					echo "${_response[*]}" > "${Var_save_pass_location}"
+					unset _response
 					_current_pass_phrase="$(cat "${Var_save_pass_location}")"
 				;;
 			esac
@@ -309,9 +317,9 @@ Func_main(){
 				;;
 				*)
 					echo -n "# ${Var_script_name} needs a passphrase: "
-					read -a _responce
-					_current_pass_phrase="${_responce[*]}"
-					unset _responce
+					read -a _response
+					_current_pass_phrase="${_response[*]}"
+					unset _response
 				;;
 			esac
 		;;
@@ -321,6 +329,7 @@ Func_main(){
 	Func_gen_revoke_cert "${_current_pass_phrase}"
 	Func_export_keys "${_current_pass_phrase}"
 	unset _current_pass_phrase
+	Func_check_collision
 	Func_report_on_exports
 }
 if [ "${#Arr_options[@]}" = "0" ]; then
