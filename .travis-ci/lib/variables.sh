@@ -15,12 +15,14 @@ export Var_test_gpg_location="${PWD}/test_encrypt.gpg"
 export Var_test_raw_location="${PWD}/test_raw.txt"
 export Var_test_location="${PWD}/test_string_raw.txt"
 ## What directories to use with script tests?
-##  The following block of variables is used in '' file.
+##  The following block of variables is used in 'script_encrypt.sh' file.
 export Var_encrypt_pipe_location="${PWD}/encrypt_one.pipe"
 export Var_encrypt_pipe_log="${PWD}/encrypt_one.log"
 export Var_encrypted_location="${PWD}/encrypt_one.gpg"
 export Var_encrypted_bulk_dir="${PWD}/bulk_out"
 export Var_raw_test_location="${PWD}/string_one.txt"
 export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
-#export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
-#export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
+##  The following block of variables is used in 'script_decrypt.sh' file
+export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
+export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
+export Var_gnupg_decrypt_opts="--always-trust --yes --bulk --passphrase-file ${Var_pass_location} --decrypt"
