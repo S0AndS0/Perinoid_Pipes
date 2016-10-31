@@ -38,6 +38,8 @@
 > This script is a combination of notes found for configuring and setting up GnuPG
 > with *best practices* and sane defaults taken into account by it's authors. This
 > script is also used within the auto-build scripts for making test keys on VPSs.
+> Note for source code readers, the function `Func_gen_revoke_cert` maynot be
+> pretty it **does** work.
 
 ### `Paranoid_Pipes_Scenario_One.sh`
 

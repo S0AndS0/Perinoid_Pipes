@@ -212,9 +212,10 @@ Func_gen_revoke_cert(){
 			## Note the order is, y='Yes generate a revoke cert'
 			## 1='The revoke cert code'
 			## Var_gnupg_revoke_reason='General reason for revoke'
+			## Blank line to progress things in menus
 			## y='Yes do it already'
+			## _pass_phrase at the point expected
 			## Note the reason will be displaid publicly if ever used.
-			#gpg --no-tty --command-fd 0 --status-fd 2 --passphrase <(echo "${_pass_phrase[*]}") --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
 			gpg --no-tty --command-fd 0 --status-fd 2 --armor --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email} <<EOF
 y
 0
@@ -223,14 +224,10 @@ ${Var_gnupg_revoke_reason}
 y
 ${_pass_phrase[*]}
 EOF
-			## The above are from: https://github.com/stef/gpk/blob/master/genkey
-			## alternet instructions from: https://github.com/baird/GPG/blob/master/GPGen/gpgen
-			## Bellow command pares did not "cut-it" for generating
-			##  revoke certs automagicly.
-			#echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --no-tty --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}"
-			#echo "${_pass_phrase[*]}" | gpg --no-tty --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}
-			#echo "# ${Var_script_name} running: echo \"\${_pass_phrase[*]}\" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}"
-			#echo "${_pass_phrase[*]}" | gpg --no-tty --command-fd 0 --status-fd 2 --yes --armor --passphrase-fd 0 --output ${Var_gnupg_revoke_location} --gen-revoke ${Var_gnupg_email}
+			## Note The above are a combination of:
+			##  https://github.com/stef/gpk/blob/master/genkey
+			##  and: https://github.com/baird/GPG/blob/master/GPGen/gpgen
+			##  plus testing by the authors of this script & Travis-CI.
 		;;
 		*)
 			echo "# ${Var_script_name} skipping function: Func_gen_revoke_cert"
