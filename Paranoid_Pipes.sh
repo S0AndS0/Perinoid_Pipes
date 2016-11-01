@@ -969,7 +969,7 @@ Func_rotate_log(){
 }
 Map_read_array_to_output(){
 	_file_to_map="$1"
-	declare -g "PID_Map_read_array_to_output=$!"
+	export PID_Map_read_array_to_output=$!
 	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
@@ -1068,7 +1068,7 @@ Func_mkpipe_reader(){
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
-#		declare -g "PID_Map_read_array_to_output=$!"
+		export PID_Map_read_array_to_output=$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.

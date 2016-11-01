@@ -16,6 +16,7 @@ Var_gnupg_email="${USER}@${HOSTNAME}"
 Var_gnupg_expire_date="0"
 Var_gnupg_key_type="RSA"
 Var_gnupg_key_length="4096"
+Var_gnupg_key_server="hkp://keys.gnupg.net"
 Var_gnupg_name="${USER}"
 Var_gnupg_sub_key_type="RSA"
 Var_gnupg_sub_key_length="4096"
@@ -47,6 +48,7 @@ Func_help(){
 	echo "# --gnupg-export-private-key-location	Var_gnupg_export_private_key_location=${Var_gnupg_export_private_key_location}"
 	echo "# --gnupg-key-type	Var_gnupg_key_type=${Var_gnupg_key_type}"
 	echo "# --gnupg-key-length	Var_gnupg_key_length=${Var_gnupg_key_length}"
+	echo "# --gnupg-key-server	Var_gnupg_key_server=${Var_gnupg_key_server}"
 	echo "# --gnupt-sub-key-type	Var_gnupg_sub_key_type=${Var_gnupg_sub_key_type}"
 	echo "# --gnupg-sub-key-length	Var_gnupg_sub_key_length=${Var_gnupg_sub_key_length}"
 	echo "# --gnupg-name		Var_gnupg_name=${Var_gnupg_name}"
@@ -118,6 +120,9 @@ Func_check_args(){
 			--gnupg-key-length|Var_gnupg_key_length)
 				Func_assign_arg '--gnupg-key-length' "Var_gnupg_key_length" "${_arg#*=}"
 			;;
+			--gnupg-key-server|Var_gnupg_key_server)
+				Func_assign_arg '--gnupg-key-server' "Var_gnupg_key_server" "${_arg#*=}"
+			;;
 			--gnupg-sub-key-type|Var_gnupg_sub_key_type)
 				Func_assign_arg '--gnupg-sub-key-type' "Var_gnupg_sub_key_type" "${_arg#*=}"
 			;;
@@ -185,7 +190,7 @@ use-agent
 #-----------
 # Keyserver
 #-----------
-keyserver hkp://keys.gnupg.net
+keyserver ${Var_gnupg_key_server}
 #keyserver hkps://hkps.pool.sks-keyservers.net
 #keyserver-options ca-cert=/path/to/downloaded.pem
 keyserver-options no-try-dns-srv
@@ -285,7 +290,9 @@ Func_report_on_exports(){
 }
 Func_check_collision(){
 	_key_fingerprint="$(gpg --fingerprint ${Var_gnupg_email} | awk -F "/" '/pub /{print $2}' | awk '{print $1}')"
-	if test "gpg --batch --search-keys --dry-run ${_key_fingerprint} | grep ${_key_fingerprint}"; then
+	gpg --dry-run --batch --search-keys ${_key_fingerprint} --keyserver ${Var_gnupg_key_server} | grep -qE "${_key_fingerprint}|${Var_gnupg_email}"
+	_exit_status=$?
+	if [ "${_exit_status}" != "0" ]; then
 		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
 	else
 		echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
