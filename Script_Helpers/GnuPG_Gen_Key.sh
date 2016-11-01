@@ -290,12 +290,13 @@ Func_report_on_exports(){
 }
 Func_check_collision(){
 	_key_fingerprint="$(gpg --fingerprint ${Var_gnupg_email} | awk -F "/" '/pub /{print $2}' | awk '{print $1}')"
-	gpg --dry-run --batch --search-keys ${_key_fingerprint} --keyserver ${Var_gnupg_key_server} | grep -qE "${_key_fingerprint}|${Var_gnupg_email}"
+	_grep_string='not found on keyserver'
+	gpg --dry-run --batch --search-keys ${_key_fingerprint} --keyserver ${Var_gnupg_key_server} | grep -qE "${_grep_string}"
 	_exit_status=$?
 	if [ "${_exit_status}" != "0" ]; then
-		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
-	else
 		echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
+	else
+		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
 	fi
 }
 Func_main(){
