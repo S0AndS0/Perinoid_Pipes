@@ -26,6 +26,7 @@ Var_gnupg_export_public_key_location="${Var_current_working_dir}/GnuPG_${USER}_p
 Var_gnupg_export_private_key_yn="no"
 Var_gnupg_export_private_key_location="${Var_current_working_dir}/GnuPG_${USER}_private.asc"
 Var_gnupg_revoke_reason="Auto-generated revoke cert at $(date -u +%s)"
+Var_gnupg_upload_key_yn="no"
 Arr_options=( "$@" )
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Func_help(){
@@ -39,6 +40,7 @@ Func_help(){
 	echo "# --gnupg-conf-location	Var_gnupg_conf_location=${Var_gnupg_conf_location}"
 	echo "# --gnupg-revoke-location	Var_gnupg_revoke_location=${Var_gnupg_revoke_location}"
 	echo "# --gnupg-revoke-reason	Var_gnupg_revoke_reason=${Var_gnupg_revoke_reason}"
+	echo "# --gnupg-upload-key-yn	Var_gnupg_upload_key_yn=${Var_gnupg_upload_key_yn}"
 	echo "# --gnupg-comment		Var_gnupg_comment=${Var_gnupg_comment}"
 	echo "# --gnupg-email		Var_gnupg_email=${Var_gnupg_email}"
 	echo "# --gnupg-expire-date	Var_gnupg_expire_date=${Var_gnupg_expire_date}"
@@ -92,6 +94,9 @@ Func_check_args(){
 			;;
 			--gnupg-revoke-reason|Var_gnupg_revoke_reason)
 				Func_assign_arg '--gnupg-revoke-reason' "Var_gnupg_revoke_reason" "${_arg#*=}"
+			;;
+			--gnupg-upload-key-yn|Var_gnupg_upload_key_yn)
+				Func_assign_arg '--gnupg-upload-key-yn' "Var_gnupg_upload_key_yn" "${_arg#*=}"
 			;;
 			--gnupg-comment|Var_gnupg_comment)
 				Func_assign_arg '--gnupg-comment' "Var_gnupg_comment" "${_arg#*=}"
@@ -295,9 +300,21 @@ Func_check_collision(){
 	_exit_status=$?
 	if [ "${_exit_status}" != "0" ]; then
 		echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
+		Func_upload_pub_key
 	else
 		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
 	fi
+}
+Func_upload_pub_key(){
+	case "${Var_gnupg_upload_key_yn}" in
+		y|Y|yes|Yes|YES)
+			echo "# ${Var_script_name} uploading new public key for: ${Var_gnupg_email}"
+			gpg --keyserver ${Var_gnupg_key_server} --send-keys ${Var_gnupg_email}
+		;;
+		*)
+			echo "# ${Var_script_name} skipping uploading key for: ${Var_gnupg_email}"
+		;;
+	esac
 }
 Func_main(){
 	case "${Var_save_pass_yn}" in
