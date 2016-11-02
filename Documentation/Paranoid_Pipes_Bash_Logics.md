@@ -345,6 +345,40 @@ upon if they should be expanded on write or on re-read/execution
 EOF
 ```
 
+## Bash examples of string *scrubbing*
+
+> alpha numeric only
+
+```
+var_test="${var_test//[^a-zA-Z0-9]/}"
+```
+
+> alpha numeric with comments, spaces, and underscores allowed only
+
+```
+var_test="${var_test//[^a-zA-Z0-9# _]/}"
+```
+
+> Note one *gotcha* for allowing double quotes as well as other special
+> characters; use `\` (backslash) to escape them.
+> allow double quotes
+
+```
+var_test="${var_test//[^a-zA-Z0-9# _\"]/}"
+```
+
+> Other special characters that require '\' backslash in order to allow
+
+```
+\/ \^ \( \) \\ \{ \} \- \' \"
+```
+
+### Example of all above substitution tricks
+
+```
+var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
+```
+
 ## Licensing notice for this file
 
 ```

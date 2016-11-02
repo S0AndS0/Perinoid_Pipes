@@ -24,29 +24,6 @@
 - Stack Overflow - [Sanitize user input with Bash substitutions.](http://stackoverflow.com/a/89970)
 - IBM - [Using Bash trap with signals](https://www.ibm.com/developerworks/aix/library/au-usingtraps/)
 
-### Examples of string *scrubbing*
-
-- alpha numeric only: `var_test="${var_test//[^a-zA-Z0-9]/}"`
-- alpha numeric with comments, spaces, and underscores allowed only:
- `var_test="${var_test//[^a-zA-Z0-9# _]/}"`
-
-> Note one *gotcha* for allowing double quotes as well as other special
-> characters; use `\` (backslash) to escape them.
-
-- allow double quotes `var_test="${var_test//[^a-zA-Z0-9# _\"]/}"`
-
-> Other special characters that require '\' backslash in order to allow
-
-```
-\/ \^ \( \) \\ \{ \} \- \' \"
-```
-
-### Example of all above substitution tricks
-
-```
-var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
-```
-
 ## Security encryption notes
 
 [DSA is broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity)
@@ -59,14 +36,18 @@ There are three main categories of encryption;
 [Symmetric](https://en.wikipedia.org/wiki/Symmetric-key_algorithm)
  or `shared key` uses one key (or password) to both encrypt and decrypt data,
  most commonly found on personal computers or web servers for authentication for
- a given user identity. Example use; logging into an Unix like system that has
- encrypted home folders for each user.
+ a given user identity. This is one of the componits to `Hybrid` encryption too
+ because of it's speed & efficency.
 
 [Asymmetric](https://en.wikipedia.org/wiki/Public-key_cryptography)
  or `public key cryptography` uses two (or more keys) that *usually* can only
- decrypt what their related key partner has encrypted; in special use cases
- there's ways of making keys with specific permissions but that's usually only
- required for very specific threat modules or usage scenarios.
+ decrypt what their related key partner has encrypted; use cases involving RSA
+ and GnuPG there maybe a third key for signing; and for special use cases
+ there are ways of making keys with specific permissions but that's usually only
+ required for very specific threat modules or usage scenarios. With GnuPG the
+ asymmetric encryption availabe via key pairs is often used to encrypt a single
+ use `symetric` key appended to the head of the encrypted block or file; this
+ is the second componit that makes up `hybrid` encryption.
 
 [Hybrid](https://en.wikipedia.org/wiki/Hybrid_cryptosystem)
  or `sharing symmetric key via public key` *usually* uses asymmetric encryption
@@ -74,7 +55,8 @@ There are three main categories of encryption;
  used for the bulk of encryption to save time and processing power. This is one
  of the most common types of encryption now deployed readers should at least make
  an attempt at understanding the finer points of this encryption option in order
- to make the best use of this project.
+ to make the best use of this project as well as projects that utilize these
+ standereds.
 
 ## Links to definitions
 
