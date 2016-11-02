@@ -26,7 +26,11 @@
 [Gnupg_configuration.md](Gnupg_configuration.md)
  Documentation of *best practices* configuration of GnuPG, the attached configs
  are very similar to what contributers and authors of this project make use of
- or should make use of.
+ or should make use of. The observent will also find these configs used within
+ the [../Script_Helpers/GnuPG_Gen_Key.sh](../Script_Helpers/GnuPG_Gen_Key.sh)
+ script which is then used within the build script
+ [../.travis-ci/before_script_gen_key.sh](../.travis-ci/before_script_gen_key.sh)
+ to enable unattended GnuPG key for this project's auto test builds.
 
 [Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
  Documentation of daily use command line command for GnuPG; in other words a
@@ -43,10 +47,6 @@
  Documentation on getting this project's main script up and running with test
  data. Note the steps documented are only for testing the features available,
  see `Paranoid_Pipes_CLO.md` for a full list of all known command line options.
-
-[Paranoid_Pipes_Asymmetric_Encryption.md](Paranoid_Pipes_Asymmetric_Encryption.md)
- Documentation for explaining what data cannot be protected by this project or
- the scripts that it writes.
 
 [Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
  Documentation for all recognized command line options (`CLO`) available to the

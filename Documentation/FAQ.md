@@ -8,7 +8,16 @@
 > and privacy concerned users of mobile devices, that wish for one more line of
 > defiance against privacy violating 0-day attacks.
 
-## Q: What does this asymmetric encryption stuff do for me
+## Q: Why was this project built
+
+> A: Encryption of arbitrary data or files is a common enough request that this
+> tool was developed. This is not a partition encryption solution (often LUKS
+> partitions are the *goto* for such Kernel level supported encryption where a
+> file system can be mounted, read, and written to) instead this is a method of
+> file by file and/or line by line asymmetric encryption at the host OS's
+> software layer that can either be saved or sent to another process.
+
+## Q: What does this encryption stuff do for me
 
 > A: When properly implemented this project aims to reduce risks associated
 > with remote server exploits leading to secondary attacks being easily carried

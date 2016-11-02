@@ -74,6 +74,42 @@
  the main script and they're meant as general guidance of problem solving with
  Bash.
 
+1. Understand what this project will not protect against
+
+> Because of the differences in kernel vs software implementation of
+> encryption, the authors of this project feel it is worth warning users that
+> there is some risk for leakage of data destined for encryption. Often this
+> data can be found in the form of system logs or shell history files showing
+> the interactions between a program or user and another program, ie
+> `tail -n4 ~/.bash_history`
+
+## Bash's history file output example
+
+```
+cd /some/file/path
+gpg -r emailuser@host.domain -e some_file -o /tmp/some_file.gpg
+echo 'Email body about attached file' | mutt -s 'Subject of encrypted files attached' -a /tmp/some_file.gpg
+clear
+```
+
+> Known as metadata this amount of information leakage may, or may not, be
+> acceptable depending upon your own perceived threat modal, your system
+> permission, and physical access levels on the target server. Some logging of
+> interactions may not be preventable.
+> For this script's process ID both running in the background or foreground
+> the authors have selected to turn off Bash history but have not gone any
+> further to protect users from system logging services. User may mitigate
+> logging metadata further by setting up custom templates or filters for their
+> logging daemon's configuration, however, this topic is better suited for other
+> documentation; hint `man <logging-daemon>` may yield exceptional information
+> on how to selectively not log this script's actions... Though that maybe a
+> very bad idea, instead consider turning down the verbosity of your logging
+> service for this script's tasks until assured that you're not leaking data
+> destined for encryption.
+> Hint: for both log daemon auditing (and auditing of the script) see section
+> 'CLO Manual and documentation' within this document for listing of every Bash
+> built-in command & external program called listed without repeats.
+
 ## Licensing notice for this file
 
 ```

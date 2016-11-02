@@ -30,6 +30,12 @@
 > under [`Script_Helpers`](Script_Helpers) that enable more features of this
 > project.
 
+### The core ideals held within this script's design
+
+> Your data should be yours and only those you have authorized to access it
+> should be allowed access. Furthermore, your data should be unreadable to
+> those that do gain unauthorized access.
+
 ## ReadMe.md Copyright notice
 
 ```
