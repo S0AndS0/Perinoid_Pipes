@@ -6,7 +6,7 @@
 > words **do not** bother them because of bugs within this project; instead
 > communicate with this project's authors to resolve this project's bugs.
 
-## Sources of information used in project's script
+## Sources of information used in project scripts
 
 - LinuxJournal - [Guide for Linux named pipes](http://www.linuxjournal.com/content/using-named-pipes-fifos-bash)
 - DigitalOcean - [Guide for Linux GPG command line options](https://www.digitalocean.com/community/tutorials/how-to-use-gpg-to-encrypt-and-sign-messages-on-an-ubuntu-12-04-vps)

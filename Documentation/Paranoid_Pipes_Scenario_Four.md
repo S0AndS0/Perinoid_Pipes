@@ -2,15 +2,13 @@
 
 -----
 
-> Logging output **->** Named Pipe encryption input file **->**
-> Encrypt & send output to **->** Pipe decryption input file **->**
-> Mount decryption input file directory via SSHfs **->**
-> Start listener on remote mounted Pipe decryption input file **->**
-> Log decrypted output **->** On rotate send encrypted email
+> Logging output `->` Named Pipe encryption input file `->`
+> Encrypt & send output to `->` Pipe decryption input file `->`
+> Mount decryption input file directory via SSHfs `->`
+> Start listener on remote mounted Pipe decryption input file `->`
+> Log decrypted output `->` On rotate send encrypted email
 
 -----
-
-## TLDR
 
 > This scenario is an *extension* of the usage model explained within
 > [Paranoid_Pipes_Scenario_Two.md](Paranoid_Pipes_Scenario_Two.md) documentation,
@@ -27,13 +25,13 @@
 
 ## Setup local server
 
-### Install additional dependencies
+### Install additional dependencies on local server
 
 ```
 sudo apt-get install sshfs
 ```
 
-### Generate ssh key pair
+### Generate ssh key pair on local server
 
 ```
 Var_sshfs_user="s0ands0"
@@ -48,16 +46,22 @@ cp ${Var_sshfs_user}.pub /tmp/${Var_sshfs_user}.pub
 Var_ssh_pubkey="/tmp/${Var_sshfs_user}.pub"
 ```
 
-### Configure `ssh` client settings
+### Configure `ssh` client settings on local server
+
+> Set some variables, note, the `Var_ssh_host` variable will be used latter
+> within this document.
 
 ```
 Var_ssh_conf="/etc/ssh/ssh_conf"
 Var_ssh_host="Web_Host"
 Var_ssh_hostname="192.168.0.3"
 Var_ssh_user="notsudo"
-## The following redirection will append
-##  to your ssh configs so long as you remember
-##  the number of greater/less-then signs required.
+```
+
+> Note the following redirection will append to your ssh configs so long as you
+> remember the number of greater/less-then signs required.
+
+```
 sudo cat >> "${Var_ssh_conf}" <<EOF
 Host ${Var_ssh_host}
     Hostname ${Var_ssh_hostname}
@@ -66,7 +70,7 @@ Host ${Var_ssh_host}
 EOF
 ```
 
-### Clone project
+### Clone project on local server
 
 ```
 mkdir ~/git_clones
@@ -75,34 +79,182 @@ git clone https://github.com/S0AndS0/Perinoid_Pipes
 cd Perinoid_Pipes
 ```
 
-### Generate GnuPG key pair
+### Generate GnuPG key pair on local server
+
+> Set some variables, note, the `Var_gnupg_pubkey_file` variable will be used
+> latter within this document
 
 ```
 Var_gnupg_email="user@host.domain"
 Var_gnupg_pubkey_file="/tmp/${Var_gnupg_email//[@.]/}"
-## Make directory for GnuPG key revoke cert to be save to
+```
+
+> Make directory for GnuPG key revoke cert to be save to and `cd` to it.
+
+```
 mkdir ~/.gpg_remote_pair
 cd ~/.gpg_remote_pair
-## Allow executable permissions for current running user
-##  to the following helper script.
+```
+
+> Allow executable permissions for current running user to the following helper
+> script.
+
+```
 chmod u+x Script_Helpers/GnuPG_Gen_Key.sh
-## Print available command line options and their default
-##  settings. Note add '--help' at the end to double check
-##  your own custom settings.
+```
+
+> Print available command line options and their default settings. Note add
+> '--help' at the end to double check your own custom settings.
+
+```
 Script_Helpers/GnuPG_Gen_Key.sh --help
-## Run the helper script with the following defined options.
+```
+
+> Run the helper script with the following defined options.
+
+```
 Script_Helpers/GnuPG_Gen_Key.sh\
  --prompt-for-pass-yn='yes'\
  --gnupg-email="${Var_gnupg_email}"\
  --gnupg-export-public-key-yn='yes'\
  --gnupg-export-public-key-location="${Var_gnupg_pubkey_file}"\
+ --help
 ```
 
-### Setup named pipe listener for decryption
+> Remove `--help` from above to accept default and customized
+> options. Note that by setting `--prompt-for-pass-yn` to `yes`
+> will cause the script to request a passphrase be generated.
 
-## Setup named pipe for remote server encryption
+## Setup remote server
 
-## Profit & automate
+### Setup up SFTP `user:group` on remote
+
+```
+Var_sftp_user="enclogger"
+Var_sftp_group="sftplogger"
+## Add new user and group for restrictions
+adduser ${Var_sftp_user}
+groupadd ${Var_sftp_group}
+## Add new user to new group
+usermod -a -G ${Var_sftp_group} ${Var_sftp_user}
+## Lock the new user from logins
+passwd -l ${Var_sftp_user}
+## Lock the new user from shell access
+usermod -s /bin/false ${Var_sftp_user}
+```
+
+### Setup `chroot` directory for new user on remote
+
+```
+Var_sftp_chroot="/sftp/logger"
+## Make base of chroot dir owned by root
+mkdir -p ${Var_sftp_chroot}
+chown root:root ${Var_sftp_chroot}
+chmod 0754 ${Var_sftp_chroot}
+## Make spicific directory that new user may read/write to
+mkdir -p ${Var_sftp_chroot}/${Var_sftp_user}
+chown ${Var_sftp_chroot}:${Var_sftp_user} ${Var_sftp_chroot}/${Var_sftp_user}
+chmod 0764 ${Var_sftp_chroot}/${Var_sftp_user}
+```
+
+### Append configs for ssh server on remote
+
+> Note you'll need to manually edit the bellow file to ensure that the following
+> line is set correctly for `Subsystem` global settings; above the next block.
+
+```
+Subsystem    sftp    internal-sftp
+```
+
+> Configuration block for new sftp user group
+
+```
+Var_sshd_conf="/etc/ssh/sshd_conf"
+cat >> "${Var_sshd_conf}" <<EOF
+Match Group ${Var_sftp_group}
+    ChrootDirectory ${Var_sftp_chroot}
+    ForceCommand internal-sftp
+    AllowTcpForwarding no
+EOF
+```
+
+> Note that the remote's ssh server should be restarted &/or reloaded after any
+> configuration changes. Additionally for remote servers it's a good idea to
+> open a second local terminal and re-connect. **without** disconecting the
+> first, to test that settings haven't been buggered up.
+
+## Setup named pipe & mount points
+
+### Copy local ssh public key to remote
+
+```
+Var_ssh_command="mkdir -p /home/${Var_ssh_user}; cat >> /home/${Var_ssh_user}/.ssh/authorized_keys"
+cat ${Var_ssh_pubkey} | ssh root@${Var_ssh_hostname} "${Var_ssh_command}"
+```
+
+### Mount remote directory to local
+
+```
+Var_mount_point="/mnt/"
+## Make a mount point on local
+mkdir -p ${Var_mount_point}
+## Mount via sshfs
+sshfs ${Var_ssh_host}:/ ${Var_mount_point}
+```
+
+### Copy GnuPG public key to remote mount point
+
+```
+cp ${Var_gnupg_pubkey_file} ${Var_mount_point}/${Var_ssh_user}
+```
+
+### Setup named pipe listener for decryption on local
+
+```
+/script/path/script_name.sh --copy-save-yn='yes'\
+ --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
+ --copy-save-ownership="notwwwuser:notwwwgroup"\
+ --copy-save-permissions='100'\
+ --debug-level='6'\
+ --listener-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --log-level='0'\
+ --named-pipe-name="${Var_mount_point}/website_host/www_access.pipe"\
+ --named-pipe-ownership='notwwwuser:wwwgroup'\
+ --named-pipe-permissions='420'\
+ --output-parse-name="/jailed_logs/website_host/www_access.log"\
+ --output-parse-recipient="user@host.domain"\
+ --output-rotate-actions='compress-encrypt,remove-old'\
+ --output-rotate-check-frequency='250'\
+ --output-rotate-max-bites='8046'\
+ --output-rotate-recipient="user@host.domain"\
+ --output-rotate-yn='yes'\
+ --output-save-yn='yes'\
+ --disown-yn='yes' --help
+```
+
+### Setup named pipe for remote server encryption
+
+```
+/script/path/script_name.sh --copy-save-yn='yes'\
+ --copy-save-name="${Var_mount_point}/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
+ --copy-save-ownership="notwwwuser:notwwwgroup"\
+ --copy-save-permissions='100'\
+ --debug-level='6'\
+ --listener-quit-string='sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --log-level='0'\
+ --named-pipe-name="${Var_sftp_chroot}/website_host/var/log/www/access.log.pipe"\
+ --named-pipe-ownership='notwwwuser:wwwgroup'\
+ --named-pipe-permissions='420'\
+ --output-parse-name="${Var_sftp_chroot}/website_host/www_access.pipe"\
+ --output-parse-recipient="${Var_gnupg_email}"\
+ --output-rotate-actions='compress-encrypt,remove-old'\
+ --output-rotate-check-frequency='250'\
+ --output-rotate-max-bites='8046'\
+ --output-rotate-recipient="user@host.domain"\
+ --output-rotate-yn='yes'\
+ --output-save-yn='yes'\
+ --disown-yn='yes' --help
+```
 
 ## Licensing notice for this file
 

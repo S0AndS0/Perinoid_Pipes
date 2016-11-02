@@ -66,6 +66,9 @@
  Documentation for how to setup multiple remote servers with customized script
  copies over `ssh`.
 
+[Paranoid_Pipes_Scenario_Four.md](Paranoid_Pipes_Scenario_Four.md)
+ Documentation for how to use Paranoid_Pipes_Scenario_Two.md over `sshfs` mounts.
+
 [Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
  Contains documentation on all know issues that new and current users of this
  project should be aware of.
@@ -145,4 +148,3 @@
  authors of this project believe are worth notifying readers of. While not all
  have been tested by the authors of this project, some where just *too cool* and
  not mentioning'em would be a shame.
-
