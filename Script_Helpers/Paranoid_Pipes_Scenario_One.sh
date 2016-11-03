@@ -21,32 +21,22 @@ Func_spoon_feed_pipe_decryption(){
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
 		## If current index in array equals ${_end_of_line} value then
-		##  append end of line to ${_arr_to_parse[@]} and reset
-		##  ${_arr_input} to include everything not parsed and reset the
-		##  counter. Else we should append the current index to
-		##  ${_arr_to_parse} and loop again until the count and array
-		##  amount are equal.
+		##  append end of line to ${_arr_to_parse[@]} and push it though
+		##  parsing function. Else append the next line read to
+		##  ${_arr_to_parse[@]} and loop agian. This stops when the total
+		##  number of read lines equals the number of countable lines
+		##  enteracted with.
 		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
-			_arr_input=( "${_arr_input[@]:${_count}}" )
-			let _count=0
+			Do_stuff_with_lines "${_arr_to_parse[@]}"
 		else
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
 		fi
+
 	done
 	unset _count
-	## If above array has some values to parse then start feeding parsing
-	##  function with an array of arrays, one array at a time.
-	if [ "${#_arr_to_parse[@]}" -gt "0" ]; then
-		let _count=0
-		until [ "${_count}" = "${#_arr_to_parse[@]}" ]; do
-			Do_stuff_with_lines "${_arr_to_parse[${_count}]}"
-			let _count++
-		done
-		unset _count
-	fi
 }
 Do_stuff_with_lines(){
 	_enc_input=( "$@" )
