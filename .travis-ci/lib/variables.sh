@@ -20,9 +20,10 @@ export Var_encrypt_pipe_location="${PWD}/encrypt_one.pipe"
 export Var_encrypt_pipe_log="${PWD}/encrypt_one.log"
 export Var_encrypted_location="${PWD}/encrypt_one.gpg"
 export Var_encrypted_bulk_dir="${PWD}/bulk_out"
-export Var_raw_test_location="${PWD}/string_one.txt"
+export Var_raw_test_location="${PWD}/raw_strings.txt"
 export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
 ##  The following block of variables is used in 'script_decrypt.sh' file
+##  Note that this script also re-uses the 'Var_raw_test_location' variable.
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
 export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
 export Var_gnupg_decrypt_opts="--always-trust --yes --bulk --passphrase-file ${Var_pass_location} --decrypt"

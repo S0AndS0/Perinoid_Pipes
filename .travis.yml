@@ -44,9 +44,9 @@ before_script:
 script:
  - chmod +x .travis-ci/script_encrypt.sh
  - .travis-ci/script_encrypt.sh
-## Dissabled decryption checks until local tests are complete.
-# - chmod +x .travis-ci/script_decrypt.sh
-# - .travis-ci/script_decrypt.sh
+## Re-enabled decryption checks for remote builds.
+ - chmod +x .travis-ci/script_decrypt.sh
+ - .travis-ci/script_decrypt.sh
 ## Setps to complete after success or falure
 #after_success:
 #after_failure:

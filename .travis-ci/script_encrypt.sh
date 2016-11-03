@@ -36,6 +36,58 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	cat "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	## If encrypted output file exsists then test decryption now, else error out.
+	if [ -r "${Var_encrypted_location}" ]; then
+		cat "${Var_encrypted_location}"
+		_exit_status=$?
+		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+		Func_check_exit_status "${_exit_status}"
+		cat "${Var_pass_location}" | gpg --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
+		_exit_status=$?
+		echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
+		Func_check_exit_status "${_exit_status}"
+		_un_encrypted_string="$(cat "${Var_raw_test_location}")"
+		_decrypted_string="$(cat "${Var_decrypt_raw_location}")"
+		if [[ "${_un_encrypted_string}" == "${_decrypted_string}" ]]; then
+			echo "# ${Var_script_name} tests for encryption & decryption: OK"
+			echo "# ${Var_script_name}: [${_un_encrypted_string}] = [${_decrypted_string}]"
+		else
+			echo "# ${Var_script_name} reports encryption & decryption: failed"
+			echo "# ${Var_script_name}: [${_un_encrypted_string}] != [${_decrypted_string}]"
+			exit 1
+		fi
+	else
+		echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
+		if [ -f "${Var_encrypted_location}" ]; then
+			echo "# ${Var_script_name} reports it is a file though: ${Var_encrypted_location}"
+		else
+			echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
+		fi
+	fi
+	## Push a few more random lines into encryption pipe for later build
+	##  script to process multi-decryption options.
+	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > \"${Var_raw_test_location}\""
+	echo "${_test_string}" > "${Var_raw_test_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	echo "${_test_string}" > "${Var_encrypt_pipe_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	## Do this for a third time to make sure that the next script has enough
+	##  data to re-decrypt.
+	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > \"${Var_raw_test_location}\""
+	echo "${_test_string}" > "${Var_raw_test_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	echo "${_test_string}" > "${Var_encrypt_pipe_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	## Send quit string to named pipe for testing of built in auto-clean
+	##  functions, note to authors, this seems to be funky on auto builds
+	##  but latter removal of the named pipe file seems to kill the listener
+	##  as designed... this is why the controlling loop is so simple though.
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_location}\""
 	echo "quit" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
@@ -63,32 +115,5 @@ else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
 fi
 ## Test decryption of first entry in output file
-if [ -r "${Var_encrypted_location}" ]; then
-	cat "${Var_encrypted_location}"
-	_exit_status=$?
-	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
-	Func_check_exit_status "${_exit_status}"
-	cat "${Var_pass_location}" | gpg --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
-	_exit_status=$?
-	echo "# ${Var_script_name} running as ${USER}: Func_check_exit_status \"${_exit_status}\""
-	Func_check_exit_status "${_exit_status}"
-	_un_encrypted_string="$(cat "${Var_raw_test_location}")"
-	_decrypted_string="$(cat "${Var_decrypt_raw_location}")"
-	if [[ "${_un_encrypted_string}" == "${_decrypted_string}" ]]; then
-		echo "# ${Var_script_name} tests for encryption & decryption: OK"
-		echo "# ${Var_script_name}: [${_un_encrypted_string}] = [${_decrypted_string}]"
-	else
-		echo "# ${Var_script_name} reports encryption & decryption: failed"
-		echo "# ${Var_script_name}: [${_un_encrypted_string}] != [${_decrypted_string}]"
-		exit 1
-	fi
-else
-	echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
-	if [ -f "${Var_encrypted_location}" ]; then
-		echo "# ${Var_script_name} reports it is a file though: ${Var_encrypted_location}"
-	else
-		echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
-	fi
-fi
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
