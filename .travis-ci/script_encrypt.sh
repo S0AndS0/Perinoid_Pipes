@@ -26,14 +26,18 @@ echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep 
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Note we are saving the test string to a file but will be cat-ing
-	##  it back out to named pipe file.
-	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > \"${Var_raw_test_location}\""
+	##  it back out to named pipe file for the first test so lets make that
+	##  file with the proper permissions to be latter read and currently
+	##  writen to.
+	echo "# ${Var_script_name} running: touch \"${Var_raw_test_location}\""
+	touch "${Var_raw_test_location}"
+	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_location}\""
+	chmod 660 "${Var_raw_test_location}"
+	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
 	echo "${_test_string}" > "${Var_raw_test_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} running as ${USER}: cat \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
-	cat "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
+	_current_string="$(tail -n1 "${Var_raw_test_location}")"
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
+	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 	## If encrypted output file exsists then test decryption now, else error out.
@@ -66,22 +70,18 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	fi
 	## Push a few more random lines into encryption pipe for later build
 	##  script to process multi-decryption options.
-	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > \"${Var_raw_test_location}\""
+	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
 	echo "${_test_string}" > "${Var_raw_test_location}"
+	_current_string="$(tail -n1 "${Var_raw_test_location}")"
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
+	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	echo "${_test_string}" > "${Var_encrypt_pipe_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	## Do this for a third time to make sure that the next script has enough
-	##  data to re-decrypt.
-	_test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_test_string}\" > \"${Var_raw_test_location}\""
+	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
 	echo "${_test_string}" > "${Var_raw_test_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	echo "${_test_string}" > "${Var_encrypt_pipe_location}"
+	_current_string="$(tail -n1 "${Var_raw_test_location}")"
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
+	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 	## Send quit string to named pipe for testing of built in auto-clean
