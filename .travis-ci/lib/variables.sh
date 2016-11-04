@@ -26,6 +26,7 @@ export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
 ##  Note that this script also re-uses the 'Var_raw_test_location' variable.
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
 export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
-export Var_gnupg_decrypt_opts="--always-trust --passphrase-fd 3 --decrypt"
-#export Var_gnupg_decrypt_opts="--batch --yes --no-tty --always-trust --passphrase-file ${Var_pass_location} --decrypt"
+## Found redirection trick at: https://possiblelossofprecision.net/?p=413
+export Var_gnupg_decrypt_opts="--always-trust --passphrase-fd 3 -c 3< <(cat ${Var_pass_location}) --decrypt"
+#export Var_gnupg_decrypt_opts="--batch --yes --no-tty --always-trust --passphrase-fd 3 -c 3< <(cat ${Var_pass_location}) --decrypt"
 #export Var_gnupg_decrypt_opts="--always-trust --passphrase-fd 0 <(${Var_pass_location}) --decrypt"
