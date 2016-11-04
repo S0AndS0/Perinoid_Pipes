@@ -28,36 +28,6 @@ if [ -p "${Var_decrypt_pipe_location}" ]; then
 	Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## Test decryption of first entry in output file
-	if [ -r "${Var_decrypted_location}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_decrypted_location}\""
-		cat "${Var_decrypted_location}"
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
-		if [ -r "${Var_raw_test_location}" ]; then
-			echo "# ${Var_script_name} running: cat \"${Var_raw_test_location}\""
-			cat "${Var_raw_test_location}"
-			_exit_status=$?
-			Func_check_exit_status "${_exit_status}"
-			echo "# ${Var_script_name} running: diff \"${Var_decrypted_location}\" \"${Var_raw_test_location}\""
-			diff "${Var_decrypted_location}" "${Var_raw_test_location}"
-			echo "# ${Var_script_name} reports exit status of: $?"
-		else
-			echo "# ${Var_script_name} could not read: ${Var_raw_test_location}"
-			if [ -f "${Var_raw_test_location}" ]; then
-				echo "# ${Var_script_name} reports it is a file though: ${Var_raw_test_location}"
-			else
-				echo "# ${Var_script_name} reports it not a file: ${Var_raw_test_location}"
-			fi
-		fi
-	else
-		echo "# ${Var_script_name} could not read: ${Var_decrypted_location}"
-		if [ -f "${Var_encrypted_location}" ]; then
-			echo "# ${Var_script_name} reports it is a file though: ${Var_decrypted_location}"
-		else
-			echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
-		fi
-	fi
 	## Send quit string to named pipe to re-test auto clean-up functions.
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_decrypt_pipe_location}\""
 	echo "quit" > "${Var_decrypt_pipe_location}"
@@ -84,6 +54,36 @@ if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
 	done
 else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
+fi
+## Test decryption output against non-encryted input from previous script.
+if [ -r "${Var_decrypted_location}" ]; then
+	echo "# ${Var_script_name} running: cat \"${Var_decrypted_location}\""
+	cat "${Var_decrypted_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	if [ -r "${Var_raw_test_location}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_raw_test_location}\""
+		cat "${Var_raw_test_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+		echo "# ${Var_script_name} running: diff \"${Var_decrypted_location}\" \"${Var_raw_test_location}\""
+		diff "${Var_decrypted_location}" "${Var_raw_test_location}"
+		echo "# ${Var_script_name} reports exit status of: $?"
+	else
+		echo "# ${Var_script_name} could not read: ${Var_raw_test_location}"
+		if [ -f "${Var_raw_test_location}" ]; then
+			echo "# ${Var_script_name} reports it is a file though: ${Var_raw_test_location}"
+		else
+			echo "# ${Var_script_name} reports it not a file: ${Var_raw_test_location}"
+		fi
+	fi
+else
+	echo "# ${Var_script_name} could not read: ${Var_decrypted_location}"
+	if [ -f "${Var_encrypted_location}" ]; then
+		echo "# ${Var_script_name} reports it is a file though: ${Var_decrypted_location}"
+	else
+		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
+	fi
 fi
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
