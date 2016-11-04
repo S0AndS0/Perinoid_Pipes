@@ -91,28 +91,6 @@ if [ -r "${Var_encrypted_location}" ]; then
 	cat "${Var_encrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-## Bellow disabled because input is 'armor' output, docs and mail lists show
-##  that '--allow-multiple-messages' may only be used on non-armored input.
-#	cat "${Var_pass_location}" | gpg --allow-multiple-messages --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
-## Bellow disabled do to GnuPG being not able to decrypt multiple packets of
-##  encrypted data
-#	cat "${Var_pass_location}" | gpg --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
-#	_exit_status=$?
-#	Func_check_exit_status "${_exit_status}"
-## Above compleatly disabled to avoid false 'fail' build status do to the
-##  un-conventional usage of GnuPG. We will now be making multi-decrypt
-##  operations within the next build script; thus the bellow few lines have
-##  also been disabled to avoid any other false 'fail' buil statuses.
-#	_un_encrypted_string="$(tail -n1 "${Var_raw_test_location}")"
-#	_decrypted_string="$(tail -n1 "${Var_decrypt_raw_location}")"
-#	if [[ "${_un_encrypted_string}" == "${_decrypted_string}" ]]; then
-#		echo "# ${Var_script_name} tests for encryption & decryption: OK"
-#		echo "# ${Var_script_name}: [${_un_encrypted_string}] = [${_decrypted_string}]"
-#	else
-#		echo "# ${Var_script_name} reports encryption & decryption: failed"
-#		echo "# ${Var_script_name}: [${_un_encrypted_string}] != [${_decrypted_string}]"
-#		exit 1
-#	fi
 else
 	echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
 	if [ -f "${Var_encrypted_location}" ]; then

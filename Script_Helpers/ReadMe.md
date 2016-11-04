@@ -43,14 +43,14 @@
 
 ### `Paranoid_Pipes_Scenario_One.sh`
 
-[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Paranoid_Pipes_Scenario_One.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Paranoid_Pipes_Scenario_One.sh)
 
 > This script is referenced within
 > [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
 > as an example of using customized named pipe listener scripts to decrypt log
 > files that have appended encrypted contents. This is indented as a *work-around*
 > for limitations of GnuPG not *seeming to* recognize listed encrypted data beyond
-> the first entry.
+> the first entry when `armor` formatting is used.
 
 ### `Paranoid_Pipes_Scenario_Three.sh`
 

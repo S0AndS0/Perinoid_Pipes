@@ -61,14 +61,19 @@ if [ -r "${Var_decrypted_location}" ]; then
 	cat "${Var_decrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	_decrypted_strings="$(cat "${Var_decrypted_location}")"
 	if [ -r "${Var_raw_test_location}" ]; then
 		echo "# ${Var_script_name} running: cat \"${Var_raw_test_location}\""
 		cat "${Var_raw_test_location}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
-		echo "# ${Var_script_name} running: diff \"${Var_decrypted_location}\" \"${Var_raw_test_location}\""
-		diff "${Var_decrypted_location}" "${Var_raw_test_location}"
-		echo "# ${Var_script_name} reports exit status of: $?"
+		_raw_strings="$(cat "${Var_raw_test_location}")"
+		if [ "${_decrypted_strings}" = "${_raw_strings}" ]; then
+			echo "${Var_script_name} reports: all checks passed"
+		else
+			echo "${Var_script_name} reports: failed checks?"
+			diff "${Var_decrypted_location}" "${Var_raw_test_location}"
+		fi
 	else
 		echo "# ${Var_script_name} could not read: ${Var_raw_test_location}"
 		if [ -f "${Var_raw_test_location}" ]; then
