@@ -70,7 +70,7 @@ if [ -r "${Var_decrypted_location}" ]; then
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 		_raw_strings="$(cat "${Var_raw_test_location}")"
-		if [ "${_decrypted_strings}" = "${_raw_strings}" ]; then
+		if [[ "${_decrypted_strings}" == "${_raw_strings}" ]]; then
 			echo "${Var_script_name} reports: all checks passed"
 		else
 			echo "${Var_script_name} reports: failed checks?"
