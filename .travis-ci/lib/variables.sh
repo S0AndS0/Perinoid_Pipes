@@ -26,4 +26,4 @@ export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
 ##  Note that this script also re-uses the 'Var_raw_test_location' variable.
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
 export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
-export Var_gnupg_decrypt_opts="--always-trust --yes --bulk --passphrase-fd 0 --decrypt"
+export Var_gnupg_decrypt_opts="--always-trust --passphrase-file ${Var_pass_location} --decrypt"
