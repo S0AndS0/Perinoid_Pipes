@@ -34,7 +34,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_location}\""
 	chmod 660 "${Var_raw_test_location}"
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" > "${Var_raw_test_location}"
+	echo "${_test_string}" >> "${Var_raw_test_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_location}")"
 	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
@@ -43,14 +43,14 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Push a few more random lines into encryption pipe for later build
 	##  script to process multi-decryption options.
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" > "${Var_raw_test_location}"
+	echo "${_test_string}" >> "${Var_raw_test_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_location}")"
 	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" > "${Var_raw_test_location}"
+	echo "${_test_string}" >> "${Var_raw_test_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_location}")"
 	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
@@ -91,11 +91,12 @@ if [ -r "${Var_encrypted_location}" ]; then
 	cat "${Var_encrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	cat "${Var_pass_location}" | gpg --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
+	cat "${Var_pass_location}" | gpg --allow-multiple-messages --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
+#	cat "${Var_pass_location}" | gpg --always-trust --passphrase-fd 0 --decrypt "${Var_encrypted_location}" > "${Var_decrypt_raw_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	_un_encrypted_string="$(cat "${Var_raw_test_location}")"
-	_decrypted_string="$(cat "${Var_decrypt_raw_location}")"
+	_un_encrypted_string="$(tail -n1 "${Var_raw_test_location}")"
+	_decrypted_string="$(tail -n1 "${Var_decrypt_raw_location}")"
 	if [[ "${_un_encrypted_string}" == "${_decrypted_string}" ]]; then
 		echo "# ${Var_script_name} tests for encryption & decryption: OK"
 		echo "# ${Var_script_name}: [${_un_encrypted_string}] = [${_decrypted_string}]"
