@@ -65,19 +65,21 @@ Do_stuff_with_lines(){
 	##  decryption to terminal.
 	if [ -p "${Var_output_file}" ]; then
 		## TO-DO -- Remove following output line after remote tests
-		echo "${_enc_input[@]}"
-		cat <<<"${_enc_input[@]}" > "${Var_output_file}"
+		echo "## Sending the following data..."
+		echo "${_enc_input}"
+		echo "## ... to named pipe: ${Var_output_file}"
+		cat <<<"${_enc_input}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
+			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
 		else
-			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}" >> "${Var_output_file}"
+			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 		fi
 	else
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]}
+			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]}
 		else
-			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}"
+			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}"
 		fi
 	fi
 	unset -v _enc_block[@]
