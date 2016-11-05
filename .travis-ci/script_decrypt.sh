@@ -60,6 +60,8 @@ if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
 else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
 fi
+chmod +r ${Var_decrypted_location}
+chmod +r ${Var_raw_test_location}
 ## Test decryption output against non-encryted input from previous script.
 if [ -r "${Var_decrypted_location}" ]; then
 	echo "# ${Var_script_name} running: cat \"${Var_decrypted_location}\""
