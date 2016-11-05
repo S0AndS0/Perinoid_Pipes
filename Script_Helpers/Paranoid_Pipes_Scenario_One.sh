@@ -54,11 +54,13 @@ Expand_array_to_block(){
 		let _count++
 	done
 	unset _count
+	unset _input[@]
 }
 Do_stuff_with_lines(){
 #	_enc_input=( "$@" )
-	_enc_block=( "$@" )
-	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
+#	_enc_block=( "$@" )
+	_enc_input="$(Expand_array_to_block "$@" )"
+#	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
 	
 	## TO-DO -- Remove following output line after remote tests
 	echo "${_enc_input[@]}"
