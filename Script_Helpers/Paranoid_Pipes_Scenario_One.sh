@@ -20,6 +20,7 @@ Func_spoon_feed_pipe_decryption(){
 	## Initialize internal count that is either reset or added to in the following loop.
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
+		declare -A _arr_to_parse
 		## If current index in array equals ${_end_of_line} value then
 		##  append end of line to ${_arr_to_parse[@]} and push it though
 		##  parsing function. Else append the next line read to
@@ -30,7 +31,7 @@ Func_spoon_feed_pipe_decryption(){
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
 			Do_stuff_with_lines "${_arr_to_parse[@]}"
-			unset _arr_to_parse
+			unset -v _arr_to_parse[@]
 		else
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
