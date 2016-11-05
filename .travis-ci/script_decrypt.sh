@@ -30,6 +30,9 @@ if [ -p "${Var_decrypt_pipe_location}" ]; then
 	Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	## Perhaps let the system catchup?
+	echo "# ${Var_script_name} running: sleep 5"
+	sleep 5
 	## Send quit string to named pipe to re-test auto clean-up functions.
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_decrypt_pipe_location}\""
 	echo "quit" > "${Var_decrypt_pipe_location}"

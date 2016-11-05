@@ -7,15 +7,15 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 _test_string=$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")
 _test_encryption_opts="--recipient ${Var_gnupg_email} --encrypt"
 exec 9<${Var_pass_location}
-_test_decryption_opts="--always-trust --passphrase-fd 9 --decrypt"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 ## Try encrypting text to new key
+echo "# ${Var_script_name} running: cat <<<\"${_test_string}\" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}"
 cat <<<"${_test_string}" | gpg ${_test_encryption_opts} >> ${Var_test_gpg_location}
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 if [ -f "${Var_test_gpg_location}" ]; then
-	cat ${Var_test_gpg_location} | gpg ${_test_decryption_opts} >> ${Var_test_raw_location}
-#	cat  ${Var_pass_location} | gpg ${_test_decryption_opts} >> ${Var_test_raw_location}
+	echo "# ${Var_script_name} running: cat ${Var_test_gpg_location} | gpg ${Var_gnupg_decrypt_opts} >> ${Var_test_raw_location}"
+	cat ${Var_test_gpg_location} | gpg ${Var_gnupg_decrypt_opts} >> ${Var_test_raw_location}
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
