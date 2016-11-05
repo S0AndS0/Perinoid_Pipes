@@ -43,6 +43,8 @@ Func_spoon_feed_pipe_decryption(){
 
 	done
 	unset _count
+	unset -v _input[@]
+	unset -v _arr_input[@]
 }
 Expand_array_to_block(){
 	_input=( "$@" )
@@ -55,11 +57,8 @@ Expand_array_to_block(){
 	unset -v _input[@]
 }
 Do_stuff_with_lines(){
-#	_enc_input=( "$@" )
-#	_enc_block=( "$@" )
-	_enc_input="$(Expand_array_to_block "$@" )"
-#	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
-	
+	_enc_block=( "$@" )
+	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
 	## TO-DO -- Remove following output line after remote tests
 	echo "${_enc_input[@]}"
 	## If using a named pipe to preform decryption then push encrypted array
@@ -81,6 +80,8 @@ Do_stuff_with_lines(){
 			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}"
 		fi
 	fi
+	unset -v _enc_block[@]
+	unset -v _enc_input[@]
 }
 Main_func(){
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
