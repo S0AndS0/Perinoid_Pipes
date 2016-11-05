@@ -30,6 +30,7 @@ Func_spoon_feed_pipe_decryption(){
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
 			Do_stuff_with_lines "${_arr_to_parse[@]}"
+			unset _arr_to_parse
 		else
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
@@ -40,6 +41,8 @@ Func_spoon_feed_pipe_decryption(){
 }
 Do_stuff_with_lines(){
 	_enc_input=( "$@" )
+	## TO-DO -- Remove following output line after remote tests
+	echo "${_enc_input[*]}"
 	## If using a named pipe to preform decryption then push encrypted array
 	##  through named pipe's input for use, if output is a file then use
 	##  above decrypting command and append to the file. Else output
