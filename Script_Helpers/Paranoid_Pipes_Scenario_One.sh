@@ -43,27 +43,27 @@ Expand_array_to_block(){
 	_enc_input=( "$@" )
 	let _count=0
 	until [ "{_count}" = "${#_enc_input[@]}" ]; do
-		echo "${_enc_input[${_count}]}"
+		cat <<<"${_enc_input[${_count}]}"
 		let _count++
 	done
 	unset _count
 }
 Do_stuff_with_lines(){
-	_enc_input=( "$@" )
-#	_enc_block=( "$@" )
-#	_enc_input=$(Expand_array_to_block "${_enc_block[*]}" )
+#	_enc_input=( "$@" )
+	_enc_block=( "$@" )
+	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
 	
 	## TO-DO -- Remove following output line after remote tests
-	echo "${_enc_input[*]}"
+	echo "${_enc_input[@]}"
 	## If using a named pipe to preform decryption then push encrypted array
 	##  through named pipe's input for use, if output is a file then use
 	##  above decrypting command and append to the file. Else output
 	##  decryption to terminal.
 	if [ -p "${Var_output_file}" ]; then
-		cat <<<"${_enc_input[*]}" > "${Var_output_file}"
+		cat <<<"${_enc_input[@]}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input[*]}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
+			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
 		else
 			cat <<<"${_enc_input[@]}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 		fi

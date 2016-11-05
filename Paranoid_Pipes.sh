@@ -1000,7 +1000,7 @@ Map_read_array_to_output(){
 						;;
 						prepend)
 							Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-							_line=( "${Var_padding_command}" "${_line[@]}" )
+							_line=( "${Var_padding_command}" "${_line[${_count}]}" )
 						;;
 					esac
 				done
