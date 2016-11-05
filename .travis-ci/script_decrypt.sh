@@ -5,63 +5,21 @@ Var_script_name="${0##*/}"
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
-if [ -e "${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test two as ${USER}: ${Var_install_name} Var_debugging=2 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
-	exec 9<${Var_pass_location}
-	${Var_install_name} Var_debugging='2' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test two as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
-	exec 9<${Var_pass_location}
-	${Var_install_path}/${Var_install_name} Var_debugging='2' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-else
-	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
-	exit 1
-fi
-echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
-if [ -p "${Var_decrypt_pipe_location}" ]; then
-	## Use helper script to decrypt multi-block file
-	echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
-	chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
-	echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypt_pipe_location}\""
-	Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypt_pipe_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	## Perhaps let the system catchup?
-#	echo "# ${Var_script_name} running: sleep 5"
-#	sleep 5
-	## Send quit string to named pipe to re-test auto clean-up functions.
-	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_decrypt_pipe_location}\""
-	echo "quit" > "${Var_decrypt_pipe_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-else
-	echo "# ${Var_script_name} could not find pipe file: ${Var_decrypt_pipe_location}"
-fi
-## If test pipe file exists then test, else exit with errors
-## Report on pipe auto-removal
-if ! [ -p "${Var_decrypt_pipe_location}" ]; then
-	echo "# ${Var_script_name} detected pipe corectly removed: ${Var_decrypt_pipe_location}"
-else
-	echo "# ${Var_script_name} detected pipe still exsists: ${Var_decrypt_pipe_location}"
-	ls -hal "${Var_decrypt_pipe_location}"
-	echo "# ${Var_script_name} will cleanup: ${Var_decrypt_pipe_location}"
-	rm -v "${Var_decrypt_pipe_location}"
-fi
-## Report on background processes
-if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
-	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
-	for _pid in $(pgrep "${Var_install_name}"); do
-		echo "# ${Var_script_name} killing: ${_pid}"
-	done
-else
-	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
-fi
-chmod +r ${Var_decrypted_location}
-chmod +r ${Var_raw_test_location}
+## Setup a file to have helper script ouput to
+echo "# ${Var_script_name} running: touch \"${Var_decrypted_location}\""
+touch "${Var_decrypted_location}"
+echo "# ${Var_script_name} running: chmod 660 \"${Var_decrypted_location}\""
+chmod 660 "${Var_decrypted_location}"
+echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
+chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
+## Place passphrase into file descripter that script expects for this use case.
+##  Note becasue the passphrase is within a file, no redirection tricks are
+##  nessisary here.
+exec 9<${Var_pass_location}
+echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\""
+Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypted_location}"
+_exit_status=$?
+Func_check_exit_status "${_exit_status}"
 ## Test decryption output against non-encryted input from previous script.
 if [ -r "${Var_decrypted_location}" ]; then
 	echo "# ${Var_script_name} running: cat \"${Var_decrypted_location}\""

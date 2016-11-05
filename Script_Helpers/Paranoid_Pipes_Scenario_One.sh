@@ -6,7 +6,7 @@ Var_output_file="${2:-/tmp/out.log}"
 ## You may assign the above at run-time using the following example call to
 ##  this script: script_name.sh "/path/to/input" "/path/to/output"
 Var_search_output="$3"
-Arr_gpg_opts=( --decrypt )
+Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
 	_end_of_line='-----END PGP MESSAGE-----'
@@ -71,15 +71,15 @@ Do_stuff_with_lines(){
 		cat <<<"${_enc_input}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} >> "${Var_output_file}"
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
 		else
-			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}" >> "${Var_output_file}"
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 		fi
 	else
 		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]}
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
 		else
-			cat <<<"${_enc_input}" | gpg ${Arr_gpg_opts[*]} | grep -E "${Var_search_output}"
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
 		fi
 	fi
 	unset -v _enc_block[@]
