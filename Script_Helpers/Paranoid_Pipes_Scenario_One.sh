@@ -13,9 +13,9 @@ Func_spoon_feed_pipe_decryption(){
 	## If input is a file then use standard redirection to mapfile command.
 	##  Else use variable as file redirection trick to get mapfile to build an array from input.
 	if [ -f "${_input[@]}" ]; then
-		mapfile _arr_input < "${_input[@]}"
+		mapfile -t _arr_input < "${_input[@]}"
 	else
-		mapfile _arr_input <<<"${_input[@]}"
+		mapfile -t _arr_input <<<"${_input[@]}"
 	fi
 	## Initialize internal count that is either reset or added to in the following loop.
 	let _count=0
@@ -40,18 +40,18 @@ Func_spoon_feed_pipe_decryption(){
 	unset _count
 }
 Expand_array_to_block(){
-	_enc_input=( "$@" )
+	_input=( "$@" )
 	let _count=0
-	until [ "{_count}" = "${#_enc_input[@]}" ]; do
-		cat <<<"${_enc_input[${_count}]}"
+	until [ "${_count}" = "${#_input[@]}" ]; do
+		echo "${_input[${_count}]}"
 		let _count++
 	done
 	unset _count
 }
 Do_stuff_with_lines(){
-	_enc_input=( "$@" )
-#	_enc_block=( "$@" )
-#	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
+#	_enc_input=( "$@" )
+	_enc_block=( "$@" )
+	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
 	
 	## TO-DO -- Remove following output line after remote tests
 	echo "${_enc_input[@]}"
