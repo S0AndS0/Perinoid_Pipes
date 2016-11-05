@@ -10,6 +10,7 @@ Arr_gpg_opts=( --decrypt )
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
 	_end_of_line='-----END PGP MESSAGE-----'
+	_beginning_of_line='-----BEGIN PGP MESSAGE-----'
 	## If input is a file then use standard redirection to mapfile command.
 	##  Else use variable as file redirection trick to get mapfile to build an array from input.
 	if [ -f "${_input[@]}" ]; then
@@ -20,27 +21,24 @@ Func_spoon_feed_pipe_decryption(){
 	## Initialize internal count that is either reset or added to in the following loop.
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
-		## If current index in array equals ${_end_of_line} value then
-		##  append end of line to ${_arr_to_parse[@]} and push it though
-		##  parsing function. Else append the next line read to
-		##  ${_arr_to_parse[@]} and loop agian. This stops when the total
-		##  number of read lines equals the number of countable lines
-		##  enteracted with.
+		## If currently indexed line matches end of line string, then
+		##  append to array and push all values through parsing function
+		##  chain. If else currently indexed line matches beginning of
+		##  line variable, then re-make array with current line indexed
+		##  to '0' and in each case add one to internal count. If else
+		##  currently indexed line does not match either, then append
+		##  current line to array and add one to index.
 		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
 			Do_stuff_with_lines "${_arr_to_parse[@]}"
 			unset -v _arr_to_parse[@]
+		elif [ "${_beginning_of_line}" = "${_arr_input[${_count}]}" ]; then
+			_arr_to_parse=( "${_arr_input[${_count}]}" )
+			let _count++
 		else
-			## If current index is greater then '0' then append to
-			##  the array, else make/re-make array.
-			if [ "${#_arr_to_parse[@]}" -gt "0" ]; then
-				_arr_to_parse+=( "${_arr_input[${_count}]}" )
-				let _count++
-			else
-				_arr_to_parse=( "${_arr_input[${_count}]}" )
-				let _count++
-			fi
+			_arr_to_parse+=( "${_arr_input[${_count}]}" )
+			let _count++
 		fi
 
 	done
@@ -54,7 +52,7 @@ Expand_array_to_block(){
 		let _count++
 	done
 	unset _count
-	unset _input[@]
+	unset -v _input[@]
 }
 Do_stuff_with_lines(){
 #	_enc_input=( "$@" )
