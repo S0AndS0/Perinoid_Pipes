@@ -40,7 +40,7 @@ Func_spoon_feed_pipe_decryption(){
 	unset _count
 }
 Expand_array_to_block(){
-	_enc_input=( "$@" )
+	mapfile -t _enc_input <<<"$@"
 	let _count=0
 	until [ "{_count}" = "${#_enc_input[@]}" ]; do
 		echo "${_enc_input[@]}"
@@ -49,8 +49,7 @@ Expand_array_to_block(){
 	unset _count
 }
 Do_stuff_with_lines(){
-	_enc_block=( "$@" )
-	_enc_input="$(Expand_array_to_block ${_enc_block[@]} )"
+	_enc_input=$(Expand_array_to_block "$@" )
 	## TO-DO -- Remove following output line after remote tests
 	echo "${_enc_input[@]}"
 	## If using a named pipe to preform decryption then push encrypted array
