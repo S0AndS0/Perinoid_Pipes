@@ -15,9 +15,9 @@ chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
 ## Place passphrase into file descripter that script expects for this use case.
 ##  Note becasue the passphrase is within a file, no redirection tricks are
 ##  nessisary here.
-exec 9<${Var_pass_location}
-echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\""
-Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypted_location}"
+#exec 9<${Var_pass_location}
+echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\" \"${Var_pass_location}\""
+Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypted_location}" "${Var_pass_location}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 ## Test decryption output against non-encryted input from previous script.

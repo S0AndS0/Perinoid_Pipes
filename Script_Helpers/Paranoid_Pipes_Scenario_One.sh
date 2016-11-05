@@ -3,9 +3,10 @@
 Var_input_file="${1?No input file to read?}"
 ## The following variable should be your named pipe for decrypting
 Var_output_file="${2:-/tmp/out.log}"
+Var_pass="$3"
 ## You may assign the above at run-time using the following example call to
 ##  this script: script_name.sh "/path/to/input" "/path/to/output"
-Var_search_output="$3"
+Var_search_output="$4"
 Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
@@ -85,7 +86,22 @@ Do_stuff_with_lines(){
 	unset -v _enc_block[@]
 	unset _enc_input
 }
+Pass_the_passphrase(){
+	_pass="$@"
+	if [ -f "${_pass}" ]; then
+		exec 9<"${_pass}"
+	else
+		exec 9<(echo "${_pass}")
+	fi
+}
 Main_func(){
+	## Push passphrase into a file descriptor
+	Pass_the_passphrase "${Var_pass}"
+	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
+	## Close file descriptor containing passphrase
+	##  just to be safer while preforming less then
+	##  secure operations.
+	exec 9>&-
 }
 Main_func
