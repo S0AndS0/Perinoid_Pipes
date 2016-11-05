@@ -59,13 +59,13 @@ Expand_array_to_block(){
 Do_stuff_with_lines(){
 	_enc_block=( "$@" )
 	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
-	## TO-DO -- Remove following output line after remote tests
-	echo "${_enc_input[@]}"
 	## If using a named pipe to preform decryption then push encrypted array
 	##  through named pipe's input for use, if output is a file then use
 	##  above decrypting command and append to the file. Else output
 	##  decryption to terminal.
 	if [ -p "${Var_output_file}" ]; then
+		## TO-DO -- Remove following output line after remote tests
+		echo "${_enc_input[@]}"
 		cat <<<"${_enc_input[@]}" > "${Var_output_file}"
 	elif [ -f "${Var_output_file}" ]; then
 		if [ "${#Var_search_output}" = "0" ]; then
@@ -81,7 +81,7 @@ Do_stuff_with_lines(){
 		fi
 	fi
 	unset -v _enc_block[@]
-	unset -v _enc_input[@]
+	unset _enc_input
 }
 Main_func(){
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
