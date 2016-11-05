@@ -49,9 +49,10 @@ Expand_array_to_block(){
 	unset _count
 }
 Do_stuff_with_lines(){
-	_enc_input="$(Expand_array_to_block "$@" )"
+	_enc_block=( "$@" )
+	_enc_input="$(Expand_array_to_block ${_enc_block[@]} )"
 	## TO-DO -- Remove following output line after remote tests
-	echo "${_enc_input[*]}"
+	echo "${_enc_input[@]}"
 	## If using a named pipe to preform decryption then push encrypted array
 	##  through named pipe's input for use, if output is a file then use
 	##  above decrypting command and append to the file. Else output
