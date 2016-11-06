@@ -8,21 +8,21 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 ##  if executable via full file path and name else exit with errors.
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 if [ -e "${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_script_copy_save='yes' Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_decrypt}\" Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
-	${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_decrypt}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_script_copy_save='yes' Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=751 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_decrypt}\" Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
+	${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='751' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_decrypt}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_decrypt}\" Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
-	${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_decrypt}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions='751' Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_decrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_decrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_decrypt}\" Var_parsing_command=\"$(which gpg) ${Var_gnupg_decrypt_opts}\""
+	${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='751' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_decrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_decrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_decrypt}" Var_parsing_command="$(which gpg) ${Var_gnupg_decrypt_opts}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1
 fi
-echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
+echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_script_copy_name_decrypt}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_decrypt}")"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_decrypt_pipe_location}" ]; then
 	echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
@@ -53,13 +53,13 @@ else
 	rm -v "${Var_decrypt_pipe_location}"
 fi
 ## Report on background processes
-if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
-	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
-	for _pid in $(pgrep "${Var_install_name}"); do
+if [ "$(pgrep -c "${Var_script_copy_name_decrypt}")" -gt "0" ]; then
+	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_decrypt}")"
+	for _pid in $(pgrep "${Var_script_copy_name_decrypt}"); do
 		echo "# ${Var_script_name} killing: ${_pid}"
 	done
 else
-	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
+	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_script_copy_name_decrypt}")"
 fi
 	## If encrypted output file exsists then test decryption now, else error out.
 if [ -r "${Var_decrypted_location}" ]; then
