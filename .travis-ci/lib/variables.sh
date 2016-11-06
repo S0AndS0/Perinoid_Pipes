@@ -29,3 +29,5 @@ export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
 ## Found redirection trick at: https://possiblelossofprecision.net/?p=413
 ##  and from: unix.stackexchange.com/questions/18899/when-would-you-use-an-additional-file-descripter
 export Var_gnupg_decrypt_opts="--always-trust --passphrase-fd 9 --decrypt"
+export Var_script_copy_name_encrypt="${PWD}/encrypt_listener.sh"
+export Var_script_copy_name_decrypt="${PWD}/decrypt_listener.sh"
