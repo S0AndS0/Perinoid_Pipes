@@ -8,14 +8,14 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 ##  if executable via full file path and name else exit with errors.
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 if [ -e "${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=2 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
-	${Var_install_name} Var_debugging='2' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
+	${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=2 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
-	${Var_install_path}/${Var_install_name} Var_debugging='2' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir}"
+	${Var_install_path}/${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -86,11 +86,13 @@ if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
 else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
 fi
-	## If encrypted output file exsists then test decryption now, else error out.
+## If encrypted output file exsists then test decryption now, else error out.
 if [ -r "${Var_encrypted_location}" ]; then
-	cat "${Var_encrypted_location}"
+	echo "# ${Var_script_name} running: ls -hal \"${Var_encrypted_location}\""
+	ls -hal "${Var_encrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	echo "# ${Var_script_name} reports all checks: OK"
 else
 	echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
 	if [ -f "${Var_encrypted_location}" ]; then
