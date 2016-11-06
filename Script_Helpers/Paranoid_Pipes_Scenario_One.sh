@@ -142,11 +142,11 @@ Do_stuff_with_lines(){
 	exec 9>&-
 }
 Pass_the_passphrase(){
-	_pass="$@"
+	_pass=( "$@" )
 	if [ -f "${_pass}" ]; then
-		exec 9<"${_pass}"
+		exec 9<"${_pass[@]}"
 	else
-		exec 9<(echo "${_pass}")
+		exec 9<(echo "${_pass[@]}")
 	fi
 }
 Main_func(){
