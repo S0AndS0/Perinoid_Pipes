@@ -57,6 +57,20 @@
 > within [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
 > for bulk decryption of multi-message files that have been armored & encrypted.
 
+## `script_encrypt_copy.sh`
+
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](script_encrypt_copy.sh)
+
+> This script tests encryption via a saved copy of the main script (abreviated)
+> The authors will be enabling testing for this and the bellow build script.
+
+## `script_decrypt_copy.sh`
+
+[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](script_decrypt_copy.sh)
+
+> This script tests encryption via a saved copy of the main script (abreviated)
+> The authors will be enabling testing for this and the above build script.
+
 ## `lib/functions.sh`
 
 [![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](lib/functions.sh)

@@ -40,15 +40,21 @@ before_script:
  - .travis-ci/before_script_gen_key.sh
  - chmod +x .travis-ci/before_script_test_key.sh
  - .travis-ci/before_script_test_key.sh
-## Run tests for travis-ci.org to report on
+## Run encryption/decryption via main script and helper script.
 script:
  - chmod +x .travis-ci/script_encrypt.sh
  - .travis-ci/script_encrypt.sh
-## Re-enabled decryption checks for remote builds.
  - chmod +x .travis-ci/script_decrypt.sh
  - .travis-ci/script_decrypt.sh
 ## Setps to complete after success or falure
-#after_success:
+##  Run encryption/decryption save script copy tests. Note decryption still
+##  makes use of helper script for feeding the named pipe. Note the following
+##  two build scripts may cause failures if there are typos.
+after_success:
+ - chmod .travis-ci/script_decrypt_copy.sh
+ - .travis-ci/script_decrypt_copy.sh
+ - chmod .travis-ci/script_encrypt_copy.sh
+ - .travis-ci/script_encrypt_copy.sh
 #after_failure:
 ## Steps to run for deployment of build if any
 #before_deploy:
