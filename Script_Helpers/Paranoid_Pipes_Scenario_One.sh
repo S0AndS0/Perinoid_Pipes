@@ -64,6 +64,8 @@ Do_stuff_with_lines(){
 	##  through named pipe's input for use, if output is a file then use
 	##  above decrypting command and append to the file. Else output
 	##  decryption to terminal.
+	## Push passphrase into a file descriptor
+	Pass_the_passphrase "${Var_pass}"
 	if [ -p "${Var_output_file}" ]; then
 		## TO-DO -- Remove following output line after remote tests
 		echo "## Sending the following data..."
@@ -85,6 +87,10 @@ Do_stuff_with_lines(){
 	fi
 	unset -v _enc_block[@]
 	unset _enc_input
+	## Close file descriptor containing passphrase
+	##  just to be safer while preforming less then
+	##  secure operations.
+	exec 9>&-
 }
 Pass_the_passphrase(){
 	_pass="$@"
@@ -95,13 +101,7 @@ Pass_the_passphrase(){
 	fi
 }
 Main_func(){
-	## Push passphrase into a file descriptor
-	Pass_the_passphrase "${Var_pass}"
 	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
-	## Close file descriptor containing passphrase
-	##  just to be safer while preforming less then
-	##  secure operations.
-	exec 9>&-
 }
 Main_func
