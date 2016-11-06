@@ -150,4 +150,4 @@ Main_func(){
 	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
 }
-Main_func
+Main_func "${@}"

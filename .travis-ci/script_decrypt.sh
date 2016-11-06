@@ -20,6 +20,8 @@ Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_loca
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 ## Test decryption output against non-encryted input from previous script.
+chmod +r ${Var_decrypted_location}
+chmod +r ${Var_raw_test_location}
 if [ -r "${Var_decrypted_location}" ]; then
 	echo "# ${Var_script_name} running: cat \"${Var_decrypted_location}\""
 	cat "${Var_decrypted_location}"
