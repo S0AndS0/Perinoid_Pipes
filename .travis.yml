@@ -51,9 +51,9 @@ script:
 ##  makes use of helper script for feeding the named pipe. Note the following
 ##  two build scripts may cause failures if there are typos.
 after_success:
- - chmod .travis-ci/script_decrypt_copy.sh
+ - chmod +x .travis-ci/script_decrypt_copy.sh
  - .travis-ci/script_decrypt_copy.sh
- - chmod .travis-ci/script_encrypt_copy.sh
+ - chmod +x .travis-ci/script_encrypt_copy.sh
  - .travis-ci/script_encrypt_copy.sh
 #after_failure:
 ## Steps to run for deployment of build if any

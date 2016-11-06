@@ -24,10 +24,10 @@ else
 fi
 echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 ## If test pipe file exists then test, else exit with errors
-if [ -p "${Var_encrypt_pipe_location}" ]; then
+if [ -p "${Var_decrypt_pipe_location}" ]; then
 	echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
 	chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
-	echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\" \"${Var_pass_location}\""
+	echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypt_pipe_location}\" \"${Var_pass_location}\""
 	Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_location}" --output-file="${Var_decrypt_pipe_location}" --pass="${Var_pass_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
@@ -35,22 +35,22 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	##  functions, note to authors, this seems to be funky on auto builds
 	##  but latter removal of the named pipe file seems to kill the listener
 	##  as designed... this is why the controlling loop is so simple though.
-	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_location}\""
-	echo "quit" > "${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_decrypt_pipe_location}\""
+	echo "quit" > "${Var_decrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
-	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} could not find: ${Var_decrypt_pipe_location}"
 	exit 1
 fi
 ## Report on pipe auto-removal
-if ! [ -p "${Var_encrypt_pipe_location}" ]; then
-	echo "# ${Var_script_name} detected pipe corectly removed: ${Var_encrypt_pipe_location}"
+if ! [ -p "${Var_decrypt_pipe_location}" ]; then
+	echo "# ${Var_script_name} detected pipe corectly removed: ${Var_decrypt_pipe_location}"
 else
-	echo "# ${Var_script_name} detected pipe still exsists: ${Var_encrypt_pipe_location}"
-	ls -hal "${Var_encrypt_pipe_location}"
-	echo "# ${Var_script_name} will cleanup: ${Var_encrypt_pipe_location}"
-	rm -v "${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} detected pipe still exsists: ${Var_decrypt_pipe_location}"
+	ls -hal "${Var_decrypt_pipe_location}"
+	echo "# ${Var_script_name} will cleanup: ${Var_decrypt_pipe_location}"
+	rm -v "${Var_decrypt_pipe_location}"
 fi
 ## Report on background processes
 if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
@@ -62,7 +62,7 @@ else
 	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
 fi
 	## If encrypted output file exsists then test decryption now, else error out.
-if [ -r "${Var_encrypted_location}" ]; then
+if [ -r "${Var_decrypted_location}" ]; then
 	cat "${Var_decrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
