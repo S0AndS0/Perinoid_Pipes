@@ -246,34 +246,6 @@ Var_parsing_allowed_chars='[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]'
 ##  CLO --disown-yn
 Var_disown_parser_yn="yes"
 
-## Variables that control the output color palate, note the following
-##  use the 'echo -e "something to echo"' command to enable ANSI escape
-##  codes, this also enables the contained string to preform new lines '\n'
-##  and other features; be aware of what is allowed to be expanded when
-##  using the '-e' with echo.
-## Note commented color assignments are currently not used by this script
-##  and are commented to keep 'shellcheck' *happier* with this script.
-##Var_color_red='\033[0:31m'
-#Var_color_green='\033[0:32m'
-#Var_color_yellow='\033[0:33m'
-#Var_color_blue='\033[0:34m'
-#Var_color_purple='\033[0:35m'
-#Var_color_cyan='\033[0:36m'
-#Var_color_gray='\033[0:37m'
-##Var_color_lred='\033[1:31m'
-##Var_color_lgreen='\033[1:32m'
-##Var_color_lyellow='\033[1:33m'
-#Var_color_lblue='\033[1:34m'
-##Var_color_lpurple='\033[1:35m'
-#Var_color_lcyan='\033[1:36m'
-#Var_color_lgray='\033[1:37m'
-##Var_color_null='\033[0m'
-##  Example of usage:
-##   echo -e "${Var_color_lpurple}This should be light purple\n${Var_color_null}And this should be colorless."
-## Currently the above are only used on messages that
-##  include command line options set at script run-time.
-##  Helps with debugging as this script can be loud.
-
 ## CLO --padding-enable-yn
 Var_enable_padding_yn='no'
 ## CLO --padding-length
@@ -291,7 +263,8 @@ Var_save_variables='no'
 ### Variables and array declorations to keep Shellcheck happier
 ## Following array maybe used for setting "headers" for any new log file
 ##  or is set by passing any string not reconized as an agrument.
-Arr_extra_input=""
+##  Dissabled bellow regardless of 'shellcheck' complaints.
+#Arr_extra_input=""
 
 ### Experimental variables and alternative variable examples
 Var_authors_contact='strangerthanbland@gmail.com'
@@ -308,9 +281,7 @@ Var_authors_contact='strangerthanbland@gmail.com'
 ##  privacy attacks on logged services by not keeping logs in clear-text
 ##  nor keeping large caches of encrypted logs on either host or jailed file
 ##  systems for attackers to slurp up.
-#Var_gpg_decrypter="root"
-#Var_gpg_decrypter_options="--batch --decrypt"
-#Var_gpg_decrypter_options="--batch -u ${Var_gpg_decrypter} --decrypt"
+#Var_gpg_decrypter_options="--passphrase-fd 9 --decrypt"
 #Var_parsing_command="${Var_gpg_exec_path} ${Var_gpg_decrypter_options}"
 #Var_parsing_output_file="${Var_pipe_file_name%.*}.log"
 #Var_bulk_output_suffix="log"
@@ -327,20 +298,11 @@ Func_messages(){
 	## Use echo to notify script user of various levels of information if user set debug level
 	##  is either equal to or less than the values set by messages. Otherwise be silent.
 	if [ "${Var_debugging}" = "${_debug_level}" ] || [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-		## Set colors of hash marks in messages based on differences in debugging levels.
-		#if [ "${Var_debugging}" = "${_debug_level}" ]; then
-		#	_custom_color="${Var_color_lgreen}"
-		#elif [ "${Var_debugging}" -gt "${_debug_level}" ]; then
-		#	_custom_color="${Var_color_lyellow}"
-		#else
-		#	_custom_color="${Var_color_red}"
-		#fi
 		## Note this ugly line is what makes messages line wrap at word
 		##  boundaries. And shellcheck will complain about quoting use.
 		##  The authors of this script believe it to be more prudent
 		##  to spicificly quote the message text
 		_line_wrap_message="$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -n "#DBL-${_debug_level}#") &/g")"
-		#_line_wrap_message="$(fold -sw $((${Var_columns_width}-8)) <<<"${_message}" | sed -e "s/^.*$/$(${Var_echo_exec_path} -en ${_custom_color}#${Var_color_null}DBL-${_debug_level}${_custom_color}#${Var_color_null}) &/g")"
 		${Var_echo_exec_path} -e "${_line_wrap_message}"
 	fi
 	## Check if log level is high enough, then check if logging is enabled.
@@ -450,27 +412,19 @@ Func_usage_options(){
 			echo "# Checking if ${Var_script_name} has help on [${_help_lookup[${_help_count}]}]"
 			if [ "${_help_lookup[${_help_count}]}" != "${Var_script_name}" ] && [ "${_help_lookup[${_help_count}]}" != "${Var_script_dir}/${Var_script_name}" ]; then
 				case "${_help_lookup[${_help_count}]}" in
-					#)
-					#	${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
-					#	Func_messages "# " '1' '2'
-					#;;
 					--save-options-yn|Var_save_options)
 						${Var_echo_exec_path} "# ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
-						#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
 						Func_messages "# Reload saved options via: ${Var_script_name} \$(cat ${Var_source_var_file})" '1' '2'
 					;;
 					--save-variables-yn|Var_save_variables)
 						${Var_echo_exec_path} "# ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
-						#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} ${Var_script_name} recognized internal help for [${_help_lookup[${_help_count}]}]"
 						Func_messages "# Reload saved variables via: ${Var_script_name} --source-var-file=${Var_source_var_file}" '1' '2'
 					;;
 					*)
 						${Var_echo_exec_path} "# ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
-						#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} not find ${_help_lookup[${_help_count}]}"
 					;;
 				esac
 				${Var_echo_exec_path} "# ${Var_script_name} found [$(which "${_help_lookup[${_help_count}]}")]"
-				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} ${Var_script_name} found [$(which "${_help_lookup[${_help_count}]}")]"
 				${Var_echo_exec_path} "# This is external to ${Var_script_name} but maybe displayed upon user [${Var_script_current_user}] request."
 				Func_prompt_continue "Func_usage_options"
 				if test "$(which "${_help_lookup[${_help_count}]}") --help"; then
@@ -627,8 +581,6 @@ Func_check_args(){
 				Var_extra_var_value="${_arg#*=}"
 				${Var_echo_exec_path} "# Custom variable: ${Var_extra_var_var/---/}"
 				${Var_echo_exec_path} "# Custom value: ${Var_extra_var_value}"
-				#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom variable: ${Var_extra_var_var/---/}"
-				#${Var_echo_exec_path} -e "${Var_color_lpurple}#${Var_color_null} Custom value: ${Var_extra_var_value}"
 				Func_assign_arg "${Var_extra_var_var}" "${Var_extra_var_var/---/}" "${Var_extra_var_value}" 'string'
 			;;
 			--help|-h)
@@ -655,9 +607,6 @@ Func_check_args(){
 				${Var_echo_exec_path} -e "# Unknown input read by ${Var_script_name}\n#\t Try the following for help\n#\t${Var_script_dir}/${Var_script_name} --help"
 				${Var_echo_exec_path} "# This unknown input will be written to named pipe when available."
 				${Var_echo_exec_path} "# Current count of unknown input [${#Arr_extra_input[@]}]"
-				#${Var_echo_exec_path} -e "${Var_color_lred}# Unknown input read by ${Var_script_name}\n#\t Try the following for help${Var_color_null}\n${Var_color_lred}#${Var_color_null}\t${Var_script_dir}/${Var_script_name} --help"
-				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} This unknown input will be written to named pipe when available."
-				#${Var_echo_exec_path} -e "${Var_color_red}#${Var_color_null} Current count of unknown input [${#Arr_extra_input[@]}]"
 				declare -ga "Arr_extra_input+=( ${_arg} )"
 			;;
 		esac
@@ -870,15 +819,11 @@ Func_variable_assignment_reader(){
 	Func_messages "#  --help" '2' "3"
 	Func_messages "## Overwrite any option above with the following syntax" '2' "3"
 	Func_messages "#  --<option-name>=\"<new-value>\"" '2' "3"
-	#Func_messages "${Var_color_red}#${Var_color_null}  --<option-name>=\"<new-value>\"" '2' "3"
 	Func_messages "## Overwrite any variable found within this script & not found above with the following syntax" '2' "3"
 	Func_messages "#  ---<Var_name>=\"<Var_value>\"" '2' "3"
-	#Func_messages "${Var_color_red}#${Var_color_null}  ---<Var_name>=\"<Var_value>\"" '2' "3"
 	Func_messages "#  Note the above '---' method does Not allow for spaces within 'Var_value' unless using sub-shell redirection; see bellow examples" '2' "3"
 	Func_messages "#  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
 	Func_messages "#  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
-	#Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\$(echo \"\${HOME}\")" '2' "3"
-	#Func_messages "${Var_color_red}#${Var_color_null}  ---Var_name=\"\$(echo \${HOME})\"" '2' "3"
 	Func_messages "#  However, the results still must not contain spaces; escaped or otherwise." '2' "3"
 	Func_messages "## Any unrecognized or unknown input otherwise unmatched above is then written to named pipe if/when available." '2' "3"
 }
