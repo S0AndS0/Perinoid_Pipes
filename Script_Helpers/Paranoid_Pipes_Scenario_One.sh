@@ -25,8 +25,7 @@ Func_help(){
 Func_assign_arg(){
 	_variable="${1}"
 	_value="${2}"
-	declare "${_variable}=${_value}"
-#	declare -g "${_variable}=${_value}"
+	declare -g "${_variable}=${_value}"
 }
 Func_check_args(){
 	_arr_input=( "${@}" )
