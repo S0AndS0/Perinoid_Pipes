@@ -1199,7 +1199,7 @@ Map_read_array_to_output(){
 	## Make an array from input, note '-t' will "trim" last new-line.
 	mapfile -t _lines < "\${_file_or_pipe_to_map}"
 	let _count=0
-	until [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ] || [ "\${_count}" -gt "\${#_lines[@]}" ]; do
+	until [ "\${Var_pipe_quit_string}" = "\${_lines[\${_count}]}" ] || [ "\${_count}" = "\${#_lines[@]}" ]; do
 		case "\${Var_enable_padding_yn}" in
 			y|Y|yes|Yes|YES)
 				_line=( "\${_lines[\${_count}]}" )
@@ -1289,7 +1289,6 @@ Pipe_parser_loop(){
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 				fi
 				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}\${Var_bulk_output_suffix}"
-
 			elif [ -d "\${_mapped_array}" ]; then
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
