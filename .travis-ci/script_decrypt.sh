@@ -10,14 +10,13 @@ echo "# ${Var_script_name} running: touch \"${Var_decrypted_location}\""
 touch "${Var_decrypted_location}"
 echo "# ${Var_script_name} running: chmod 660 \"${Var_decrypted_location}\""
 chmod 660 "${Var_decrypted_location}"
+## If above is removed the bellow will show in terminal instead of being saved
+##  to a file. Or if a named pipe is at the output path then the named pipe
+##  will be written to with the helper script.
 echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
 chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
-## Place passphrase into file descripter that script expects for this use case.
-##  Note becasue the passphrase is within a file, no redirection tricks are
-##  nessisary here.
-#exec 9<${Var_pass_location}
 echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\" \"${Var_pass_location}\""
-Script_Helpers/Paranoid_Pipes_Scenario_One.sh "${Var_encrypted_location}" "${Var_decrypted_location}" "${Var_pass_location}"
+Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_location}" --output-file="${Var_decrypted_location}" --pass="${Var_pass_location}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 ## Test decryption output against non-encryted input from previous script.
@@ -38,6 +37,8 @@ if [ -r "${Var_decrypted_location}" ]; then
 		else
 			echo "${Var_script_name} reports: failed checks?"
 			diff "${Var_decrypted_location}" "${Var_raw_test_location}"
+			_exit_status=$?
+			Func_check_exit_status "${_exit_status}"
 		fi
 	else
 		echo "# ${Var_script_name} could not read: ${Var_raw_test_location}"

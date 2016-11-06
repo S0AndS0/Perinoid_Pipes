@@ -1,13 +1,58 @@
 #!/usr/bin/env bash
+#Var_script_dir="${0%/*}"
+Var_script_name="${0##*/}"
 ## The following variable should be your encrypted file that has been appended to.
-Var_input_file="${1?No input file to read?}"
+Var_input_file="/tmp/out.gpg"
 ## The following variable should be your named pipe for decrypting
-Var_output_file="${2:-/tmp/out.log}"
-Var_pass="$3"
+Var_output_file="/tmp/out.log"
+Var_pass="123456... Luggage"
 ## You may assign the above at run-time using the following example call to
 ##  this script: script_name.sh "/path/to/input" "/path/to/output"
-Var_search_output="$4"
+Var_search_output=""
 Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
+Func_help(){
+	echo "# ${Var_script_name} knows the following command line options"
+	echo "#  --input-file 		Var_input_file=${Var_input_file}"
+	echo "#  --output-file		Var_output_file=${Var_output_file}"
+	echo "#  --pass			Var_pass=${Var_pass}"
+	echo "#  --search-output	Var_search_output=${Var_search_output}"
+	echo "#  --gpg-opts		Var_gpg_opts=${Var_gpg_opts}"
+}
+Func_assign_arg(){
+	_variable="${1}"
+	_value="${2}"
+	declare -g "${_variable}=${_value}"
+}
+Func_check_args(){
+	_arr_input=( "${@}" )
+	let _arr_count=0
+	until [ "${#_arr_input[@]}" = "${_arr_count}" ]; do
+		_arg="${_arr_input[${_arr_count}]}"
+		case "${_arg%=*}" in
+			--input-file|Var_input_file)
+				Func_assign_arg "Var_input_file" "${_arg#*=}"
+			;;
+			--output-file|Var_output_file)
+				Func_assign_arg "Var_output_file" "${_arg#*=}"
+			;;
+			--pass|Var_pass)
+				Func_assign_arg "Var_pass" "${_arg#*=}"
+			;;
+			--search-output|Var_search_output)
+				Func_assign_arg "Var_search_output" "${_arg#*=}"
+			;;
+			--gpg-opts|Var_gpg_opts)
+				Func_assign_arg "Var_gpg_opts" "${_arg#*=}"
+			;;
+			--help|help|*)
+				echo "# ${Var_script_name} variable read: ${_arg%=*}"
+				echo "# ${Var_script_name} value read: ${_arg#*=}"
+				Func_help
+			;;
+		esac
+		let _arr_count++
+	done
+}
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
 	_end_of_line='-----END PGP MESSAGE-----'
@@ -101,6 +146,7 @@ Pass_the_passphrase(){
 	fi
 }
 Main_func(){
+	Func_check_args "${@:---help}"
 	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
 }
