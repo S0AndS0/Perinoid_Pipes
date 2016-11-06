@@ -5,10 +5,14 @@ Var_script_name="${0##*/}"
 Var_input_file="/tmp/out.gpg"
 ## The following variable should be your named pipe for decrypting
 Var_output_file="/tmp/out.log"
+## The passphrase to unlock private GnuPG key, any Space Balls fans
+##  wishing for 'A search for more money' out there?
 Var_pass="123456... Luggage"
-## You may assign the above at run-time using the following example call to
-##  this script: script_name.sh "/path/to/input" "/path/to/output"
+## Optional string to search for, uses grep to silence non-matching lines when
+##  not outputing to a named pipe.
 Var_search_output=""
+## GnuPG decryption options. Note changing this to '--verify' may enable bulk
+##  signature checking
 Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
 Func_help(){
 	echo "# ${Var_script_name} knows the following command line options"
@@ -21,7 +25,8 @@ Func_help(){
 Func_assign_arg(){
 	_variable="${1}"
 	_value="${2}"
-	declare -g "${_variable}=${_value}"
+	declare "${_variable}=${_value}"
+#	declare -g "${_variable}=${_value}"
 }
 Func_check_args(){
 	_arr_input=( "${@}" )
@@ -64,7 +69,7 @@ Func_spoon_feed_pipe_decryption(){
 	else
 		mapfile -t _arr_input <<<"${_input[@]}"
 	fi
-	## Initialize internal count that is either reset or added to in the following loop.
+	## Initialize internal count that added to in the following loop for array indexing.
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
 		## If currently indexed line matches end of line string, then

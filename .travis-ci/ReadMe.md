@@ -51,12 +51,11 @@
 
 ## `script_decrypt.sh`
 
-[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](script_decrypt.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](script_decrypt.sh)
 
-> Further local tests are required before the authors of this project re-enable
-> this build script. While there are no apperant `shellcheck` errors popping
-> there are some issues with the helper script's capabilaty to find the
-> encrypted test file and feading it to the decryption named pipe file.
+> This script maybe used as an example of how to use the helper script referanced
+> within [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
+> for bulk decryption of multi-message files that have been armored & encrypted.
 
 ## `lib/functions.sh`
 
