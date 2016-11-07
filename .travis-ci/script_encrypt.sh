@@ -22,7 +22,16 @@ else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1
 fi
-echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
+_background_processes="$(ps aux | grep "${Var_install_name}" | grep -v grep)"
+if [ "${#_background_processes}" -gt '0' ]; then
+	echo "# ${Var_script_name} detected the following background processes"
+	echo "${_background_processes}"
+else
+	echo "# Error - ${Var_script_name} did not detect any background processes"
+	exit 1
+fi
+#echo -e "# ${Var_script_name} checking background processes:\n# "
+#echo "\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Note we are saving the test string to a file but will be cat-ing
@@ -65,7 +74,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
-	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
+	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
 fi
 ## Report on pipe auto-removal
@@ -78,13 +87,14 @@ else
 	rm -v "${Var_encrypt_pipe_location}"
 fi
 ## Report on background processes
-if [ "$(pgrep -c "${Var_install_name}")" -gt "0" ]; then
+_background_processes="$(ps aux | grep "${Var_install_name}" | grep -v grep)"
+if [ "${#_background_processes}" -gt '0' ]; then
 	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 	for _pid in $(pgrep "${Var_install_name}"); do
 		echo "# ${Var_script_name} killing: ${_pid}"
 	done
 else
-	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_install_name}")"
+	echo "# ${Var_script_name} did not detect any background processes"
 fi
 ## If encrypted output file exsists then test decryption now, else error out.
 if [ -r "${Var_encrypted_location}" ]; then
