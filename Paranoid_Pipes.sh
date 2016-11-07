@@ -1075,7 +1075,9 @@ Func_mkpipe_reader(){
 					Func_messages "# ...finished encryption of read input" '2' '3'
 				;;
 			esac
-		else
+		## Else if read input matches quit string, either run trap
+		##  function if not already set or break loop to trigger trap.
+		elif [ "${Var_pipe_quit_string}" = "${_mapped_array}" ]; then
 			_exit_status=$?
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
@@ -1283,7 +1285,7 @@ Pipe_parser_loop(){
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
-		if [ "\${#_mapped_array}" != '0' ]; then
+		if [ "\${#_mapped_array}" != '0' ] && [ "\${Var_pipe_quit_string}" != "\${_mapped_array}" ]; then
 			if [ -f "\${_mapped_array}" ]; then
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
