@@ -31,3 +31,5 @@ export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
 export Var_gnupg_decrypt_opts="--always-trust --passphrase-fd 9 --decrypt"
 export Var_script_copy_name_encrypt="${PWD}/encrypt_listener.sh"
 export Var_script_copy_name_decrypt="${PWD}/decrypt_listener.sh"
+## The following are used within '' file
+export Var_search_out_location="${PWD}/decrypt_search.txt"
