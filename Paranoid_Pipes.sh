@@ -1283,7 +1283,7 @@ Pipe_parser_loop(){
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
-		if [ "\${#_mapped_array}" != '0' ] && [ "\${Var_pipe_quit_string}" != "\${_mapped_array}" ]; then
+		if [ "\${#_mapped_array}" != '0' ]; then
 			if [ -f "\${_mapped_array}" ]; then
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
@@ -1313,7 +1313,7 @@ Pipe_parser_loop(){
 					;;
 				esac
 			fi
-		else
+		elif [ "\${Var_pipe_quit_string}" = "\${_mapped_array}" ]; then
 			_exit_code=\$?
 			case "\${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
