@@ -21,6 +21,9 @@ Func_help(){
 	echo "#  --pass			Var_pass=${Var_pass}"
 	echo "#  --search-output	Var_search_output=${Var_search_output}"
 	echo "#  --gpg-opts		Var_gpg_opts=${Var_gpg_opts}"
+	echo "## ${Var_script_name} is designed to decrypt 'arrmor' encrypted files"
+	echo "#  that contain more than one arrmored message in an automated fashion."
+	echo "## Note: '--search-output' will not be active if outputing to named pipe."
 }
 Func_assign_arg(){
 	_variable="${1}"
@@ -57,10 +60,78 @@ Func_check_args(){
 		let _arr_count++
 	done
 }
+## The following function is called within 'Do_stuff_with_lines'
+##  to set the passphrase to a file descriptor prior to attempting
+##  to process encrypted blocks.
+Pass_the_passphrase(){
+	_pass=( "$@" )
+	if [ -f "${_pass}" ]; then
+		exec 9<"${_pass[@]}"
+	else
+		exec 9<(echo "${_pass[@]}")
+	fi
+}
+## The following function is called within 'Do_stuff_with_lines'
+##  function as variable '_enc_input' to re-introduce new lines
+##  that 'mapfile' trimed durring processing.
+Expand_array_to_block(){
+	_input=( "$@" )
+	let _count=0
+	until [ "${_count}" = "${#_input[@]}" ]; do
+		echo "${_input[${_count}]}"
+		let _count++
+	done
+	unset _count
+	unset -v _input[@]
+}
+## The following function is called within 'Func_spoon_feed_pipe_decryption'
+##  functions until loop and preforms the encrypted block redirection to
+##  a decrypted file or if a named pipe is designated then it is written
+##  to that instead.
+Do_stuff_with_lines(){
+	_enc_block=( "$@" )
+	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
+	## If using a named pipe to preform decryption then push encrypted array
+	##  through named pipe's input for use, if output is a file then use
+	##  above decrypting command and append to the file. Else output
+	##  decryption to terminal.
+	## Push passphrase into a file descriptor
+	Pass_the_passphrase "${Var_pass}"
+	if [ -p "${Var_output_file}" ]; then
+		## TO-DO -- Remove following output line after remote tests
+		echo "## Sending the following data..."
+		echo "${_enc_input}"
+		echo "## ... to named pipe: ${Var_output_file}"
+		cat <<<"${_enc_input}" > "${Var_output_file}"
+	elif [ -f "${Var_output_file}" ]; then
+		## Check if we are searching for something before outputing
+		if [ "${#Var_search_output}" = "0" ]; then
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
+		else
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
+		fi
+	else
+		## Check if we are searching for something before outputing
+		if [ "${#Var_search_output}" = "0" ]; then
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
+		else
+			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
+		fi
+	fi
+	unset -v _enc_block[@]
+	unset _enc_input
+	## Close file descriptor containing passphrase
+	##  just to be safer while preforming less then
+	##  secure operations.
+	exec 9>&-
+}
 Func_spoon_feed_pipe_decryption(){
 	_input=( "${@}" )
-	_end_of_line='-----END PGP MESSAGE-----'
+	## Note we use the begin to start the internal array
 	_beginning_of_line='-----BEGIN PGP MESSAGE-----'
+	## Then we use the end to finish the array and pass control to
+	##  decryption functions before returning to parant loop for more.
+	_end_of_line='-----END PGP MESSAGE-----'
 	## If input is a file then use standard redirection to mapfile command.
 	##  Else use variable as file redirection trick to get mapfile to build an array from input.
 	if [ -f "${_input[@]}" ]; then
@@ -96,62 +167,16 @@ Func_spoon_feed_pipe_decryption(){
 	unset -v _input[@]
 	unset -v _arr_input[@]
 }
-Expand_array_to_block(){
-	_input=( "$@" )
-	let _count=0
-	until [ "${_count}" = "${#_input[@]}" ]; do
-		echo "${_input[${_count}]}"
-		let _count++
-	done
-	unset _count
-	unset -v _input[@]
-}
-Do_stuff_with_lines(){
-	_enc_block=( "$@" )
-	_enc_input=$(Expand_array_to_block "${_enc_block[@]}" )
-	## If using a named pipe to preform decryption then push encrypted array
-	##  through named pipe's input for use, if output is a file then use
-	##  above decrypting command and append to the file. Else output
-	##  decryption to terminal.
-	## Push passphrase into a file descriptor
-	Pass_the_passphrase "${Var_pass}"
-	if [ -p "${Var_output_file}" ]; then
-		## TO-DO -- Remove following output line after remote tests
-		echo "## Sending the following data..."
-		echo "${_enc_input}"
-		echo "## ... to named pipe: ${Var_output_file}"
-		cat <<<"${_enc_input}" > "${Var_output_file}"
-	elif [ -f "${Var_output_file}" ]; then
-		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
-		else
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
-		fi
-	else
-		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
-		else
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
-		fi
-	fi
-	unset -v _enc_block[@]
-	unset _enc_input
-	## Close file descriptor containing passphrase
-	##  just to be safer while preforming less then
-	##  secure operations.
-	exec 9>&-
-}
-Pass_the_passphrase(){
-	_pass=( "$@" )
-	if [ -f "${_pass}" ]; then
-		exec 9<"${_pass[@]}"
-	else
-		exec 9<(echo "${_pass[@]}")
-	fi
-}
 Main_func(){
 	Func_check_args "${@:---help}"
 	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
+	## Unset user modified variables once finished.
+	unset Var_input_file
+	unset Var_output_file
+	unset Var_pass
+	unset Var_search_output
+	unset Var_gpg_opts
 }
 Main_func "${@}"
+echo "# ${Var_script_name} finished at: $(date -u)"
