@@ -41,22 +41,22 @@ before_script:
  - chmod +x .travis-ci/before_script_test_key.sh
  - .travis-ci/before_script_test_key.sh
 ## Run tests that report 'Passing' or 'Failing' build states
-script:
-##  Run main script encryption tests. This will start the main script with the
+## - Run main script encryption tests. This will start the main script with the
 ##  internal listening loop in the background, then write to the related named
 ##  pipe file a few sudo-random lines of data to process before sending the
 ##  default quit string.
- - chmod +x .travis-ci/script_encrypt.sh
- - .travis-ci/script_encrypt.sh
-##  Run helper script with options to decrypt the multi-block/message file
+## - Run helper script with options to decrypt the multi-block/message file
 ##  that the previous script encrypted and appended to.
- - chmod +x .travis-ci/script_decrypt.sh
- - .travis-ci/script_decrypt.sh
-##  Run helper decryption again but this time test features of searching
+## - Run helper decryption again but this time test features of searching
 ##  decrypted output prior to saving to a file. This is usefull for saving
 ##  space for limited resources bound devices.
-  - chmod +x .travis-ci/test_search_script_decrypt.sh
-  - .travis-ci/test_search_script_decrypt.sh
+script:
+ - chmod +x .travis-ci/script_encrypt.sh
+ - .travis-ci/script_encrypt.sh
+ - chmod +x .travis-ci/script_decrypt.sh
+ - .travis-ci/script_decrypt.sh
+ - chmod +x .travis-ci/test_search_script_decrypt.sh
+ - .travis-ci/test_search_script_decrypt.sh
 ## Setps to complete after success or falure
 #after_success:
 ##  Run encryption/decryption save script copy tests. Note decryption still
