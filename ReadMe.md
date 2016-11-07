@@ -8,11 +8,12 @@
 > authors of this project have tested operations and is provided by [Shields.io](https://shields.io).
 > The `Code Climate` is an over all *grade* of both code **&** documentation
 > found within this project. And is provided by [Code Climate](https://codeclimate.com/).
-> The 'Build Status' is provided by [Travis-CI](https://travis-ci.org/) and
+> The 'Build Status'es are provided by [Travis-CI](https://travis-ci.org/) and
 > runs tests scripts called within the [.travis.yml](.travis.yml) file and
 > reports of any bugs within this project's main script normal usage scenarios.
-> All build scripts used for Travis-CI auto-build checks can be found under
-> the [.travis-ci](.travis-ci) directory.
+> Build scripts used for Travis-CI auto-build checks can be found under
+> the [.travis-ci](.travis-ci) directory. Which shows exsactly which features
+> of this project are fully working in much the same styling.
 
 ## Project goals (generalized)
 
