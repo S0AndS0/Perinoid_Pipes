@@ -59,11 +59,20 @@
 
 ## `test_search_script_decrypt.sh`
 
-[![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](test_search_script_decrypt.sh)
+[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](test_search_script_decrypt.sh)
 
 > This script is very similar to the `script_decrypt.sh` script but preforms
 > tests on searching decrypted output prior to saving. A feature designed to
 > save space on the decryption device but likely maybe used for far more.
+> Internally this is done by grabbing the second line of the the file that
+> logs un-encrypted lines prior to encryption and using that to search for
+> a match within the encrypted log file's parsed output if found the matching
+> line is saved to the helper script's output file. The build script then
+> compaires the search string vs the output files contence to verify that the
+> correct data was decrypted from an encrypted state while leaving the rest
+> in a cipher text format. The helper script uses `grep` so with very little
+> modification it is posible to save multi-line decrypted output that sorounds
+> the matched search string.
 
 ## `script_encrypt_copy.sh`
 

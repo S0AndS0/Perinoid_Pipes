@@ -9,7 +9,7 @@ echo "# ${Var_script_name} started at: $(date -u +%s)"
 ## Line number to read down to in raw strings file
 _line_num='2'
 _search_string=$(head -n${_line_num} "${Var_raw_test_location}" | tail -n1)
-echo "# ${Var_script_name} read line [${_line_num}] as: ${_search_string}"
+echo "# ${Var_script_name} read line [${_line_num}] to search for as: ${_search_string}"
 ## Setup a file to have helper script ouput to
 echo "# ${Var_script_name} running: touch \"${Var_search_out_location}\""
 touch "${Var_search_out_location}"
@@ -39,6 +39,7 @@ if [ -r "${Var_search_out_location}" ]; then
 		echo "##  is able to search decrypted output before saving/printing results; great for saving space!"
 	else
 		echo "# ${Var_script_name} reports: Error [${_search_string}] != [${_decrypted_strings}]"
+		exit 1
 	fi
 else
 	echo "# ${Var_script_name} could not read: ${Var_decrypted_location}"
@@ -46,7 +47,9 @@ else
 		echo "# ${Var_script_name} reports it is a file though: ${Var_decrypted_location}"
 	else
 		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
+		exit 2
 	fi
+	exit 1
 fi
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
