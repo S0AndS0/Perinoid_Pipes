@@ -9,15 +9,15 @@
 > The `Code Climate` is an over all *grade* of both code **&** documentation
 > found within this project. And is provided by [Code Climate](https://codeclimate.com/).
 > The 'Build Status'es are provided by [Travis-CI](https://travis-ci.org/) and
-> runs tests scripts called within the [.travis.yml](.travis.yml) file and
-> reports of any bugs within this project's main script normal usage scenarios.
-> Build scripts used for Travis-CI auto-build checks can be found under
-> the [.travis-ci](.travis-ci) directory. Which shows exsactly which features
-> of this project are fully working in much the same styling.
+> which runs tests scripts called within the [.travis.yml](.travis.yml) file
+> and reports of any bugs within this project's main script normal usage
+> scenarios. Build scripts used for Travis-CI auto-build checks can be found
+> under the [.travis-ci](.travis-ci) directory. Which shows exsactly which
+> features of this project are fully working in much the same styling.
 
 ## Project goals (generalized)
 
-### Provide asymmetric (hybrid) encryption via GnuPG to logging services & users
+### Provide automated encryption & decryption via GnuPG to logging services & users
 
 > See [Paranoid_Pipes_Scenario_One.md](Documentation/Paranoid_Pipes_Scenario_One.md)
 > for detailed instructions on how to set this up for Nginx or Apache2 web
@@ -29,7 +29,7 @@
 > See [ReadMe.md](Documentation/ReadMe.md) file under the `Documentation/`
 > directory to find further listed examples as well as *helper* scripts found
 > under [`Script_Helpers`](Script_Helpers) that enable more features of this
-> project.
+> project or help setup this project for contribution.
 
 ### The core ideals held within this script's design
 
