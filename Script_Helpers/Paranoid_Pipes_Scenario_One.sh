@@ -14,6 +14,11 @@ Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
 Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
+### Dangerious / Special usage case variables
+Var_padding_yn='no'
+Var_padding_length='adaptive'
+Var_padding_placement='above'
+#Var_padding_placement='above,bellow,append,prepend'
 Func_help(){
 	echo "# ${Var_script_name} knows the following command line options"
 	echo "#  --input-file 		Var_input_file=${Var_input_file}"
@@ -24,6 +29,15 @@ Func_help(){
 	echo "## ${Var_script_name} is designed to decrypt 'arrmor' encrypted files"
 	echo "#  that contain more than one arrmored message in an automated fashion."
 	echo "## Note: '--search-output' will not be active if outputing to named pipe."
+	echo "## Special use case options"
+	echo "#  --padding-yn		Var_padding_yn=${Var_padding_yn}"
+	echo "# --padding-length	Var_padding_length=${Var_padding_length}"
+	echo "# --padding-placement	Var_padding_placement=${Var_padding_placement}"
+	echo "## The above options are intended to aid users in removing"
+	echo "#  automaticly added lines via another scripts padding add"
+	echo "#  option. By default this option is disabled and users must"
+	echo "#  spicifficly enable padding if desired because of risk of"
+	echo "#  coruption to data when used. Warning, the three above are not completly finished!"
 }
 Func_assign_arg(){
 	_variable="${1}"
@@ -51,6 +65,15 @@ Func_check_args(){
 			--gpg-opts|Var_gpg_opts)
 				Func_assign_arg "Var_gpg_opts" "${_arg#*=}"
 			;;
+			--padding-yn|Var_padding_yn)
+				Func_assign_arg "Var_padding_yn" "${_arg#*=}"
+			;;
+			--padding-length|Var_padding_length)
+				Func_assign_arg "Var_padding_length" "${_arg#*=}"
+			;;
+			--padding-placement|Var_padding_placement)
+				Func_assign_arg "Var_padding_placement" "${_arg#*=}"
+			;;
 			--help|help|*)
 				echo "# ${Var_script_name} variable read: ${_arg%=*}"
 				echo "# ${Var_script_name} value read: ${_arg#*=}"
@@ -65,11 +88,84 @@ Func_check_args(){
 ##  to process encrypted blocks.
 Pass_the_passphrase(){
 	_pass=( "$@" )
-	if [ -f "${_pass}" ]; then
+	if [ -f "${_pass[@]}" ]; then
 		exec 9<"${_pass[@]}"
 	else
 		exec 9<(echo "${_pass[@]}")
 	fi
+}
+## The following mess of checks within this fucntion
+##  are only enabled if users select to do so, else
+##  this function is not used.
+Remove_padding_from_output(){
+	_input=( "$@" )
+	let _count=0
+	let _padding_count=0
+	until [ "${_count}" = "${#_input[@]}" ]; do
+#		_line=( "${_input[${_count}]}" )
+		## Do some funky checks to see if trimming the tail or head of read strings.
+		##  looks way worce than it really is and once use to it, then next
+		##  checks will make more sence...
+		if grep -qE "append|prepend" <<<"${Var_padding_placement//,/ }"; then
+			if grep -qE "append"  <<<"${Var_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_padding_placement//,/ }"; then
+				case "${Var_padding_length}" in
+					adaptive)
+						_padding_length="$((${#_input[${_count}]}/3))"
+					;;
+					*)
+						_padding_length="${Var_padding_length}"
+					;;
+				esac
+				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
+				## Trim first third of line bellow, trim last third above
+				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
+			elif grep -qE "append"  <<<"${Var_padding_placement//,/ }"; then
+				case "${Var_padding_length}" in
+					adaptive)
+						_padding_length="$((${#_input[${_count}]}/2))"
+					;;
+					*)
+						_padding_length="${Var_padding_length}"
+					;;
+				esac
+				## Trim last half or padding lengths value from line
+				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
+			else
+				case "${Var_padding_length}" in
+					adaptive)
+						_padding_length="$((${#_input[${_count}]}/2))"
+					;;
+					*)
+						_padding_length="${Var_padding_length}"
+					;;
+				esac
+				## Trim padding value from beguining of line or first half
+				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
+			fi
+		fi
+		## TO-DO : finish below for now echo out line
+		echo "${_line[@]}"
+		## Do the same kind of funkyness to drop lines above or bellow desired
+		##  line of data.
+#		if grep -qE "above|bellow" <<<"${Var_padding_placement//,/ }"; then
+#			if grep -qE "above" <<<"${Var_padding_placement//,/ }" && grep -qE "bellow" <<<"${Var_padding_placement//,/ }"; then
+#				_line[${_count}]=( "" )
+#				
+#			elif grep -qE "above" <<<"${Var_padding_placement//,/ }"; then
+#				_line[${_count}]=( "" )
+#				
+#			else
+#				_line[${_count}]=( "" )
+#				
+#			fi
+#		elif grep -qE "above" <<<"${Var_padding_placement//,/ }"; then
+#			
+#		else
+#			
+#		fi
+	done
+	let _padding_count++
+	let _count++
 }
 ## The following function is called within 'Do_stuff_with_lines'
 ##  function as variable '_enc_input' to re-introduce new lines
@@ -103,20 +199,48 @@ Do_stuff_with_lines(){
 		echo "${_enc_input}"
 		echo "## ... to named pipe: ${Var_output_file}"
 		cat <<<"${_enc_input}" > "${Var_output_file}"
+	## The case checks used below are checking if user wishes to remove
+	## padding data that was added by the bulk decryption script. By
+	## default these options are disabled for both scripts so users
+	## normally will never have to deal with the 'yes' like checks.
 	elif [ -f "${Var_output_file}" ]; then
-		## Check if we are searching for something before outputing
-		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
-		else
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
-		fi
+		case "${Var_padding_yn}" in
+			Y|y|Yes|yes|YES)
+				## Check if we are searching for something before outputing
+				if [ "${#Var_search_output}" = "0" ]; then
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
+				else
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")" >> "${Var_output_file}"
+				fi
+			;;
+			*)
+				## Check if we are searching for something before outputing
+				if [ "${#Var_search_output}" = "0" ]; then
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
+				else
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
+				fi
+			;;
+		esac
 	else
-		## Check if we are searching for something before outputing
-		if [ "${#Var_search_output}" = "0" ]; then
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
-		else
-			cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
-		fi
+		case "${Var_padding_yn}" in
+			Y|y|Yes|yes|YES)
+				## Check if we are searching for something before outputing
+				if [ "${#Var_search_output}" = "0" ]; then
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})"
+				else
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")"
+				fi
+			;;
+			*)
+				## Check if we are searching for something before outputing
+				if [ "${#Var_search_output}" = "0" ]; then
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
+				else
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
+				fi
+			;;
+		esac
 	fi
 	unset -v _enc_block[@]
 	unset _enc_input
