@@ -2,10 +2,10 @@
 
 ## Q: What is this project
 
-> A: This project aims to expose asymmetric encryption operations (currently
-> via GnuPG's PGP encryption applications) to logging daemons and/or user
-> processes. Being designed as a *cyber defense* tool for server administrators
-> and privacy concerned users of mobile devices, that wish for one more line of
+> A: This project aims to expose encryption operations (currently via GnuPG's
+> PGP encryption applications) to logging daemons and/or user processes.
+> Being designed as a *cyber defense* tool for server administrators and
+> privacy concerned users of mobile devices, that wish for one more line of
 > defiance against privacy violating 0-day attacks.
 
 ## Q: Why was this project built
@@ -14,17 +14,20 @@
 > tool was developed. This is not a partition encryption solution (often LUKS
 > partitions are the *goto* for such Kernel level supported encryption where a
 > file system can be mounted, read, and written to) instead this is a method of
-> file by file and/or line by line asymmetric encryption at the host OS's
-> software layer that can either be saved or sent to another process.
+> file by file and/or line by line encryption at the host OS's software layer
+> that can either be saved to an appended file or sent to another process as a
+> stream of encrypted data packets via another named pipe or service listening
+> to the main script's stout.
 
 ## Q: What does this encryption stuff do for me
 
 > A: When properly implemented this project aims to reduce risks associated
 > with remote server exploits leading to secondary attacks being easily carried
-> out on that server's clients or admins by parsing plane text logs.
-> Alternatively when properly implemented this project aims to make authorized
-> access to encrypted logs a simple process. However, depending upon your
-> inventiveness this project is capable of much more.
+> out on that server's clients or admins by parsing plane text logs or other
+> information that the server host contains that should not be available to
+> unauthorized clients. Alternatively when properly implemented this project
+> aims to make authorized access to encrypted logs a simple process. However,
+> depending upon your inventiveness this project is capable of much more.
 
 ## Q: How is the code checked for bugs
 

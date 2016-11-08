@@ -12,23 +12,36 @@
 
 > This script is referenced within
 > [../Documentation/Contributing_code_initial_setup.md](../Documentation/Contributing_code_initial_setup.md)
-> and maybe used to quickly customize local git configs for this project with
-> settings custom for each contributer.
+> and maybe used to quickly customize local git config for this project with
+> settings custom for each contributer. Use the command line option `--help`
+> with this helper script to print all settable options and their current
+> values.
 
 ### `Fold_Message.sh`
 
 [![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Fold_Message.sh)
 
-> This script is referanced within
+> This script is referenced within
 > [../Documentation/Contributing_code_maintenance.md](../Documentation/Contributing_code_maintenance.md)
 > and maybe used to quickly format messages to no more than a certain length.
+> This helper script does **not** accept command line options but instead a
+> string of words, quoted or double quoted or not quoted, and prints formated
+> output, adding new lines at spaces when allowed when read input is greater
+> than intarnally set colom width variable.
+
+Example usage for commiting `git` message
+
+```
+git commit -S -am "Title of changes" -m "$(Fold_Message.sh "really long text string...")"
+
+```
 
 ### `Format_git_badge.sh`
 
 [![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Format_git_badge.sh)
 
 > This script is used to generate custom badges for this project and is provided
-> by the [Shilds.io](https://sheilds.io) site to allow for *pritier*
+> by the [Shields.io](https://shields.io) site to allow for *prettier*
 > documentation.
 
 ### `GnuPG_Gen_Key.sh`
@@ -38,8 +51,9 @@
 > This script is a combination of notes found for configuring and setting up GnuPG
 > with *best practices* and sane defaults taken into account by it's authors. This
 > script is also used within the auto-build scripts for making test keys on VPSs.
-> Note for source code readers, the function `Func_gen_revoke_cert` maynot be
-> pretty it **does** work.
+> Note for source code readers, the function `Func_gen_revoke_cert` may not be
+> pretty it **does** work. Use command line option `--help` to print available
+> options and their current values.
 
 ### `Paranoid_Pipes_Scenario_One.sh`
 
@@ -48,9 +62,16 @@
 > This script is referenced within
 > [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
 > as an example of using customized named pipe listener scripts to decrypt log
-> files that have appended encrypted contents. This is indented as a *work-around*
-> for limitations of GnuPG not *seeming to* recognize listed encrypted data beyond
-> the first entry when `armor` formatting is used.
+> files that have appended encrypted contents. However a named pipe does not
+> necessarily need to be present for this script to operate; hint, try running
+> with `--help` command line option to find out what input it accepts and the
+> output it produces. This helper script is indented as a *work-around* for
+> limitations within GnuPG when using `--armor` option to encrypt files or
+> streams of data, if your encrypted logs where made without this option then
+> you may try `--allow-multiple-messages` as a `gpg` command line option added
+> to your own command to recover log files encrypted with this project's main
+> script with one exception for right now, if the main script had the padding
+> option enabled there will still be padded data within the decrypted output.
 
 ### `Paranoid_Pipes_Scenario_Three.sh`
 
@@ -59,8 +80,8 @@
 > This script is referenced within
 > [../Documentation/Paranoid_Pipes_Scenario_Three.md](../Documentation/Paranoid_Pipes_Scenario_Three.md)
 > as an example of using customized named pipe listener scripts written over SSH.
-> This example is a bit more advanced and intended for use in VPS (Virtual Private
-> Server) environments that are *rented* and perhaps less than trust worthy in
+> This example is a bit more advanced and intended for use on VPS (Virtual Private
+> Server) or other environments that are rented and perhaps less than swift in
 > their own operational security practices.
 
 ## Licensing notice for scripts/code examples
