@@ -6,7 +6,7 @@
 > PGP encryption applications) to logging daemons and/or user processes.
 > Being designed as a *cyber defense* tool for server administrators and
 > privacy concerned users of mobile devices, that wish for one more line of
-> defiance against privacy violating 0-day attacks.
+> defiance against privacy violating attacks.
 
 ## Q: Why was this project built
 

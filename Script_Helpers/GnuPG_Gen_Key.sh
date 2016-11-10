@@ -9,7 +9,7 @@ Var_auto_pass_length='64'
 Var_auto_pass_phrase="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_auto_pass_length}")"
 Var_prompt_for_pass_yn="yes"
 Var_gnupg_revoke_cert_yn="yes"
-Var_gnupg_conf_save_yn="yes"
+Var_gnupg_conf_save_yn="no"
 Var_gnupg_conf_location="${HOME}/.gnupg/gpg.conf"
 Var_gnupg_comment="Test_${USER}_Keys"
 Var_gnupg_email="${USER}@${HOSTNAME}"
@@ -303,6 +303,7 @@ Func_check_collision(){
 		Func_upload_pub_key
 	else
 		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
+		echo "# Script cannont knowingly upload conflicting keys!"
 	fi
 }
 Func_upload_pub_key(){

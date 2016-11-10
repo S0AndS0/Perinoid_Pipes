@@ -1018,7 +1018,6 @@ Func_mkpipe_reader(){
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
 		if [ "${#_mapped_array}" != "0" ] && [ "${Var_pipe_quit_string}" != "${_mapped_array}" ]; then
-#		if ! [ -z "${#_mapped_array}" ] && ! [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]]; then
 			case "${Var_save_encryption_yn}" in
 				y|Y|yes|Yes)
 					## Test if input is a file path otherwise push it through parsing command
