@@ -70,6 +70,33 @@ git diff
 > [History](https://travis-ci.org/S0AndS0/Perinoid_Pipes/builds) provided by
 > Travis-CI which will display compatible commit IDs to `checkout` to.
 
+## Q: How do I find differances in commits
+
+> A: Thankfully `git` makes this simple enough to accomplish between branches
+> and commited changes
+
+```
+## Git diff from un-commited changes
+git diff
+## Git diff from last commit
+git diff $(git log | grep commit | head -n2 | tail -n1 | awk '{print $2}')
+## Git diff between branches
+git diff master..branch_name
+```
+
+> Note if mutliple files changed within one commit, for example the `ReadMe.md`
+> file, the following example commands will show how to reviel changes on single
+> files for each of the above
+
+```
+## Git diff from un-commited changes
+git diff ReadMe.md
+## Git diff from last commit
+git diff $(git log | grep commit | head -n2 | tail -n1 | awk '{print $2}') ReadMe.md
+## Git diff between branches
+git diff master..branch_name ReadMe.md
+```
+
 ## Q: Do I *need* this project's services
 
 > A: Are you a privacy conserned individual? Are you a sys-admin that must for

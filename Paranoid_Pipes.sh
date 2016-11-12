@@ -914,7 +914,7 @@ Func_rotate_log(){
 }
 Map_read_array_to_output(){
 	_file_to_map="$1"
-	export PID_Map_read_array_to_output=$!
+#	export PID_Map_read_array_to_output=$!
 	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
@@ -1013,7 +1013,7 @@ Func_mkpipe_reader(){
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
-		export PID_Map_read_array_to_output=$!
+#		export PID_Map_read_array_to_output=$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
@@ -1413,15 +1413,18 @@ Func_main(){
 					disown "${PID_Func_mkpipe_reader}"
 					case "${Var_save_encryption_yn}" in
 						y|Y|yes|Yes|YES)
-							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
+							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
+#							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 							Func_messages "#  Parsed output will be saved to [${Var_parsing_output_file}] file" '1' '2'
 						;;
 						*)
-							Func_messages "# Warning: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
+							Func_messages "# Warning: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
+#							Func_messages "# Warning: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 							Func_messages "#  However, parsed output will Not be saved to [${Var_parsing_output_file}] file!!!" '1' '2'
 						;;
 					esac
-					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
+					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
+#					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 					Func_write_unrecognized_input_to_pipe
 				;;
 				*)
