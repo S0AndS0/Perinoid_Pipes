@@ -7,7 +7,10 @@
 > Make an empty file or modify the last edit time on preexisting file.
 > Within this script `touch` is used within the function `Func_rotate_log`
 > To make a new empty log file that `chmod` & `chown` commands can be run
-> against for setting correct permissions up again.
+> against for setting correct permissions up again. Functions that make
+> use of this command within the `Paranoid_Pipes.sh` script include
+> `Func_messages`, `Func_rotate_log`, `Func_mkpipe_reader`,
+> `Rotate_output_file` & `Pipe_parser_loop`.
 
 ### `trap`
 
@@ -378,6 +381,74 @@ var_test="${var_test//[^a-zA-Z0-9# _\"]/}"
 ```
 var_test="${var_test//[^a-zA-Z0-9 #&:;$&\/\^\-\"\'\(\)\{\}]/}"
 ```
+
+## Bash example of case matching
+
+> This example is going to combine some of the previously covered subjects in
+> order to show how more than one of the scripts in this project handle user
+> input from the command line.
+
+```
+#!/usr/bin/env bash
+Var_foo="some string"
+Var_bar="another string"
+Func_help(){
+    echo "Script: ${0##*/} undersands the following"
+    echo "--option-foo    Var_foo=${Var_foo}"
+    echo "--option-bar    Var_bar=${Var_bar}"
+}
+Arg_assigner(){
+    _option="$1"
+    _variable="$2"
+    _value="$3"
+    declare -g "${_variable}=${_value}"
+    unset _option
+    unset _variable
+    unset _value
+}
+Arg_checker(){
+    _option="$1"
+    _input="$2"
+    case "${_option}" in
+        --option-foo)
+            Arg_assigner 'Var_foo' "${_option}" "${_input}"
+        ;;
+        --option-bar)
+            Arg_assigner 'Var_bar' "${_option}" "${_input}"
+        ;;
+        --help)
+            Func_help
+        ;;
+        *)
+            Func_help
+        ;;
+    esac
+    unset _option
+    unset _intput
+}
+Arg_splitter(){
+    _raw_input=( "$@" )
+    let _counter=0
+    until [ "${#_raw_input[@]}" = "${_counter}" ]; do
+        _string_from_array="${_raw_input[${_counter}]}"
+        _option="${_string_from_array%=*}"
+        _value="${_string_from_array#*=}"
+        Arg_checker "${_option}" "${_value}"
+        unset _string_from_array
+        unset _option
+        unset _value
+        let _counter++
+    done
+    unset _counter
+    unset _raw_input	
+}
+Arg_splitter "${@:---help}"
+```
+
+> The above group of functions are a *set* that work togeather to parse user
+> input for scripts that should have user modifide variables. Those that do
+> read this project's scripts will find similar logic under slightly differant
+> function names and with slightly modified syntax.
 
 ## Licensing notice for this file
 

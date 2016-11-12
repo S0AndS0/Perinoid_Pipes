@@ -380,6 +380,10 @@ Func_assign_arg(){
 	_var_name="${2?No variable name passed to Func_assign_arg function}"
 	_var_value="${3?No value passed to Func_assign_arg function}"
 	_var_string_type="${4?No string filtering type passed to Func_assign_arg function}"
+	## Following case checks string type for assigning user input values to the variables
+	##  used within this script. This work-around is one of the prof-of-consept parts of
+	##  this script and attempts to emulate user input filtering preformed by more complex
+	##  languages.
 	case "${_var_string_type}" in
 		number)
 			declare -g "${_var_name}=${_var_value//${Var_number_regex}/}"
@@ -914,7 +918,6 @@ Func_rotate_log(){
 }
 Map_read_array_to_output(){
 	_file_to_map="$1"
-#	export PID_Map_read_array_to_output=$!
 	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
@@ -1013,7 +1016,6 @@ Func_mkpipe_reader(){
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
 		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
-#		export PID_Map_read_array_to_output=$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
@@ -1280,7 +1282,6 @@ Map_read_array_to_output(){
 Pipe_parser_loop(){
 	while [ -p "\${Var_pipe_file_name}" ]; do
 		_mapped_array=\$(Map_read_array_to_output "\${Var_pipe_file_name}")
-		declare -g PID_Map_read_array_to_output=\$!
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
@@ -1335,7 +1336,7 @@ case "\${Var_disown_parser_yn}" in
 		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
-		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] & [\${PID_Map_read_array_to_output}] parsing loops"
+		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] parsing loops"
 	;;
 	*)
 		${Var_echo_exec_path} "## \${Var_script_name} will start parsing loop in this terminal"
@@ -1414,17 +1415,14 @@ Func_main(){
 					case "${Var_save_encryption_yn}" in
 						y|Y|yes|Yes|YES)
 							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
-#							Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 							Func_messages "#  Parsed output will be saved to [${Var_parsing_output_file}] file" '1' '2'
 						;;
 						*)
 							Func_messages "# Warning: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
-#							Func_messages "# Warning: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] & [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 							Func_messages "#  However, parsed output will Not be saved to [${Var_parsing_output_file}] file!!!" '1' '2'
 						;;
 					esac
 					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] parsing loop" '1' '2'
-#					Func_messages "# Notice: ${Var_script_name} disowned PID [${PID_Func_mkpipe_reader}] [${PID_Map_read_array_to_output}] parsing loops" '1' '2'
 					Func_write_unrecognized_input_to_pipe
 				;;
 				*)
@@ -1446,6 +1444,7 @@ Func_main(){
 		;;
 	esac
 	Func_messages "# Reader [${Var_script_name}] exiting to interactive terminal with [${_exit_status}] status now" '1' '2'
+## TO-DO : add case check for turning history on again or keeping it off
 #	Func_messages "## Turning bash history back on now..." '0' '1'
 #	set -o history
 }
