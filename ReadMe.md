@@ -26,8 +26,8 @@
 
 ### Provide template(s) of script-able interactions that use GnuPG
 
-> See [ReadMe.md](Documentation/ReadMe.md) file under the `Documentation/`
-> directory to find further listed examples as well as *helper* scripts found
+> See [Documentation/ReadMe.md](Documentation/ReadMe.md) file to find further
+> listed examples as well as *helper* scripts found
 > under [`Script_Helpers`](Script_Helpers) that enable more features of this
 > project or help setup this project for contribution.
 
