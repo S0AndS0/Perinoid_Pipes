@@ -26,8 +26,11 @@
 
 ## Security encryption notes
 
-[DSA is broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity)
- use [RSA](https://en.wikipedia.org/wiki/RSA_(algorithm)) instead.
+> The bellow shared resources where added to aid readers in understanding
+> attacks that spicific key types maybe vurnable to.
+
+- Wikipidia -[DSA maybe broken](https://en.wikipedia.org/wiki/Digital_Signature_Algorithm#Sensitivity)
+- YouTube [RSA LLL attack](https://youtu.be/3cicTG3zeVQ)
 
 ## Encryption types
 
