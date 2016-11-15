@@ -1029,22 +1029,16 @@ Func_mkpipe_reader(){
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
-						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}"
-						_exit_status=("${PIPESTATUS[@]}")
-						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
-#						Func_messages "# Encryption command [${Var_cat_exec_path} \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
+						Var_star_date="$(date -u +%s)"
+						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
+						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
 					elif [ -d "${_mapped_array}" ]; then
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
-						#${Var_tar_exec_path} zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
-						_exit_status=("${PIPESTATUS[@]}")
-						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
-#						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
+						${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
+						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
@@ -1054,12 +1048,9 @@ Func_mkpipe_reader(){
 							${Var_chown_exec_path} "${Var_log_file_ownership}" "${_parsing_output_file}"
 						fi
 						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_output_file}"
-						_exit_status=("${PIPESTATUS[@]}")
 						let _count++
 						Func_messages "# Added one (1) to internal count [${_count}]" '2' '3'
 						Func_messages "# Encryption command [${Var_cat_exec_path} \"\\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
-#						Func_messages "# Encryption command [${Var_cat_exec_path} \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_output_file}\"]" '2' '3'
-						Func_messages "# Command exit statuses [${_exit_status[*]}]" '2' '3'
 						if [ "${_count}" -gt "${Var_log_check_frequency}" ] || [ "${_count}" = "${Var_log_check_frequency}" ]; then
 							Func_messages "# Checking log file size now that count has reached [${_count}]" '2' '3'
 							Func_rotate_log "${Var_parsing_output_file}" "${Var_log_rotate_yn}" "${Var_log_max_size}" "${Var_log_rotate_actions}" "${Var_log_rotate_recipient}"
