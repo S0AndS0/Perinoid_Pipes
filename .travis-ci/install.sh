@@ -18,4 +18,6 @@ Func_run_sanely "cp -va ${Var_install_script} ${Var_install_path}/${Var_install_
 Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_name}" "0"
 ## Try running help
 Func_run_sanely "${Var_install_path}/${Var_install_name} --version" "${USER}"
+## Report everything is OK if we have made it this far
+echo "# ${Var_script_name} reports: all checks passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

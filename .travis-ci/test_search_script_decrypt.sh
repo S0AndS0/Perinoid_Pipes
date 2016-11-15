@@ -37,6 +37,7 @@ if [ -r "${Var_search_out_location}" ]; then
 		echo "# ${Var_script_name} reports: Good [${_search_string}] = [${_decrypted_strings}]"
 		echo "## Note for readers: if reading this on output this means that the helper script"
 		echo "##  is able to search decrypted output before saving/printing results; great for saving space!"
+		echo "# ${Var_script_name} reports: all checks passed"
 	else
 		echo "# ${Var_script_name} reports: Error [${_search_string}] != [${_decrypted_strings}]"
 		exit 1
@@ -51,6 +52,4 @@ else
 	fi
 	exit 1
 fi
-## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
-#export Var_gnupg_decrypt_opts="--always-trust --yes --bulk --passphrase-fd 0 --decrypt"

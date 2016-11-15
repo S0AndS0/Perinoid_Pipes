@@ -58,6 +58,4 @@ else
 		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
 	fi
 fi
-## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
-#export Var_gnupg_decrypt_opts="--always-trust --yes --bulk --passphrase-fd 0 --decrypt"

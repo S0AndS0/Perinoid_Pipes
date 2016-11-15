@@ -26,10 +26,10 @@ else
 fi
 _test_string_decrypted=$(cat ${Var_test_raw_location})
 if [[ "${_test_string}" == "${_test_string_decrypted}" ]]; then
-	echo "# ${Var_script_name} reports all checks: OK"
 	echo "# ${Var_script_name}: [${_test_string}] = [${_test_string_decrypted}]"
+	echo "# ${Var_script_name} reports: all checks passed"
 else
-	echo "# ${Var_script_name} reports all checks: Not ok"
+	echo "# ${Var_script_name} reports: checks FAILED"
 	echo "# ${Var_script_name} could not find equivalance between: [${_test_string}] & [${_test_string_decrypted}]"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

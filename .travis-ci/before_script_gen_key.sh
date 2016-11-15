@@ -9,4 +9,8 @@ echo "# ${Var_script_name} running: chmod u+x Script_Helpers/GnuPG_Gen_Key.sh"
 chmod u+x Script_Helpers/GnuPG_Gen_Key.sh
 echo "# ${Var_script_name} running: Script_Helpers/GnuPG_Gen_Key.sh --prompt-for-pass-yn='no' --auto-pass-length=\"${Var_pass_length}\" --save-pass-yn='yes' --save-pass-location=\"${Var_pass_location}\" --gnupg-conf-save-yn='yes' --gnupg-email=\"${Var_gnupg_email}\" --gnupg-export-private-key-yn='yes'"
 Script_Helpers/GnuPG_Gen_Key.sh --prompt-for-pass-yn='no' --auto-pass-length="${Var_pass_length}" --save-pass-yn='yes' --save-pass-location="${Var_pass_location}" --gnupg-conf-save-yn='yes' --gnupg-email="${Var_gnupg_email}" --gnupg-export-private-key-yn='yes'
+_exit_status=$?
+Func_check_exit_status "${_exit_status}"
+## Report the everything is OK if this script did not exit do to errors.
+echo "# ${Var_script_name} reports: all checks passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

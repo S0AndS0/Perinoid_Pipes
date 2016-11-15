@@ -110,7 +110,7 @@ if [ -r "${Var_encrypted_location}" ]; then
 	ls -hal "${Var_encrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} reports all checks: OK"
+	echo "# ${Var_script_name} reports: all checks passed"
 else
 	echo "# ${Var_script_name} could not read: ${Var_encrypted_location}"
 	if [ -f "${Var_encrypted_location}" ]; then
@@ -119,6 +119,5 @@ else
 		echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
 	fi
 fi
-## Test decryption of first entry in output file
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

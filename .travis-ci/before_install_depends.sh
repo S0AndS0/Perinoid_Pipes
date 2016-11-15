@@ -25,4 +25,6 @@ else
 fi
 ## Start/restart haveged for VMs
 Func_run_sanely "/etc/init.d/haveged restart" "0"
+## Report everything is OK if errors did not cause this script to exit out.
+echo "# ${Var_script_name} reports: all checks passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
