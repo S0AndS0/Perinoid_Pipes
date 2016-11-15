@@ -67,7 +67,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	Func_check_exit_status "${_exit_status}"
 	## Push a known file path to named pipe and check if it is processed to
 	##  the defined bulk output directory
-	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\"
+	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
 	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
 	ls -hal "${Var_encrypted_bulk_dir}"
