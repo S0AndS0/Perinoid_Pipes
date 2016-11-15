@@ -9,7 +9,6 @@ export Var_gnupg_email="${USER}@hostname.local"
 ## How many charicters for passphrase as well as length of test strings?
 export Var_pass_length='32'
 ## What file paths to use when testing new GPG keys?
-##  The following block of variables is used in '' file.
 export Var_pass_location="${PWD}/gpg_test_keys.pass"
 export Var_test_gpg_location="${PWD}/test_encrypt.gpg"
 export Var_test_raw_location="${PWD}/test_raw.txt"
@@ -22,6 +21,7 @@ export Var_encrypted_location="${PWD}/encrypt_one.gpg"
 export Var_encrypted_bulk_dir="${PWD}/bulk_out"
 export Var_raw_test_location="${PWD}/raw_strings.txt"
 export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
+export Var_encrypt_dir_path="${PWD}/Documentation"
 ##  The following block of variables is used in 'script_decrypt.sh' file
 ##  Note that this script also re-uses the 'Var_raw_test_location' variable.
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"

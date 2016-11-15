@@ -69,6 +69,8 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	##  the defined bulk output directory
 	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+	echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
 	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
 	ls -hal "${Var_encrypted_bulk_dir}"
 	## Send quit string to named pipe for testing of built in auto-clean
