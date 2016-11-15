@@ -65,6 +65,12 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	## Push a known file path to named pipe and check if it is processed to
+	##  the defined bulk output directory
+	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\"
+	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
+	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+	ls -hal "${Var_encrypted_bulk_dir}"
 	## Send quit string to named pipe for testing of built in auto-clean
 	##  functions, note to authors, this seems to be funky on auto builds
 	##  but latter removal of the named pipe file seems to kill the listener
