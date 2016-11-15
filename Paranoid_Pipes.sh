@@ -1029,16 +1029,20 @@ Func_mkpipe_reader(){
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
-						Var_star_date="$(date -u +%s)"
-						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
-						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
+						#Var_star_date="$(date -u +%s)"
+						#${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
+						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${_mapped_array##*/}${Var_bulk_output_suffix}"
+						#Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
+						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
 					elif [ -d "${_mapped_array}" ]; then
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
-						Var_star_date="$(date -u +%s)"
-						${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
-						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
+						#Var_star_date="$(date -u +%s)"
+						#${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
+						${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
+						#Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
+						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
