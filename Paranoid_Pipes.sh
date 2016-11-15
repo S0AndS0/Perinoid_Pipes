@@ -1039,7 +1039,8 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						${Var_tar_exec_path} zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
+						${Var_tar_exec_path} -zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
+						#${Var_tar_exec_path} zcf - "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}"
 						_exit_status=("${PIPESTATUS[@]}")
 						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 #						Func_messages "# Encryption command [${Var_tar_exec_path} zcf - \"${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array//\//_}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
