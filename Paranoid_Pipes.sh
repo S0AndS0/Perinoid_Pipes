@@ -1037,7 +1037,9 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						${Var_tar_exec_path} --create --file - --posix --gzip -- "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
+						${Var_tar_exec_path} -c ${_mapped_array} | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
+						#Func_messages "# Encryption command [${Var_tar_exec_path} -c \${_mapped_array} | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
+						#${Var_tar_exec_path} --create --file - --posix --gzip -- "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}.tgz${Var_bulk_output_suffix}"
 						Func_messages "# Encryption command [${Var_tar_exec_path}  --create --file - --posix --gzip -- \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 						## Extract with: gpg -d foo | tar --extract --file - --gzip
 						##  Expanded directions from: commandlinefu.com/commands/view/12007/encrypt-directory-with-gnupg-and-tar
