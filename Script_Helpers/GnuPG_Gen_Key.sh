@@ -294,17 +294,24 @@ Func_report_on_exports(){
 	fi
 }
 Func_check_collision(){
-	_key_fingerprint="$(gpg --fingerprint ${Var_gnupg_email} | awk -F "/" '/pub /{print $2}' | awk '{print $1}')"
-	_grep_string='not found on keyserver'
-	gpg --dry-run --batch --search-keys ${_key_fingerprint} --keyserver ${Var_gnupg_key_server} | grep -qE "${_grep_string}"
-	_exit_status=$?
-	if [ "${_exit_status}" != "0" ]; then
-		echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
-		Func_upload_pub_key
-	else
-		echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
-		echo "# Script cannont knowingly upload conflicting keys!"
-	fi
+	case "${Var_gnupg_upload_key_yn}" in
+		y|Y|yes|Yes|YES)
+			_key_fingerprint="$(gpg --fingerprint ${Var_gnupg_email} | awk -F "/" '/pub /{print $2}' | awk '{print $1}')"
+			_grep_string='not found on keyserver'
+			gpg --dry-run --batch --search-keys ${_key_fingerprint} --keyserver ${Var_gnupg_key_server} | grep -qE "${_grep_string}"
+			_exit_status=$?
+			if [ "${_exit_status}" != "0" ]; then
+				echo "# ${Var_script_name} reports unique key fingerprint: ${_key_fingerprint}"
+				Func_upload_pub_key
+			else
+				echo "# ${Var_script_name} WARNING key fingerprint collision: ${_key_fingerprint}"
+				echo "# Script cannont knowingly upload conflicting keys!"
+			fi
+		;;
+		*)
+			echo "# ${Var_script_name} skipping collision checks for: ${Var_gnupg_email}"
+		;;
+	esac
 }
 Func_upload_pub_key(){
 	case "${Var_gnupg_upload_key_yn}" in
