@@ -78,6 +78,8 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
 		touch "${Var_encrypt_dir_path}/test_file"
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path}\""
+		chmod -R +r "${Var_encrypt_dir_path}"
 		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
 	fi
 	if [ -d "${Var_encrypted_bulk_dir}" ]; then
