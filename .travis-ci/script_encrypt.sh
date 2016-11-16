@@ -69,10 +69,24 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	##  the defined bulk output directory
 	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
 	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
-	echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
-	echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
-	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
-	ls -hal "${Var_encrypted_bulk_dir}"
+	if [ -d "${Var_encrypt_dir_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+	else
+		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path}\""
+		mkdir -p "${Var_encrypt_dir_path}"
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
+		touch "${Var_encrypt_dir_path}/test_file"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+	fi
+	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+		ls -hal "${Var_encrypted_bulk_dir}"
+	else
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		exit 1
+	fi
 	## Send quit string to named pipe for testing of built in auto-clean
 	##  functions, note to authors, this seems to be funky on auto builds
 	##  but latter removal of the named pipe file seems to kill the listener
