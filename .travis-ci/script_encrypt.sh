@@ -34,6 +34,30 @@ fi
 #echo "\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
+	## Push a known file path to named pipe and check if it is processed to
+	##  the defined bulk output directory
+	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
+	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
+	if [ -d "${Var_encrypt_dir_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+	else
+		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path}\""
+		mkdir -p "${Var_encrypt_dir_path}"
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
+		touch "${Var_encrypt_dir_path}/test_file"
+		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path}\""
+		chmod -R +r "${Var_encrypt_dir_path}"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+	fi
+	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+		ls -hal "${Var_encrypted_bulk_dir}"
+	else
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		exit 1
+	fi
 	## Note we are saving the test string to a file but will be cat-ing
 	##  it back out to named pipe file for the first test so lets make that
 	##  file with the proper permissions to be latter read and currently
@@ -65,30 +89,6 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## Push a known file path to named pipe and check if it is processed to
-	##  the defined bulk output directory
-	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
-	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
-	if [ -d "${Var_encrypt_dir_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
-	else
-		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path}\""
-		mkdir -p "${Var_encrypt_dir_path}"
-		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
-		touch "${Var_encrypt_dir_path}/test_file"
-		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path}\""
-		chmod -R +r "${Var_encrypt_dir_path}"
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
-	fi
-	if [ -d "${Var_encrypted_bulk_dir}" ]; then
-		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
-		ls -hal "${Var_encrypted_bulk_dir}"
-	else
-		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
-		exit 1
-	fi
 	## Send quit string to named pipe for testing of built in auto-clean
 	##  functions, note to authors, this seems to be funky on auto builds
 	##  but latter removal of the named pipe file seems to kill the listener
