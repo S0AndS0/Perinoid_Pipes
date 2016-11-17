@@ -36,7 +36,7 @@ fi
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Push a known file path to named pipe and check if it is processed to
 	##  the defined bulk output directory
-	echo "# ${Var_script_name} running: echo \"${PWD]/ReadMe.md\" > \"${Var_encrypt_pipe_location}\""
+	echo "# ${Var_script_name} running: echo \"${PWD}/ReadMe.md\" > \"${Var_encrypt_pipe_location}\""
 	echo "${PWD}/ReadMe.md" > "${Var_encrypt_pipe_location}"
 	if [ -d "${Var_encrypt_dir_path}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
