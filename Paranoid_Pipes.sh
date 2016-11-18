@@ -1023,7 +1023,8 @@ Func_mkpipe_reader(){
 			case "${Var_save_encryption_yn}" in
 				y|Y|yes|Yes)
 					## Test if input is a file path otherwise push it through parsing command
-					if [ -f "${_mapped_array}" ]; then
+					if [ -f ${_mapped_array} ]; then
+#					if [ -f "${_mapped_array}" ]; then
 						## Check for bulk output directory to save encrypted files to, make one
 						##  if nonexistent
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
@@ -1037,13 +1038,8 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						#${Var_cat_exec_path} <<<"${_mapped_array}" | $(which gpg-zip) --encrypt --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir${Var_bulk_output_suffix} --gpg-args --recipient ${Var_gpg_recipient}
-						#Func_messages "# Encryption command [gpg-zip --recipient ${Var_gpg_recipient} --encrypt --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/} ${_mapped_array}]" '2' '3'
-						#Func_messages "# Encryption command [${Var_tar_exec_path} -c \${_mapped_array}/ | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz${Var_bulk_output_suffix}\"]" '2' '3'
 						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_tar_exec_path} cz | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tar.gz.gpg
-						#${Var_tar_exec_path} --create --file - --posix --gzip -- ${_mapped_array} | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_bulk_output_suffix}"
-						## Extract with: gpg -d foo | tar --extract --file - --gzip
-						##  Expanded directions from: commandlinefu.com/commands/view/12007/encrypt-directory-with-gnupg-and-tar
+						## Above works if variable is assigned with sorounding duble quotes.
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
