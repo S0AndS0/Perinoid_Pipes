@@ -47,24 +47,29 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
 		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
 	fi
-	_encrypted_output_path="$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
-	if [ -f "${_encrypted_output_path}" ]; then
-		echo "# ${Var_script_name} running: ls -hal ${_encrypted_output_path}"
-		ls -hal "${_encrypted_output_path}"
-	else
-		if ! [ -d "${Var_encrypted_bulk_dir}" ]; then
-			echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
-			exit 1
-		elif ! [ -f "${_encrypted_output_path}" ]; then
-			echo "# ${Var_script_name} reports: FAILED to find \$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
-			exit 1
-		elif [ -d "${Var_encrypted_bulk_dir}" ]; then
-			echo "# ${Var_script_name} reports: it is a directory though ${Var_encrypted_bulk_dir}"
-			exit 1
+	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		_encrypted_output_path="$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
+		if [ -f "${_encrypted_output_path}" ]; then
+			echo "# ${Var_script_name} running: ls -hal ${_encrypted_output_path}"
+			ls -hal "${_encrypted_output_path}"
 		else
-			echo "# ${Var_script_name} is wondering: how did I get here?"
-			exit 1
+			if ! [ -d "${Var_encrypted_bulk_dir}" ]; then
+				echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+				exit 1
+			elif ! [ -f "${_encrypted_output_path}" ]; then
+				echo "# ${Var_script_name} reports: FAILED to find \$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
+				exit 1
+			elif [ -d "${Var_encrypted_bulk_dir}" ]; then
+				echo "# ${Var_script_name} reports: it is a directory though ${Var_encrypted_bulk_dir}"
+				exit 1
+			else
+				echo "# ${Var_script_name} is wondering: how did I get here?"
+				exit 1
+			fi
 		fi
+	else
+		echo "# ${Var_script_name} could not access: ${Var_encrypted_bulk_dir}"
+		ls -hal "${Var_encrypted_bulk_dir}"
 	fi
 	## Push a known or new directory path to named pipe and check if it is
 	##  processed to the defined bulk output directory
