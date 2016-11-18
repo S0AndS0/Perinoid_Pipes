@@ -47,6 +47,12 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
 		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
 	fi
+	## Push a known file path to named pipe and check if it is processed to
+	##  the defined bulk output directory
+	if [ -f "${Var_encrypt_file_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+	fi
 	## Note we are saving the test string to a file but will be cat-ing
 	##  it back out to named pipe file for the first test so lets make that
 	##  file with the proper permissions to be latter read and currently
@@ -78,10 +84,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## Push a known file path to named pipe and check if it is processed to
-	##  the defined bulk output directory
-	echo "# ${Var_script_name} running: echo \"${Var_raw_test_location}\" > \"${Var_encrypt_pipe_location}\""
-	echo "${Var_raw_test_location}" > "${Var_encrypt_pipe_location}"
+	## Check bulk output directory for results
 	if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
 		ls -hal "${Var_encrypted_bulk_dir}"
