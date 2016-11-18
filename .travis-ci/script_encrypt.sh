@@ -36,45 +36,15 @@ fi
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Push a known file path to named pipe and check if it is processed to
 	##  the defined bulk output directory
-	if [ -f "${Var_encrypt_file_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
-	else
-		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path}\""
-		touch "${Var_encrypt_file_path}"
-		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path}\""
-		chmod +r "${Var_encrypt_file_path}"
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
-	fi
+	echo "# ${Var_script_name} running: echo \"${PWD}/ReadMe.md\" > \"${Var_encrypt_pipe_location}\""
+	echo "${PWD}/ReadMe.md" > "${Var_encrypt_pipe_location}"
 	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
 		ls -hal "${Var_encrypted_bulk_dir}"
-#		_encrypted_output_path="$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
-#		if [ -f "${_encrypted_output_path}" ]; then
-#			echo "# ${Var_script_name} running: ls -hal ${_encrypted_output_path}"
-#			ls -hal "${_encrypted_output_path}"
-#		else
-#			if ! [ -d "${Var_encrypted_bulk_dir}" ]; then
-#				echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
-#				exit 1
-#			elif ! [ -f "${_encrypted_output_path}" ]; then
-#				echo "# ${Var_script_name} reports: FAILED to find \$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_file_path}")"
-#				exit 1
-#			elif [ -d "${Var_encrypted_bulk_dir}" ]; then
-#				echo "# ${Var_script_name} reports: it is a directory though ${Var_encrypted_bulk_dir}"
-#				exit 1
-#			else
-#				echo "# ${Var_script_name} is wondering: how did I get here?"
-#				exit 1
-#			fi
-#		fi
 	else
-		echo "# ${Var_script_name} could not access: ${Var_encrypted_bulk_dir}"
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		exit 1
 	fi
-	## Push a known or new directory path to named pipe and check if it is
-	##  processed to the defined bulk output directory
-	## TO-DO - Authors should re-enable 'exit 1' commands below once
-	##  directory matching is de-bugged within main script.
 	if [ -d "${Var_encrypt_dir_path}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
 		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
@@ -88,48 +58,13 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
 		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
 	fi
-	_encrypted_output_path="$(ls "${Var_encrypted_bulk_dir}/*${Var_encrypt_dir_path}*")"
-#	_encrypted_output_path="$(ls "${Var_encrypted_bulk_dir}" | grep -iE "${Var_encrypt_dir_path}")"
-	if [ -f "${_encrypted_output_path}" ]; then
-		echo "# ${Var_script_name} running: ls -hal ${_encrypted_output_path}"
-		ls -hal "${_encrypted_output_path}"
+## TO-DO - Write checks for directory output again...
+	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+		ls -hal "${Var_encrypted_bulk_dir}"
 	else
-		if ! [ -d "${Var_encrypted_bulk_dir}" ]; then
-			echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
-#			exit 1
-		elif ! [ -f "${_encrypted_output_path}" ]; then
-			echo "# ${Var_script_name} reports: FAILED to find \$(ls \"${Var_encrypted_bulk_dir}\" | grep -iE \"${Var_encrypt_dir_path}\")"
-#			exit 1
-		elif [ -d "${Var_encrypted_bulk_dir}" ]; then
-			echo "# ${Var_script_name} reports: it is a directory though ${Var_encrypted_bulk_dir}"
-			## TO-DO - Authors should move the "winning" directory
-			##  encryption command to the main script for testing
-			##  within those matching statements.
-			echo "# ${Var_script_name} will try to preform directory handling the hard way"
-			echo "# ${Var_script_name} running: tar -cz \"${Var_encrypt_dir_path}\" | gpg --armor --encrypt -r ${Var_gnupg_email} > \"${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgx.gpg\""
-			tar -cz "${Var_encrypt_dir_path}" | gpg --batch --always-trust --armor --encrypt -r ${Var_gnupg_email} > "${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgz.gpg"
-			_exit_status=$?
-			if [ "${_exit_status}" = "0" ]; then
-				echo "# ${Var_script_name} reports: WINNER, the above worked"
-				ls -hal "${Var_encrypted_bulk_dir}"
-			else
-				echo "# ${Var_script_name} reports: FAILED, try something else..."
-				echo "# ${Var_script_name} running: gpg-zip -r ${Var_gnupg_email} --encrypt ${Var_encrypt_dir_path} > \"${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgz.gpg\""
-				gpg-zip -r ${Var_gnupg_email} --encrypt ${Var_encrypt_dir_path} > "${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgz.gpg"
-				_exit_status=$?
-				if [ "${_exit_status}" = "0" ]; then
-					echo "# ${Var_script_name} reports: WINNER, the above worked"
-					ls -hal "${Var_encrypted_bulk_dir}"
-				else
-					echo "# ${Var_script_name} reports: FAILED, twice moving on..."
-				fi
-			fi
-#			exit 1
-		else
-			echo "# ${Var_script_name} is wondering: how did I get here?"
-#			exit 1
-		fi
-
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		exit 1
 	fi
 	## Note we are saving the test string to a file but will be cat-ing
 	##  it back out to named pipe file for the first test so lets make that
