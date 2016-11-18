@@ -1023,8 +1023,8 @@ Func_mkpipe_reader(){
 			case "${Var_save_encryption_yn}" in
 				y|Y|yes|Yes)
 					## Test if input is a file path otherwise push it through parsing command
-					if [ -f ${_mapped_array} ]; then
-#					if [ -f "${_mapped_array}" ]; then
+#					if [ -f ${_mapped_array} ]; then
+					if [ -f "${_mapped_array}" ]; then
 						## Check for bulk output directory to save encrypted files to, make one
 						##  if nonexistent
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
