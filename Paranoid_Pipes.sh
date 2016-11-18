@@ -1037,10 +1037,10 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						gpg-zip --encrypt --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir${Var_bulk_output_suffix} --gpg-args  -r ${Var_gpg_recipient}"" ${_mapped_array}
+						#gpg-zip --encrypt --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir${Var_bulk_output_suffix} --gpg-args  -r ${Var_gpg_recipient}"" ${_mapped_array}
 						#Func_messages "# Encryption command [gpg-zip --recipient ${Var_gpg_recipient} --encrypt --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/} ${_mapped_array}]" '2' '3'
 						#Func_messages "# Encryption command [${Var_tar_exec_path} -c \${_mapped_array}/ | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz${Var_bulk_output_suffix}\"]" '2' '3'
-						#tar --null -cz ${_mapped_array} | gpg --always-trust --armor --batch --encrypt --recipient ${Var_gpg_recipient} --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
+						echo "${_mapped_array}" | tar -cz - | gpg --always-trust --armor --batch --encrypt --recipient ${Var_gpg_recipient} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
 						#${Var_echo_exec_path} "${_mapped_array}" | tar cz | ${Var_parsing_command} > "${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tar.gpg"
 						#${Var_tar_exec_path} --create --file - --posix --gzip -- ${_mapped_array} | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_bulk_output_suffix}"
 						## Extract with: gpg -d foo | tar --extract --file - --gzip
