@@ -1,6 +1,8 @@
 ## Authors note: add "[ci skip]" or "[skip ci]" in commit message to
 ##  disable building for the next push.
-## Required for apt-get commands only
+## Required for apt-get commands within '.travis-ci/before_install_depends.sh'
+##  & cp commands within '.travis-ci/install.sh' only, everything else should
+##  be runing as "${USER}" for build processes.
 sudo: required
 ## Settings for git
 git:
