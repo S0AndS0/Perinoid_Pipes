@@ -1015,7 +1015,7 @@ Func_mkpipe_reader(){
 	##  AND a "break" signal is undetected assign function [Map_read_array_to_output]
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
-		_mapped_array="$(Map_read_array_to_output "${Var_pipe_file_name}")"
+		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
 #		_mapped_array=$(Map_read_array_to_output "${Var_pipe_file_name}")
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
