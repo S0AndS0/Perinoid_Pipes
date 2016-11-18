@@ -22,6 +22,7 @@ export Var_encrypted_bulk_dir="${PWD}/bulk_out"
 export Var_raw_test_location="${PWD}/raw_strings.txt"
 export Var_decrypt_raw_location="${PWD}/decrypt_one.txt"
 export Var_encrypt_dir_path="${PWD}/Documentation/"
+export Var_encrypt_file_path="${PWD}/ReadMe.md"
 ##  The following block of variables is used in 'script_decrypt.sh' file
 ##  Note that this script also re-uses the 'Var_raw_test_location' variable.
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
