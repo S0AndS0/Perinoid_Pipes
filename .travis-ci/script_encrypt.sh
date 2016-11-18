@@ -101,7 +101,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 			##  within those matching statements.
 			echo "# ${Var_script_name} will try to preform directory handling the hard way"
 			echo "# ${Var_script_name} running: tar -cz \"${Var_encrypt_dir_path}\" | gpg --armor --encrypt -r ${Var_gnupg_email} > \"${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgx.gpg\""
-			tar -cz "${Var_encrypt_dir_path}" | gpg --armor --encrypt -r ${Var_gnupg_email} > "${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgz.gpg"
+			tar -cz "${Var_encrypt_dir_path}" | gpg --batch --always-trust --armor --encrypt -r ${Var_gnupg_email} > "${Var_encrypted_bulk_dir}/$(date -u +%s)_dir.tgz.gpg"
 			_exit_status=$?
 			if [ "${_exit_status}" = "0" ]; then
 				echo "# ${Var_script_name} reports: WINNER, the above worked"
