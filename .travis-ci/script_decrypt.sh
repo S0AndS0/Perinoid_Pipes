@@ -78,6 +78,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		exec 9<"${Var_pass_location}"
 		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}\""
 		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: exec 9>&-"
 		exec 9>&-
 	else
@@ -94,6 +96,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		cd "${Var_bulk_decryption_dir}"
 		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} | tar xz"
 		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
 		cd "${_old_pwd}"
 		echo "# ${Var_script_name} running: exec 9>&-"
@@ -101,7 +105,11 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	else
 		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
 	fi
-
-	echo "${Var_script_name} reports: all checks passed for bulk decryption"
+	echo "# ${Var_script_name} running: ls -hal \"${Var_bulk_decryption_dir}\""
+	ls -hal "${Var_bulk_decryption_dir}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	echo "# ${Var_script_name} reports: all checks passed for bulk decryption"
+	echo "# Note if above 'ls' output shows a file and a directory, then celebrate with a sip or shot of a drink of your choice :-D"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
