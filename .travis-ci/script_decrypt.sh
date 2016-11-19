@@ -97,8 +97,7 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		echo "# ${Var_script_name} running: cd \"${Var_bulk_decryption_dir}\""
 		cd "${Var_bulk_decryption_dir}"
 		echo "# ${Var_script_name} running: gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar xz"
-		gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar xz
-#		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
 #		_exit_status=$?
 #		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
