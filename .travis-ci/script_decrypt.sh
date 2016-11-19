@@ -80,8 +80,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		exec 9<"${Var_pass_location}"
 		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${_decrypted_file_path}\""
 		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${_decrypted_file_path}"
-#		_exit_status=$?
-#		Func_check_exit_status "${_exit_status}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: exec 9>&-"
 		exec 9>&-
 	else
@@ -116,6 +116,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		echo "# ${Var_script_name} reports: decrypted file detected ${_decrypted_file_path}"
 		echo '# ${Var_script_name} running: diff <(cat "${_decrypted_file_path}") <(cat "${Var_encrypt_file_path}")'
 		diff <(cat "${_decrypted_file_path}") <(cat "${Var_encrypt_file_path}")
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
 	else
 		echo "# ${Var_script_name} reports: no file found at ${_decrypted_file_path}"
 	fi
