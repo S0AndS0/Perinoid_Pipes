@@ -65,6 +65,59 @@ if ! [ -d "${Var_bulk_decryption_dir}" ]; then
 else
 	echo "# ${Var_script_name} detected: pre-exsisting bulk decryption directory ${Var_bulk_decryption_dir}"
 fi
+Func_decrypt_bulk_dir(){
+	## Set internal variable based off eventual command line option
+	_decrypt_base_dir="${Var_bulk_decryption_dir}"
+	_decryption_opts="${Var_gnupg_decrypt_opts}"
+	_passphrase="${Var_pass_location}"
+	## Capture list of file paths to check
+	_arr_listed_paths=( "${@}" )
+	let _path_counter=0
+	until [ "${_arr_listed_paths[${_path_counter}]}" = "${_path_counter}" ]; do
+		_current_path="${_arr_listed_paths[${_path_counter}]}"
+		_file_name="${_current_path##*/}"
+		_file_dir="${_current_path%/*}"
+		if [ -f "${_current_path}" ]; then
+			case "${_current_path}" in
+				*.tar.gpg)
+					_destination_name="${_file_name%.tar.gpg}"
+					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
+					_decryption_bulk_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} | tar -xvf -"
+				;;
+				*.tgz.gpg)
+					_destination_name="${_file_name%.tgz.gpg}"
+					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
+					_decryption_bulk_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} | tar -xvf -"
+				;;
+				*.gpg)
+					_destination_name="${_file_name%.tgz.gpg}"
+					_destination="${_decrypt_base_dir}/${_destination_name}"
+					_decryption_file_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} > ${_destination}"
+				;;
+			esac
+			if [ -f "${_passphrase}" ]; then
+				exec 9<"${_passphrase}"
+			else
+				exec 9<"$(cat "${_passphrase}")"
+			fi
+			## Make a destination directory for decryption
+			if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
+				mkdir -vp "${_destination_dir}"
+				_old_pwd="${PWD}"
+				cd "${_destination_dir}"
+			fi
+			if [ "${#_decryption_bulk_command}" != "0" ]; then
+				echo "# ${Var_script_name} running: ${_decryption_bulk_command}"
+				${_decryption_bulk_command}
+			elif [ "${#_decryption_file_command}" != "0" ]; then
+				echo "# ${Var_script_name} running: ${_decryption_file_command}"
+				${_decryption_file_command}
+			fi
+		fi
+		exec 9>&-
+		let _path_counter++
+	done
+}
 ## If bulk encryption directory path exsists run checks for files and/or
 ##  compressed directories that where processed by main script named pipe parser
 if [ -d "${Var_encrypted_bulk_dir}" ]; then
@@ -74,47 +127,56 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	_encrypted_dir_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
 	_decrypted_dir_path="${Var_bulk_decryption_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
 	_decrypted_dir_path="${_decrypted_dir_path%.tar.gpg*}"
+	
+	## Trying a function for bulk decryption. If this test results in similar output
+	##  then this sort of structure maybe added into helper script with some new
+	##  command line options.
+	for _file in $(ls "${Var_encrypted_bulk_dir}"); do
+		Func_decrypt_bulk_dir "${Var_encrypted_bulk_dir}/${_file}"
+	done
+	## Commented out bellow to test above without doubling up on efforts
+	
 	## If there be a valid file that matches expected bulk operations for
 	##  file paths writen to named pipes, then say so, else pop an error
-	if [ -f "${_encrypted_file_path}" ]; then
-		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
-		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
-		exec 9<"${Var_pass_location}"
-		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${_decrypted_file_path}\""
-		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${_decrypted_file_path}"
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
-		echo "# ${Var_script_name} running: exec 9>&-"
-		exec 9>&-
-	else
-		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_file_path}"
-	fi
+#	if [ -f "${_encrypted_file_path}" ]; then
+#		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
+#		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
+#		exec 9<"${Var_pass_location}"
+#		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${_decrypted_file_path}\""
+#		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${_decrypted_file_path}"
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
+#		echo "# ${Var_script_name} running: exec 9>&-"
+#		exec 9>&-
+#	else
+#		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_file_path}"
+#	fi
 	## If there be a valid file that matches expected bulk operations for
 	##  directory paths writen to named pipes, then say so, else pop an error
-	if [ -f "${_encrypted_dir_path}" ]; then
+#	if [ -f "${_encrypted_dir_path}" ]; then
 		## Make a directory for extraction of spicific backup
-		if ! [ -d "${_decrypted_dir_path}" ]; then
-			echo "# ${Var_script_name} running: mkdir -p \"${_decrypted_dir_path}\""
-			mkdir -p "${_decrypted_dir_path}"
-		fi
-		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
-		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
-		exec 9<"${Var_pass_location}"
-		_old_pwd=${PWD}
-		echo "# ${Var_script_name} running: cd \"${_decrypted_dir_path}\""
-		cd "${_decrypted_dir_path}"
+#		if ! [ -d "${_decrypted_dir_path}" ]; then
+#			echo "# ${Var_script_name} running: mkdir -p \"${_decrypted_dir_path}\""
+#			mkdir -p "${_decrypted_dir_path}"
+#		fi
+#		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
+#		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
+#		exec 9<"${Var_pass_location}"
+#		_old_pwd=${PWD}
+#		echo "# ${Var_script_name} running: cd \"${_decrypted_dir_path}\""
+#		cd "${_decrypted_dir_path}"
 		## Trying manual approch found within 'gpg-zip' source code
-		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar -xvf"
-		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar -xvf -
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
-		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
-		cd "${_old_pwd}"
-		echo "# ${Var_script_name} running: exec 9>&-"
-		exec 9>&-
-	else
-		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
-	fi
+#		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar -xvf"
+#		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar -xvf -
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
+#		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
+#		cd "${_old_pwd}"
+#		echo "# ${Var_script_name} running: exec 9>&-"
+#		exec 9>&-
+#	else
+#		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
+#	fi
 	echo "# ${Var_script_name} running: ls -hal \"${Var_bulk_decryption_dir}\""
 	ls -hal "${Var_bulk_decryption_dir}"
 	_exit_status=$?
