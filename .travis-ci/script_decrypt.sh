@@ -96,8 +96,13 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		_old_pwd=${PWD}
 		echo "# ${Var_script_name} running: cd \"${Var_bulk_decryption_dir}\""
 		cd "${Var_bulk_decryption_dir}"
-		echo "# ${Var_script_name} running: gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar xz"
-		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+#		echo "# ${Var_script_name} running: gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar xz"
+#		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+		## Note above workes for decrypting and decompressing but original
+		##  compression and encryption of directories was not working
+		##  trying 'gpg-zip' instead bellow for this test.
+		echo "# ${Var_script_name} running: gpg-zip --gpg-args ${Var_gnupg_decrypt_opts}"
+		gpg-zip --gpg-args ${Var_gnupg_decrypt_opts}
 #		_exit_status=$?
 #		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
