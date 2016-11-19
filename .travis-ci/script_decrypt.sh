@@ -84,18 +84,18 @@ Func_decrypt_bulk_dir(){
 				*.tar.gpg)
 					_destination_name="${_file_name%.tar.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} | tar -xvf -"
+					_decryption_bulk_command="gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -"
 				;;
 				*.tgz.gpg)
 					_destination_name="${_file_name%.tgz.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} | tar -xvf -"
+					_decryption_bulk_command="gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -"
 				;;
 				*.gpg)
 					_destination_name="${_file_name%.gpg*}"
 					_destination="${_decrypt_base_dir}/${_destination_name}"
 					_destination_dir="${_destination%/*}"
-					_decryption_file_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} > \"${_destination}\""
+					_decryption_file_command="gpg ${_decryption_opts} ${_encrypted_dir_path} > \"${_destination}\""
 				;;
 			esac
 			if [ -f "${_passphrase}" ]; then
