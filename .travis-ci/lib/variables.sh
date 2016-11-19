@@ -25,6 +25,7 @@ export Var_encrypt_dir_path="${PWD}/Documentation"
 export Var_encrypt_file_path="${PWD}/ReadMe.md"
 ##  The following block of variables is used in 'script_decrypt.sh' file
 ##  Note that this script also re-uses the 'Var_raw_test_location' variable.
+export Var_bulk_decryption_dir="${PWD}/bulk_decryption"
 export Var_decrypt_pipe_location="${PWD}/decrypt.pipe"
 export Var_decrypted_location="${Var_decrypt_pipe_location%.*}.txt"
 ## Found redirection trick at: https://possiblelossofprecision.net/?p=413

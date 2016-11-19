@@ -58,15 +58,50 @@ else
 		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
 	fi
 fi
+## Make a directory path for bulk decryption steps
+if ! [ -d "${Var_bulk_decryption_dir}" ]; then
+	echo "# ${Var_script_name} running: mkdir -vp \"${Var_bulk_decryption_dir}\""
+	mkdir -vp "${Var_bulk_decryption_dir}"
+else
+	echo "# ${Var_script_name} detected: pre-exsisting bulk decryption directory ${Var_bulk_decryption_dir}"
+fi
+## If bulk encryption directory path exsists run checks for files and/or
+##  compressed directories that where processed by main script named pipe parser
 if [ -d "${Var_encrypted_bulk_dir}" ]; then
-	_encrypted_file_path="$(ls "${Var_encrypted_bulk_dir}/*md*")"
-	_encrypted_dir_path="$(ls "${Var_encrypted_bulk_dir}/*dir*")"
+	_encrypted_file_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "md" | head -n1)"
+	_encrypted_dir_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
+	## If there be a valid file that matches expected bulk operations for
+	##  file paths writen to named pipes, then say so, else pop an error
 	if [ -f "${_encrypted_file_path}" ]; then
 		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
+		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
+		exec 9<"${Var_pass_location}"
+		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}\""
+		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}"
+		echo "# ${Var_script_name} running: exec 9>&-"
+		exec 9>&-
+	else
+		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_file_path}"
 	fi
+	## If there be a valid file that matches expected bulk operations for
+	##  directory paths writen to named pipes, then say so, else pop an error
 	if [ -f "${_encrypted_dir_path}" ]; then
 		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
+		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
+		exec 9<"${Var_pass_location}"
+		_old_pwd=${PWD}
+		echo "# ${Var_script_name} running: cd \"${Var_bulk_decryption_dir}\""
+		cd "${Var_bulk_decryption_dir}"
+		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} | tar xz"
+		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
+		cd "${_old_pwd}"
+		echo "# ${Var_script_name} running: exec 9>&-"
+		exec 9>&-
+	else
+		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
 	fi
+
 	echo "${Var_script_name} reports: all checks passed for bulk decryption"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
