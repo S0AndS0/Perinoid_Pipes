@@ -69,6 +69,8 @@ fi
 ##  compressed directories that where processed by main script named pipe parser
 if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	_encrypted_file_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "md" | head -n1)"
+	_decrypted_file_path="${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}"
+	_decrypted_file_path="${Var_bulk_decryption_dir}/${_encrypted_file_path%.gpg*}"
 	_encrypted_dir_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
 	## If there be a valid file that matches expected bulk operations for
 	##  file paths writen to named pipes, then say so, else pop an error
@@ -76,8 +78,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
 		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
 		exec 9<"${Var_pass_location}"
-		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}\""
-		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}"
+		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${_decrypted_file_path}\""
+		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${_decrypted_file_path}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: exec 9>&-"
