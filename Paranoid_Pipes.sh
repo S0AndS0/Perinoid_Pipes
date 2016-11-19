@@ -1038,8 +1038,8 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_tar_exec_path} cz | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
-						#gpg-zip --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tar.gpg --encrypt --recipient ${Var_gpg_recipient} ${_mapped_array}
+						#${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_tar_exec_path} cz | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
+						gpg-zip --output ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tar.gpg --encrypt --recipient ${Var_gpg_recipient} ${_mapped_array}
 						## Either of above works for encrypting directories now.
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
