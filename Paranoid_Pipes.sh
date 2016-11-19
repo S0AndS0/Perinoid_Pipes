@@ -1031,9 +1031,8 @@ Func_mkpipe_reader(){
 						Var_star_date="$(date -u +%s)"
 						## Note to authors and editers, below works and reslults in recoverable file
 						##  however the cat to pipe redirection maybe unnessisary
-						#${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
-						#Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_\${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
-						${Var_parsing_command} "${_mapped_array}" >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
+						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
+						Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_\${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
 					elif [ -d "${_mapped_array}" ]; then
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
