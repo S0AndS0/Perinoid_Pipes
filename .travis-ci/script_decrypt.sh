@@ -101,8 +101,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		## Note above workes for decrypting and decompressing but original
 		##  compression and encryption of directories was not working
 		##  trying 'gpg-zip' instead bellow for this test.
-		echo "# ${Var_script_name} running: gpg-zip --gpg-args ${Var_gnupg_decrypt_opts}"
-		gpg-zip --gpg-args ${Var_gnupg_decrypt_opts}
+		echo "# ${Var_script_name} running: gpg-zip ${Var_gpgzip_decrypt_opts} \"\"${_encrypted_dir_path}"
+		gpg-zip ${Var_gpgzip_decrypt_opts} ""${_encrypted_dir_path}
 #		_exit_status=$?
 #		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
