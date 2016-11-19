@@ -72,59 +72,90 @@ Func_decrypt_bulk_dir(){
 	_passphrase="${Var_pass_location}"
 	## Capture list of file paths to check
 	_arr_listed_paths=( "${@}" )
+	echo "# ${Var_script_name} Func_decrypt_bulk_dir parsing: ${_arr_listed_paths[*]}"
 	let _path_counter=0
-	until [ "${_arr_listed_paths[${_path_counter}]}" = "${_path_counter}" ]; do
+	## Until number of inputed paths equals number of current counter
+	##  check inputed paths for options to decrypt
+	until [ "${#_arr_listed_paths[@]}" = "${_path_counter}" ]; do
 		_current_path="${_arr_listed_paths[${_path_counter}]}"
 		_file_name="${_current_path##*/}"
 		_file_dir="${_current_path%/*}"
 		if [ -f "${_current_path}" ]; then
+			## Push passphras into file descriptor
+			if [ -f "${_passphrase}" ]; then
+				exec 9<"${_passphrase}"
+			else
+				exec 9<(echo "${_passphrase}")
+			fi
 			## Match type of encrypted file we are dealing with
 			##  for this iteration of the loop
 			case "${_current_path}" in
 				*.tar.gpg)
 					_destination_name="${_file_name%.tar.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -"
+					## Make a destination directory for decryption
+					if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
+						mkdir -vp "${_destination_dir}"
+					fi
+					_old_pwd="${PWD}"
+					cd "${_destination_dir}"
+					gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -
 				;;
 				*.tgz.gpg)
 					_destination_name="${_file_name%.tgz.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -"
+					## Make a destination directory for decryption
+					if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
+						mkdir -vp "${_destination_dir}"
+					fi
+					_old_pwd="${PWD}"
+					cd "${_destination_dir}"
+					gpg ${_decryption_opts} ${_encrypted_dir_path} | tar -xvf -
 				;;
 				*.gpg)
 					_destination_name="${_file_name%.gpg*}"
 					_destination="${_decrypt_base_dir}/${_destination_name}"
 					_destination_dir="${_destination%/*}"
-					_decryption_file_command="gpg ${_decryption_opts} ${_encrypted_dir_path} > \"${_destination}\""
+					## Make a destination directory for decryption
+					if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
+						mkdir -vp "${_destination_dir}"
+					fi
+					_old_pwd="${PWD}"
+					cd "${_destination_dir}"
+					gpg ${_decryption_opts} ${_encrypted_dir_path} > "${_destination}"
 				;;
 			esac
-			if [ -f "${_passphrase}" ]; then
-				exec 9<"${_passphrase}"
-			else
-				exec 9<(echo "${_passphrase}")
-			fi
-			## Make a destination directory for decryption
-			if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
-				mkdir -vp "${_destination_dir}"
-			fi
-			_old_pwd="${PWD}"
-			cd "${_destination_dir}"
+			## Unset custom internal variables before restarting or quitting
+			exec 9>&-
+			let _path_counter++
 			if [ "${#_decryption_bulk_command}" != "0" ]; then
-				echo "# ${Var_script_name} running: ${_decryption_bulk_command}"
-				${_decryption_bulk_command}
 				unset _decryption_bulk_command
 			elif [ "${#_decryption_file_command}" != "0" ]; then
-				echo "# ${Var_script_name} running: ${_decryption_file_command}"
-				${_decryption_file_command}
 				unset _decryption_file_command
 			fi
+			if [ "${#_destination}" != "0" ]; then
+				unset _destination
+			fi
+			if [ "${#_destination_dir}" != "0" ]; then
+				unset _destination_dir
+			fi
+			if [ "${#_destination_name}" != "0" ]; then
+				unset _destination_name
+			fi
+			## Change back to original current workind directory and unset variable
+			##  in preperation of next loop or quit of loop
 			if [ -d "${_old_pwd}" ]; then
 				cd "${_old_pwd}"
+				unset _old_pwd
 			fi
 		fi
-		exec 9>&-
-		let _path_counter++
+		unset _current_path
+		unset _file_name
+		unset _file_dir
 	done
+	## When finished with loop unset last of internal variables that are no longer needed
+	unset _decrypt_base_dir
+	unset _decryption_opts
 	unset _passphrase
 }
 ## If bulk encryption directory path exsists run checks for files and/or
