@@ -78,45 +78,54 @@ Func_decrypt_bulk_dir(){
 		_file_name="${_current_path##*/}"
 		_file_dir="${_current_path%/*}"
 		if [ -f "${_current_path}" ]; then
+			## Match type of encrypted file we are dealing with
+			##  for this iteration of the loop
 			case "${_current_path}" in
 				*.tar.gpg)
-					_destination_name="${_file_name%.tar.gpg}"
+					_destination_name="${_file_name%.tar.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} | tar -xvf -"
+					_decryption_bulk_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} | tar -xvf -"
 				;;
 				*.tgz.gpg)
-					_destination_name="${_file_name%.tgz.gpg}"
+					_destination_name="${_file_name%.tgz.gpg*}"
 					_destination_dir="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_bulk_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} | tar -xvf -"
+					_decryption_bulk_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} | tar -xvf -"
 				;;
 				*.gpg)
-					_destination_name="${_file_name%.tgz.gpg}"
+					_destination_name="${_file_name%.gpg*}"
 					_destination="${_decrypt_base_dir}/${_destination_name}"
-					_decryption_file_command="cat ${_encrypted_dir_path} | gpg ${_decryption_opts} > ${_destination}"
+					_destination_dir="${_destination%/*}"
+					_decryption_file_command="cat \"${_encrypted_dir_path}\" | gpg ${_decryption_opts} > \"${_destination}\""
 				;;
 			esac
 			if [ -f "${_passphrase}" ]; then
 				exec 9<"${_passphrase}"
 			else
-				exec 9<"$(cat "${_passphrase}")"
+				exec 9<(echo "${_passphrase}")
 			fi
 			## Make a destination directory for decryption
 			if [ "${#_destination_dir}" != "0" ] && ! [ -d "${_destination_dir}" ]; then
 				mkdir -vp "${_destination_dir}"
-				_old_pwd="${PWD}"
-				cd "${_destination_dir}"
 			fi
+			_old_pwd="${PWD}"
+			cd "${_destination_dir}"
 			if [ "${#_decryption_bulk_command}" != "0" ]; then
 				echo "# ${Var_script_name} running: ${_decryption_bulk_command}"
 				${_decryption_bulk_command}
+				unset _decryption_bulk_command
 			elif [ "${#_decryption_file_command}" != "0" ]; then
 				echo "# ${Var_script_name} running: ${_decryption_file_command}"
 				${_decryption_file_command}
+				unset _decryption_file_command
+			fi
+			if [ -d "${_old_pwd}" ]; then
+				cd "${_old_pwd}"
 			fi
 		fi
 		exec 9>&-
 		let _path_counter++
 	done
+	unset _passphrase
 }
 ## If bulk encryption directory path exsists run checks for files and/or
 ##  compressed directories that where processed by main script named pipe parser
