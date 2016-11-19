@@ -15,7 +15,7 @@ chmod 660 "${Var_decrypted_location}"
 ##  will be written to with the helper script.
 echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
 chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
-echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh \"${Var_encrypted_location}\" \"${Var_decrypted_location}\" \"${Var_pass_location}\""
+echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file=\"${Var_encrypted_location}\" --output-file=\"${Var_decrypted_location}\" --pass=\"${Var_pass_location}\""
 Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_location}" --output-file="${Var_decrypted_location}" --pass="${Var_pass_location}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
@@ -35,7 +35,7 @@ if [ -r "${Var_decrypted_location}" ]; then
 		Func_check_exit_status "${_exit_status}"
 		_raw_strings="$(cat "${Var_raw_test_location}")"
 		if [[ "${_decrypted_strings}" == "${_raw_strings}" ]]; then
-			echo "${Var_script_name} reports: all checks passed"
+			echo "${Var_script_name} reports: all checks passed for log decryption"
 		else
 			echo "${Var_script_name} reports: failed checks?"
 			diff "${Var_decrypted_location}" "${Var_raw_test_location}"
@@ -57,5 +57,16 @@ else
 	else
 		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
 	fi
+fi
+if [ -d "${Var_encrypted_bulk_dir}" ]; then
+	_encrypted_file_path="$(ls "${Var_encrypted_bulk_dir}/*md*")"
+	_encrypted_dir_path="$(ls "${Var_encrypted_bulk_dir}/*dir*")"
+	if [ -f "${_encrypted_file_path}" ]; then
+		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
+	fi
+	if [ -f "${_encrypted_dir_path}" ]; then
+		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
+	fi
+	echo "${Var_script_name} reports: all checks passed for bulk decryption"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
