@@ -96,10 +96,19 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		_old_pwd=${PWD}
 		echo "# ${Var_script_name} running: cd \"${Var_bulk_decryption_dir}\""
 		cd "${Var_bulk_decryption_dir}"
-		echo "# ${Var_script_name} running: gpg ${Var_gnupg_decrypt_opts} ${_encrypted_dir_path} | tar -xzv -"
-		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar -xzv -
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
+#		echo "# ${Var_script_name} running: gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar xz"
+#		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar xz
+		## Note above workes for decrypting and decompressing but original
+		##  compression and encryption of directories was not working
+		##  trying 'gpg-zip' instead bellow for this test.
+#		Var_gpgzip_decrypt_opts="--decrypt --gpg-args '--passphrase-fd 9'"
+#		echo "# ${Var_script_name} running: gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}"
+#		gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}
+		## Trying manual approch found within 'gpg-zip' source code
+		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar -xvf"
+		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar -xvf -
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
 		cd "${_old_pwd}"
 		echo "# ${Var_script_name} running: exec 9>&-"
