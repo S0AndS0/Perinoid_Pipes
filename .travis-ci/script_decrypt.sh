@@ -114,8 +114,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	Func_check_exit_status "${_exit_status}"
 	if [ -f "${_decrypted_file_path}" ]; then
 		echo "# ${Var_script_name} reports: decrypted file detected ${_decrypted_file_path}"
-		echo '# ${Var_script_name} running: diff <(cat "${_decrypted_file_path}") <(cat "${_encrypted_file_path}")'
-		diff <(cat "${_decrypted_file_path}") <(cat "${_encrypted_file_path}")
+		echo '# ${Var_script_name} running: diff <(cat "${_decrypted_file_path}") <(cat "${Var_encrypt_file_path}")'
+		diff <(cat "${_decrypted_file_path}") <(cat "${Var_encrypt_file_path}")
 	else
 		echo "# ${Var_script_name} reports: no file found at ${_decrypted_file_path}"
 	fi
