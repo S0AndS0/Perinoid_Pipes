@@ -91,8 +91,8 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	##  directory paths writen to named pipes, then say so, else pop an error
 	if [ -f "${_encrypted_dir_path}" ]; then
 		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
-#		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
-#		exec 9<"${Var_pass_location}"
+		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
+		exec 9<"${Var_pass_location}"
 		_old_pwd=${PWD}
 		echo "# ${Var_script_name} running: cd \"${Var_bulk_decryption_dir}\""
 		cd "${Var_bulk_decryption_dir}"
@@ -101,15 +101,15 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 		## Note above workes for decrypting and decompressing but original
 		##  compression and encryption of directories was not working
 		##  trying 'gpg-zip' instead bellow for this test.
-		Var_gpgzip_decrypt_opts="--decrypt"
-		echo "# ${Var_script_name} running: cat \"${Var_pass_location}\" | gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}"
-		cat "${Var_pass_location}" | gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}
+		Var_gpgzip_decrypt_opts="--decrypt --gpg-args '--passphrase-fd 9'"
+		echo "# ${Var_script_name} running: gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}"
+		gpg-zip ${Var_gpgzip_decrypt_opts} ${_encrypted_dir_path}
 #		_exit_status=$?
 #		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
 		cd "${_old_pwd}"
-#		echo "# ${Var_script_name} running: exec 9>&-"
-#		exec 9>&-
+		echo "# ${Var_script_name} running: exec 9>&-"
+		exec 9>&-
 	else
 		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
 	fi
