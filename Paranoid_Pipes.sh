@@ -1015,8 +1015,7 @@ Func_mkpipe_reader(){
 	##  AND a "break" signal is undetected assign function [Map_read_array_to_output]
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
-		_mapped_array="$(Map_read_array_to_output "${Var_pipe_file_name}")"
-		## If above variable is not zero characters in length OR if above variable
+		_mapped_array="$(Map_read_array_to_output "${Var_pipe_file_name}")"		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
 		if [ "${#_mapped_array}" != "0" ] && [ "${Var_pipe_quit_string}" != "${_mapped_array}" ]; then
@@ -1030,9 +1029,11 @@ Func_mkpipe_reader(){
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="$(date -u +%s)"
-						${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
-#						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
-						Func_messages "# Encryption command [${Var_cat_exec_path} <<<\"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
+						## Note to authors and editers, below works and reslults in recoverable file
+						##  however the cat to pipe redirection maybe unnessisary
+						#${Var_cat_exec_path} "${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
+						#Func_messages "# Encryption command [${Var_cat_exec_path} \"\${_mapped_array}\" | ${Var_parsing_command} >> \"${Var_parsing_bulk_out_dir}/${Var_star_date}_\${_mapped_array##*/}${Var_bulk_output_suffix}\"]" '2' '3'
+						${Var_parsing_command} "${_mapped_array}" >> "${Var_parsing_bulk_out_dir}/${Var_star_date}_${_mapped_array##*/}${Var_bulk_output_suffix}"
 					elif [ -d "${_mapped_array}" ]; then
 						if ! [ -d "${Var_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir_exec_path} -vp "${Var_parsing_bulk_out_dir}"
@@ -1040,7 +1041,7 @@ Func_mkpipe_reader(){
 						Var_star_date="$(date -u +%s)"
 						#${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_tar_exec_path} cz | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
 						## Above almost works if variable is assigned with sorounding duble quotes.
-						${Var_tar_exec_path} cz - $(cat <<<"${_mapped_array}") | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
+						${Var_tar_exec_path} cz - $(echo -n "${_mapped_array}") | ${Var_parsing_command} > ${Var_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz.gpg
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
