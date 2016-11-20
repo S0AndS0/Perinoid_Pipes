@@ -14,7 +14,7 @@ Var_pass="123456... Luggage"
 Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
-Var_gpg_opts="--quiet --no-tty --bulk --always-trust --passphrase-fd 9 --decrypt"
+Var_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
 ## Optional workarounds based off 'gpg-zip' encryption/decryption. The following
 ##  two variables if set to directory paths will result in decrypting compressed
 ##  directories or read file paths from the main script... well that is once
@@ -425,7 +425,8 @@ Func_do_stuff_with_bulk_dirs(){
 		##  for checking what type of decryption steps should be used.
 		if [ -d "${Var_bulk_input_dir}" ]; then
 			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '1' '2'
-			for _posible_file in $(ls "${Var_bulk_input_dir}*.gpg"); do
+			_list_of_gpg_files="$(ls "${Var_bulk_input_dir}/*.gpg")"
+			for _posible_file in ${_list_of_gpg_files}; do
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
 				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
