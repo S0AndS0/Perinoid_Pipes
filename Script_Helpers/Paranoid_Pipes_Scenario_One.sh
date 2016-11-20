@@ -270,21 +270,21 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\")\" >> \"${Var_output_file}\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}")" >> "${Var_output_file}"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}")" >> "${Var_output_file}"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")" >> "${Var_output_file}"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
 					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} >> \"${Var_output_file}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" >> "${Var_output_file}"
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
 				else
 					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\" >> \"${Var_output_file}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}" >> "${Var_output_file}"
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 				fi
 			;;
 		esac
@@ -294,20 +294,20 @@ Do_stuff_with_lines(){
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
 					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}")"
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\")\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}")"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}"
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts}" '1' '2'
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
 				else
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}"
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\"" '1' '2'
+					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
 				fi
 			;;
 		esac
@@ -387,8 +387,8 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg \"${Var_gpg_opts}\" | tar \"${_tar_opts}\" -" '1' '2'
-			cat "${_encrypted_path}" | gpg "${Var_gpg_opts}" | tar "${_tar_opts}" -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar \"${_tar_opts}\" -" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar "${_tar_opts}" -
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
@@ -403,8 +403,8 @@ Func_decrypt_file_or_dir(){
 			fi
 			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg \"${Var_gpg_opts}\" > \"${_output_file}\"" '1' '2'
-			cat "${_encrypted_path}" | gpg "${Var_gpg_opts}" > "${_output_file}"
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
 			unset _output_file
 		;;
 	esac
