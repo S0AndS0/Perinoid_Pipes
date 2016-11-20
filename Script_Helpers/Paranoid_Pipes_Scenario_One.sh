@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 #Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
-## The following variable should be your encrypted file that has been appended to.
+## The following variable should be your encrypted file that has been appended
+##  to via the main ecryption script abetrarary input parsing output file.
 Var_input_file="/tmp/out.gpg"
 ## The following variable should be your named pipe for decrypting
 Var_output_file="/tmp/out.log"
@@ -14,6 +15,13 @@ Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
 Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
+## Optional workarounds based off 'gpg-zip' encryption/decryption. The following
+##  two variables if set to directory paths will result in decrypting compressed
+##  directories or read file paths from the main script... well that is once
+##  fully tested by Travic-CI, otherwise see auto-build scripts for steps in
+##  recovering bulk encryption paths instead of appended logs.
+Var_bulk_input_dir=""
+Var_bulk_output_dir=""
 ### Dangerious / Special usage case variables
 Var_padding_yn='no'
 Var_padding_length='adaptive'
@@ -30,7 +38,7 @@ Func_help(){
 	echo "#  that contain more than one arrmored message in an automated fashion."
 	echo "## Note: '--search-output' will not be active if outputing to named pipe."
 	echo "## Special use case options"
-	echo "#  --padding-yn		Var_padding_yn=${Var_padding_yn}"
+	echo "# --padding-yn		Var_padding_yn=${Var_padding_yn}"
 	echo "# --padding-length	Var_padding_length=${Var_padding_length}"
 	echo "# --padding-placement	Var_padding_placement=${Var_padding_placement}"
 	echo "## The above options are intended to aid users in removing"
@@ -38,6 +46,10 @@ Func_help(){
 	echo "#  option. By default this option is disabled and users must"
 	echo "#  spicifficly enable padding if desired because of risk of"
 	echo "#  coruption to data when used. Warning, the three above are not completly finished!"
+	echo "## New/experomental options"
+	echo "# --bulk-input-dir	Var_bulk_input_dir=${Var_bulk_input_dir}"
+	echo "# --bulk-output-dir	Var_bulk_output_dir=${Var_bulk_output_dir}"
+	echo "## The above two are required if bulk files or directories where processed by main script."
 }
 Func_assign_arg(){
 	_variable="${1}"
@@ -55,6 +67,12 @@ Func_check_args(){
 			;;
 			--output-file|Var_output_file)
 				Func_assign_arg "Var_output_file" "${_arg#*=}"
+			;;
+			--bulk-input-dir|Var_bulk_input_dir)
+				Func_assign_arg "Var_bulk_input_dir" "${_arg#*=}"
+			;;
+			--bulk-output-dir|Var_bulk_output_dir)
+				Func_assign_arg "Var_bulk_output_dir" "${_arg#*=}"
 			;;
 			--pass|Var_pass)
 				Func_assign_arg "Var_pass" "${_arg#*=}"
@@ -83,9 +101,9 @@ Func_check_args(){
 		let _arr_count++
 	done
 }
-## The following function is called within 'Do_stuff_with_lines'
-##  to set the passphrase to a file descriptor prior to attempting
-##  to process encrypted blocks.
+## The following function is called within 'Do_stuff_with_lines' to set the
+##  passphrase to a file descriptor prior to attempting to process encrypted
+##  blocks.
 Pass_the_passphrase(){
 	_pass=( "$@" )
 	if [ -f "${_pass[@]}" ]; then
@@ -94,18 +112,17 @@ Pass_the_passphrase(){
 		exec 9<(echo "${_pass[@]}")
 	fi
 }
-## The following mess of checks within this fucntion
-##  are only enabled if users select to do so, else
-##  this function is not used.
+## The following mess of checks within this fucntion are only enabled if users
+##  select to do so, else this function is not used.
 Remove_padding_from_output(){
 	_input=( "$@" )
 	let _count=0
 	let _padding_count=0
 	until [ "${_count}" = "${#_input[@]}" ]; do
 #		_line=( "${_input[${_count}]}" )
-		## Do some funky checks to see if trimming the tail or head of read strings.
-		##  looks way worce than it really is and once use to it, then next
-		##  checks will make more sence...
+		## Do some funky checks to see if trimming the tail or head of
+		##  read strings. looks way worce than it really is and once use
+		##  to it, then next checks will make more sence...
 		if grep -qE "append|prepend" <<<"${Var_padding_placement//,/ }"; then
 			if grep -qE "append"  <<<"${Var_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_padding_placement//,/ }"; then
 				case "${Var_padding_length}" in
@@ -117,7 +134,8 @@ Remove_padding_from_output(){
 					;;
 				esac
 				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
-				## Trim first third of line bellow, trim last third above
+				## Trim first third of line bellow, trim last
+				##  third above
 				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			elif grep -qE "append"  <<<"${Var_padding_placement//,/ }"; then
 				case "${Var_padding_length}" in
@@ -128,7 +146,8 @@ Remove_padding_from_output(){
 						_padding_length="${Var_padding_length}"
 					;;
 				esac
-				## Trim last half or padding lengths value from line
+				## Trim last half or padding lengths value from
+				##  line
 				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
 			else
 				case "${Var_padding_length}" in
@@ -139,14 +158,15 @@ Remove_padding_from_output(){
 						_padding_length="${Var_padding_length}"
 					;;
 				esac
-				## Trim padding value from beguining of line or first half
+				## Trim padding value from beguining of line
+				##  or first half
 				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			fi
 		fi
 		## TO-DO : finish below for now echo out line
 		echo "${_line[@]}"
-		## Do the same kind of funkyness to drop lines above or bellow desired
-		##  line of data.
+		## Do the same kind of funkyness to drop lines above or bellow
+		##  desired line of data.
 #		if grep -qE "above|bellow" <<<"${Var_padding_placement//,/ }"; then
 #			if grep -qE "above" <<<"${Var_padding_placement//,/ }" && grep -qE "bellow" <<<"${Var_padding_placement//,/ }"; then
 #				_line[${_count}]=( "" )
@@ -244,9 +264,8 @@ Do_stuff_with_lines(){
 	fi
 	unset -v _enc_block[@]
 	unset _enc_input
-	## Close file descriptor containing passphrase
-	##  just to be safer while preforming less then
-	##  secure operations.
+	## Close file descriptor containing passphrase just to be safer while
+	##  preforming less then secure operations.
 	exec 9>&-
 }
 Func_spoon_feed_pipe_decryption(){
@@ -263,7 +282,8 @@ Func_spoon_feed_pipe_decryption(){
 	else
 		mapfile -t _arr_input <<<"${_input[@]}"
 	fi
-	## Initialize internal count that added to in the following loop for array indexing.
+	## Initialize internal count that added to in the following loop for
+	##  array indexing.
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
 		## If currently indexed line matches end of line string, then
@@ -291,10 +311,82 @@ Func_spoon_feed_pipe_decryption(){
 	unset -v _input[@]
 	unset -v _arr_input[@]
 }
+## New two functions are to handle bulk file/directory encryption, note
+##  the following will be fragile until finished.
+## The following function is "fead" by 'Func_do_stuff_with_bulk_dirs' function
+##  which should be called by the 'Main_func' function
+Func_decrypt_file_or_dir(){
+	_encrypted_path="${1}"
+	Pass_the_passphrase "${Var_pass}"
+	case "${_encrypted_file_path}" in
+		*.tar.gpg)
+			_old_pwd="${PWD}"
+			_tar_opts='-xfv'
+			## Make a directory path under bulk output dir based on
+			##  inputed compressed path name; Bash short-hand tricks
+			_output_dir="${Var_bulk_output_dir}/${_encrypted_path##*/}"
+			_output_dir="${_output_dir%.tar.gpg*"
+			## If bulk output directory for compressed & encrypted
+			## directories do not exsist, then mkdir it
+			if ! [ -d "${_output_dir}" ]; then
+				mkdir -vp "${_output_dir}"
+			fi
+			cd "${_output_dir}"
+			## Note the trailing dash ('-') with 'tar'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -
+			cd "${_old_pwd}"
+			unset _old_pwd
+			unset _tar_opts
+		;;
+		## TO-DO - write other double sufix reconitions above for dirs
+		*gpg)
+			## If bulk output directory does not exsist, then mkdir
+			if ! [ -d "${Var_bulk_output_dir}" ]; then
+				mkdir -vp "${Var_bulk_output_dir}"
+			fi
+			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
+			_output_file="${_output_file%.gpg*"
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
+			unset _output_file
+		;;
+	esac
+	## Close file descriptor containing passphrase just to be safer while
+	##  preforming less then secure operations. Note this process should be
+	##  repeated for other operations involving passphrases.
+	exec 9>&-
+	unset _encrypted_path
+}
+## The following function feeds the 'Func_decrypt_file_or_dir' function and is
+##  called by the 'Main_func' function, however, is only activated by using two
+##  optional command line options for this helper script.
+Func_do_stuff_with_bulk_dirs(){
+	## If both input and output bulk directory variables are set, then
+	##  assume that further checks and decryption steps should be run.
+	if [ "${#Var_bulk_input_dir}" != "0" ] && [ "${#Var_bulk_output_dir}" != "0" ]; then
+		## If bulk input directory exsists, then push 'ls' through loop
+		##  for checking what type of decryption steps should be used.
+		if [ -d "${Var_bulk_input_dir}" ]; then
+			for _posible_file in $(ls "${Var_bulk_input_dir}"); do
+				## If posible file is a file, then parse for
+				##  type of decryption steps that are regonized.
+				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
+					Func_decrypt_file_or_dir "${Var_bulk_input_dir}/${_posible_file}"
+				fi
+			done
+		fi
+		## Else fail silently and do nothing for now...
+## TO-DO - write verbosity & logging function to handle superfulus output from
+##  script.
+#	else
+#		echo "# ${Var_script_name} skipping Func_do_stuff_with_bulk_dirs function"
+	fi
+}
 Main_func(){
 	Func_check_args "${@:---help}"
 	## Start cascade of function redirection
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
+	## Check with following function before unseting any internal variables
+	Func_do_stuff_with_bulk_dirs
 	## Unset user modified variables once finished.
 	unset Var_input_file
 	unset Var_output_file
