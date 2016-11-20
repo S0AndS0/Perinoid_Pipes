@@ -402,6 +402,7 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
+			unset _dir_list
 		;;
 		*.tgz.gpg)
 			_old_pwd="${PWD}"
@@ -418,8 +419,8 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xf -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xf -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xzf -" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xzf -
 			#Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
 			#cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
 			_dir_list="$(ls "${_encrypted_path}")"
@@ -434,6 +435,7 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
+			unset _dir_list
 		;;
 		## TO-DO - write other double sufix reconitions above for dirs
 		*gpg)
