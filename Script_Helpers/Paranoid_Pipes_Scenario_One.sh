@@ -28,8 +28,8 @@ Var_padding_length='adaptive'
 Var_padding_placement='above'
 #Var_padding_placement='above,bellow,append,prepend'
 ## Internal script variables that can also be set by users
-Var_debug_level="0"
-Var_log_level="0"
+Var_debug_level="1"
+Var_log_level="1"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
 ## The following function is used internally for silencing or verbosly logging
 ##  or printing scripted actions to terminal. Under normal operations this function
