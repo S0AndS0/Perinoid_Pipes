@@ -425,7 +425,7 @@ Func_do_stuff_with_bulk_dirs(){
 		##  for checking what type of decryption steps should be used.
 		if [ -d "${Var_bulk_input_dir}" ]; then
 			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '1' '2'
-			_list_of_gpg_files="$(ls "${Var_bulk_input_dir}/*.gpg")"
+			_list_of_gpg_files="$(ls "${Var_bulk_input_dir}")"
 			for _posible_file in ${_list_of_gpg_files}; do
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
