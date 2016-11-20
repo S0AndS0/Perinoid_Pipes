@@ -373,7 +373,6 @@ Func_decrypt_file_or_dir(){
 	case "${_encrypted_path}" in
 		*.tar.gpg)
 			_old_pwd="${PWD}"
-			_tar_opts='-xfv'
 			## Make a directory path under bulk output dir based on
 			##  inputed compressed path name; Bash short-hand tricks
 			_output_dir="${Var_bulk_output_dir}/${_encrypted_path##*/}"
@@ -388,11 +387,10 @@ Func_decrypt_file_or_dir(){
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
 			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xfv -
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
-			unset _tar_opts
 		;;
 		## TO-DO - write other double sufix reconitions above for dirs
 		*gpg)
