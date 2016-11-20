@@ -386,8 +386,8 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xfv -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
