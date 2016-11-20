@@ -14,7 +14,7 @@ Var_pass="123456... Luggage"
 Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
-Var_gpg_opts="--always-trust --passphrase-fd 9 --decrypt"
+Var_gpg_opts="--no-tty --always-trust --passphrase-fd 9 --decrypt"
 ## Optional workarounds based off 'gpg-zip' encryption/decryption. The following
 ##  two variables if set to directory paths will result in decrypting compressed
 ##  directories or read file paths from the main script... well that is once
