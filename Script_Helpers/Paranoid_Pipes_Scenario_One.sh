@@ -14,7 +14,7 @@ Var_pass="123456... Luggage"
 Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
-Var_gpg_opts="--no-tty --always-trust --passphrase-fd 9 --decrypt"
+Var_gpg_opts="--quiet --no-tty --bulk --always-trust --passphrase-fd 9 --decrypt"
 ## Optional workarounds based off 'gpg-zip' encryption/decryption. The following
 ##  two variables if set to directory paths will result in decrypting compressed
 ##  directories or read file paths from the main script... well that is once
@@ -387,8 +387,8 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar \"${_tar_opts}\" -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar "${_tar_opts}" -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
