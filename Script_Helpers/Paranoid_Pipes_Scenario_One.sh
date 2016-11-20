@@ -390,8 +390,8 @@ Func_decrypt_file_or_dir(){
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xf -
 			#Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
 			#cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
-			_dir_list="$(ls "${_encrypted_path}")"
-			for _posible_dir ${_dir_list}; do
+#			_dir_list="$(ls "${_encrypted_path}")"
+			for _posible_dir in ${_dir_list}; do
 				if [ -d "${_encrypted_path}/${_posible_dir}" ]; then
 					Func_message "# ${Var_script_name} running: ls -hal \"${_encrypted_path}/${_posible_dir}\"" '1' '2'
 					ls -hal "${_encrypted_path}/${_posible_dir}"
