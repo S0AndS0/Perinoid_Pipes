@@ -386,8 +386,19 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xf -" '1' '2'
+			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xf -
+			#Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
+			#cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
+			_dir_list="$(ls "${_encrypted_path}")"
+			for _posible_dir ${_dir_list}; do
+				if [ -d "${_encrypted_path}/${_posible_dir}" ]; then
+					Func_message "# ${Var_script_name} running: ls -hal \"${_encrypted_path}/${_posible_dir}\"" '1' '2'
+					ls -hal "${_encrypted_path}/${_posible_dir}"
+				else
+					Func_message "# ${Var_script_name} reports: not a directory ${_encrypted_path}/${_posible_dir}" '1' '2'
+				fi
+			done
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
