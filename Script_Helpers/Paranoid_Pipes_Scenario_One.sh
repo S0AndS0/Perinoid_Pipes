@@ -87,10 +87,12 @@ Func_help(){
 Func_assign_arg(){
 	_variable="${1}"
 	_value="${2}"
+	Func_message "# ${Var_script_name} running: declare -g \"${_variable}=${_value}\"" '3' '4'
 	declare -g "${_variable}=${_value}"
 }
 Func_check_args(){
 	_arr_input=( "${@}" )
+	Func_message "# ${Var_script_name} parsing: ${_arr_input[*]}" '2' '3'
 	let _arr_count=0
 	until [ "${#_arr_input[@]}" = "${_arr_count}" ]; do
 		_arg="${_arr_input[${_arr_count}]}"
@@ -145,6 +147,7 @@ Func_check_args(){
 		esac
 		let _arr_count++
 	done
+	unset _arr_count
 }
 ## The following function is called within 'Do_stuff_with_lines' to set the
 ##  passphrase to a file descriptor prior to attempting to process encrypted
@@ -152,8 +155,10 @@ Func_check_args(){
 Pass_the_passphrase(){
 	_pass=( "$@" )
 	if [ -f "${_pass[@]}" ]; then
+		Func_message "# ${Var_script_name} running: exec 9<\"\${_pass[@]}\"" '4' '5'
 		exec 9<"${_pass[@]}"
 	else
+		Func_message "# ${Var_script_name} running: exec 9<( echo \"\${_pass[@]}\")" '4' '5'
 		exec 9<(echo "${_pass[@]}")
 	fi
 }
@@ -257,9 +262,10 @@ Do_stuff_with_lines(){
 	##  above decrypting command and append to the file. Else output
 	##  decryption to terminal.
 	## Push passphrase into a file descriptor
+	Func_message "# ${Var_script_name} running: Pass_the_passphrase \"\${Var_pass}\"" '3' '4'
 	Pass_the_passphrase "${Var_pass}"
 	if [ -p "${Var_output_file}" ]; then
-		Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" > \"${Var_output_file}\"" '1' '2'
+		Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" > \"${Var_output_file}\"" '3' '4'
 		cat <<<"${_enc_input}" > "${Var_output_file}"
 	## The case checks used below are checking if user wishes to remove
 	## padding data that was added by the bulk decryption script. By
@@ -270,20 +276,20 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '3' '4'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '3' '4'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")" >> "${Var_output_file}"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} >> \"${Var_output_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} >> \"${Var_output_file}\"" '3' '4'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
 				else
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\" >> \"${Var_output_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\" >> \"${Var_output_file}\"" '3' '4'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 				fi
 			;;
@@ -293,20 +299,20 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\"" '3' '4'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\"" '3' '4'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts}" '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts}" '3' '4'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
 				else
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\"" '3' '4'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
 				fi
 			;;
@@ -346,7 +352,7 @@ Func_spoon_feed_pipe_decryption(){
 		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
-			Func_message "# ${Var_script_name} running: Do_stuff_with_lines \"\${_arr_to_parse[@]}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: Do_stuff_with_lines \"\${_arr_to_parse[@]}\"" '2' '3'
 			Do_stuff_with_lines "${_arr_to_parse[@]}"
 			unset -v _arr_to_parse[@]
 		elif [ "${_beginning_of_line}" = "${_arr_input[${_count}]}" ]; then
@@ -380,27 +386,25 @@ Func_decrypt_file_or_dir(){
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# ${Var_script_name} running: mkdir -p \"${_output_dir}\"" '1' '2'
+				Func_message "# ${Var_script_name} running: mkdir -p \"${_output_dir}\"" '3' '4'
 				mkdir -p "${_output_dir}"
 			fi
-			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '3' '4'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xf -" '1' '2'
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xf -" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xf -
-			#Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
-			#cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
-			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '1' '2'
+			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '3' '4'
 			_dir_list="$(ls "${_output_dir}")"
 			for _posible_dir in ${_dir_list}; do
 				if [ -d "${_output_dir}/${_posible_dir}" ]; then
-					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
 					ls -hal "${_output_dir}/${_posible_dir}"
 				else
-					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '1' '2'
+					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
 				fi
 			done
-			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '3' '4'
 			cd "${_old_pwd}"
 			unset _old_pwd
 			unset _dir_list
@@ -414,41 +418,38 @@ Func_decrypt_file_or_dir(){
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# ${Var_script_name} running: mkdir -p \"${_output_dir}\"" '1' '2'
+				Func_message "# ${Var_script_name} running: mkdir -p \"${_output_dir}\"" '3' '4'
 				mkdir -p "${_output_dir}"
 			fi
-			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '3' '4'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xzf -" '1' '2'
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xzf -" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xzf -
-			#Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xvf -" '1' '2'
-			#cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xvf -
-			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '1' '2'
+			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '3' '4'
 			_dir_list="$(ls "${_output_dir}")"
 			for _posible_dir in ${_dir_list}; do
 				if [ -d "${_output_dir}/${_posible_dir}" ]; then
-					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
 					ls -hal "${_output_dir}/${_posible_dir}"
 				else
-					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '1' '2'
+					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
 				fi
 			done
-			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '3' '4'
 			cd "${_old_pwd}"
 			unset _old_pwd
 			unset _dir_list
 		;;
-		## TO-DO - write other double sufix reconitions above for dirs
 		*gpg)
 			## If bulk output directory does not exsist, then mkdir
 			if ! [ -d "${Var_bulk_output_dir}" ]; then
-				Func_message "# ${Var_script_name} running: mkdir -p \"${Var_bulk_output_dir}\"" '1' '2'
+				Func_message "# ${Var_script_name} running: mkdir -p \"${Var_bulk_output_dir}\"" '3' '4'
 				mkdir -p "${Var_bulk_output_dir}"
 			fi
 			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '1' '2'
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
 			unset _output_file
 		;;
@@ -469,21 +470,21 @@ Func_do_stuff_with_bulk_dirs(){
 		## If bulk input directory exsists, then push 'ls' through loop
 		##  for checking what type of decryption steps should be used.
 		if [ -d "${Var_bulk_input_dir}" ]; then
-			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '1' '2'
+			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '2' '3'
 			_list_of_gpg_files="$(ls "${Var_bulk_input_dir}")"
 			for _posible_file in ${_list_of_gpg_files}; do
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
 				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
-					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '2' '3'
 					Func_decrypt_file_or_dir "${Var_bulk_input_dir}/${_posible_file}"
 				else
-					Func_message "# ${Var_script_name} skipping: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} skipping: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '2' '3'
 				fi
 			done
 		fi
 	else
-		Func_message "# ${Var_script_name} skipping: Func_do_stuff_with_bulk_dirs function" '1' '2'
+		Func_message "# ${Var_script_name} skipping: Func_do_stuff_with_bulk_dirs function" '2' '3'
 	fi
 }
 Main_func(){

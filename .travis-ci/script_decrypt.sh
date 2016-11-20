@@ -15,8 +15,8 @@ chmod 660 "${Var_decrypted_location}"
 ##  will be written to with the helper script.
 echo "# ${Var_script_name} running: chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh"
 chmod u+x Script_Helpers/Paranoid_Pipes_Scenario_One.sh
-echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file=\"${Var_encrypted_location}\" --output-file=\"${Var_decrypted_location}\" --pass=\"${Var_pass_location}\" --debug-level='3' --bulk-input-dir=\"${Var_encrypted_bulk_dir}\" --bulk-output-dir=\"${Var_bulk_decryption_dir}\""
-Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_location}" --output-file="${Var_decrypted_location}" --pass="${Var_pass_location}" --debug-level='3' --bulk-input-dir="${Var_encrypted_bulk_dir}" --bulk-output-dir="${Var_bulk_decryption_dir}"
+echo "# ${Var_script_name} running: Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file=\"${Var_encrypted_location}\" --output-file=\"${Var_decrypted_location}\" --pass=\"${Var_pass_location}\" --debug-level='5' --bulk-input-dir=\"${Var_encrypted_bulk_dir}\" --bulk-output-dir=\"${Var_bulk_decryption_dir}\""
+Script_Helpers/Paranoid_Pipes_Scenario_One.sh --input-file="${Var_encrypted_location}" --output-file="${Var_decrypted_location}" --pass="${Var_pass_location}" --debug-level='5' --bulk-input-dir="${Var_encrypted_bulk_dir}" --bulk-output-dir="${Var_bulk_decryption_dir}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 ## Test decryption output against non-encryted input from previous script.
@@ -58,76 +58,12 @@ else
 		echo "# ${Var_script_name} reports it not a file: ${Var_decrypted_location}"
 	fi
 fi
-## Make a directory path for bulk decryption steps
-if ! [ -d "${Var_bulk_decryption_dir}" ]; then
-	echo "# ${Var_script_name} running: mkdir -vp \"${Var_bulk_decryption_dir}\""
-	mkdir -vp "${Var_bulk_decryption_dir}"
-else
-	echo "# ${Var_script_name} detected: pre-exsisting bulk decryption directory ${Var_bulk_decryption_dir}"
-fi
 ## If bulk encryption directory path exsists run checks for files and/or
 ##  compressed directories that where processed by main script named pipe parser
 if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	_encrypted_file_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "md" | head -n1)"
 	_decrypted_file_path="${Var_bulk_decryption_dir}/${_encrypted_file_path##*/}"
 	_decrypted_file_path="${_decrypted_file_path%.gpg*}"
-	_encrypted_dir_path="${Var_encrypted_bulk_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
-	_decrypted_dir_path="${Var_bulk_decryption_dir}/$(ls "${Var_encrypted_bulk_dir}" | grep -iE "dir" | head -n1)"
-	_decrypted_dir_path="${_decrypted_dir_path%.tar.gpg*}"
-	
-	## Call function for bulk decryption. If this test results in similar output
-	##  then this sort of structure maybe added into helper script with some new
-	##  command line options.
-#	for _file in $(ls "${Var_encrypted_bulk_dir}"); do
-#		Func_decrypt_bulk_dir "${Var_encrypted_bulk_dir}/${_file}"
-#	done
-	## Note re-enabled bellow until above is sourted out.
-	
-	## If there be a valid file that matches expected bulk operations for
-	##  file paths writen to named pipes, then say so, else pop an error
-#	if [ -f "${_encrypted_file_path}" ]; then
-#		echo "# ${Var_script_name} reports: file detected ${_encrypted_file_path}"
-#		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
-#		exec 9<"${Var_pass_location}"
-#		echo "# ${Var_script_name} running: cat \"${_encrypted_file_path}\" | gpg ${Var_gnupg_decrypt_opts} > \"${_decrypted_file_path}\""
-#		cat "${_encrypted_file_path}" | gpg ${Var_gnupg_decrypt_opts} > "${_decrypted_file_path}"
-#		_exit_status=$?
-#		Func_check_exit_status "${_exit_status}"
-#		echo "# ${Var_script_name} running: exec 9>&-"
-#		exec 9>&-
-#	else
-#		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_file_path}"
-#	fi
-	## If there be a valid file that matches expected bulk operations for
-	##  directory paths writen to named pipes, then say so, else pop an error
-#	if [ -f "${_encrypted_dir_path}" ]; then
-		## Make a directory for extraction of spicific backup
-#		if ! [ -d "${_decrypted_dir_path}" ]; then
-#			echo "# ${Var_script_name} running: mkdir -p \"${_decrypted_dir_path}\""
-#			mkdir -p "${_decrypted_dir_path}"
-#		fi
-#		echo "# ${Var_script_name} reports: file detected ${_encrypted_dir_path}"
-#		echo "# ${Var_script_name} running: exec 9<\"${Var_pass_location}\""
-#		exec 9<"${Var_pass_location}"
-#		_old_pwd=${PWD}
-#		echo "# ${Var_script_name} running: cd \"${_decrypted_dir_path}\""
-#		cd "${_decrypted_dir_path}"
-		## Trying manual approch found within 'gpg-zip' source code
-#		echo "# ${Var_script_name} running: cat \"${_encrypted_dir_path}\" | gpg ${Var_gnupg_decrypt_opts} -d ${_encrypted_dir_path} | tar -xvf"
-#		cat "${_encrypted_dir_path}" | gpg ${Var_gnupg_decrypt_opts} | tar -xvf -
-#		_exit_status=$?
-#		Func_check_exit_status "${_exit_status}"
-#		echo "# ${Var_script_name} running: cd \"${_old_pwd}\""
-#		cd "${_old_pwd}"
-#		echo "# ${Var_script_name} running: exec 9>&-"
-#		exec 9>&-
-#	else
-#		echo "# ${Var_script_name} reports: FAILED no file detected ${_encrypted_dir_path}"
-#	fi
-#	echo "# ${Var_script_name} running: ls -hal \"${Var_bulk_decryption_dir}\""
-#	ls -hal "${Var_bulk_decryption_dir}"
-#	_exit_status=$?
-#	Func_check_exit_status "${_exit_status}"
 	if [ -f "${_decrypted_file_path}" ]; then
 		echo "# ${Var_script_name} reports: decrypted file detected ${_decrypted_file_path}"
 		echo '# ${Var_script_name} running: diff <(cat "${_decrypted_file_path}") <(cat "${Var_encrypt_file_path}")'
