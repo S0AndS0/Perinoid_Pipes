@@ -325,7 +325,7 @@ Func_decrypt_file_or_dir(){
 			## Make a directory path under bulk output dir based on
 			##  inputed compressed path name; Bash short-hand tricks
 			_output_dir="${Var_bulk_output_dir}/${_encrypted_path##*/}"
-			_output_dir="${_output_dir%.tar.gpg*"
+			_output_dir="${_output_dir%.tar.gpg*}"
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
 			if ! [ -d "${_output_dir}" ]; then
@@ -345,7 +345,7 @@ Func_decrypt_file_or_dir(){
 				mkdir -vp "${Var_bulk_output_dir}"
 			fi
 			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
-			_output_file="${_output_file%.gpg*"
+			_output_file="${_output_file%.gpg*}"
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
 			unset _output_file
 		;;
