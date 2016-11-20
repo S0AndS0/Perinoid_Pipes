@@ -27,6 +27,31 @@ Var_padding_yn='no'
 Var_padding_length='adaptive'
 Var_padding_placement='above'
 #Var_padding_placement='above,bellow,append,prepend'
+## Internal script variables that can also be set by users
+Var_debug_level="0"
+Var_log_level="0"
+Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
+## The following function is used internally for silencing or verbosly logging
+##  or printing scripted actions to terminal. Under normal operations this function
+##  should silently absorb messages.
+Func_message(){
+	_message="${1}"
+	_debug_level="${2:-${Var_debug_level}}"
+	_log_level="${3:-${Var_log_level}}"
+	## Check that there is a message to process and if it should be shown
+	##  to user.
+	if [ "${#_message}" != "0" ]; then
+		if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${_debug_level}" -gt "${Var_debug_level}" ]; then
+			cat <<<"${_message}"
+		fi
+	fi
+	## Do much the same for logging as was done above for output to terminal
+	if [ "${#_message}" != "0" ]; then
+		if [ "${_log_level}" = "${Var_log_level}" ] || [ "${_log_level}" -gt "${Var_log_level}" ]; then
+			cat <<<"${_message}" >> "${Var_script_log_path}"
+		fi
+	fi
+}
 Func_help(){
 	echo "# ${Var_script_name} knows the following command line options"
 	echo "#  --input-file 		Var_input_file=${Var_input_file}"
@@ -49,7 +74,13 @@ Func_help(){
 	echo "## New/experomental options"
 	echo "# --bulk-input-dir	Var_bulk_input_dir=${Var_bulk_input_dir}"
 	echo "# --bulk-output-dir	Var_bulk_output_dir=${Var_bulk_output_dir}"
-	echo "## The above two are required if bulk files or directories where processed by main script."
+	echo "## The above two are required if bulk files or directories where"
+	echo "#  processed by main script."
+	echo "## The bellow three options are optional for making this script"
+	echo "#  log more or be more verbose during opterations"
+	echo "# --debug-level		Var_debug_level=${Var_debug_level}"
+	echo "# --log-level		Var_log_level=${Var_log_level}"
+	echo "# --script-log-level	Var_script_log_path=${Var_script_log_path}"
 }
 Func_assign_arg(){
 	_variable="${1}"
@@ -92,6 +123,16 @@ Func_check_args(){
 			--padding-placement|Var_padding_placement)
 				Func_assign_arg "Var_padding_placement" "${_arg#*=}"
 			;;
+			--debug-level|Var_debug_level)
+				Func_assign_arg "Var_debug_level" "${_arg#*=}"
+			;;
+			--log-level|Var_log_level)
+				Func_assign_arg "Var_log_level" "${_arg#*=}"
+			;;
+			--script-log-path|Var_script_log_path)
+				Func_assign_arg "Var_script_log_path" "${_arg#*=}"
+			;;
+
 			--help|help|*)
 				echo "# ${Var_script_name} variable read: ${_arg%=*}"
 				echo "# ${Var_script_name} value read: ${_arg#*=}"
@@ -214,10 +255,7 @@ Do_stuff_with_lines(){
 	## Push passphrase into a file descriptor
 	Pass_the_passphrase "${Var_pass}"
 	if [ -p "${Var_output_file}" ]; then
-		## TO-DO -- Remove following output line after remote tests
-		echo "## Sending the following data..."
-		echo "${_enc_input}"
-		echo "## ... to named pipe: ${Var_output_file}"
+		Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" > \"${Var_output_file}\"" '1' '2'
 		cat <<<"${_enc_input}" > "${Var_output_file}"
 	## The case checks used below are checking if user wishes to remove
 	## padding data that was added by the bulk decryption script. By
@@ -228,16 +266,21 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
+					Func_message "# ${Var_script_name running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
 				else
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")" >> "${Var_output_file}"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
+#Func_message "# ${Var_script_name} running: " '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
 				else
+#Func_message "# ${Var_script_name} running: " '1' '2'
+#Func_message "" '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 				fi
 			;;
@@ -247,16 +290,20 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\"" '1' '2'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})"
 				else
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\"" '1' '2'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts}" '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
 				else
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\"" '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
 				fi
 			;;
@@ -296,6 +343,7 @@ Func_spoon_feed_pipe_decryption(){
 		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
+			Func_message "# ${Var_script_name} running: Do_stuff_with_lines \"\${_arr_to_parse[@]}\"" '1' '2'
 			Do_stuff_with_lines "${_arr_to_parse[@]}"
 			unset -v _arr_to_parse[@]
 		elif [ "${_beginning_of_line}" = "${_arr_input[${_count}]}" ]; then
@@ -316,6 +364,7 @@ Func_spoon_feed_pipe_decryption(){
 ## The following function is "fead" by 'Func_do_stuff_with_bulk_dirs' function
 ##  which should be called by the 'Main_func' function
 Func_decrypt_file_or_dir(){
+#Func_message "# ${Var_script_name} running: " '1' '2'
 	_encrypted_path="${1}"
 	Pass_the_passphrase "${Var_pass}"
 	case "${_encrypted_file_path}" in
@@ -329,11 +378,15 @@ Func_decrypt_file_or_dir(){
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
 			if ! [ -d "${_output_dir}" ]; then
-				mkdir -vp "${_output_dir}"
+				Func_message "# ${Var_script_name} running: mkdir -p \"${_output_dir}\"" '1' '2'
+				mkdir -p "${_output_dir}"
 			fi
+			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -" '1' '2'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -
+			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
 			unset _tar_opts
@@ -342,10 +395,12 @@ Func_decrypt_file_or_dir(){
 		*gpg)
 			## If bulk output directory does not exsist, then mkdir
 			if ! [ -d "${Var_bulk_output_dir}" ]; then
-				mkdir -vp "${Var_bulk_output_dir}"
+				Func_message "# ${Var_script_name} running: mkdir -p \"${Var_bulk_output_dir}\"" '1' '2'
+				mkdir -p "${Var_bulk_output_dir}"
 			fi
 			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '1' '2'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
 			unset _output_file
 		;;
@@ -370,24 +425,25 @@ Func_do_stuff_with_bulk_dirs(){
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
 				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
+					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '1' '2'
 					Func_decrypt_file_or_dir "${Var_bulk_input_dir}/${_posible_file}"
 				fi
 			done
 		fi
-		## Else fail silently and do nothing for now...
-## TO-DO - write verbosity & logging function to handle superfulus output from
-##  script.
-#	else
-#		echo "# ${Var_script_name} skipping Func_do_stuff_with_bulk_dirs function"
+	else
+		Func_message "# ${Var_script_name} skipping: Func_do_stuff_with_bulk_dirs function" '1' '2'
 	fi
 }
 Main_func(){
+	Func_message "# ${Var_script_name} running: Func_check_args \"${@:---help}\"" '1' '2'
 	Func_check_args "${@:---help}"
 	## Start cascade of function redirection
+	Func_message "# ${Var_script_name} running: Func_spoon_feed_pipe_decryption \"${Var_input_file}\"" '1' '2'
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
 	## Check with following function before unseting any internal variables
+	Func_message "# ${Var_script_name} running: Func_do_stuff_with_bulk_dirs" '1' '2'
 	Func_do_stuff_with_bulk_dirs
-	## Unset user modified variables once finished.
+	Func_message "# ${Var_script_name} running: Unset on variables prior to finishing." '1' '2'
 	unset Var_input_file
 	unset Var_output_file
 	unset Var_pass
@@ -395,4 +451,4 @@ Main_func(){
 	unset Var_gpg_opts
 }
 Main_func "${@}"
-echo "# ${Var_script_name} finished at: $(date -u)"
+Func_message "# ${Var_script_name} finished at: $(date -u)" '1' '2'
