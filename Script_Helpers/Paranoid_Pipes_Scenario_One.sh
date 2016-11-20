@@ -370,7 +370,7 @@ Func_decrypt_file_or_dir(){
 #Func_message "# ${Var_script_name} running: " '1' '2'
 	_encrypted_path="${1}"
 	Pass_the_passphrase "${Var_pass}"
-	case "${_encrypted_file_path}" in
+	case "${_encrypted_path}" in
 		*.tar.gpg)
 			_old_pwd="${PWD}"
 			_tar_opts='-xfv'
