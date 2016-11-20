@@ -395,15 +395,17 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xf -" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xf -
 			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '3' '4'
-			_dir_list="$(ls "${_output_dir}")"
-			for _posible_dir in ${_dir_list}; do
-				if [ -d "${_output_dir}/${_posible_dir}" ]; then
-					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
-					ls -hal "${_output_dir}/${_posible_dir}"
-				else
-					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
-				fi
-			done
+			if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${Var_debug_level}" -gt "${_debug_level}" ]; then
+				_dir_list="$(ls "${_output_dir}")"
+				for _posible_dir in ${_dir_list}; do
+					if [ -d "${_output_dir}/${_posible_dir}" ]; then
+						Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
+						ls -hal "${_output_dir}/${_posible_dir}"
+					else
+						Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
+					fi
+				done
+			fi
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '3' '4'
 			cd "${_old_pwd}"
 			unset _old_pwd
@@ -427,15 +429,17 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar -xzf -" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar -xzf -
 			Func_message "# ${Var_script_name} parsing: ${_output_dir}" '3' '4'
-			_dir_list="$(ls "${_output_dir}")"
-			for _posible_dir in ${_dir_list}; do
-				if [ -d "${_output_dir}/${_posible_dir}" ]; then
-					Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
-					ls -hal "${_output_dir}/${_posible_dir}"
-				else
-					Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
-				fi
-			done
+			if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${Var_debug_level}" -gt "${_debug_level}" ]; then
+				_dir_list="$(ls "${_output_dir}")"
+				for _posible_dir in ${_dir_list}; do
+					if [ -d "${_output_dir}/${_posible_dir}" ]; then
+						Func_message "# ${Var_script_name} running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
+						ls -hal "${_output_dir}/${_posible_dir}"
+					else
+						Func_message "# ${Var_script_name} reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
+					fi
+				done
+			fi
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '3' '4'
 			cd "${_old_pwd}"
 			unset _old_pwd

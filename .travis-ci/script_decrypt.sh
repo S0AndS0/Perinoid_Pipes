@@ -73,6 +73,7 @@ if [ -d "${Var_encrypted_bulk_dir}" ]; then
 	else
 		echo "# ${Var_script_name} reports: no file found at ${_decrypted_file_path}"
 	fi
+	ls -hal "${Var_bulk_decryption_dir}"
 	echo "# ${Var_script_name} reports: all checks passed for bulk decryption"
 	echo "# Note if above 'ls' output shows a file and a directory, then celebrate with a sip or shot of a drink of your choice :-D"
 fi
