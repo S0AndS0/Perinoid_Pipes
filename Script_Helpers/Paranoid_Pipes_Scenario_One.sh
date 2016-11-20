@@ -47,7 +47,7 @@ Func_message(){
 	fi
 	## Do much the same for logging as was done above for output to terminal
 	if [ "${#_message}" != "0" ]; then
-		if [ "${_log_level}" = "${Var_log_level}" ] || [ "${_log_level}" -gt "${Var_log_level}" ]; then
+		if [ "${_log_level}" -gt "${Var_log_level}" ]; then
 			cat <<<"${_message}" >> "${Var_script_log_path}"
 		fi
 	fi
@@ -266,7 +266,7 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
 					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
 				else
 					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
@@ -276,11 +276,10 @@ Do_stuff_with_lines(){
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-#Func_message "# ${Var_script_name} running: " '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} >> \"${Var_output_file}\"" '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
 				else
-#Func_message "# ${Var_script_name} running: " '1' '2'
-#Func_message "" '1' '2'
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\" >> \"${Var_output_file}\"" '1' '2'
 					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
 				fi
 			;;
@@ -435,8 +434,14 @@ Func_do_stuff_with_bulk_dirs(){
 	fi
 }
 Main_func(){
-	Func_message "# ${Var_script_name} running: Func_check_args \"${@:---help}\"" '1' '2'
-	Func_check_args "${@:---help}"
+	_input=( "$@" )
+	if [ "${#_input[@]}" = '0' ]; then
+		Func_message "# ${Var_script_name} running: Func_check_args \"--help\"" '1' '2'
+		Func_check_args "--help"
+	else
+		Func_message "# ${Var_script_name} running: Func_check_args \"${_input[*]}\"" '1' '2'
+		Func_check_args "${_input[@]}"
+	fi
 	## Start cascade of function redirection
 	Func_message "# ${Var_script_name} running: Func_spoon_feed_pipe_decryption \"${Var_input_file}\"" '1' '2'
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
