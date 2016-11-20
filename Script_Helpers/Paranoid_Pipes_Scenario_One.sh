@@ -14,7 +14,7 @@ Var_pass="123456... Luggage"
 Var_search_output=""
 ## GnuPG decryption options. Note changing this to '--verify' may enable bulk
 ##  signature checking
-Var_gpg_opts="--no-tty --always-trust --passphrase-fd 9 --decrypt"
+Var_gpg_opts="--quiet --always-trust --passphrase-fd 9 --decrypt"
 ## Optional workarounds based off 'gpg-zip' encryption/decryption. The following
 ##  two variables if set to directory paths will result in decrypting compressed
 ##  directories or read file paths from the main script... well that is once
@@ -28,9 +28,10 @@ Var_padding_length='adaptive'
 Var_padding_placement='above'
 #Var_padding_placement='above,bellow,append,prepend'
 ## Internal script variables that can also be set by users
-Var_debug_level="1"
-Var_log_level="1"
+Var_debug_level="0"
+Var_log_level="0"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
+Var_columns="${COLUMNS:-80}"
 ## The following function is used internally for silencing or verbosly logging
 ##  or printing scripted actions to terminal. Under normal operations this function
 ##  should silently absorb messages.
@@ -41,8 +42,9 @@ Func_message(){
 	## Check that there is a message to process and if it should be shown
 	##  to user.
 	if [ "${#_message}" != "0" ]; then
-		if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${_debug_level}" -gt "${Var_debug_level}" ]; then
-			cat <<<"${_message}"
+		if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${Var_debug_level}" -gt "${_debug_level}" ]; then
+			_folded_message="$(fold -sw $((${Var_columns}-6)) <<<"${_message}" | sed -e "s/^.*$/$(echo -n "#DBL-${_debug_level}") &/g")"
+			cat <<<"${_folded_message}"
 		fi
 	fi
 	## Do much the same for logging as was done above for output to terminal
@@ -132,7 +134,9 @@ Func_check_args(){
 			--script-log-path|Var_script_log_path)
 				Func_assign_arg "Var_script_log_path" "${_arg#*=}"
 			;;
-
+			--columns|Var_columns)
+				Func_assign_arg "Var_columns" "${_arg#*=}"
+			;;
 			--help|help|*)
 				echo "# ${Var_script_name} variable read: ${_arg%=*}"
 				echo "# ${Var_script_name} value read: ${_arg#*=}"
@@ -266,21 +270,21 @@ Do_stuff_with_lines(){
 			Y|y|Yes|yes|YES)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\" >> \"${Var_output_file}\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})" >> "${Var_output_file}"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\")\" >> \"${Var_output_file}\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}")" >> "${Var_output_file}"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")" >> "${Var_output_file}"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\")\" >> \"${Var_output_file}\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}")" >> "${Var_output_file}"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
 					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} >> \"${Var_output_file}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} >> "${Var_output_file}"
+					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" >> "${Var_output_file}"
 				else
 					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\" >> \"${Var_output_file}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}" >> "${Var_output_file}"
+					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}" >> "${Var_output_file}"
 				fi
 			;;
 		esac
@@ -290,20 +294,20 @@ Do_stuff_with_lines(){
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
 					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts})\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts})"
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}")"
 				else
-					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\")\"" '1' '2'
-					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}")"
+					Func_message "# ${Var_script_name} running: Remove_padding_from_output \"\$(cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\")\"" '1' '2'
+					Remove_padding_from_output "$(cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}")"
 				fi
 			;;
 			*)
 				## Check if we are searching for something before outputing
 				if [ "${#Var_search_output}" = "0" ]; then
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts}" '1' '2'
-					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts}
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\"" '1' '2'
+					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}"
 				else
-					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg ${Var_gpg_opts} | grep -E \"${Var_search_output}\"" '1' '2'
-					cat <<<"${_enc_input}" | gpg ${Var_gpg_opts} | grep -E "${Var_search_output}"
+					Func_message "# ${Var_script_name} running: cat <<<\"\${_enc_input}\" | gpg \"${Var_gpg_opts}\" | grep -E \"${Var_search_output}\"" '1' '2'
+					cat <<<"${_enc_input}" | gpg "${Var_gpg_opts}" | grep -E "${Var_search_output}"
 				fi
 			;;
 		esac
@@ -383,8 +387,8 @@ Func_decrypt_file_or_dir(){
 			Func_message "# ${Var_script_name} running: cd \"${_output_dir}\"" '1' '2'
 			cd "${_output_dir}"
 			## Note the trailing dash ('-') with 'tar'
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} | tar ${_tar_opts} -
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg \"${Var_gpg_opts}\" | tar \"${_tar_opts}\" -" '1' '2'
+			cat "${_encrypted_path}" | gpg "${Var_gpg_opts}" | tar "${_tar_opts}" -
 			Func_message "# ${Var_script_name} running: cd \"${_old_pwd}\"" '1' '2'
 			cd "${_old_pwd}"
 			unset _old_pwd
@@ -399,8 +403,8 @@ Func_decrypt_file_or_dir(){
 			fi
 			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '1' '2'
-			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
+			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg \"${Var_gpg_opts}\" > \"${_output_file}\"" '1' '2'
+			cat "${_encrypted_path}" | gpg "${Var_gpg_opts}" > "${_output_file}"
 			unset _output_file
 		;;
 	esac
@@ -420,12 +424,15 @@ Func_do_stuff_with_bulk_dirs(){
 		## If bulk input directory exsists, then push 'ls' through loop
 		##  for checking what type of decryption steps should be used.
 		if [ -d "${Var_bulk_input_dir}" ]; then
-			for _posible_file in $(ls "${Var_bulk_input_dir}"); do
+			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '1' '2'
+			for _posible_file in $(ls "${Var_bulk_input_dir}*.gpg"); do
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
 				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
 					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '1' '2'
 					Func_decrypt_file_or_dir "${Var_bulk_input_dir}/${_posible_file}"
+				else
+					Func_message "# ${Var_script_name} skipping: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '1' '2'
 				fi
 			done
 		fi
