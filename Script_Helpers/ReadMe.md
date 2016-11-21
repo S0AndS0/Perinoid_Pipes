@@ -84,6 +84,15 @@ git commit -S -am "Title of changes" -m "$(Fold_Message.sh "really long text str
 > Server) or other environments that are rented and perhaps less than swift in
 > their own operational security practices.
 
+### `Template_interactive_script.sh`
+
+[![Status](https://img.shields.io/badge/Status-Example-gray.svg)](Template_interactive_script.sh)
+
+> This script serves as a quick start for authors or contributors to use
+> when starting a new script for this project. Many of the above scripts
+> are modled off of this script's methods of assigning user input to
+> variables used by the script for processing or desision making.
+
 ## Licensing notice for scripts/code examples
 
 ```

@@ -500,6 +500,7 @@ Main_func(){
 		Func_message "# ${Var_script_name} running: Func_check_args \"${_input[*]}\"" '1' '2'
 		Func_check_args "${_input[@]}"
 	fi
+	unset -v _input[@]
 	## Start cascade of function redirection
 	Func_message "# ${Var_script_name} running: Func_spoon_feed_pipe_decryption \"${Var_input_file}\"" '1' '2'
 	Func_spoon_feed_pipe_decryption "${Var_input_file}"
