@@ -865,7 +865,7 @@ Func_rotate_log(){
 					## Modify the '_now' variable for different time stamp formatting
 					##  ie replacing '+%s' with '+%d_%m_%Y' will result in human readable
 					##  time stamps instead of using seconds for time stamp
-					_now="$(date -u +%s)"
+					_now=""
 					## Save a snap shot of above variable to bellow variable.
 					##  this allows multiple log rotate actions to be preformed without
 					##  having the time stamp change any between actions on the same rotation.
@@ -876,7 +876,7 @@ Func_rotate_log(){
 					##  prior to allowing this function to check the log file size... a bit
 					##  convoluted so check the template writer function to see this all
 					##  in a much slimmer form factor.
-					_timestamp="${_now}"
+					_timestamp="$(date -u +%s)"
 					## Split commas into spaces and use case to match action options
 					for _actions in ${_log_rotate_actions//,/ }; do
 						case "${_actions}" in
@@ -885,21 +885,21 @@ Func_rotate_log(){
 								${Var_mv_exec_path} "${_parsing_output_file}" "${_parsing_output_file}.${_timestamp}"
 							;;
 							compress-encrypt|encrypt)
-								Func_messages "# Compressing [${_parsing_output_file}] file to [${_log_rotate_recipient}] recipient with output [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file" '3' '4'
-								${Var_tar_exec_path} -cz "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tar.gz.gpg"
+								Func_messages "# Compressing [${_parsing_output_file}] file to [${_log_rotate_recipient}] recipient with output [${_parsing_output_file}.${_timestamp}.tgz.gpg] file" '3' '4'
+								${Var_tar_exec_path} -cz - "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
 							;;
 							encrypted-email)
-								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file to [${_log_rotate_recipient}] recipient" '3' '4'
-								${Var_tar_exec_path} -cz "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tar.gz.gpg"
+								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tgz.gpg] file to [${_log_rotate_recipient}] recipient" '3' '4'
+								${Var_tar_exec_path} -cz - "${_parsing_output_file}" | gpg --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
 								echo "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" -a "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" "${_log_rotate_recipient}"
 							;;
 							compressed-email)
-								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file to [${_log_rotate_recipient}] recipient" '3' '4'
+								Func_messages "# Sending compressed email attachment [${_parsing_output_file}.${_timestamp}.tar.gz] file to [${_log_rotate_recipient}] recipient" '3' '4'
 								${Var_tar_exec_path} -cz "${_parsing_output_file}" "${_parsing_output_file}.${_timestamp}.tar.gz"
 								echo "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz" -a "${_parsing_output_file}.${_timestamp}.tar.gz" "${_log_rotate_recipient}"
 							;;
 							compress)
-								Func_messages "# Compressing [${_parsing_output_file}] file to output [${_parsing_output_file}.${_timestamp}.tar.gz.gpg] file" '3' '4'
+								Func_messages "# Compressing [${_parsing_output_file}] file to output [${_parsing_output_file}.${_timestamp}.tar.gz] file" '3' '4'
 								${Var_tar_exec_path} -cz "${_parsing_output_file}" "${_parsing_output_file}.${_timestamp}.tar.gz"
 							;;
 							remove|rm|remove-old)
@@ -1166,10 +1166,10 @@ Rotate_output_file(){
 							${Var_mv_exec_path} "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}"
 						;;
 						compress-encrypt|encrypt)
-							${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
+							${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
 						;;
 						encrypted-email)
-							${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
+							${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
 							${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${Var_log_rotate_recipient}"
 						;;
 						compressed-email)
@@ -1275,7 +1275,7 @@ Map_read_array_to_output(){
 }
 Pipe_parser_loop(){
 	while [ -p "\${Var_pipe_file_name}" ]; do
-		_mapped_array=\$(Map_read_array_to_output "\${Var_pipe_file_name}")
+		_mapped_array="\$(Map_read_array_to_output "\${Var_pipe_file_name}")"
 		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
@@ -1284,13 +1284,14 @@ Pipe_parser_loop(){
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 				fi
-				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${_mapped_array##*/}\${Var_bulk_output_suffix}"
+				Var_star_date="\$(date -u +%s)"
+				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} > "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}\${Var_bulk_output_suffix}"
 			elif [ -d "\${_mapped_array}" ]; then
 				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
 					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 				fi
 				Var_star_date="\$(date -u +%s)"
-				${Var_tar_exec_path} zcf - "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array//\//_}.tgz\${Var_bulk_output_suffix}"
+				${Var_tar_exec_path} -cz - "\${_mapped_array}" | \${Var_parsing_command} > "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz\${Var_bulk_output_suffix}"
 			else
 				## Push mapped array through 'cat' then pipe results through encryption/decryption
 				##  command, saving final results to output file.

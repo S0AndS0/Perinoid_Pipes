@@ -4,27 +4,74 @@ export Var_script_name="${0##*/}"
 ## Source shared variables and functions into this script.
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
+## Added the following options to test saving custom script copies.
+#--copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
 ## First test if script is installed and excessable via name alone, elif check
 ##  if executable via full file path and name else exit with errors.
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 if [ -e "${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_script_copy_save='yes' Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=751 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_encrypt}\""
-	${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='751' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_encrypt}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} --copy-save-yn=\"yes\" --copy-save-name=\"${Var_script_copy_name_encrypt}\" --copy-save-permissions=\"750\" --copy-save-ownership=\"${USER}:${USER}\""
+	${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions='751' Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} Var_script_copy_name=\"${Var_script_copy_name_encrypt}\""
-	${Var_install_path}/${Var_install_name} Var_script_copy_save='yes' Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='751' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" Var_script_copy_name="${Var_script_copy_name_encrypt}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location} Var_log_file_name=${Var_encrypt_pipe_log} Var_parsing_output_file=${Var_encrypted_location} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} --copy-save-yn=yes --copy-save-name=${Var_script_copy_name_encrypt} --copy-save-permissions=750 --copy-save-ownership=${USER}:${USER}"
+	${Var_install_path}/${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location}" Var_log_file_name="${Var_encrypt_pipe_log}" Var_parsing_output_file="${Var_encrypted_location}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_name}"
 	exit 1
 fi
-echo -e "# ${Var_script_name} checking background processes:\n# $(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_encrypt}")"
+_background_processes="$(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)"
+if [ "${#_background_processes}" -gt '0' ]; then
+	echo "# ${Var_script_name} detected the following background processes"
+	echo "${_background_processes}"
+else
+	echo "# Error - ${Var_script_name} did not detect any background processes"
+	exit 1
+fi
+#echo -e "# ${Var_script_name} checking background processes:\n# "
+#echo "\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
+	## Push a known directory path through named pipe listener or make a new
+	##  directory with a blank file instead and push that through.
+	if [ -d "${Var_encrypt_dir_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	else
+		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path}\""
+		mkdir -p "${Var_encrypt_dir_path}"
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
+		touch "${Var_encrypt_dir_path}/test_file"
+		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path}\""
+		chmod -R +r "${Var_encrypt_dir_path}"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	fi
+	## Push a known file path to named pipe and check if it is processed to
+	##  the defined bulk output directory or make a blank file to push through
+	if [ -f "${Var_encrypt_file_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	else
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path}\""
+		touch "${Var_encrypt_file_path}"
+		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path}\""
+		chmod +r "${Var_encrypt_file_path}"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
+		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	fi
 	## Note we are saving the test string to a file but will be cat-ing
 	##  it back out to named pipe file for the first test so lets make that
 	##  file with the proper permissions to be latter read and currently
@@ -65,7 +112,7 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
-	echo "# ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
+	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_location}"
 	exit 1
 fi
 ## Report on pipe auto-removal
@@ -78,17 +125,19 @@ else
 	rm -v "${Var_encrypt_pipe_location}"
 fi
 ## Report on background processes
-if [ "$(pgrep -c "${Var_script_copy_name_encrypt}")" -gt "0" ]; then
-	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_encrypt}")"
+_background_processes="$(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)"
+if [ "${#_background_processes}" -gt '0' ]; then
+	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_encrypt}")"
 	for _pid in $(pgrep "${Var_script_copy_name_encrypt}"); do
 		echo "# ${Var_script_name} killing: ${_pid}"
 	done
 else
-	echo "# ${Var_script_name} reports no more background processes: $(pgrep -c "${Var_script_copy_name_encrypt}")"
+	echo "# ${Var_script_name} did not detect any background processes"
 fi
-	## If encrypted output file exsists then test decryption now, else error out.
+## If encrypted output file exsists then test decryption now, else error out.
 if [ -r "${Var_encrypted_location}" ]; then
-	cat "${Var_encrypted_location}"
+	echo "# ${Var_script_name} running: ls -hal \"${Var_encrypted_location}\""
+	ls -hal "${Var_encrypted_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -99,6 +148,17 @@ else
 		echo "# ${Var_script_name} reports it not a file: ${Var_encrypted_location}"
 	fi
 fi
-## Test decryption of first entry in output file
+## Check bulk output directory for results, exit with errors if the directory
+##  does not exsist.
+if [ -d "${Var_encrypted_bulk_dir}" ]; then
+	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+	ls -hal "${Var_encrypted_bulk_dir}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	echo "# ${Var_script_name} reports: all checks passed"
+else
+	echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+	exit 1
+fi
 ## Report encryption pipe tests success if we have gotten this far
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
