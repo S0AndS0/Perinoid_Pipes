@@ -126,7 +126,8 @@ fi
 _background_processes="$(ps aux | grep "${Var_install_name}" | grep -v grep)"
 if [ "${#_background_processes}" -gt '0' ]; then
 	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_install_name}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_install_name}")"
-	for _pid in $(pgrep "${Var_install_name}"); do
+	_background_pid="$(ps aux | grep "${Var_install_name}" | grep -v grep | awk '{print $2}')"
+	for _pid in ${_background_pid}; do
 		echo "# ${Var_script_name} killing: ${_pid}"
 	done
 else

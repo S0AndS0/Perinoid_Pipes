@@ -48,20 +48,37 @@ if [ -p "${Var_encrypt_pipe_location_copy}" ]; then
 	fi
 	## Push a known directory path through named pipe listener or make a new
 	##  directory with a blank file instead and push that through.
-	if [ -d "${Var_encrypt_dir_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location_copy}\""
-		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location_copy}"
+	if [ -d "${Var_encrypt_dir_path_copy}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
+		echo "${Var_encrypt_dir_path_copy}" > "${Var_encrypt_pipe_location_copy}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 	else
-		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path}\""
-		mkdir -p "${Var_encrypt_dir_path}"
-		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path}/test_file\""
-		touch "${Var_encrypt_dir_path}/test_file"
-		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path}\""
-		chmod -R +r "${Var_encrypt_dir_path}"
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path}\" > \"${Var_encrypt_pipe_location_copy}\""
-		echo "${Var_encrypt_dir_path}" > "${Var_encrypt_pipe_location_copy}"
+		echo "# ${Var_script_name} running: mkdir -p \"${Var_encrypt_dir_path_copy}\""
+		mkdir -p "${Var_encrypt_dir_path_copy}"
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_dir_path_copy}/test_file\""
+		touch "${Var_encrypt_dir_path_copy}/test_file"
+		echo "# ${Var_script_name} running: chmod -R +r \"${Var_encrypt_dir_path_copy}\""
+		chmod -R +r "${Var_encrypt_dir_path_copy}"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
+		echo "${Var_encrypt_dir_path_copy}" > "${Var_encrypt_pipe_location_copy}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	fi
+	## Push a known file path to named pipe and check if it is processed to
+	##  the defined bulk output directory or make a blank file to push through
+	if [ -f "${Var_encrypt_file_path_copy}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
+		echo "${Var_encrypt_file_path_copy}" > "${Var_encrypt_pipe_location_copy}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	else
+		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path_copy}\""
+		touch "${Var_encrypt_file_path_copy}"
+		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path_copy}\""
+		chmod +r "${Var_encrypt_file_path_copy}"
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
+		echo "${Var_encrypt_file_path_copy}" > "${Var_encrypt_pipe_location_copy}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 	fi
@@ -96,36 +113,6 @@ if [ -p "${Var_encrypt_pipe_location_copy}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_location_copy}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## Temperary checks to avoid build time-outs
-	## Check bulk output directory for results, exit with errors if the directory
-	##  does not exsist.
-	if [ -d "${Var_encrypted_bulk_dir_copy}" ]; then
-		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir_copy}"
-		ls -hal "${Var_encrypted_bulk_dir_copy}"
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
-		echo "# ${Var_script_name} reports: all checks passed"
-	else
-		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir_copy}"
-#		exit 1
-	fi
-	## Push a known file path to named pipe and check if it is processed to
-	##  the defined bulk output directory or make a blank file to push through
-#	if [ -f "${Var_encrypt_file_path_copy}" ]; then
-#		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
-#		echo "${Var_encrypt_file_path_copy}" > "${Var_encrypt_pipe_location_copy}"
-#		_exit_status=$?
-#		Func_check_exit_status "${_exit_status}"
-#	else
-#		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path_copy}\""
-#		touch "${Var_encrypt_file_path_copy}"
-#		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path_copy}\""
-#		chmod +r "${Var_encrypt_file_path_copy}"
-#		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path_copy}\" > \"${Var_encrypt_pipe_location_copy}\""
-#		echo "${Var_encrypt_file_path_copy}" > "${Var_encrypt_pipe_location_copy}"
-#		_exit_status=$?
-#		Func_check_exit_status "${_exit_status}"
-#	fi
 	## Send quit string to named pipe for testing of built in auto-clean
 	##  functions, note to authors, this seems to be funky on auto builds
 	##  but latter removal of the named pipe file seems to kill the listener
@@ -134,7 +121,6 @@ if [ -p "${Var_encrypt_pipe_location_copy}" ]; then
 	echo "quit" > "${Var_encrypt_pipe_location_copy}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	## Show script copy if we get this far and exit
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_location_copy}"
 	exit 1
@@ -152,7 +138,8 @@ fi
 _background_processes="$(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)"
 if [ "${#_background_processes}" -gt '0' ]; then
 	echo -e "# ${Var_script_name} reports background processes still running:\n# $(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep)\n\n Number of processes $(pgrep -c "${Var_script_copy_name_encrypt}")"
-	for _pid in $(pgrep "${Var_script_copy_name_encrypt}"); do
+	_background_pid="$(ps aux | grep "${Var_script_copy_name_encrypt}" | grep -v grep | awk '{print $2}')"
+	for _pid in ${_background_pid}; do
 		echo "# ${Var_script_name} killing: ${_pid}"
 	done
 else

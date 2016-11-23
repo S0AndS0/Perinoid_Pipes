@@ -8,7 +8,7 @@ echo "# ${Var_script_name} started at: $(date -u +%s)"
 ## Setup string to search for with helper script
 ## Line number to read down to in raw strings file
 _line_num='2'
-_search_string=$(head -n${_line_num} "${Var_raw_test_location}" | tail -n1)
+_search_string="$(head -n${_line_num} "${Var_raw_test_location}" | tail -n1)"
 echo "# ${Var_script_name} read line [${_line_num}] to search for as: ${_search_string}"
 ## Setup a file to have helper script ouput to
 echo "# ${Var_script_name} running: touch \"${Var_search_out_location}\""
