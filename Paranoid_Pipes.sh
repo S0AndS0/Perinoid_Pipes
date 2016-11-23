@@ -1132,6 +1132,7 @@ Var_enable_padding_yn="${Var_enable_padding_yn}"
 Var_padding_length="${Var_padding_length}"
 Var_padding_placement="${Var_padding_placement}"
 Var_dev_null="${Var_dev_null}"
+Var_save_encryption_yn="${Var_save_encryption_yn}"
 ${Var_echo_exec_path} "### ... Starting [\${Var_script_name}] at \$(date) ... ###"
 Clean_up_trap(){
 	_exit_code="\$1"
@@ -1158,11 +1159,11 @@ Make_named_pipe(){
 	${Var_chown_exec_path} "\${Var_pipe_ownership}" "\${Var_pipe_file_name}" || exit 1
 }
 Func_rotate_log(){
-	_parsing_output_file="\${1:-\$Var_parsing_output_file}"
-	_log_rotate_yn="\${2:-\$Var_log_rotate_yn}"
-	_log_max_size="\${3:-\$Var_log_max_size}"
-	_log_rotate_actions="\${4:-\$Var_log_rotate_actions}"
-	_log_rotate_recipient="\${5:-\$Var_log_rotate_recipient}"
+	_parsing_output_file="\${Var_parsing_output_file}"
+	_log_rotate_yn="\${Var_log_rotate_yn}"
+	_log_max_size="\${Var_log_max_size}"
+	_log_rotate_actions="\${Var_log_rotate_actions}"
+	_log_rotate_recipient="\${Var_log_rotate_recipient}"
 	case "\${_log_rotate_yn}" in
 		y|Y|yes|Yes|YES)
 			if [ -f "\${_parsing_output_file}" ]; then
