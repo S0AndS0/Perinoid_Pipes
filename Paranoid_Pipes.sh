@@ -621,7 +621,7 @@ Func_check_args(){
 ## Check if gpg parser and/or log rotate recipients are set to non defaults.
 ##  Else prompt user for these values
 Func_check_recipients(){
-	if [ -z "${#Var_gpg_recipient}" ] || [[ "${Var_gpg_recipient}" == "user@host.domain" ]]; then
+	if [ -z "${#Var_gpg_recipient}" ] || [ "${Var_gpg_recipient}" = "user@host.domain" ]; then
 		Func_messages "# Warning - [\${Var_gpg_recipient}=${Var_gpg_recipient}] is improper, set with '--output-parse-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 		${Var_echo_exec_path} -n 'Please input your pub-key email address: '
 		read -r _response
@@ -638,7 +638,7 @@ Func_check_recipients(){
 	##  enabled, otherwise unused
 	case "${Var_log_rotate_yn}" in
 		Y|y|Yes|yes|YES)
-			if [ -z "${#Var_log_rotate_recipient}" ] || [[ "${Var_log_rotate_recipient}" == "user@host.domain" ]]; then
+			if [ -z "${#Var_log_rotate_recipient}" ] || [ "${Var_log_rotate_recipient}" = "user@host.domain" ]; then
 				Func_messages "# Warning - [\${Var_log_rotate_recipient}=${Var_log_rotate_recipient}] is improper, set with '--output-rotate-recipient' option at runtime of ${Var_script_name} or input a value when prompted bellow" '1' '2'
 				${Var_echo_exec_path} -en 'Please input your pub-key email address: '
 				read -r _response
@@ -923,7 +923,7 @@ Map_read_array_to_output(){
 	let _count=0
 	until [ "${_count}" = "${#_lines[@]}" ]; do
 #	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
-		if [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]]; then
+		if [ "${Var_pipe_quit_string}" = "${_lines[${_count}]}" ]; then
 			${Var_cat_exec_path} <<<"${_line[${_count}]}"
 			break
 		else
@@ -1079,7 +1079,7 @@ Func_mkpipe_reader(){
 			esac
 		## Else if read input matches quit string, either run trap
 		##  function if not already set or break loop to trigger trap.
-		elif [[ "${Var_pipe_quit_string}" == "${_mapped_array}" ]]; then
+		elif [ "${Var_pipe_quit_string}" = "${_mapped_array}" ]; then
 			_exit_status=$?
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
@@ -1211,7 +1211,7 @@ Map_read_array_to_output(){
 	mapfile -t _lines < "\${_file_to_map}"
 	let _count=0
 	until [ "\${_count}" = "\${#_lines[@]}" ]; do
-		if [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]]; then
+		if [ "\${Var_pipe_quit_string}" = "\${_lines[\${_count}]}" ]; then
 			${Var_cat_exec_path} <<<"\${_line[\${_count}]}"
 			break
 		else
@@ -1332,7 +1332,7 @@ Pipe_parser_loop(){
 					let _count++
 				;;
 			esac
-		elif [[ "\${Var_pipe_quit_string}" == "\${_mapped_array}" ]]; then
+		elif [ "\${Var_pipe_quit_string}" = "\${_mapped_array}" ]; then
 			case "\${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_pipe_file_name}" ]; then
