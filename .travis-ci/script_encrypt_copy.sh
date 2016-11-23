@@ -10,14 +10,14 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 ##  if executable via full file path and name else exit with errors.
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 if [ -e "${Var_install_name}" ]; then
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location_copy} Var_log_file_name=${Var_encrypt_pipe_log_copy} Var_parsing_output_file=${Var_encrypted_location_copy} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} --copy-save-yn=\"yes\" --copy-save-name=\"${Var_script_copy_name_encrypt}\" --copy-save-permissions=\"750\" --copy-save-ownership=\"${USER}:${USER}\""
-	${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location_copy}" Var_log_file_name="${Var_encrypt_pipe_log_copy}" Var_parsing_output_file="${Var_encrypted_location_copy}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_script_copy_permissions=750 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location_copy} Var_log_file_name=${Var_encrypt_pipe_log_copy} Var_parsing_output_file=${Var_encrypted_location_copy} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir_copy} --copy-save-yn=\"yes\" --copy-save-name=\"${Var_script_copy_name_encrypt}\" --copy-save-permissions=\"750\" --copy-save-ownership=\"${USER}:${USER}\""
+	${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_script_copy_permissions='750' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location_copy}" Var_log_file_name="${Var_encrypt_pipe_log_copy}" Var_parsing_output_file="${Var_encrypted_location_copy}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir_copy}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_name}" ]; then
 	## Make pipe for listening with main script loops owned by current user.
-	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location_copy} Var_log_file_name=${Var_encrypt_pipe_log_copy} Var_parsing_output_file=${Var_encrypted_location_copy} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir} --copy-save-yn=yes --copy-save-name=${Var_script_copy_name_encrypt} --copy-save-permissions=750 --copy-save-ownership=${USER}:${USER}"
-	${Var_install_path}/${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location_copy}" Var_log_file_name="${Var_encrypt_pipe_log_copy}" Var_parsing_output_file="${Var_encrypted_location_copy}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
+	echo "# ${Var_script_name} running test one as ${USER}: ${Var_install_path}/${Var_install_name} Var_debugging=1 Var_pipe_permissions=666 Var_log_file_permissions=666 Var_gpg_recipient=${Var_gnupg_email} Var_log_rotate_recipient=${Var_gnupg_email} Var_pipe_file_name=${Var_encrypt_pipe_location_copy} Var_log_file_name=${Var_encrypt_pipe_log_copy} Var_parsing_output_file=${Var_encrypted_location_copy} Var_parsing_bulk_out_dir=${Var_encrypted_bulk_dir_copy} --copy-save-yn=yes --copy-save-name=${Var_script_copy_name_encrypt} --copy-save-permissions=750 --copy-save-ownership=${USER}:${USER}"
+	${Var_install_path}/${Var_install_name} Var_debugging='1' Var_pipe_permissions='666' Var_log_file_permissions='666' Var_gpg_recipient="${Var_gnupg_email}" Var_log_rotate_recipient="${Var_gnupg_email}" Var_pipe_file_name="${Var_encrypt_pipe_location_copy}" Var_log_file_name="${Var_encrypt_pipe_log_copy}" Var_parsing_output_file="${Var_encrypted_location_copy}" Var_parsing_bulk_out_dir="${Var_encrypted_bulk_dir_copy}" --copy-save-yn="yes" --copy-save-name="${Var_script_copy_name_encrypt}" --copy-save-permissions="750" --copy-save-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -69,14 +69,14 @@ if [ -p "${Var_encrypt_pipe_location_copy}" ]; then
 	## Temperary checks to avoid build time-outs
 	## Check bulk output directory for results, exit with errors if the directory
 	##  does not exsist.
-	if [ -d "${Var_encrypted_bulk_dir}" ]; then
-		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
-		ls -hal "${Var_encrypted_bulk_dir}"
+	if [ -d "${Var_encrypted_bulk_dir_copy}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir_copy}"
+		ls -hal "${Var_encrypted_bulk_dir_copy}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 		echo "# ${Var_script_name} reports: all checks passed"
 	else
-		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir_copy}"
 		exit 1
 	fi
 	## Note we are saving the test string to a file but will be cat-ing
@@ -175,14 +175,14 @@ else
 fi
 ## Check bulk output directory for results, exit with errors if the directory
 ##  does not exsist.
-if [ -d "${Var_encrypted_bulk_dir}" ]; then
-	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
-	ls -hal "${Var_encrypted_bulk_dir}"
+if [ -d "${Var_encrypted_bulk_dir_copy}" ]; then
+	echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir_copy}"
+	ls -hal "${Var_encrypted_bulk_dir_copy}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 	echo "# ${Var_script_name} reports: all checks passed"
 else
-	echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+	echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir_copy}"
 	exit 1
 fi
 ## Report encryption pipe tests success if we have gotten this far

@@ -860,7 +860,7 @@ Func_rotate_log(){
 	case "${_log_rotate_yn}" in
 		y|Y|yes|Yes|YES)
 			if [ -f "${_parsing_output_file}" ]; then
-				_file_size=$(du --bytes "${_parsing_output_file}" | awk '{print $1}' | head -n1)
+				_file_size="$(du --bytes "${_parsing_output_file}" | awk '{print $1}' | head -n1)"
 				if [ "${_file_size}" -gt "${_log_max_size}" ]; then
 					## Modify the '_now' variable for different time stamp formatting
 					##  ie replacing '+%s' with '+%d_%m_%Y' will result in human readable
@@ -1154,41 +1154,38 @@ Make_named_pipe(){
 	${Var_echo_exec_path} "# Starting \${Var_script_name} listener"
 }
 Rotate_output_file(){
-	_count=\$((\${_count:-0}+1))
-	if [ "\${_count}" -gt "\${Var_log_check_frequency}" ] || [ "\${_count}" = "\${Var_log_check_frequency}" ]; then
-		if [ -f "\${Var_parsing_output_file}" ]; then
-			_file_size=\$(du --bytes "\${Var_parsing_output_file}" | awk '{print \$1}' | head -n1)
-			if [ "\${_file_size}" -gt "\${Var_log_max_size}" ]; then
-				_now=\$(date -u +%s)
-				_timestamp="\${_now}"
-				for _actions in \${Var_log_rotate_actions//,/ }; do
-					case "\${_actions}" in
-						mv|move)
-							${Var_mv_exec_path} "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}"
-						;;
-						compress-encrypt|encrypt)
-							${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
-						;;
-						encrypted-email)
-							${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
-							${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${Var_log_rotate_recipient}"
-						;;
-						compressed-email)
-							${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
-							${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" "${_log_rotate_recipient}"
-						;;
-						compress)
-							${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
-						;;
-						remove|rm|remove-old)
-							${Var_rm_exec_path} -f "\${Var_parsing_output_file}"
-							touch "\${Var_parsing_output_file}"
-							${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
-							${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
-						;;
-					esac
-				done
-			fi
+	if [ -f "\${Var_parsing_output_file}" ]; then
+		_file_size=\$(du --bytes "\${Var_parsing_output_file}" | awk '{print \$1}' | head -n1)
+		if [ "\${_file_size}" -gt "\${Var_log_max_size}" ]; then
+			_now=\$(date -u +%s)
+			_timestamp="\${_now}"
+			for _actions in \${Var_log_rotate_actions//,/ }; do
+				case "\${_actions}" in
+					mv|move)
+						${Var_mv_exec_path} "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}"
+					;;
+					compress-encrypt|encrypt)
+						${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
+					;;
+					encrypted-email)
+						${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
+						${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${Var_log_rotate_recipient}"
+					;;
+					compressed-email)
+						${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
+						${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" "\${Var_log_rotate_recipient}"
+					;;
+					compress)
+						${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
+					;;
+					remove|rm|remove-old)
+						${Var_rm_exec_path} -f "\${Var_parsing_output_file}"
+						touch "\${Var_parsing_output_file}"
+						${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
+						${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
+					;;
+				esac
+			done
 		fi
 	fi
 }
@@ -1309,7 +1306,11 @@ Pipe_parser_loop(){
 				##  from being sent to the background/disown(ed)...
 				case "\${Var_log_rotate_yn}" in
 					y|Y|yes|Yes|YES)
-						Rotate_output_file
+						_count=\$((\${_count:-0}+1))
+						if [ "\${_count}" -gt "\${Var_log_check_frequency}" ] || [ "\${_count}" = "\${Var_log_check_frequency}" ]; then
+							Rotate_output_file
+							unset _count
+						fi
 					;;
 				esac
 			fi
@@ -1343,7 +1344,7 @@ case "\${Var_disown_parser_yn}" in
 		set -o history
 	;;
 esac
-echo "# \${Var_script_dir}\${Var_script_name} exited [\$?] at: \$(date)"
+${Var_echo_exec_path} "# \${Var_script_dir}\${Var_script_name} exited [\$?] at: \$(date)"
 
 EOF
 
