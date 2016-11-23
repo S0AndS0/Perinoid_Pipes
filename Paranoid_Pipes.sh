@@ -328,7 +328,7 @@ Func_trap_cleanup(){
 	_exit_status="$1"
 	Func_messages "# Exit code [${_exit_status}] status detected..." '1' '2'
 	if [ -p "${Var_pipe_file_name}" ]; then
-		Func_messages "# ...Cleaning up [${Var_pipe_file_name}] pipe now with [eval ${Var_trap_command}] command" '1' '2'
+		Func_messages "# ...Cleaning up [${Var_pipe_file_name}] pipe now with [${Var_trap_command}] command" '1' '2'
 		${Var_trap_command}
 	else
 		Func_messages "# ...No pipe to remove at [${Var_pipe_file_name}]" '1' '2'
@@ -1076,8 +1076,12 @@ Func_mkpipe_reader(){
 			_exit_status=$?
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_messages "Function [Map_read_input_to_array] within script [${Var_script_name}] detected exit status [${_exit_status}] and will manually run trap cleanup function now." '1' '2'
-					Func_trap_cleanup "${_exit_status}"
+					if [ -p "${Var_pipe_file_name}" ]; then
+						Func_messages "# ...Cleaning up [${Var_pipe_file_name}] pipe now with [${Var_trap_command}] command" '1' '2'
+						${Var_trap_command}
+					else
+						Func_messages "# ...No pipe to remove at [${Var_pipe_file_name}]" '1' '2'
+					fi
 				;;
 				*)
 					Func_messages "${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop" '1' '2'
@@ -1214,7 +1218,7 @@ Map_read_array_to_output(){
 						;;
 						prepend)
 							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							_line=( "\${Var_padding_command}" "\${_line[@]}" )
+							_line=( "\${Var_padding_command}" "\${_lines[\${_count}]}" )
 						;;
 					esac
 				done
@@ -1228,7 +1232,7 @@ Map_read_array_to_output(){
 				done
 				case "\${Var_preprocess_for_comments_yn}" in
 					y|Y|yes|Yes|YES)
-						case "\${_mapped_array}" in
+						case "\${_lines[\${_count}]}" in
 							\${Var_parsing_comment_pattern})
 								${Var_cat_exec_path} <<<"\${_line[@]}]//\${Var_parsing_allowed_chars}/}"
 							;;
@@ -1255,7 +1259,7 @@ Map_read_array_to_output(){
 			*)
 				case "\${Var_preprocess_for_comments_yn}" in
 					y|Y|yes|Yes|YES)
-						case "\${_mapped_array}" in
+						case "\${_lines[\${_count}]}" in
 							\${Var_parsing_comment_pattern})
 								${Var_cat_exec_path} <<<"\${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
 							;;
@@ -1267,6 +1271,7 @@ Map_read_array_to_output(){
 					;;
 					*)
 						${Var_cat_exec_path} <<<"\${_lines[\${_count}]}"
+						let _count++
 					;;
 				esac
 			;;
@@ -1318,8 +1323,10 @@ Pipe_parser_loop(){
 			_exit_code=\$?
 			case "\${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
-					${Var_echo_exec_path} "## \${Var_script_name} will execute [Clean_up_trap \$?] function now."
-					Clean_up_trap "\${_exit_code}"
+					if [ -p "\${Var_pipe_file_name}" ]; then
+						${Var_echo_exec_path} "## \${Var_script_name} running: \${Var_trap_command}."
+						\${Var_trap_command}
+					fi
 				;;
 				*)
 					${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
