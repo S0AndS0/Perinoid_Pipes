@@ -18,7 +18,7 @@ set +o history
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
 Var_script_version='1'
-Var_script_subversion='1477518852'
+Var_script_subversion='1479923548'
 Var_script_title="${Var_script_name} v${Var_script_version}-${Var_script_subversion}"
 ## Grab the PID of this script in-case auto-backgrounding is selected
 ##  without also selecting to write-out custom named pipe listener script.
@@ -921,92 +921,98 @@ Map_read_array_to_output(){
 	## Make an array from input, note '-t' will "trim" last new-line but otherwise not modify read lines.
 	mapfile -t _lines < "${_file_to_map}"
 	let _count=0
-	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
-		## Here is where the read input is expanded, line by line, the calling function then may make use
-		##  of entire data block; based on user set preferences is how each line read is formatted.
-		##  This first case branch checks for 'yes' like statements in ${Var_enable_padding} variable,
-		##  skip to bellow '*)' to find out what happens when this is disabled, because when enabled
-		##  this script will manipulate the lines being output quite a bit based upon enabled ${Var_padding_placement}
-		##  options chosen. Warning: disable this setting for the quickest and stablest results,
-		##  ie Var_enable_padding='no' is the best default
-		case "${Var_enable_padding_yn}" in
-			y|Y|yes|Yes|YES)
-				_line=( "${_lines[${_count}]}" )
-				case "${Var_padding_length}" in
-					adaptive)
-						_padding_length="${#_lines[${_count}]}"
-					;;
-					*)
-						_padding_length="${Var_padding_length}"
-					;;
-				esac
-				for _option in ${Var_padding_placement//,/ }; do
-					case "${_option}" in
-						append)
-							Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-							_line+=( "${Var_padding_command}" )
+	until [ "${_count}" = "${#_lines[@]}" ]; do
+#	until [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]] || [ "${_count}" = "${#_lines[@]}" ]; do
+		if [[ "${Var_pipe_quit_string}" == "${_lines[${_count}]}" ]]; then
+			${Var_cat_exec_path} <<<"${_line[${_count}]}"
+			break
+		else
+			## Here is where the read input is expanded, line by line, the calling function then may make use
+			##  of entire data block; based on user set preferences is how each line read is formatted.
+			##  This first case branch checks for 'yes' like statements in ${Var_enable_padding} variable,
+			##  skip to bellow '*)' to find out what happens when this is disabled, because when enabled
+			##  this script will manipulate the lines being output quite a bit based upon enabled ${Var_padding_placement}
+			##  options chosen. Warning: disable this setting for the quickest and stablest results,
+			##  ie Var_enable_padding='no' is the best default
+			case "${Var_enable_padding_yn}" in
+				y|Y|yes|Yes|YES)
+					_line=( "${_lines[${_count}]}" )
+					case "${Var_padding_length}" in
+						adaptive)
+							_padding_length="${#_lines[${_count}]}"
 						;;
-						prepend)
-							Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-							_line=( "${Var_padding_command}" "${_line[${_count}]}" )
+						*)
+							_padding_length="${Var_padding_length}"
 						;;
 					esac
-				done
-				for _option in ${Var_padding_placement//,/ }; do
-					case "${_option}" in
-						above)
-							Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-							${Var_cat_exec_path} <<<"${Var_padding_command}"
-						;;
-					esac
-				done
-				case "${Var_preprocess_for_comments_yn}" in
-					y|Y|yes|Yes|YES)
-						case "${_lines[${_count}]}" in
-							${Var_parsing_comment_pattern})
-								${Var_cat_exec_path} <<<"${_line[@]//${Var_parsing_allowed_chars}/}"
+					for _option in ${Var_padding_placement//,/ }; do
+						case "${_option}" in
+							append)
+								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
+								_line+=( "${Var_padding_command}" )
 							;;
-							*)
-								${Var_cat_exec_path} <<<"# ${_line[*]//${Var_parsing_allowed_chars}/}"
-#								${Var_cat_exec_path} <<<"# ${_line[@]//${Var_parsing_allowed_chars}/}"
+							prepend)
+								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
+								_line=( "${Var_padding_command}" "${_line[${_count}]}" )
 							;;
 						esac
-						let _count++
-					;;
-					*)
-						${Var_cat_exec_path} <<<"${_line[@]}"
-						let _count++
-					;;
-				esac
-				for _option in ${Var_padding_placement//,/ }; do
-					case "${_option}" in
-						bellow)
-							Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-							${Var_cat_exec_path} <<<"${Var_padding_command}"
-						;;
-					esac
-				done
-			;;
-			*)
-				case "${Var_preprocess_for_comments_yn}" in
-					y|Y|yes|Yes|YES)
-						case "${_lines[${_count}]}" in
-							${Var_parsing_comment_pattern})
-								${Var_cat_exec_path} <<<"${_lines[${_count}]//${Var_parsing_allowed_chars}/}"
-							;;
-							*)
-								${Var_cat_exec_path} <<<"# ${_lines[${_count}]//${Var_parsing_allowed_chars}/}"
+					done
+					for _option in ${Var_padding_placement//,/ }; do
+						case "${_option}" in
+							above)
+								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
+								${Var_cat_exec_path} <<<"${Var_padding_command}"
 							;;
 						esac
-						let _count++
-					;;
-					*)
-						${Var_cat_exec_path} <<<"${_lines[${_count}]}"
-						let _count++
-					;;
-				esac
-			;;
-		esac
+					done
+					case "${Var_preprocess_for_comments_yn}" in
+						y|Y|yes|Yes|YES)
+							case "${_lines[${_count}]}" in
+								${Var_parsing_comment_pattern})
+									${Var_cat_exec_path} <<<"${_line[@]//${Var_parsing_allowed_chars}/}"
+								;;
+								*)
+									${Var_cat_exec_path} <<<"# ${_line[*]//${Var_parsing_allowed_chars}/}"
+#									${Var_cat_exec_path} <<<"# ${_line[@]//${Var_parsing_allowed_chars}/}"
+								;;
+							esac
+							let _count++
+						;;
+						*)
+							${Var_cat_exec_path} <<<"${_line[@]}"
+							let _count++
+						;;
+					esac
+					for _option in ${Var_padding_placement//,/ }; do
+						case "${_option}" in
+							bellow)
+								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
+								${Var_cat_exec_path} <<<"${Var_padding_command}"
+							;;
+						esac
+					done
+				;;
+				*)
+					case "${Var_preprocess_for_comments_yn}" in
+						y|Y|yes|Yes|YES)
+							case "${_lines[${_count}]}" in
+								${Var_parsing_comment_pattern})
+									${Var_cat_exec_path} <<<"${_lines[${_count}]//${Var_parsing_allowed_chars}/}"
+								;;
+								*)
+									${Var_cat_exec_path} <<<"# ${_lines[${_count}]//${Var_parsing_allowed_chars}/}"
+								;;
+							esac
+							let _count++
+						;;
+						*)
+							${Var_cat_exec_path} <<<"${_lines[${_count}]}"
+							let _count++
+						;;
+					esac
+				;;
+			esac
+		fi
 	done
 }
 ## Note bellow function calls the above function by assigning it to a variable; tricky...but works ;-D
@@ -1073,7 +1079,7 @@ Func_mkpipe_reader(){
 			esac
 		## Else if read input matches quit string, either run trap
 		##  function if not already set or break loop to trigger trap.
-		elif [ "${Var_pipe_quit_string}" = "${_mapped_array}" ]; then
+		elif [[ "${Var_pipe_quit_string}" == "${_mapped_array}" ]]; then
 			_exit_status=$?
 			case "${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
@@ -1204,84 +1210,89 @@ Map_read_array_to_output(){
 	_file_to_map="\$1"
 	mapfile -t _lines < "\${_file_to_map}"
 	let _count=0
-	until [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ]; do
-		case "\${Var_enable_padding_yn}" in
-			y|Y|yes|Yes|YES)
-				_line=( "\${_lines[\${_count}]}" )
-				case "\${Var_padding_length}" in
-					adaptive)
-						_padding_length="\${#_lines[\${_count}]}"
-					;;
-					*)
-						_padding_length="\${Var_padding_length}"
-					;;
-				esac
-				for _option in \${Var_padding_placement//,/ }; do
-					case "\${_option}" in
-						append)
-							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							_line+=( "\${Var_padding_command}" )
+	until [ "\${_count}" = "\${#_lines[@]}" ]; do
+		if [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]]; then
+			${Var_cat_exec_path} <<<"\${_line[\${_count}]}"
+			break
+		else
+			case "\${Var_enable_padding_yn}" in
+				y|Y|yes|Yes|YES)
+					_line=( "\${_lines[\${_count}]}" )
+					case "\${Var_padding_length}" in
+						adaptive)
+							_padding_length="\${#_lines[\${_count}]}"
 						;;
-						prepend)
-							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							_line=( "\${Var_padding_command}" "\${_line[\${_count}]}" )
+						*)
+							_padding_length="\${Var_padding_length}"
 						;;
 					esac
-				done
-				for _option in \${Var_padding_placement//,/ }; do
-					case "\${_option}" in
-						above)
-							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							${Var_cat_exec_path} <<<"\${Var_padding_command}"
-						;;
-					esac
-				done
-				case "\${Var_preprocess_for_comments_yn}" in
-					y|Y|yes|Yes|YES)
-						case "\${_lines[\${_count}]}" in
-							\${Var_parsing_comment_pattern})
-								${Var_cat_exec_path} <<<"\${_line[@]//\${Var_parsing_allowed_chars}/}"
+					for _option in \${Var_padding_placement//,/ }; do
+						case "\${_option}" in
+							append)
+								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
+								_line+=( "\${Var_padding_command}" )
 							;;
-							*)
-								${Var_cat_exec_path} <<<"# \${_line[*]//\${Var_parsing_allowed_chars}/}"
+							prepend)
+								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
+								_line=( "\${Var_padding_command}" "\${_line[\${_count}]}" )
 							;;
 						esac
-						let _count++
-					;;
-					*)
-						${Var_cat_exec_path} <<<"\${_line[@]}"
-						let _count++
-					;;
-				esac
-				for _option in \${Var_padding_placement//,/ }; do
-					case "\${_option}" in
-						bellow)
-							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							${Var_cat_exec_path} <<<"\${Var_padding_command}"
-						;;
-					esac
-				done
-			;;
-			*)
-				case "\${Var_preprocess_for_comments_yn}" in
-					y|Y|yes|Yes|YES)
-						case "\${_lines[\${_count}]}" in
-							\${Var_parsing_comment_pattern})
-								${Var_cat_exec_path} <<<"\${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
-							;;
-							*)
-								${Var_cat_exec_path} <<<"# \${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
+					done
+					for _option in \${Var_padding_placement//,/ }; do
+						case "\${_option}" in
+							above)
+								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
+								${Var_cat_exec_path} <<<"\${Var_padding_command}"
 							;;
 						esac
-						let _count++
-					;;
-					*)
-						${Var_cat_exec_path} <<<"\${_lines[\${_count}]}"
-						let _count++
-					;;
-				esac
-			;;
-		esac
+					done
+					case "\${Var_preprocess_for_comments_yn}" in
+						y|Y|yes|Yes|YES)
+							case "\${_lines[\${_count}]}" in
+								\${Var_parsing_comment_pattern})
+									${Var_cat_exec_path} <<<"\${_line[@]//\${Var_parsing_allowed_chars}/}"
+								;;
+								*)
+									${Var_cat_exec_path} <<<"# \${_line[*]//\${Var_parsing_allowed_chars}/}"
+								;;
+							esac
+							let _count++
+						;;
+						*)
+							${Var_cat_exec_path} <<<"\${_line[@]}"
+							let _count++
+						;;
+					esac
+					for _option in \${Var_padding_placement//,/ }; do
+						case "\${_option}" in
+							bellow)
+								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
+								${Var_cat_exec_path} <<<"\${Var_padding_command}"
+							;;
+						esac
+					done
+				;;
+				*)
+					case "\${Var_preprocess_for_comments_yn}" in
+						y|Y|yes|Yes|YES)
+							case "\${_lines[\${_count}]}" in
+								\${Var_parsing_comment_pattern})
+									${Var_cat_exec_path} <<<"\${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
+								;;
+								*)
+									${Var_cat_exec_path} <<<"# \${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
+								;;
+							esac
+							let _count++
+						;;
+						*)
+							${Var_cat_exec_path} <<<"\${_lines[\${_count}]}"
+							let _count++
+						;;
+					esac
+				;;
+			esac
+		fi
 	done
 }
 Pipe_parser_loop(){
@@ -1311,7 +1322,8 @@ Pipe_parser_loop(){
 						${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
 						let _count++
 						if [ "\${_count}" -gt "\${Var_log_check_frequency}" ] || [ "\${_count}" = "\${Var_log_check_frequency}" ]; then
-							Func_rotate_log "\${Var_parsing_output_file}" "\${Var_log_rotate_yn}" "\${Var_log_max_size}" "\${Var_log_rotate_actions}" "\${Var_log_rotate_recipient}"
+							Func_rotate_log
+#							Func_rotate_log "\${Var_parsing_output_file}" "\${Var_log_rotate_yn}" "\${Var_log_max_size}" "\${Var_log_rotate_actions}" "\${Var_log_rotate_recipient}"
 						fi
 					fi
 				;;
@@ -1320,7 +1332,7 @@ Pipe_parser_loop(){
 					let _count++
 				;;
 			esac
-		elif [ "\${Var_pipe_quit_string}" = "\${_mapped_array}" ]; then
+		elif [[ "\${Var_pipe_quit_string}" == "\${_mapped_array}" ]]; then
 			case "\${Var_disown_parser_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_pipe_file_name}" ]; then
