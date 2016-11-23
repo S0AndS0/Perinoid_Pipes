@@ -1126,6 +1126,7 @@ Var_star_date="\$(date -u +%s)"
 Var_enable_padding_yn="${Var_enable_padding_yn}"
 Var_padding_length="${Var_padding_length}"
 Var_padding_placement="${Var_padding_placement}"
+Var_dev_null="${Var_dev_null}"
 ${Var_echo_exec_path} "### ... Starting [\${Var_script_name}] at \$(date) ... ###"
 Clean_up_trap(){
 	_exit_code="\$1"
@@ -1328,7 +1329,7 @@ Pipe_parser_loop(){
 Make_named_pipe
 case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
-		Pipe_parser_loop >"${Var_dev_null}" 2>&1 &
+		Pipe_parser_loop >"\${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
 		disown \${PID_Pipe_parser_loop}
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] parsing loops"
@@ -1376,7 +1377,7 @@ Func_main(){
 				Func_messages '#------# Func_save_copy messages' '1' '2'
 				Func_save_copy "${Var_script_copy_name}"
 				Func_messages '#------#' '1' '2'
-				if ! [ -f "${Var_script_copy_name}" ]; then
+				if ! [ -e "${Var_script_copy_name}" ]; then
 					_exit_status=$?
 					Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 					Func_messages "#  Attempting to check file and execute permissions on [${Var_script_copy_name}] file failed" '0' '1'
@@ -1384,8 +1385,8 @@ Func_main(){
 					Func_messages "# Starting [${Var_script_copy_name}] with [${Var_script_name}] process" '1' '2'
 					${Var_script_copy_name}
 					_exit_status=$?
+					Func_write_unrecognized_input_to_pipe
 				fi
-				Func_write_unrecognized_input_to_pipe
 			else
 				Func_messages "# Error: conflict within [Func_main] while using [${Var_script_copy_name}] variable" '0' '1'
 				Func_messages "#  Attempting to check value length resulted in null [${Var_script_copy_name}] or empty value" '0' '1'

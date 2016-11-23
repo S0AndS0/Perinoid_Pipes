@@ -35,3 +35,14 @@ export Var_script_copy_name_encrypt="${PWD}/encrypt_listener.sh"
 export Var_script_copy_name_decrypt="${PWD}/decrypt_listener.sh"
 ## The following are used within '' file
 export Var_search_out_location="${PWD}/decrypt_search.txt"
+##  The following block of variables is used in 'script_encrypt_copy.sh' file.
+##
+export Var_encrypt_pipe_location_copy="${PWD}/encrypt_two.pipe"
+export Var_encrypt_pipe_log_copy="${PWD}/encrypt_two.log"
+export Var_encrypted_location_copy="${PWD}/encrypt_two.gpg"
+export Var_encrypted_bulk_dir_copy="${PWD}/bulk_encryption_two"
+export Var_raw_test_location_copy="${PWD}/raw_strings_two.txt"
+export Var_decrypt_raw_location_copy="${PWD}/decrypt_two.txt"
+export Var_encrypt_dir_path_copy="${PWD}/Script_Helpers"
+export Var_encrypt_file_path_copy="${PWD}/Paranoid_Pipes.sh"
+
