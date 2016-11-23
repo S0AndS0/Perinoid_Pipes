@@ -34,6 +34,8 @@ Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user home directory variable for saving logs and script copies to
  : "${HOME?}"
 Var_script_current_user="${USER}"
+## Attempt to get columns like above
+ : "${COLUMNS?}"
 ## Columns of terminal width, defaults to 80 if not readable
 Var_columns_width="${COLUMNS:-80}"
 ## Variables that find file paths to required executables. Note these maybe useful
@@ -1015,7 +1017,8 @@ Func_mkpipe_reader(){
 	##  AND a "break" signal is undetected assign function [Map_read_array_to_output]
 	##  with above file path as first argument to a variable.
 	while [ -p "${Var_pipe_file_name}" ]; do
-		_mapped_array="$(Map_read_array_to_output "${Var_pipe_file_name}")"		## If above variable is not zero characters in length OR if above variable
+		_mapped_array="$(Map_read_array_to_output "${Var_pipe_file_name}")"
+		## If above variable is not zero characters in length OR if above variable
 		##  is NOT equal to exit string, then push above variable through
 		##  further checks, else signal 'brake' (false) to parent "while" loop.
 		if [ "${#_mapped_array}" != "0" ] && [ "${Var_pipe_quit_string}" != "${_mapped_array}" ]; then
@@ -1044,10 +1047,10 @@ Func_mkpipe_reader(){
 					else
 						## Note we are doing some redirection to 'cat' instead of 'echo'ing the line
 						##  as well as prepending the line with '#' commenting hash mark.
-						if ! [ -f "${_parsing_output_file}" ]; then
-							touch "${_parsing_output_file}"
-							${Var_chmod_exec_path} "${Var_log_file_permissions}" "${_parsing_output_file}"
-							${Var_chown_exec_path} "${Var_log_file_ownership}" "${_parsing_output_file}"
+						if ! [ -f "${Var_parsing_output_file}" ]; then
+							touch "${Var_parsing_output_file}"
+							${Var_chmod_exec_path} "${Var_log_file_permissions}" "${Var_parsing_output_file}"
+							${Var_chown_exec_path} "${Var_log_file_ownership}" "${Var_parsing_output_file}"
 						fi
 						${Var_cat_exec_path} <<<"${_mapped_array}" | ${Var_parsing_command} >> "${Var_parsing_output_file}"
 						let _count++
@@ -1151,54 +1154,58 @@ case "\${Var_disown_parser_yn}" in
 esac
 Make_named_pipe(){
 	if ! [ -p "\${Var_pipe_file_name}" ]; then
-		${Var_mkfifo_exec_path} "\${Var_pipe_file_name}"
+		${Var_mkfifo_exec_path} "\${Var_pipe_file_name}" || exit 1
 	fi
-	${Var_chmod_exec_path} "\${Var_pipe_permissions}" "\${Var_pipe_file_name}"
-	${Var_chown_exec_path} "\${Var_pipe_ownership}" "\${Var_pipe_file_name}"
-	${Var_echo_exec_path} "# Starting \${Var_script_name} listener"
+	${Var_chmod_exec_path} "\${Var_pipe_permissions}" "\${Var_pipe_file_name}" || exit 1
+	${Var_chown_exec_path} "\${Var_pipe_ownership}" "\${Var_pipe_file_name}" || exit 1
 }
-Rotate_output_file(){
-	if [ -f "\${Var_parsing_output_file}" ]; then
-		_file_size=\$(du --bytes "\${Var_parsing_output_file}" | awk '{print \$1}' | head -n1)
-		if [ "\${_file_size}" -gt "\${Var_log_max_size}" ]; then
-			_now=\$(date -u +%s)
-			_timestamp="\${_now}"
-			for _actions in \${Var_log_rotate_actions//,/ }; do
-				case "\${_actions}" in
-					mv|move)
-						${Var_mv_exec_path} "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}"
-					;;
-					compress-encrypt|encrypt)
-						${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
-					;;
-					encrypted-email)
-						${Var_tar_exec_path} -cz - "\${Var_parsing_output_file}" | gpg --encrypt --recipient \${Var_log_rotate_recipient} --output "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg"
-						${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${Var_log_rotate_recipient}"
-					;;
-					compressed-email)
-						${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
-						${Var_echo_exec_path} "Sent at \${_timestamp}" | mutt -s "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${Var_parsing_output_file}.\${_timestamp}.tar.gz" "\${Var_log_rotate_recipient}"
-					;;
-					compress)
-						${Var_tar_exec_path} -cz "\${Var_parsing_output_file}" "\${Var_parsing_output_file}.\${_timestamp}.tar.gz"
-					;;
-					remove|rm|remove-old)
-						${Var_rm_exec_path} -f "\${Var_parsing_output_file}"
-						touch "\${Var_parsing_output_file}"
-						${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
-						${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
-					;;
-				esac
-			done
-		fi
-	fi
+Func_rotate_log(){
+	_parsing_output_file="\${1:-\$Var_parsing_output_file}"
+	_log_rotate_yn="\${2:-\$Var_log_rotate_yn}"
+	_log_max_size="\${3:-\$Var_log_max_size}"
+	_log_rotate_actions="\${4:-\$Var_log_rotate_actions}"
+	_log_rotate_recipient="\${5:-\$Var_log_rotate_recipient}"
+	case "\${_log_rotate_yn}" in
+		y|Y|yes|Yes|YES)
+			if [ -f "\${_parsing_output_file}" ]; then
+				_file_size="\$(du --bytes "\${_parsing_output_file}" | awk '{print \$1}' | head -n1)"
+				if [ "\${_file_size}" -gt "\${_log_max_size}" ]; then
+					_timestamp="\$(date -u +%s)"
+					## Split commas into spaces and use case to match action options
+					for _actions in \${_log_rotate_actions//,/ }; do
+						case "\${_actions}" in
+							mv|move)
+								${Var_mv_exec_path} "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}"
+							;;
+							compress-encrypt|encrypt)
+								${Var_tar_exec_path} -cz - "\${_parsing_output_file}" | gpg --encrypt --recipient "\${_log_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
+							;;
+							encrypted-email)
+								${Var_tar_exec_path} -cz - "\${_parsing_output_file}" | gpg --encrypt --recipient "\${_log_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
+								echo "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${_log_rotate_recipient}"
+							;;
+							compressed-email)
+								${Var_tar_exec_path} -cz "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}.tar.gz"
+								echo "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz" "\${_log_rotate_recipient}"
+							;;
+							compress)
+								${Var_tar_exec_path} -cz "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}.tar.gz"
+							;;
+							remove|rm|remove-old)
+								${Var_rm_exec_path} -f "\${_parsing_output_file}"
+							;;
+						esac
+					done
+				fi
+			fi
+		;;
+	esac
 }
 Map_read_array_to_output(){
-	_file_or_pipe_to_map="\$1"
-	## Make an array from input, note '-t' will "trim" last new-line.
-	mapfile -t _lines < "\${_file_or_pipe_to_map}"
+	_file_to_map="\$1"
+	mapfile -t _lines < "\${_file_to_map}"
 	let _count=0
-	until [[ "\${Var_pipe_quit_string}" = "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ]; do
+	until [[ "\${Var_pipe_quit_string}" == "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ]; do
 		case "\${Var_enable_padding_yn}" in
 			y|Y|yes|Yes|YES)
 				_line=( "\${_lines[\${_count}]}" )
@@ -1218,7 +1225,7 @@ Map_read_array_to_output(){
 						;;
 						prepend)
 							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-							_line=( "\${Var_padding_command}" "\${_lines[\${_count}]}" )
+							_line=( "\${Var_padding_command}" "\${_line[\${_count}]}" )
 						;;
 					esac
 				done
@@ -1234,7 +1241,7 @@ Map_read_array_to_output(){
 					y|Y|yes|Yes|YES)
 						case "\${_lines[\${_count}]}" in
 							\${Var_parsing_comment_pattern})
-								${Var_cat_exec_path} <<<"\${_line[@]}]//\${Var_parsing_allowed_chars}/}"
+								${Var_cat_exec_path} <<<"\${_line[@]//\${Var_parsing_allowed_chars}/}"
 							;;
 							*)
 								${Var_cat_exec_path} <<<"# \${_line[*]//\${Var_parsing_allowed_chars}/}"
@@ -1281,59 +1288,55 @@ Map_read_array_to_output(){
 Pipe_parser_loop(){
 	while [ -p "\${Var_pipe_file_name}" ]; do
 		_mapped_array="\$(Map_read_array_to_output "\${Var_pipe_file_name}")"
-		## If above variable is not zero characters in length OR if above variable
-		##  is NOT equal to exit string, then push above variable through
-		##  further checks, else signal 'brake' (false) to parent "while" loop.
-		if [ "\${#_mapped_array}" != '0' ] && [ "\${Var_pipe_quit_string}" != "\${_mapped_array}" ]; then
-			if [ -f "\${_mapped_array}" ]; then
-				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
-					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
-				fi
-				Var_star_date="\$(date -u +%s)"
-				${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} > "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}\${Var_bulk_output_suffix}"
-			elif [ -d "\${_mapped_array}" ]; then
-				if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
-					${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
-				fi
-				Var_star_date="\$(date -u +%s)"
-				${Var_tar_exec_path} -cz - "\${_mapped_array}" | \${Var_parsing_command} > "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz\${Var_bulk_output_suffix}"
-			else
-				## Push mapped array through 'cat' then pipe results through encryption/decryption
-				##  command, saving final results to output file.
-				if ! [ -f "\${Var_parsing_output_file}" ]; then
-					touch "\${Var_parsing_output_file}"
-					${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
-					${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
-				fi
-				${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
-				## Check if script should load log-rotation function into this one
-				##  if disabled then this should prevent a second or third process
-				##  from being sent to the background/disown(ed)...
-				case "\${Var_log_rotate_yn}" in
-					y|Y|yes|Yes|YES)
-						_count=\$((\${_count:-0}+1))
-						if [ "\${_count}" -gt "\${Var_log_check_frequency}" ] || [ "\${_count}" = "\${Var_log_check_frequency}" ]; then
-							Rotate_output_file
-							unset _count
+		if [ "\${#_mapped_array}" != "0" ] && [ "\${Var_pipe_quit_string}" != "\${_mapped_array}" ]; then
+			case "\${Var_save_encryption_yn}" in
+				y|Y|yes|Yes)
+					if [ -f "\${_mapped_array}" ]; then
+						if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
+							${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
 						fi
-					;;
-				esac
-			fi
-		elif [ "\${Var_pipe_quit_string}" = "\${_mapped_array}" ]; then
-			_exit_code=\$?
-			case "\${Var_disown_parser_yn}" in
-				Y|y|Yes|yes|YES)
-					if [ -p "\${Var_pipe_file_name}" ]; then
-						${Var_echo_exec_path} "## \${Var_script_name} running: \${Var_trap_command}."
-						\${Var_trap_command}
+						Var_star_date="\$(date -u +%s)"
+						${Var_cat_exec_path} "\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}\${Var_bulk_output_suffix}"
+					elif [ -d "\${_mapped_array}" ]; then
+						if ! [ -d "\${Var_parsing_bulk_out_dir}" ]; then
+							${Var_mkdir_exec_path} -p "\${Var_parsing_bulk_out_dir}"
+						fi
+						Var_star_date="\$(date -u +%s)"
+						${Var_tar_exec_path} -cz - "\${_mapped_array}" | \${Var_parsing_command} > \${Var_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz.gpg
+					else
+						if ! [ -f "\${Var_parsing_output_file}" ]; then
+							touch "\${Var_parsing_output_file}"
+							${Var_chmod_exec_path} "\${Var_log_file_permissions}" "\${Var_parsing_output_file}"
+							${Var_chown_exec_path} "\${Var_log_file_ownership}" "\${Var_parsing_output_file}"
+						fi
+						${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command} >> "\${Var_parsing_output_file}"
+						let _count++
+						if [ "\${_count}" -gt "\${Var_log_check_frequency}" ] || [ "\${_count}" = "\${Var_log_check_frequency}" ]; then
+							Func_rotate_log "\${Var_parsing_output_file}" "\${Var_log_rotate_yn}" "\${Var_log_max_size}" "\${Var_log_rotate_actions}" "\${Var_log_rotate_recipient}"
+						fi
 					fi
 				;;
 				*)
-					${Var_echo_exec_path} "## \${Var_script_name} has already set trap for exit. Exit of last read showed [\${_exit_code}] exit code."
+					${Var_cat_exec_path} <<<"\${_mapped_array}" | \${Var_parsing_command}
+					let _count++
+				;;
+			esac
+		elif [ "\${Var_pipe_quit_string}" = "\${_mapped_array}" ]; then
+			case "\${Var_disown_parser_yn}" in
+				Y|y|Yes|yes|YES)
+					if [ -p "\${Var_pipe_file_name}" ]; then
+						\${Var_trap_command}
+					else
+						echo "# ...No pipe to remove at [\${Var_pipe_file_name}]"
+					fi
+				;;
+				*)
+					echo "# \${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop"
 				;;
 			esac
 			break
 		fi
+		unset _exit_status
 	done
 }
 Make_named_pipe
