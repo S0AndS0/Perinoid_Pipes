@@ -1142,7 +1142,7 @@ case "\${Var_disown_parser_yn}" in
 	;;
 	*)
 		${Var_echo_exec_path} "## \${Var_script_name} will set exit trap now."
-		trap "Clean_up_trap \${?}" EXIT
+		trap 'Clean_up_trap \${?}' EXIT
 	;;
 esac
 Make_named_pipe(){
@@ -1197,7 +1197,7 @@ Map_read_array_to_output(){
 	## Make an array from input, note '-t' will "trim" last new-line.
 	mapfile -t _lines < "\${_file_or_pipe_to_map}"
 	let _count=0
-	until [ "\${Var_pipe_quit_string}" = "\${_lines[\${_count}]}" ] || [ "\${_count}" = "\${#_lines[@]}" ]; do
+	until [[ "\${Var_pipe_quit_string}" = "\${_lines[\${_count}]}" ]] || [ "\${_count}" = "\${#_lines[@]}" ]; do
 		case "\${Var_enable_padding_yn}" in
 			y|Y|yes|Yes|YES)
 				_line=( "\${_lines[\${_count}]}" )
@@ -1212,11 +1212,11 @@ Map_read_array_to_output(){
 				for _option in \${Var_padding_placement//,/ }; do
 					case "\${_option}" in
 						append)
-							Var_padding_command=\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})
+							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
 							_line+=( "\${Var_padding_command}" )
 						;;
 						prepend)
-							Var_padding_command=\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})
+							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
 							_line=( "\${Var_padding_command}" "\${_line[@]}" )
 						;;
 					esac
@@ -1224,7 +1224,7 @@ Map_read_array_to_output(){
 				for _option in \${Var_padding_placement//,/ }; do
 					case "\${_option}" in
 						above)
-							Var_padding_command=\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})
+							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
 							${Var_cat_exec_path} <<<"\${Var_padding_command}"
 						;;
 					esac
@@ -1239,16 +1239,17 @@ Map_read_array_to_output(){
 								${Var_cat_exec_path} <<<"# \${_line[*]//\${Var_parsing_allowed_chars}/}"
 							;;
 						esac
+						let _count++
 					;;
 					*)
 						${Var_cat_exec_path} <<<"\${_line[@]}"
+						let _count++
 					;;
 				esac
-				let _count++
 				for _option in \${Var_padding_placement//,/ }; do
 					case "\${_option}" in
 						bellow)
-							Var_padding_command=\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})
+							Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
 							${Var_cat_exec_path} <<<"\${Var_padding_command}"
 						;;
 					esac
@@ -1265,6 +1266,7 @@ Map_read_array_to_output(){
 								${Var_cat_exec_path} <<<"# \${_lines[\${_count}]//\${Var_parsing_allowed_chars}/}"
 							;;
 						esac
+						let _count++
 					;;
 					*)
 						${Var_cat_exec_path} <<<"\${_lines[\${_count}]}"
@@ -1331,7 +1333,7 @@ case "\${Var_disown_parser_yn}" in
 	Y|y|Yes|yes|YES)
 		Pipe_parser_loop >"\${Var_dev_null}" 2>&1 &
 		PID_Pipe_parser_loop=\$!
-		disown \${PID_Pipe_parser_loop}
+		disown "\${PID_Pipe_parser_loop}"
 		${Var_echo_exec_path} "## \${Var_script_name} disowned PID [\${PID_Pipe_parser_loop}] parsing loops"
 	;;
 	*)
@@ -1341,6 +1343,7 @@ case "\${Var_disown_parser_yn}" in
 		set -o history
 	;;
 esac
+echo "# \${Var_script_dir}\${Var_script_name} exited [\$?] at: \$(date)"
 
 EOF
 
