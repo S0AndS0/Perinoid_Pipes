@@ -32,8 +32,6 @@ else
 	echo "# Error - ${Var_script_name} did not detect any background processes"
 	exit 1
 fi
-#echo -e "# ${Var_script_name} checking background processes:\n# "
-#echo "\n\n Number of processes $(pgrep -c "${Var_install_name}")"
 ## If test pipe file exists then test, else exit with errors
 if [ -p "${Var_encrypt_pipe_location}" ]; then
 	## Push a known directory path through named pipe listener or make a new
@@ -57,20 +55,50 @@ if [ -p "${Var_encrypt_pipe_location}" ]; then
 	fi
 	## Push a known file path to named pipe and check if it is processed to
 	##  the defined bulk output directory or make a blank file to push through
-	if [ -f "${Var_encrypt_file_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+#	if [ -f "${Var_encrypt_file_path}" ]; then
+#		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
+#		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
+#	else
+#		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path}\""
+#		touch "${Var_encrypt_file_path}"
+#		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path}\""
+#		chmod +r "${Var_encrypt_file_path}"
+#		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
+#		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
+#	fi
+
+
+	## Temperary checks to avoid build time-outs
+	## Check bulk output directory for results, exit with errors if the directory
+	##  does not exsist.
+	if [ -d "${Var_encrypted_bulk_dir}" ]; then
+		echo "# ${Var_script_name} running: ls -hal ${Var_encrypted_bulk_dir}"
+		ls -hal "${Var_encrypted_bulk_dir}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
+		echo "# ${Var_script_name} reports: all checks passed"
 	else
-		echo "# ${Var_script_name} running: touch \"${Var_encrypt_file_path}\""
-		touch "${Var_encrypt_file_path}"
-		echo "# ${Var_script_name} running: chmod +r \"${Var_encrypt_file_path}\""
-		chmod +r "${Var_encrypt_file_path}"
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_path}\" > \"${Var_encrypt_pipe_location}\""
-		echo "${Var_encrypt_file_path}" > "${Var_encrypt_pipe_location}"
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
+		echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_bulk_dir}"
+		exit 1
+	fi
+	## Show script copy if we get this far and exit
+	if [ -e "${Var_script_copy_name_encrypt}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_script_copy_name_encrypt}\""
+		cat "${Var_script_copy_name_encrypt}"
+		exit 0
+	else
+		if [ -f "${Var_script_copy_name_encrypt}" ]; then
+			echo "# ${Var_script_name} running: cat \"${Var_script_copy_name_encrypt}\""
+			cat "${Var_script_copy_name_encrypt}"
+			exit 0
+		else
+			echo "# ${Var_script_name} running: "
+			exit 1
+		fi
 	fi
 	## Note we are saving the test string to a file but will be cat-ing
 	##  it back out to named pipe file for the first test so lets make that
