@@ -34,8 +34,6 @@ Var_subshell_pid="${BASH_SUBSHELL}"
 ## Refresh user home directory variable for saving logs and script copies to
  : "${HOME?}"
 Var_script_current_user="${USER}"
-## Attempt to get columns like above
- : "${COLUMNS?}"
 ## Columns of terminal width, defaults to 80 if not readable
 Var_columns_width="${COLUMNS:-80}"
 ## Variables that find file paths to required executables. Note these maybe useful
