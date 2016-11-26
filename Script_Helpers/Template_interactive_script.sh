@@ -7,6 +7,10 @@ Var_log_level="0"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
 Var_columns="${COLUMNS:-80}"
 Var_authors_contact='strangerthanbland@gmail.com'
+Var_source_var_file=""
+Var_script_version_main="0"
+Var_script_version_sub="1111111"
+Var_script_version_full="${Var_script_version_main}.${Var_script_version_sub}"
 ## Assigne other default variables
 
 ## Assigne default functions for handling messages,
@@ -34,9 +38,28 @@ Func_check_args(){
 			--license)
 				Func_script_license_customizer
 				exit 0
-			--help|help|*)
+			--help|help)
 				Func_message "# Func_check_args read variable [${_arg%=*}] with value [${_arg#*=}]" '2' '3'
 				Func_help
+			;;
+			--source-var-file|Var_source_var_file)
+				Func_assign_arg "Var_source_var_file" "${_arg#*=}"
+				if [ -f "${Var_source_var_file}" ]; then
+					Func_message "# " '2' '3'
+					source "${Var_source_var_file}"
+				fi
+			;;
+			---*)
+				_extra_var="${_arg%=*}"
+				_extra_arg="${_arg#*=}"
+				Func_assign_arg "${_extra_var/---/}" "${_arg#*=}"
+			;;
+			--version)
+				echo "# ${Var_script_name} version: ${Var_script_version_full}"
+			;;
+			*)
+				Func_message "# " '2' '3'
+				declare -ag "Arr_extra_input+=( ${_arg} )"
 			;;
 		esac
 		let _arr_count++
@@ -49,8 +72,10 @@ Func_help(){
 	echo "# --debug-level		Var_debug_level=${Var_debug_level}"
 	echo "# --log-level		Var_log_level=${Var_log_level}"
 	echo "# --script-log-level	Var_script_log_path=${Var_script_log_path}"
+	echo "# --source-var-file	Var_source_var_file=${Var_source_var_file}"
 	echo "# --license		Display the license for this script."
 	echo "# --help			Display this message."
+	echo "# --version		Display version for this script."
 }
 ## Note the following three functions should not need much editing
 Func_script_license_customizer(){

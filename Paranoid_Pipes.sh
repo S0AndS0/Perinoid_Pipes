@@ -448,7 +448,7 @@ Func_script_version(){
 ##  only if the pipe file exists too. Else message user that extra input read
 ##  was unrecognized. This function is called within this scripts main function.
 Func_write_unrecognized_input_to_pipe(){
-	if [ "${#Arr_extra_input[@]}" -gt '1' ] && [ -p "${Var_pipe_file_name}" ]; then
+	if [ "${#Arr_extra_input[@]}" != '0' ] && [ -p "${Var_pipe_file_name}" ]; then
 		Func_messages "# ${Var_script_name} detected extra input" '1' '2'
 		Func_messages "# \${Arr_extra_input[@]}  will now be written to [${Var_pipe_file_name}] for parsing" '1' '2'
 		${Var_echo_exec_path} "${Arr_extra_input[@]}" > "${Var_pipe_file_name}"

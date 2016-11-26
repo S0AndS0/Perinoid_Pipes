@@ -20,8 +20,8 @@ Var_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
 ##  directories or read file paths from the main script... well that is once
 ##  fully tested by Travic-CI, otherwise see auto-build scripts for steps in
 ##  recovering bulk encryption paths instead of appended logs.
-Var_bulk_input_dir=""
-Var_bulk_output_dir=""
+Var_bulk_encrypt_dir=""
+Var_bulk_decrypt_dir=""
 ### Dangerious / Special usage case variables
 Var_padding_yn='no'
 Var_padding_length='adaptive'
@@ -74,8 +74,8 @@ Func_help(){
 	echo "#  spicifficly enable padding if desired because of risk of"
 	echo "#  coruption to data when used. Warning, the three above are not completly finished!"
 	echo "## New/experomental options"
-	echo "# --bulk-input-dir	Var_bulk_input_dir=${Var_bulk_input_dir}"
-	echo "# --bulk-output-dir	Var_bulk_output_dir=${Var_bulk_output_dir}"
+	echo "# --bulk-encrypt-dir	Var_bulk_encrypt_dir=${Var_bulk_encrypt_dir}"
+	echo "# --bulk-decrypt-dir	Var_bulk_decrypt_dir=${Var_bulk_decrypt_dir}"
 	echo "## The above two are required if bulk files or directories where"
 	echo "#  processed by main script."
 	echo "## The bellow three options are optional for making this script"
@@ -103,11 +103,11 @@ Func_check_args(){
 			--output-file|Var_output_file)
 				Func_assign_arg "Var_output_file" "${_arg#*=}"
 			;;
-			--bulk-input-dir|Var_bulk_input_dir)
-				Func_assign_arg "Var_bulk_input_dir" "${_arg#*=}"
+			--bulk-encrypt-dir|Var_bulk_encrypt_dir)
+				Func_assign_arg "Var_bulk_encrypt_dir" "${_arg#*=}"
 			;;
-			--bulk-output-dir|Var_bulk_output_dir)
-				Func_assign_arg "Var_bulk_output_dir" "${_arg#*=}"
+			--bulk-decrypt-dir|Var_bulk_decrypt_dir)
+				Func_assign_arg "Var_bulk_decrypt_dir" "${_arg#*=}"
 			;;
 			--pass|Var_pass)
 				Func_assign_arg "Var_pass" "${_arg#*=}"
@@ -381,7 +381,7 @@ Func_decrypt_file_or_dir(){
 			_old_pwd="${PWD}"
 			## Make a directory path under bulk output dir based on
 			##  inputed compressed path name; Bash short-hand tricks
-			_output_dir="${Var_bulk_output_dir}/${_encrypted_path##*/}"
+			_output_dir="${Var_bulk_decrypt_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tar.gpg*}"
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
@@ -415,7 +415,7 @@ Func_decrypt_file_or_dir(){
 			_old_pwd="${PWD}"
 			## Make a directory path under bulk output dir based on
 			##  inputed compressed path name; Bash short-hand tricks
-			_output_dir="${Var_bulk_output_dir}/${_encrypted_path##*/}"
+			_output_dir="${Var_bulk_decrypt_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tgz.gpg*}"
 			## If bulk output directory for compressed & encrypted
 			## directories do not exsist, then mkdir it
@@ -447,11 +447,11 @@ Func_decrypt_file_or_dir(){
 		;;
 		*gpg)
 			## If bulk output directory does not exsist, then mkdir
-			if ! [ -d "${Var_bulk_output_dir}" ]; then
-				Func_message "# ${Var_script_name} running: mkdir -p \"${Var_bulk_output_dir}\"" '3' '4'
-				mkdir -p "${Var_bulk_output_dir}"
+			if ! [ -d "${Var_bulk_decrypt_dir}" ]; then
+				Func_message "# ${Var_script_name} running: mkdir -p \"${Var_bulk_decrypt_dir}\"" '3' '4'
+				mkdir -p "${Var_bulk_decrypt_dir}"
 			fi
-			_output_file="${Var_bulk_output_dir}/${_encrypted_path##*/}"
+			_output_file="${Var_bulk_decrypt_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
 			Func_message "# ${Var_script_name} running: cat \"${_encrypted_path}\" | gpg ${Var_gpg_opts} > \"${_output_file}\"" '3' '4'
 			cat "${_encrypted_path}" | gpg ${Var_gpg_opts} > "${_output_file}"
@@ -470,20 +470,20 @@ Func_decrypt_file_or_dir(){
 Func_do_stuff_with_bulk_dirs(){
 	## If both input and output bulk directory variables are set, then
 	##  assume that further checks and decryption steps should be run.
-	if [ "${#Var_bulk_input_dir}" != "0" ] && [ "${#Var_bulk_output_dir}" != "0" ]; then
+	if [ "${#Var_bulk_encrypt_dir}" != "0" ] && [ "${#Var_bulk_decrypt_dir}" != "0" ]; then
 		## If bulk input directory exsists, then push 'ls' through loop
 		##  for checking what type of decryption steps should be used.
-		if [ -d "${Var_bulk_input_dir}" ]; then
-			Func_message "# ${Var_script_name} parsing: ${Var_bulk_input_dir}" '2' '3'
-			_list_of_gpg_files="$(ls "${Var_bulk_input_dir}")"
+		if [ -d "${Var_bulk_encrypt_dir}" ]; then
+			Func_message "# ${Var_script_name} parsing: ${Var_bulk_encrypt_dir}" '2' '3'
+			_list_of_gpg_files="$(ls "${Var_bulk_encrypt_dir}")"
 			for _posible_file in ${_list_of_gpg_files}; do
 				## If posible file is a file, then parse for
 				##  type of decryption steps that are regonized.
-				if [ -f "${Var_bulk_input_dir}/${_posible_file}" ]; then
-					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '2' '3'
-					Func_decrypt_file_or_dir "${Var_bulk_input_dir}/${_posible_file}"
+				if [ -f "${Var_bulk_encrypt_dir}/${_posible_file}" ]; then
+					Func_message "# ${Var_script_name} running: Func_decrypt_file_or_dir \"${Var_bulk_encrypt_dir}/${_posible_file}\"" '2' '3'
+					Func_decrypt_file_or_dir "${Var_bulk_encrypt_dir}/${_posible_file}"
 				else
-					Func_message "# ${Var_script_name} skipping: Func_decrypt_file_or_dir \"${Var_bulk_input_dir}/${_posible_file}\"" '2' '3'
+					Func_message "# ${Var_script_name} skipping: Func_decrypt_file_or_dir \"${Var_bulk_encrypt_dir}/${_posible_file}\"" '2' '3'
 				fi
 			done
 		fi
