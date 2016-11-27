@@ -6,6 +6,7 @@ Var_script_name="${0##*/}"
 Var_debug_level="0"
 Var_log_level="0"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
+Var_columns="${COLUMNS:-$(tput cols)}"
 Var_columns="${COLUMNS:-80}"
 Var_authors_contact='strangerthanbland@gmail.com'
 Var_save_variables_yn="no"
@@ -27,41 +28,42 @@ Var_gpg="$(which gpg)"
 Var_mkdir="$(which mkdir)"
 ## Variables for encryption script copy
 Var_enc_copy_save_yn="no"
-Var_enc_copy_save_path=""
+Var_enc_copy_save_path="${PWD}/Slim_${Var_script_name}"
 Var_enc_copy_save_ownership="${USER}:${USER}"
 Var_enc_copy_save_permissions="750"
 ## Variables for encryption processes
-Var_enc_gpg_recipients=""
 Var_enc_gpg_opts="--always-trust --armor --batch --no-tty --encrypt"
 Var_enc_padding_enable_yn="no"
 Var_enc_padding_length="adaptive"
 Var_enc_padding_placement="append,prepend"
-Var_enc_parsing_bulk_out_dir="/tmp/Peranoid_Pipes"
+Var_enc_parsing_bulk_out_dir="${PWD}/Bulk_Encrypted"
 Var_enc_parsing_bulk_output_suffix=".gpg"
 Var_enc_parsing_disown_yn="yes"
 Var_enc_parsing_filter_input_yn="no"
-Var_enc_parsing_filter_comment_pattern="\#*"
-Var_enc_parsing_filter_allowed_chars="[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]"
-Var_enc_parsing_recipient="strangerthanbland@gmail.com"
-Var_enc_parsing_output_file="/tmp/Peranoid_Pipes/results_encrypter.gpg"
+Var_enc_parsing_filter_comment_pattern='\#*'
+Var_enc_parsing_filter_allowed_chars='[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]'
+Var_enc_parsing_recipient="${USER}@${HOSTNAME}.local"
+Var_enc_parsing_output_file="${PWD}/Encrypted_Results.gpg"
 Var_enc_parsing_output_rotate_yn="yes"
 Var_enc_parsing_output_rotate_actions="compress-encrypt,remove-old"
-Var_enc_parsing_output_rotate_recipient="strangerthanbland@gmail.com"
+Var_enc_parsing_output_rotate_recipient="${USER}@${HOSTNAME}.local"
 Var_enc_parsing_output_max_size="4096"
 Var_enc_parsing_output_check_frequency="100"
 Var_enc_parsing_save_output_yn="yes"
 Var_enc_parsing_quit_string="quit"
 Var_enc_pipe_permissions="600"
-Var_enc_pipe_ownership="root:root"
-Var_enc_pipe_file="/tmp/Peranoid_Pipes/named.pipe"
-Var_enc_trap_command="/bin/rm -f /tmp/Peranoid_Pipes/named.pipe"
+Var_enc_pipe_ownership="${USER}:${USER}"
+Var_enc_pipe_file="${PWD}/Encryption_Named.pipe"
+Var_enc_trap_command="/bin/rm -f ${Var_enc_pipe_file}"
+Var_enc_parsing_output_permissions="640"
+Var_enc_parsing_output_ownership="${USER}:${USER}"
 ## Decryption variables
 Var_dec_copy_save_yn="no"
 Var_dec_copy_save_path=""
 Var_dec_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
 Var_dec_parsing_bulk_out_dir=""
 Var_dec_parsing_disown_yn="no"
-Var_dec_parsing_output_file=""
+Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
 Var_dec_pass=""
 Var_dec_search_string=""
 ## Special variables
@@ -212,6 +214,7 @@ Func_check_args(){
 			--help|help)
 				Func_message "# Func_check_args read variable [${_arg%=*}] with value [${_arg#*=}]" '2' '3'
 				Func_help
+				exit 0
 			;;
 			--license)
 				Func_script_license_customizer
@@ -244,9 +247,6 @@ Func_check_args(){
 			;;
 			--enc-gpg-opts|Var_enc_gpg_opts)
 				Func_assign_arg "Var_enc_gpg_opts" "${_arg#*=}"
-			;;
-			--enc-gpg-recipients|Var_enc_gpg_recipients)
-				Func_assign_arg "Var_enc_gpg_recipients" "${_arg#*=}"
 			;;
 			--enc-padding-enabled-yn|Var_enc_padding_enable_yn)
 				Func_assign_arg "Var_enc_padding_enable_yn" "${_arg#*=}"
@@ -296,6 +296,12 @@ Func_check_args(){
 			--enc-parsing-output-check-frequency|Var_enc_parsing_output_check_frequency)
 				Func_assign_arg "Var_enc_parsing_output_check_frequency" "${_arg#*=}"
 			;;
+			--enc-parsing-output-permissions|Var_enc_parsing_output_permissions)
+				Func_assign_arg "Var_enc_parsing_output_permissions" "${_arg#*=}"
+			;;
+			--enc-parsing-output-ownership|Var_enc_parsing_output_ownership)
+				Func_assign_arg "Var_enc_parsing_output_ownership" "${_arg#*=}"
+			;;
 			--enc-parsing-save-output-yn|Var_enc_parsing_save_output_yn)
 				Func_assign_arg "Var_enc_parsing_save_output_yn" "${_arg#*=}"
 			;;
@@ -334,57 +340,58 @@ Func_check_args(){
 Func_help(){
 	echo "# ${Var_script_dir}/${Var_script_name} knows the following command line options"
 	echo "## Standard command line options"
-	echo "# --columns		Var_columns${Var_columns}"
-	echo "# --debug-level		Var_debug_level=${Var_debug_level}"
-	echo "# --log-level		Var_log_level=${Var_log_level}"
-	echo "# --script-log-level	Var_script_log_path=${Var_script_log_path}"
-	echo "# --save-variables-yn	Var_save_variables_yn=${Var_save_variables_yn}"
-	echo "# --source-var-file	Var_source_var_file=${Var_source_var_file}"
-	echo "# --license		Display the license for this script."
+	echo "# --columns			Var_columns=\"${Var_columns}\""
+	echo "# --debug-level			Var_debug_level=\"${Var_debug_level}\""
+	echo "# --log-level			Var_log_level=\"${Var_log_level}\""
+	echo "# --script-log-path		Var_script_log_path=\"${Var_script_log_path}\""
+	echo "# --save-variables-yn		Var_save_variables_yn=\"${Var_save_variables_yn}\""
+	echo "# --source-var-file		Var_source_var_file=\"${Var_source_var_file}\""
+	echo "# --license			Display the license for this script."
 	echo "# --help			Display this message."
-	echo "# --version		Display version for this script."
+	echo "# --version			Display version for this script."
 	echo "## Decryption command line options"
-	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=${Var_dec_copy_save_yn}"
-	echo "# --dec-copy-save-path			Var_dec_copy_save_path=${Var_dec_copy_save_path}"
-	echo "# --dec-diff-opts				Var_dec_diff_opts=${Var_dec_diff_opts}"
-	echo "# --dec-diff-sleep			Var_dec_diff_sleep=${Var_dec_diff_sleep}"
-	echo "# --dec-gpg-opts				Var_dec_gpg_opts=${Var_dec_gpg_opts}"
-	echo "#	--dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=${Var_dec_parsing_bulk_out_dir}"
-	echo "# --dec-parsing-disown-yn			Var_dec_parsing_disown_yn=${Var_dec_parsing_disown_yn}"
-	echo "# --dec-parsing-output-file		Var_dec_parsing_output_file=${Var_dec_parsing_output_file}"
-	echo "# --dec-pass				Var_dec_pass=${Var_dec_pass}"
-	echo "# --dec-search-string			Var_dec_search_string=${Var_dec_search_string}"
+	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
+	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
+	echo "# --dec-diff-opts			Var_dec_diff_opts=\"${Var_dec_diff_opts}\""
+	echo "# --dec-diff-sleep			Var_dec_diff_sleep=\"${Var_dec_diff_sleep}\""
+	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
+	echo "# --dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=\"${Var_dec_parsing_bulk_out_dir}\""
+	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
+	echo "# --dec-parsing-output-file		Var_dec_parsing_output_file=\"${Var_dec_parsing_output_file}\""
+	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
+	echo "# --dec-search-string			Var_dec_search_string=\"${Var_dec_search_string}\""
 	echo "## Encryption command line options"
-	echo "#--enc-copy-save-yn			Var_enc_copy_save_yn=${Var_enc_copy_save_yn}"
-	echo "#--enc-copy-save-path			Var_enc_copy_save_path=${Var_enc_copy_save_path}"
-	echo "#--enc-copy-save-ownership		Var_enc_copy_save_ownership=${Var_enc_copy_save_ownership}"
-	echo "#--enc-copy-save-permissions		Var_enc_copy_save_permissions=${Var_enc_copy_save_permissions}"
-	echo "# --enc-gpg-opts				Var_enc_gpg_opts=${Var_enc_gpg_opts}"
-	echo "# --enc-gpg-recipients			Var_enc_gpg_recipients=${Var_enc_gpg_recipients}"
-	echo "# --enc-padding-enabled-yn		Var_enc_padding_enable_yn=${Var_enc_padding_enable_yn}"
-	echo "# --enc-padding-length			Var_enc_padding_length=${Var_enc_padding_length}"
-	echo "# --enc-padding-placement			Var_enc_padding_placement=${Var_enc_padding_placement}"
-	echo "# --enc-parsing-bulk-out-dir		Var_enc_parsing_bulk_out_dir=${Var_enc_parsing_bulk_out_dir}"
-	echo "# --enc-parsing-bulk-output-suffix	Var_enc_parsing_bulk_output_suffix=${Var_enc_parsing_bulk_output_suffix}"
-	echo "# --enc-parsing-disown-yn			Var_enc_parsing_disown_yn=${Var_enc_parsing_disown_yn}"
-	echo "# --enc-parsing-filter-input-yn		Var_enc_parsing_filter_input_yn=${Var_enc_parsing_filter_input_yn}"
-	echo "# --enc-parsing-filter-comment-pattern	Var_enc_parsing_filter_comment_pattern=${Var_enc_parsing_filter_comment_pattern}"
-	echo "# --enc-parsing-filter-allowed-chars	Var_enc_parsing_filter_allowed_chars=${Var_enc_parsing_filter_allowed_chars}"
-	echo "# --enc-parsing-recipient			Var_enc_parsing_recipient=${Var_enc_parsing_recipient}"
-	echo "# --enc-parsing-output-file		Var_enc_parsing_output_file=${Var_enc_parsing_output_file}"
-	echo "# --enc-parsing-output-rotate-yn		Var_enc_parsing_output_rotate_yn=${Var_enc_parsing_output_rotate_yn}"
-	echo "# --enc-parsing-output-rotate-actions	Var_enc_parsing_output_rotate_actions=${Var_enc_parsing_output_rotate_actions}"
-	echo "# --enc-parsing-output-rotate-recipient	Var_enc_parsing_output_rotate_recipient=${Var_enc_parsing_output_rotate_recipient}"
-	echo "# --enc-parsing-output-max-size		Var_enc_parsing_output_max_size=${Var_enc_parsing_output_max_size}"
-	echo "# --enc-parsing-output-check-frequency	Var_enc_parsing_output_check_frequency=${Var_enc_parsing_output_check_frequency}"
-	echo "# --enc-parsing-save-output-yn		Var_enc_parsing_save_output_yn=${Var_enc_parsing_save_output_yn}"
-	echo "# --enc-parsing-quit-string		Var_enc_parsing_quit_string=${Var_enc_parsing_quit_string}"
-	echo "# --enc-pipe-permissions			Var_enc_pipe_permissions=${Var_enc_pipe_permissions}"
-	echo "# --enc-pipe-ownership			Var_enc_pipe_ownership=${Var_enc_pipe_ownership}"
-	echo "# --enc-pipe-file				Var_enc_pipe_file=${Var_enc_pipe_file}"
-	echo "# --enc-trap-command			Var_enc_trap_command=${Var_enc_trap_command}"
+	echo "# --enc-copy-save-yn			Var_enc_copy_save_yn=\"${Var_enc_copy_save_yn}\""
+	echo "# --enc-copy-save-path			Var_enc_copy_save_path=\"${Var_enc_copy_save_path}\""
+	echo "# --enc-copy-save-ownership		Var_enc_copy_save_ownership=\"${Var_enc_copy_save_ownership}\""
+	echo "# --enc-copy-save-permissions		Var_enc_copy_save_permissions=\"${Var_enc_copy_save_permissions}\""
+	echo "# --enc-gpg-opts			Var_enc_gpg_opts=\"${Var_enc_gpg_opts}\""
+	echo "# --enc-padding-enabled-yn		Var_enc_padding_enable_yn=\"${Var_enc_padding_enable_yn}\""
+	echo "# --enc-padding-length			Var_enc_padding_length=\"${Var_enc_padding_length}\""
+	echo "# --enc-padding-placement		Var_enc_padding_placement=\"${Var_enc_padding_placement}\""
+	echo "# --enc-parsing-bulk-out-dir		Var_enc_parsing_bulk_out_dir=\"${Var_enc_parsing_bulk_out_dir}\""
+	echo "# --enc-parsing-bulk-output-suffix	Var_enc_parsing_bulk_output_suffix=\"${Var_enc_parsing_bulk_output_suffix}\""
+	echo "# --enc-parsing-disown-yn		Var_enc_parsing_disown_yn=\"${Var_enc_parsing_disown_yn}\""
+	echo "# --enc-parsing-filter-input-yn		Var_enc_parsing_filter_input_yn=\"${Var_enc_parsing_filter_input_yn}\""
+	echo "# --enc-parsing-filter-comment-pattern	Var_enc_parsing_filter_comment_pattern=\"${Var_enc_parsing_filter_comment_pattern}\""
+	echo "# --enc-parsing-filter-allowed-chars	Var_enc_parsing_filter_allowed_chars=\"${Var_enc_parsing_filter_allowed_chars}\""
+	echo "# --enc-parsing-recipient		Var_enc_parsing_recipient=\"${Var_enc_parsing_recipient}\""
+	echo "# --enc-parsing-output-file		Var_enc_parsing_output_file=\"${Var_enc_parsing_output_file}\""
+	echo "# --enc-parsing-output-rotate-yn	Var_enc_parsing_output_rotate_yn=\"${Var_enc_parsing_output_rotate_yn}\""
+	echo "# --enc-parsing-output-rotate-actions	Var_enc_parsing_output_rotate_actions=\"${Var_enc_parsing_output_rotate_actions}\""
+	echo "# --enc-parsing-output-rotate-recipient	Var_enc_parsing_output_rotate_recipient=\"${Var_enc_parsing_output_rotate_recipient}\""
+	echo "# --enc-parsing-output-max-size		Var_enc_parsing_output_max_size=\"${Var_enc_parsing_output_max_size}\""
+	echo "# --enc-parsing-output-check-frequency	Var_enc_parsing_output_check_frequency=\"${Var_enc_parsing_output_check_frequency}\""
+	echo "# --enc-parsing-save-output-yn		Var_enc_parsing_save_output_yn=\"${Var_enc_parsing_save_output_yn}\""
+	echo "# --enc-parsing-quit-string		Var_enc_parsing_quit_string=\"${Var_enc_parsing_quit_string}\""
+	echo "# --enc-pipe-permissions		Var_enc_pipe_permissions=\"${Var_enc_pipe_permissions}\""
+	echo "# --enc-pipe-ownership			Var_enc_pipe_ownership=\"${Var_enc_pipe_ownership}\""
+	echo "# --enc-pipe-file			Var_enc_pipe_file=\"${Var_enc_pipe_file}\""
+	echo "# --enc-trap-command			Var_enc_trap_command=\"${Var_enc_trap_command}\""
+	echo "# --enc-parsing-output-permissions	Var_enc_parsing_output_permissions=\"${Var_enc_parsing_output_permissions}\""
+	echo "# --enc-parsing-output-ownership	Var_enc_parsing_output_ownership=\"${Var_enc_parsing_output_ownership}\""
 	echo "## File path variables"
-	echo "# ---Var_dev_null		Var_dev_null=${Var_dev_null}"
+	echo "# ---Var_dev_null			Var_dev_null=\"${Var_dev_null}\""
 }
 Func_script_license_customizer(){
 	Func_message "## Salutations ${Var_script_current_user:-${USER}}, the following license" '0' '42'
@@ -467,37 +474,37 @@ Func_enc_make_named_pipe(){
 }
 Func_enc_rotate_output_file(){
 	_parsing_output_file="${1:-${Var_enc_parsing_output_file}}"
-	_log_rotate_yn="${2:-${Var_enc_parsing_output_rotate_yn}}"
-	_log_max_size="${3:-${Var_enc_parsing_output_max_size}}"
-	_log_rotate_actions="${4:-${Var_enc_parsing_output_rotate_actions}}"
-	_log_rotate_recipient="${5:-${Var_enc_parsing_output_rotate_recipient}}"
-	case "${_log_rotate_yn}" in
+	_output_rotate_yn="${2:-${Var_enc_parsing_output_rotate_yn}}"
+	_output_max_size="${3:-${Var_enc_parsing_output_max_size}}"
+	_output_rotate_actions="${4:-${Var_enc_parsing_output_rotate_actions}}"
+	_output_rotate_recipient="${5:-${Var_enc_parsing_output_rotate_recipient}}"
+	case "${_output_rotate_yn}" in
 		y|Y|yes|Yes|YES)
 			if [ -f "${_parsing_output_file}" ]; then
 				_file_size="$(du --bytes "${_parsing_output_file}" | awk '{print $1}' | head -n1)"
-				if [ "${_file_size}" -gt "${_log_max_size}" ]; then
+				if [ "${_file_size}" -gt "${_output_max_size}" ]; then
 					_timestamp="$(date -u +%s)"
-					for _actions in ${_log_rotate_actions//,/ }; do
+					for _actions in ${_output_rotate_actions//,/ }; do
 						case "${_actions}" in
 							mv|move)
 								Func_message "# Func_enc_rotate_output_file running: ${Var_mv} \"${_parsing_output_file}\" \"${_parsing_output_file}.${_timestamp}\"" '4' '5'
 								${Var_mv} "${_parsing_output_file}" "${_parsing_output_file}.${_timestamp}"
 							;;
 							compress-encrypt|encrypt)
-								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz - \"${_parsing_output_file}\" | ${Var_gpg} --encrypt --recipient \"${_log_rotate_recipient}\" --output \"${_parsing_output_file}.${_timestamp}.tgz.gpg\"" '4' '5'
-								${Var_tar} -cz - "${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
+								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz - \"${_parsing_output_file}\" | ${Var_gpg} --encrypt --recipient \"${_output_rotate_recipient}\" --output \"${_parsing_output_file}.${_timestamp}.tgz.gpg\"" '4' '5'
+								${Var_tar} -cz - "${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "${_output_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
 							;;
 							encrypted-email)
-								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz - \"${_parsing_output_file}\" | ${Var_gpg} --encrypt --recipient \"${_log_rotate_recipient}\" --output \"${_parsing_output_file}.${_timestamp}.tgz.gpg\"" '4' '5'
-								${Var_tar} -cz - "${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "${_log_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
-								Func_message "# Func_enc_rotate_output_file running: ${Var_echo} \"Sent at ${_timestamp}\" | mutt -s \"${_parsing_output_file}.${_timestamp}.tar.gz.gpg\" -a \"${_parsing_output_file}.${_timestamp}.tar.gz.gpg\" \"${_log_rotate_recipient}\"" '4' '5'
-								${Var_echo} "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" -a "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" "${_log_rotate_recipient}"
+								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz - \"${_parsing_output_file}\" | ${Var_gpg} --encrypt --recipient \"${_output_rotate_recipient}\" --output \"${_parsing_output_file}.${_timestamp}.tgz.gpg\"" '4' '5'
+								${Var_tar} -cz - "${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "${_output_rotate_recipient}" --output "${_parsing_output_file}.${_timestamp}.tgz.gpg"
+								Func_message "# Func_enc_rotate_output_file running: ${Var_echo} \"Sent at ${_timestamp}\" | mutt -s \"${_parsing_output_file}.${_timestamp}.tar.gz.gpg\" -a \"${_parsing_output_file}.${_timestamp}.tar.gz.gpg\" \"${_output_rotate_recipient}\"" '4' '5'
+								${Var_echo} "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" -a "${_parsing_output_file}.${_timestamp}.tar.gz.gpg" "${_output_rotate_recipient}"
 							;;
 							compressed-email)
 								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz \"${_parsing_output_file}\" \"${_parsing_output_file}.${_timestamp}.tar.gz\"" '4' '5'
 								${Var_tar} -cz "${_parsing_output_file}" "${_parsing_output_file}.${_timestamp}.tar.gz"
-								Func_message "# Func_enc_rotate_output_file running: ${Var_echo} \"Sent at ${_timestamp}\" | mutt -s \"${_parsing_output_file}.${_timestamp}.tar.gz\" -a \"${_parsing_output_file}.${_timestamp}.tar.gz\" \"${_log_rotate_recipient}\"" '4' '5'
-								${Var_echo} "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz" -a "${_parsing_output_file}.${_timestamp}.tar.gz" "${_log_rotate_recipient}"
+								Func_message "# Func_enc_rotate_output_file running: ${Var_echo} \"Sent at ${_timestamp}\" | mutt -s \"${_parsing_output_file}.${_timestamp}.tar.gz\" -a \"${_parsing_output_file}.${_timestamp}.tar.gz\" \"${_output_rotate_recipient}\"" '4' '5'
+								${Var_echo} "Sent at ${_timestamp}" | mutt -s "${_parsing_output_file}.${_timestamp}.tar.gz" -a "${_parsing_output_file}.${_timestamp}.tar.gz" "${_output_rotate_recipient}"
 							;;
 							compress)
 								Func_message "# Func_enc_rotate_output_file running: ${Var_tar} -cz \"${_parsing_output_file}\" \"${_parsing_output_file}.${_timestamp}.tar.gz\"" '4' '5'
@@ -588,7 +595,7 @@ Func_enc_map_read_array_to_output(){
 	done
 }
 Func_enc_pipe_parser_loop(){
-	_enc_gpg_opts="${Var_enc_gpg_opts} --recipient ${Var_enc_gpg_recipients// / --recipient }"
+	_enc_gpg_opts="${Var_enc_gpg_opts} --recipient ${Var_enc_parsing_recipient// / --recipient }"
 	while [ -p "${Var_enc_pipe_file}" ]; do
 		_mapped_array="$(Func_enc_map_read_array_to_output "${Var_enc_pipe_file}")"
 		if [ "${#_mapped_array}" != "0" ] && [ "${Var_enc_parsing_quit_string}" != "${_mapped_array}" ]; then
@@ -614,10 +621,10 @@ Func_enc_pipe_parser_loop(){
 						if ! [ -f "${Var_enc_parsing_output_file}" ]; then
 							Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
 							touch "${Var_enc_parsing_output_file}"
-							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_log_file_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-							${Var_chmod} "${Var_log_file_permissions}" "${Var_enc_parsing_output_file}"
-							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_log_file_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-							${Var_chown} "${Var_log_file_ownership}" "${Var_enc_parsing_output_file}"
+							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
+							${Var_chmod} "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_file}"
+							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
+							${Var_chown} "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
 						fi
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
 						${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
@@ -665,7 +672,6 @@ Func_enc_write_script_copy(){
 set +o history
 Var_script_dir="\${0%/*}"
 Var_script_name="\${0##*/}"
-Var_enc_gpg_recipients="${Var_enc_gpg_recipients}"
 Var_enc_gpg_opts="${Var_enc_gpg_opts}"
 Var_enc_padding_enable_yn="${Var_enc_padding_enable_yn}"
 Var_enc_padding_length="${Var_enc_padding_length}"
@@ -674,8 +680,8 @@ Var_enc_parsing_bulk_out_dir="${Var_enc_parsing_bulk_out_dir}"
 Var_enc_parsing_bulk_output_suffix="${Var_enc_parsing_bulk_output_suffix}"
 Var_enc_parsing_disown_yn="${Var_enc_parsing_disown_yn}"
 Var_enc_parsing_filter_input_yn="${Var_enc_parsing_filter_input_yn}"
-Var_enc_parsing_filter_comment_pattern="${Var_enc_parsing_filter_comment_pattern}"
-Var_enc_parsing_filter_allowed_chars="${Var_enc_parsing_filter_allowed_chars}"
+Var_enc_parsing_filter_comment_pattern='${Var_enc_parsing_filter_comment_pattern}'
+Var_enc_parsing_filter_allowed_chars='${Var_enc_parsing_filter_allowed_chars}'
 Var_enc_parsing_recipient="${Var_enc_parsing_recipient}"
 Var_enc_parsing_output_file="${Var_enc_parsing_output_file}"
 Var_enc_parsing_output_rotate_yn="${Var_enc_parsing_output_rotate_yn}"
@@ -689,6 +695,7 @@ Var_enc_pipe_permissions="${Var_enc_pipe_permissions}"
 Var_enc_pipe_ownership="${Var_enc_pipe_ownership}"
 Var_enc_pipe_file="${Var_enc_pipe_file}"
 Var_enc_trap_command="${Var_enc_trap_command}"
+#Var_enc_parsing_output_permissions="${Var_enc_parsing_output_permissions}
 Var_dev_null="${Var_dev_null}"
 ${Var_echo} "### ... Starting [\${Var_script_name}] at \$(date) ... ###"
 Func_enc_clean_up_trap(){
@@ -717,32 +724,32 @@ Func_enc_make_named_pipe(){
 }
 Func_enc_rotate_output_file(){
 	_parsing_output_file="\${1:-\${Var_enc_parsing_output_file}}"
-	_log_rotate_yn="\${2:-\${Var_enc_parsing_output_rotate_yn}}"
-	_log_max_size="\${3:-\${Var_enc_parsing_output_max_size}}"
-	_log_rotate_actions="\${4:-\${Var_enc_parsing_output_rotate_actions}}"
-	_log_rotate_recipient="\${5:-\${Var_enc_parsing_output_rotate_recipient}}"
-	case "\${_log_rotate_yn}" in
+	_output_rotate_yn="\${2:-\${Var_enc_parsing_output_rotate_yn}}"
+	_output_max_size="\${3:-\${Var_enc_parsing_output_max_size}}"
+	_output_rotate_actions="\${4:-\${Var_enc_parsing_output_rotate_actions}}"
+	_output_rotate_recipient="\${5:-\${Var_enc_parsing_output_rotate_recipient}}"
+	case "\${_output_rotate_yn}" in
 		y|Y|yes|Yes|YES)
 			if [ -f "\${_parsing_output_file}" ]; then
 				_file_size="\$(du --bytes "\${_parsing_output_file}" | awk '{print \$1}' | head -n1)"
-				if [ "\${_file_size}" -gt "\${_log_max_size}" ]; then
+				if [ "\${_file_size}" -gt "\${_output_max_size}" ]; then
 					_timestamp="\$(date -u +%s)"
 					## Split commas into spaces and use case to match action options
-					for _actions in \${_log_rotate_actions//,/ }; do
+					for _actions in \${_output_rotate_actions//,/ }; do
 						case "\${_actions}" in
 							mv|move)
 								${Var_mv} "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}"
 							;;
 							compress-encrypt|encrypt)
-								${Var_tar} -cz - "\${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "\${_log_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
+								${Var_tar} -cz - "\${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "\${_output_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
 							;;
 							encrypted-email)
-								${Var_tar} -cz - "\${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "\${_log_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
-								${Var_echo} "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${_log_rotate_recipient}"
+								${Var_tar} -cz - "\${_parsing_output_file}" | ${Var_gpg} --encrypt --recipient "\${_output_rotate_recipient}" --output "\${_parsing_output_file}.\${_timestamp}.tgz.gpg"
+								${Var_echo} "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz.gpg" "\${_output_rotate_recipient}"
 							;;
 							compressed-email)
 								${Var_tar} -cz "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}.tar.gz"
-								${Var_echo} "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz" "\${_log_rotate_recipient}"
+								${Var_echo} "Sent at \${_timestamp}" | mutt -s "\${_parsing_output_file}.\${_timestamp}.tar.gz" -a "\${_parsing_output_file}.\${_timestamp}.tar.gz" "\${_output_rotate_recipient}"
 							;;
 							compress)
 								${Var_tar} -cz "\${_parsing_output_file}" "\${_parsing_output_file}.\${_timestamp}.tar.gz"
@@ -831,7 +838,7 @@ Func_enc_map_read_array_to_output(){
 	done
 }
 Func_enc_pipe_parser_loop(){
-	_enc_gpg_opts="\${Var_enc_gpg_opts} --recipient \${Var_enc_gpg_recipients// / --recipient }"
+	_enc_gpg_opts="\${Var_enc_gpg_opts} --recipient \${Var_enc_parsing_recipient// / --recipient }"
 	while [ -p "\${Var_enc_pipe_file}" ]; do
 		_mapped_array="\$(Func_enc_map_read_array_to_output "\${Var_enc_pipe_file}")"
 		if [ "\${#_mapped_array}" != "0" ] && [ "\${Var_enc_parsing_quit_string}" != "\${_mapped_array}" ]; then
@@ -852,8 +859,8 @@ Func_enc_pipe_parser_loop(){
 					else
 						if ! [ -f "\${Var_enc_parsing_output_file}" ]; then
 							touch "\${Var_enc_parsing_output_file}"
-							${Var_chmod} "\${Var_log_file_permissions}" "\${Var_enc_parsing_output_file}"
-							${Var_chown} "\${Var_log_file_ownership}" "\${Var_enc_parsing_output_file}"
+							${Var_chmod} "\${Var_enc_parsing_output_permissions}" "\${Var_enc_parsing_output_file}"
+							${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
 						fi
 						${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_output_file}"
 						let _count++
@@ -898,9 +905,6 @@ Func_check_args(){
 	until [ "\${#_arr_input[@]}" = "\${_arr_count}" ]; do
 		_arg="\${_arr_input[\${_arr_count}]}"
 		case "\${_arg%=*}" in
-			--enc-gpg-recipients|Var_enc_gpg_recipients)
-				Func_assign_arg "Var_enc_gpg_recipients" "\${_arg#*=}"
-			;;
 			--enc-gpg-opts|Var_enc_gpg_opts)
 				Func_assign_arg "Var_enc_gpg_opts" "\${_arg#*=}"
 			;;
@@ -954,6 +958,12 @@ Func_check_args(){
 			;;
 			--enc-parsing-save-output-yn|Var_enc_parsing_save_output_yn)
 				Func_assign_arg "Var_enc_parsing_save_output_yn" "\${_arg#*=}"
+			;;
+			--enc-parsing-output-permissions|Var_enc_parsing_output_permissions)
+				Func_assign_arg "Var_enc_parsing_output_permissions" "\${_arg#*=}"
+			;;
+			--enc-parsing-output-ownership|Var_enc_parsing_output_ownership)
+				Func_assign_arg "Var_enc_parsing_output_ownership" "\${_arg#*=}"
 			;;
 			--enc-parsing-quit-string|Var_enc_parsing_quit_string)
 				Func_assign_arg "Var_enc_parsing_quit_string" "\${_arg#*=}"
