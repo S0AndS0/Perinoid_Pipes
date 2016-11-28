@@ -54,6 +54,6 @@ export Var_encrypted_three_bulk_dir="${PWD}/bulk_encryption_three"
 export Var_raw_test_three_location="${PWD}/raw_strings_three.txt"
 export Var_encrypt_file_three_path="${PWD}/ReadMe.md"
 export Var_encrypt_dir_three_path="${PWD}/Documentation"
-
 export Var_decrypt_raw_three_location="${PWD}/decrypt_three.txt"
+export Var_decrypt_three_log="${PWD}/decrypt_three.log"
 export Var_bulk_decryption_three_dir="${PWD}/bulk_decryption_three"
