@@ -75,7 +75,7 @@ Func_enc_clean_up_trap(){
 	_exit_code="$1"
 	${Var_echo} "## ${Var_script_name} detected [${_exit_code}] exit code, cleaning up before quiting..."
 	if [ -p "${Var_enc_pipe_file}" ]; then
-		${Var_enc_trap_command}
+		bash -c "${Var_enc_trap_command}"
 	fi
 	${Var_echo} -n "### ... Finished [${Var_script_name}] at $(date) press [Enter] to resume terminal ... ###"
 }
@@ -327,6 +327,7 @@ Func_check_args(){
 			;;
 			--version)
 				${Var_echo} "# ${Var_script_name} version: ${Var_script_version_full}"
+				exit 0
 			;;
 			*)
 				Func_message "# Func_check_args running: declare -ag \"Arr_extra_input+=( \${_arg} )\"" '2' '3'
@@ -645,8 +646,8 @@ Func_enc_pipe_parser_loop(){
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_enc_trap_command}" '2' '3'
-						${Var_enc_trap_command}
+						Func_message "# Func_enc_pipe_parser_loop running: bash -c \"${Var_enc_trap_command}\"" '2' '3'
+						bash -c "${Var_enc_trap_command}"
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
 					fi
@@ -702,7 +703,7 @@ Func_enc_clean_up_trap(){
 	_exit_code="\$1"
 	${Var_echo} "## \${Var_script_name} detected [\${_exit_code}] exit code, cleaning up before quiting..."
 	if [ -p "\${Var_enc_pipe_file}" ]; then
-		\${Var_enc_trap_command}
+		bash -c "\${Var_enc_trap_command}"
 	fi
 	${Var_echo} -n "### ... Finished [\${Var_script_name}] at \$(date) press [Enter] to resume terminal ... ###"
 }
@@ -878,7 +879,7 @@ Func_enc_pipe_parser_loop(){
 			case "\${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
-						\${Var_enc_trap_command}
+						bash -c "\${Var_enc_trap_command}"
 					else
 						${Var_echo} "# ...No pipe to remove at [\${Var_enc_pipe_file}]"
 					fi
