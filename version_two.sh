@@ -1311,7 +1311,7 @@ Func_dec_parse_diff(){
 	_added="$(grep -E '>' <<<"${@}")"
 	if [ "${#_added}" != "0" ]; then
 		mapfile -t _added_list <<<"${_added//> /}"
-		_let _index=0
+		let _index=0
 		until [ "${#_added_list[@]}" = "${_index}" ]; do
 			_path_to_check="${Var_enc_parsing_bulk_out_dir}/${_added_list[${_index}]}"
 			if [ -f "${_path_to_check}" ]; then
@@ -1555,7 +1555,7 @@ Func_dec_parse_diff(){
 	_added="\$(grep -E '>' <<<"\${@}")"
 	if [ "\${#_added}" != "0" ]; then
 		mapfile -t _added_list <<<"\${_added//> /}"
-		_let _index=0
+		let _index=0
 		until [ "${#_added_list[@]}" = "\${_index}" ]; do
 			_path_to_check="\${Var_enc_parsing_bulk_out_dir}/\${_added_list[\${_index}]}"
 			if [ -f "\${_path_to_check}" ]; then

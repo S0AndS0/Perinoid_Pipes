@@ -141,14 +141,14 @@ else
 	exit 1
 fi
 ## Check decryption within version two of main script processes
-${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
-if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_dir}" ]; then
+if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	_decrypted_strings="$(cat "${Var_decrypt_raw_three_location}")"
 	_raw_strings="$(cat "${Var_raw_test_three_location}")"
 	_diff_results="$(diff <(echo "${_decrypted_strings}") <(echo "${_raw_strings}"))"
-	_bulk_dec_dir_listing="$(ls "${Var_bulk_decryption_dir}")"
+	_bulk_dec_dir_listing="$(ls "${Var_bulk_decryption_three_dir}")"
 	echo -e "# Contence of decrypted strings #\n${_decrypted_strings}"
 	echo -e "# Contence of un-encrypted strings #\n${_raw_strings}"
 	if [ "${#_diff_results}" != "0" ]; then
@@ -157,7 +157,7 @@ if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_loca
 		echo "# ${Var_script_name} reports: no differance between strings!"
 	fi
 	for _file in ${_bulk_dec_dir_listing}; do
-		_path="${Var_bulk_decryption_dir}/${_bulk_dec_dir_listing}"
+		_path="${Var_bulk_decryption_three_dir}/${_bulk_dec_dir_listing}"
 		if [ -f "${_path}" ]; then
 			echo -e "# ${Var_script_name} reports file detected #\n$(ls -hal "${_path}")"
 		elif [ -d "${_path}" ]; then
@@ -185,8 +185,8 @@ elif ! [ -r "${Var_decrypt_raw_three_location}" ]; then
 elif ! [ -r "${Var_raw_test_three_location}" ]; then
 	echo "# ${Var_script_name} could not read file: ${Var_raw_test_three_location}"
 	exit 1
-elif ! [ -d "${Var_bulk_decryption_dir}" ]; then
-	echo "# ${Var_script_name} could not read directory: ${Var_bulk_decryption_dir}"
+elif ! [ -d "${Var_bulk_decryption_three_dir}" ]; then
+	echo "# ${Var_script_name} could not read directory: ${Var_bulk_decryption_three_dir}"
 	exit 1
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
