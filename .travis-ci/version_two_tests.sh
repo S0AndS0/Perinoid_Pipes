@@ -117,6 +117,7 @@ if [ "${#_background_processes}" -gt '0' ]; then
 	_background_pid="$(ps aux | grep "${Var_install_v2_name}" | grep -v grep | awk '{print $2}')"
 	for _pid in ${_background_pid}; do
 		echo "# ${Var_script_name} killing: ${_pid}"
+		kill ${_pid}
 	done
 else
 	echo "# ${Var_script_name} did not detect any background processes"
@@ -145,13 +146,13 @@ else
 	exit 1
 fi
 ## Check decryption within version two of main script processes
-${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-parsing-disown-yn="yes" --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-parsing-disown-yn="no" --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	_decrypted_strings="$(cat "${Var_decrypt_raw_three_location}")"
 	_raw_strings="$(cat "${Var_raw_test_three_location}")"
-	_diff_results="$(diff <(echo "${_decrypted_strings}") <(echo "${_raw_strings}"))"
+	_diff_results="$(diff <(cat "${Var_decrypt_raw_three_location}") <(cat "${Var_raw_test_three_location}"))"
 	_bulk_dec_dir_listing="$(ls "${Var_bulk_decryption_three_dir}")"
 	echo -e "# Contence of decrypted strings #\n${_decrypted_strings}"
 	echo -e "# Contence of un-encrypted strings #\n${_raw_strings}"
@@ -186,7 +187,7 @@ if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_loca
 		fi
 		exit 0
 	fi
-	echo "# ${Var_script_name} reports: all internal decryption checks passed"
+#	echo "# ${Var_script_name} reports: all internal decryption checks passed"
 elif ! [ -r "${Var_decrypt_raw_three_location}" ]; then
 	echo "# ${Var_script_name} could not read file: ${Var_decrypt_raw_three_location}"
 	exit 1

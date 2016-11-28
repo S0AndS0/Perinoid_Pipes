@@ -700,6 +700,9 @@ Func_enc_pipe_parser_loop(){
 				;;
 			esac
 			break
+		elif ! [ -p "${Var_enc_pipe_file}" ]; then
+			Func_message "# Func_enc_pipe_parser_loop reports: missing pipe ${Var_enc_pipe_file}" '2' '3'
+			break
 		fi
 		unset _exit_status
 	done
@@ -922,6 +925,8 @@ Func_enc_pipe_parser_loop(){
 					${Var_echo} "# \${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop"
 				;;
 			esac
+			break
+		elif ! [ -p "\${Var_enc_pipe_file}" ]; then
 			break
 		fi
 		unset _exit_status
