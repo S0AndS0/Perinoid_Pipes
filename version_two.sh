@@ -70,6 +70,9 @@ Var_dec_search_string=""
 Var_dec_diff_opts="--suppress-common-lines"
 Var_dec_diff_sleep="120"
 
+Var_enc_yn=""
+Var_dec_yn=""
+
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
 Func_enc_clean_up_trap(){
 	_exit_code="$1"
@@ -98,69 +101,89 @@ Func_main(){
 		Func_message "# Func_main running: Func_check_args \"${_input[*]}\"" '1' '2'
 		Func_check_args "${_input[@]}"
 		## Functions for encryption
-		case "${Var_enc_copy_save_yn}" in
+		case "${Var_enc_yn}" in
 			Y|y|Yes|yes|YES)
-				Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
-				Func_enc_write_script_copy
+				Func_message "# Func_main running: Func_enc_main" '1' '2'
+				Func_enc_main
 			;;
 			*)
-				Func_message "# Func_main running: Func_enc_make_named_pipe" '1' '2'
-				Func_enc_make_named_pipe
-				case "${Var_enc_parsing_disown_yn}" in
-					Y|y|Yes|yes|YES)
-						Func_message "# Func_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '1' '2'
-						Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
-						PID_Func_enc_pipe_parser_loop=$!
-						Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
-						disown "${PID_Func_enc_pipe_parser_loop}"
-						Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
-					;;
-					*)
-						Func_message "# Func_main running: Func_enc_pipe_parser_loop" '1' '2'
-						Func_enc_pipe_parser_loop
-						Func_message "# Func_main quitting: Func_enc_pipe_parser_loop" '1' '2'
-						set -o history
-					;;
-				esac
-				Func_message "# Func_main exiting encryption checks with: [$?]" '1' '2'
+				Func_message "# Func_main skipping: Func_enc_main" '1' '2'
 			;;
 		esac
 		## Functions for decryption
-		case "${Var_dec_copy_save_yn}" in
+		case "${Var_dec_yn}" in
 			Y|y|Yes|yes|YES)
-				Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
-				Func_dec_write_script_copy
+				Func_message "# Func_main running: Func_dec_main" '1' '2'
+				Func_dec_main
 			;;
 			*)
-				case "${Var_dec_parsing_disown_yn}" in
-					Y|y|Yes|yes|YES)
-						Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
-						Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
-						PID_Func_enc_pipe_parser_loop=$!
-						Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
-						disown "${PID_Func_enc_pipe_parser_loop}"
-						Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
-						Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
-						Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
-						PID_Func_enc_pipe_parser_loop=$!
-						Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
-						disown "${PID_Func_enc_pipe_parser_loop}"
-						Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
-
-					;;
-					*)
-						Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
-						Func_dec_watch_file "${Var_enc_parsing_output_file}"
-						Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
-						Func_dec_watch_bulk_dir
-					;;
-				esac
-				Func_message "# Func_main exiting decryption checks with: [$?]" '1' '2'
+				Func_message "# Func_main skipping: Func_dec_main" '1' '2'
 			;;
 		esac
-
 	fi
 	unset -v _input[@]
+}
+Func_enc_main(){
+	case "${Var_enc_copy_save_yn}" in
+		Y|y|Yes|yes|YES)
+			Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
+			Func_enc_write_script_copy
+		;;
+		*)
+			Func_message "# Func_main running: Func_enc_make_named_pipe" '1' '2'
+			Func_enc_make_named_pipe
+			case "${Var_enc_parsing_disown_yn}" in
+				Y|y|Yes|yes|YES)
+					Func_message "# Func_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '1' '2'
+					Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
+					PID_Func_enc_pipe_parser_loop=$!
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					disown "${PID_Func_enc_pipe_parser_loop}"
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
+				;;
+				*)
+					Func_message "# Func_main running: Func_enc_pipe_parser_loop" '1' '2'
+					Func_enc_pipe_parser_loop
+					Func_message "# Func_main quitting: Func_enc_pipe_parser_loop" '1' '2'
+					set -o history
+				;;
+			esac
+			Func_message "# Func_main exiting encryption checks with: [$?]" '1' '2'
+		;;
+	esac
+}
+Func_dec_main(){
+	case "${Var_dec_copy_save_yn}" in
+		Y|y|Yes|yes|YES)
+			Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
+			Func_dec_write_script_copy
+		;;
+		*)
+			case "${Var_dec_parsing_disown_yn}" in
+				Y|y|Yes|yes|YES)
+					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
+					Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
+					PID_Func_enc_pipe_parser_loop=$!
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					disown "${PID_Func_enc_pipe_parser_loop}"
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
+					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
+					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
+					PID_Func_enc_pipe_parser_loop=$!
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					disown "${PID_Func_enc_pipe_parser_loop}"
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
+				;;
+				*)
+					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
+					Func_dec_watch_file "${Var_enc_parsing_output_file}"
+					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
+					Func_dec_watch_bulk_dir
+				;;
+			esac
+			Func_message "# Func_main exiting decryption checks with: [$?]" '1' '2'
+		;;
+	esac
 }
 Func_check_args(){
 	_arr_input=( "${@}" )
@@ -180,6 +203,9 @@ Func_check_args(){
 			;;
 			--columns|Var_columns)
 				Func_assign_arg "Var_columns" "${_arg#*=}"
+			;;
+			--dec-yn|Var_dec_yn)
+				Func_assign_arg "Var_dec_yn" "${_arg#*=}"
 			;;
 			--dec-copy-save-yn|Var_dec_copy_save_yn)
 				Func_assign_arg "Var_dec_copy_save_yn" "${_arg#*=}"
@@ -232,6 +258,9 @@ Func_check_args(){
 					Func_message "# Func_check_args running: source \"${Var_source_var_file}\"" '2' '3'
 					source "${Var_source_var_file}"
 				fi
+			;;
+			--enc-yn|Var_enc_yn)
+				Func_assign_arg "Var_enc_yn" "${_arg#*=}"
 			;;
 			--enc-copy-save-yn|Var_enc_copy_save_yn)
 				Func_assign_arg "Var_enc_copy_save_yn" "${_arg#*=}"
@@ -351,6 +380,7 @@ Func_help(){
 	echo "# --help			Display this message."
 	echo "# --version			Display version for this script."
 	echo "## Decryption command line options"
+	echo "# --dec-yn				Var_dec_yn=\"${Var_dec_yn}\""
 	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
 	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
 	echo "# --dec-diff-opts			Var_dec_diff_opts=\"${Var_dec_diff_opts}\""
@@ -362,6 +392,7 @@ Func_help(){
 	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
 	echo "# --dec-search-string			Var_dec_search_string=\"${Var_dec_search_string}\""
 	echo "## Encryption command line options"
+	echo "# --enc-yn				Var_enc_yn=\"${Var_enc_yn}\""
 	echo "# --enc-copy-save-yn			Var_enc_copy_save_yn=\"${Var_enc_copy_save_yn}\""
 	echo "# --enc-copy-save-path			Var_enc_copy_save_path=\"${Var_enc_copy_save_path}\""
 	echo "# --enc-copy-save-ownership		Var_enc_copy_save_ownership=\"${Var_enc_copy_save_ownership}\""

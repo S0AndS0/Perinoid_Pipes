@@ -35,17 +35,10 @@ Func_check_args(){
 			--columns|Var_columns)
 				Func_assign_arg "Var_columns" "${_arg#*=}"
 			;;
-			--license)
-				Func_script_license_customizer
-				exit 0
-			--help|help)
-				Func_message "# Func_check_args read variable [${_arg%=*}] with value [${_arg#*=}]" '2' '3'
-				Func_help
-			;;
 			--source-var-file|Var_source_var_file)
 				Func_assign_arg "Var_source_var_file" "${_arg#*=}"
 				if [ -f "${Var_source_var_file}" ]; then
-					Func_message "# " '2' '3'
+					Func_message "# ${Var_script_name} running: source \"${Var_source_var_file}\"" '2' '3'
 					source "${Var_source_var_file}"
 				fi
 			;;
@@ -54,8 +47,18 @@ Func_check_args(){
 				_extra_arg="${_arg#*=}"
 				Func_assign_arg "${_extra_var/---/}" "${_arg#*=}"
 			;;
+			--help|help)
+				Func_message "# Func_check_args read variable [${_arg%=*}] with value [${_arg#*=}]" '2' '3'
+				Func_help
+				exit 0
+			;;
+			--license)
+				Func_script_license_customizer
+				exit 0
+			;;
 			--version)
 				echo "# ${Var_script_name} version: ${Var_script_version_full}"
+				exit 0
 			;;
 			*)
 				Func_message "# " '2' '3'
