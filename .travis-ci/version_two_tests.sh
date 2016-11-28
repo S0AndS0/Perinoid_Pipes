@@ -96,6 +96,7 @@ if [ -p "${Var_encrypt_pipe_three_location}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 	if [ -r "${Var_encrypt_pipe_three_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_three_log}\""
 		cat "${Var_encrypt_pipe_three_log}"
 	fi
 else
@@ -144,7 +145,7 @@ else
 	exit 1
 fi
 ## Check decryption within version two of main script processes
-${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-parsing-disown="yes" --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+${Var_install_v2_name} --debug-level="6" --log-level="7" --dec-yn="yes" --dec-parsing-disown-yn="yes" --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_three_dir}" ]; then
@@ -180,6 +181,7 @@ if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_loca
 	else
 		echo "# ${Var_script_name} did not detect any background processes"
 		if [ -r "${Var_decrypt_three_log}" ]; then
+			echo "# ${Var_script_name} running: cat \"${Var_decrypt_three_log}\""
 			cat "${Var_decrypt_three_log}"
 		fi
 		exit 0

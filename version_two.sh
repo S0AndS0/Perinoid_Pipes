@@ -1292,15 +1292,15 @@ Func_dec_file_or_dir(){
 			unset _old_pwd
 			unset _dir_list
 		;;
-		*gpg)
+		*.gpg)
 			if ! [ -d "${Var_dec_parsing_bulk_out_dir}" ]; then
 				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${Var_dec_parsing_bulk_out_dir}\"" '3' '4'
 				mkdir -p "${Var_dec_parsing_bulk_out_dir}"
 			fi
 			_output_file="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" > \"${_output_file}\"" '3' '4'
-			${Var_gpg} ${Var_dec_gpg_opts} "${_encrypted_path}" > "${_output_file}"
+			Func_message "# Func_dec_file_or_dir running: ${Var_cat} \"${_encrypted_path}\" | ${Var_gpg} ${Var_dec_gpg_opts} > \"${_output_file}\"" '3' '4'
+			${Var_cat "${_encrypted_path}" | ${Var_gpg} ${Var_dec_gpg_opts} > "${_output_file}"
 			unset _output_file
 		;;
 	esac
@@ -1538,7 +1538,7 @@ Func_dec_file_or_dir(){
 			unset _old_pwd
 			unset _dir_list
 		;;
-		*gpg)
+		*.gpg)
 			if ! [ -d "\${Var_dec_parsing_bulk_out_dir}" ]; then
 				mkdir -p "\${Var_dec_parsing_bulk_out_dir}"
 			fi
