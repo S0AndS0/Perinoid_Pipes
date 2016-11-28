@@ -32,6 +32,7 @@ Var_enc_copy_save_path="${PWD}/Slim_${Var_script_name}"
 Var_enc_copy_save_ownership="${USER}:${USER}"
 Var_enc_copy_save_permissions="750"
 ## Variables for encryption processes
+Var_enc_yn=""
 Var_enc_gpg_opts="--always-trust --armor --batch --no-tty --encrypt"
 Var_enc_padding_enable_yn="no"
 Var_enc_padding_length="adaptive"
@@ -58,11 +59,13 @@ Var_enc_trap_command="/bin/rm -f ${Var_enc_pipe_file}"
 Var_enc_parsing_output_permissions="640"
 Var_enc_parsing_output_ownership="${USER}:${USER}"
 ## Decryption variables
+Var_dec_yn=""
 Var_dec_copy_save_yn="no"
 Var_dec_copy_save_path=""
 Var_dec_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
 Var_dec_parsing_bulk_out_dir=""
 Var_dec_parsing_disown_yn="no"
+Var_dec_parsing_save_output_yn="yes"
 Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
 Var_dec_pass=""
 Var_dec_search_string=""
@@ -70,27 +73,15 @@ Var_dec_search_string=""
 Var_dec_diff_opts="--suppress-common-lines"
 Var_dec_diff_sleep="120"
 
-Var_enc_yn=""
-Var_dec_yn=""
-
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
 Func_enc_clean_up_trap(){
 	_exit_code="$1"
 	${Var_echo} "## ${Var_script_name} detected [${_exit_code}] exit code, cleaning up before quiting..."
 	if [ -p "${Var_enc_pipe_file}" ]; then
-		bash -c "${Var_enc_trap_command}"
+		${Var_enc_trap_command}
 	fi
 	${Var_echo} -n "### ... Finished [${Var_script_name}] at $(date) press [Enter] to resume terminal ... ###"
 }
-case "${Var_enc_parsing_disown_yn}" in
-	Y|y|Yes|yes|YES)
-		${Var_echo} "## ${Var_script_name} will differ cleanup trap assignment until after reading has from named pipe [${Var_enc_pipe_file}] has finished..."
-	;;
-	*)
-		${Var_echo} "## ${Var_script_name} will set exit trap now."
-		trap 'Func_enc_clean_up_trap ${?}' EXIT
-	;;
-esac
 ## Wrap up function operations inside bellow function
 Func_main(){
 	_input=( "$@" )
@@ -100,6 +91,15 @@ Func_main(){
 	else
 		Func_message "# Func_main running: Func_check_args \"${_input[*]}\"" '1' '2'
 		Func_check_args "${_input[@]}"
+		case "${Var_enc_parsing_disown_yn}" in
+			Y|y|Yes|yes|YES)
+				${Var_echo} "## ${Var_script_name} will differ cleanup trap assignment until after reading has from named pipe [${Var_enc_pipe_file}] has finished..."
+			;;
+			*)
+				${Var_echo} "## ${Var_script_name} will set exit trap now."
+				trap 'Func_enc_clean_up_trap ${?}' EXIT
+			;;
+		esac
 		## Functions for encryption
 		case "${Var_enc_yn}" in
 			Y|y|Yes|yes|YES)
@@ -126,62 +126,69 @@ Func_main(){
 Func_enc_main(){
 	case "${Var_enc_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
+			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
 			Func_enc_write_script_copy
 		;;
 		*)
-			Func_message "# Func_main running: Func_enc_make_named_pipe" '1' '2'
+			Func_message "# Func_main running: Func_enc_make_named_pipe" '2' '3'
 			Func_enc_make_named_pipe
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '1' '2'
+					Func_message "# Func_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '2' '3'
 					Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_main running: Func_enc_pipe_parser_loop" '1' '2'
+					Func_message "# Func_main running: Func_enc_pipe_parser_loop" '2' '3'
 					Func_enc_pipe_parser_loop
-					Func_message "# Func_main quitting: Func_enc_pipe_parser_loop" '1' '2'
+					Func_message "# Func_main quitting: Func_enc_pipe_parser_loop" '2' '3'
 					set -o history
 				;;
 			esac
-			Func_message "# Func_main exiting encryption checks with: [$?]" '1' '2'
+			Func_message "# Func_main exiting encryption checks with: [$?]" '2' '3'
 		;;
 	esac
 }
 Func_dec_main(){
 	case "${Var_dec_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_message "# Func_main running: Func_enc_write_script_copy" '1' '2'
+			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
 			Func_dec_write_script_copy
 		;;
 		*)
+			case "${Var_dec_parsing_save_output_yn}" in
+				y|Y|yes|Yes)
+					if ! [ -f "${Var_dec_parsing_output_file}" ]; then
+						touch "${Var_dec_parsing_output_file}"
+					fi
+				;;
+			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
+					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
-					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '1' '2'
+					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '1' '2'
+					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '1' '2'
+					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}"
-					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '1' '2'
+					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir
 				;;
 			esac
-			Func_message "# Func_main exiting decryption checks with: [$?]" '1' '2'
+			Func_message "# Func_main exiting decryption checks with: [$?]" '2' '3'
 		;;
 	esac
 }
@@ -227,6 +234,9 @@ Func_check_args(){
 			;;
 			--dec-parsing-disown-yn|Var_dec_parsing_disown_yn)
 				Func_assign_arg "Var_dec_parsing_disown_yn" "${_arg#*=}"
+			;;
+			--dec-parsing-save-output-yn|Var_dec_parsing_save_output_yn)
+				Func_assign_arg "Var_dec_parsing_save_output_yn" "${_arg#*=}"
 			;;
 			--dec-parsing-output-file|Var_dec_parsing_output_file)
 				Func_assign_arg "Var_dec_parsing_output_file" "${_arg#*=}"
@@ -345,6 +355,7 @@ Func_check_args(){
 			;;
 			--enc-pipe-file|Var_enc_pipe_file)
 				Func_assign_arg "Var_enc_pipe_file" "${_arg#*=}"
+				Func_assign_arg "Var_enc_trap_command" "${Var_rm} ${_arg#*=}"
 			;;
 			--enc-trap-command|Var_enc_trap_command)
 				Func_assign_arg "Var_enc_trap_command" "${_arg#*=}"
@@ -388,6 +399,7 @@ Func_help(){
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
 	echo "# --dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=\"${Var_dec_parsing_bulk_out_dir}\""
 	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
+	echo "# --dec-parsing-save-output-yn	Var_dec_parsing_save_output_yn=\"${Var_dec_parsing_save_output_yn}\""
 	echo "# --dec-parsing-output-file		Var_dec_parsing_output_file=\"${Var_dec_parsing_output_file}\""
 	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
 	echo "# --dec-search-string			Var_dec_search_string=\"${Var_dec_search_string}\""
@@ -677,8 +689,8 @@ Func_enc_pipe_parser_loop(){
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
-						Func_message "# Func_enc_pipe_parser_loop running: bash -c \"${Var_enc_trap_command}\"" '2' '3'
-						bash -c "${Var_enc_trap_command}"
+						Func_message "# Func_enc_pipe_parser_loop running: ${Var_enc_trap_command}" '2' '3'
+						${Var_enc_trap_command}
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
 					fi
@@ -734,19 +746,10 @@ Func_enc_clean_up_trap(){
 	_exit_code="\$1"
 	${Var_echo} "## \${Var_script_name} detected [\${_exit_code}] exit code, cleaning up before quiting..."
 	if [ -p "\${Var_enc_pipe_file}" ]; then
-		bash -c "\${Var_enc_trap_command}"
+		\${Var_enc_trap_command}
 	fi
 	${Var_echo} -n "### ... Finished [\${Var_script_name}] at \$(date) press [Enter] to resume terminal ... ###"
 }
-case "\${Var_enc_parsing_disown_yn}" in
-	Y|y|Yes|yes|YES)
-		${Var_echo} "## \${Var_script_name} will differ cleanup trap assignment until reading from named pipe [\${Var_enc_pipe_file}] has finished..."
-	;;
-	*)
-		${Var_echo} "## \${Var_script_name} will set exit trap now."
-		trap 'Func_enc_clean_up_trap \${?}' EXIT
-	;;
-esac
 Func_enc_make_named_pipe(){
 	if ! [ -p "\${Var_enc_pipe_file}" ]; then
 		${Var_mkfifo} "\${Var_enc_pipe_file}" || exit 1
@@ -910,7 +913,7 @@ Func_enc_pipe_parser_loop(){
 			case "\${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
-						bash -c "\${Var_enc_trap_command}"
+						\${Var_enc_trap_command}
 					else
 						${Var_echo} "# ...No pipe to remove at [\${Var_enc_pipe_file}]"
 					fi
@@ -1008,6 +1011,7 @@ Func_check_args(){
 			;;
 			--enc-pipe-file|Var_enc_pipe_file)
 				Func_assign_arg "Var_enc_pipe_file" "\${_arg#*=}"
+				Func_assign_arg "Var_enc_trap_command" "${Var_rm} \${_arg#*=}"
 			;;
 			--enc-trap-command|Var_enc_trap_command)
 				Func_assign_arg "Var_enc_trap_command" "\${_arg#*=}"
@@ -1036,6 +1040,15 @@ Func_main(){
 	if [ "\${#_input[@]}" != "0" ]; then
 		Func_check_args "\${_input[@]}"
 	fi
+	case "\${Var_enc_parsing_disown_yn}" in
+		Y|y|Yes|yes|YES)
+			${Var_echo} "## \${Var_script_name} will differ cleanup trap assignment until reading from named pipe [\${Var_enc_pipe_file}] has finished..."
+		;;
+		*)
+			${Var_echo} "## \${Var_script_name} will set exit trap now."
+			trap 'Func_enc_clean_up_trap \${?}' EXIT
+		;;
+	esac
 	Func_enc_make_named_pipe
 	case "\${Var_enc_parsing_disown_yn}" in
 		Y|y|Yes|yes|YES)
@@ -1345,6 +1358,7 @@ Func_dec_write_script_copy(){
 Var_script_dir="\${0%/*}"
 Var_script_name="\${0##*/}"
 Var_enc_parsing_output_file="${Var_enc_parsing_output_file}"
+Var_dec_parsing_save_output_yn="${Var_dec_parsing_save_output_yn}"
 Var_dec_parsing_output_file="${Var_dec_parsing_output_file}"
 Var_dec_pass="${Var_dec_pass}"
 Var_dec_search_string="${Var_dec_search_string}"
@@ -1598,6 +1612,9 @@ Func_check_args(){
 			--dec-gpg-opts|Var_dec_gpg_opts)
 				Func_assign_arg "Var_dec_gpg_opts" "\${_arg#*=}"
 			;;
+			--dec-parsing-save-output-yn|Var_dec_parsing_save_output_yn)
+				Func_assign_arg "Var_dec_parsing_save_output_yn" "\${_arg#*=}"
+			;;
 			--dec-parsing-output-file|Var_dec_parsing_output_file)
 				Func_assign_arg "Var_dec_parsing_output_file" "\${_arg#*=}"
 			;;
@@ -1652,6 +1669,13 @@ Func_main(){
 	if [ "\${#_input[@]}" != "0" ]; then
 		Func_check_args "\${_input[@]}"
 	fi
+	case "\${Var_dec_parsing_save_output_yn}" in
+		y|Y|yes|Yes)
+			if ! [ -f "\${Var_dec_parsing_output_file}" ]; then
+				touch "\${Var_dec_parsing_output_file}"
+			fi
+		;;
+	esac
 	case "\${Var_dec_parsing_disown_yn}" in
 		Y|y|Yes|yes|YES)
 			Func_dec_watch_file "\${Var_enc_parsing_output_file}" >"\${Var_dev_null}" 2>&1 &
