@@ -1317,8 +1317,8 @@ Func_dec_watch_bulk_dir(){
 		if [ "${_current_sig}" != "${_new_sig}" ]; then
 			## This funy way of piping into a while loop should silence SheckCheck
 			find "${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
-				Func_message "# Func_dec_watch_bulk_dir running: Func_dec_file_or_dir \"${Var_enc_parsing_bulk_out_dir}/${_path}\"" '3' '4'
-				Func_dec_file_or_dir "${Var_enc_parsing_bulk_out_dir}/${_path}"
+				Func_message "# Func_dec_watch_bulk_dir running: Func_dec_file_or_dir \"${_path}\"" '3' '4'
+				Func_dec_file_or_dir "${_path}"
 			done
 		fi
 		_current_sig="${_new_sig}"
@@ -1566,7 +1566,7 @@ Func_dec_watch_bulk_dir(){
 		_new_sig="\$(find \${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
 		if [ "\${_current_sig}" != "\${_new_sig}" ]; then
 			find "\${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
-				Func_dec_file_or_dir "\${Var_enc_parsing_bulk_out_dir}/\${_path}"
+				Func_dec_file_or_dir "\${_path}"
 			done
 		fi
 		_current_sig="\${_new_sig}"
