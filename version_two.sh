@@ -1309,41 +1309,25 @@ Func_dec_file_or_dir(){
 	exec 9>&-
 	unset _encrypted_path
 }
-Func_dec_parse_diff(){
-	_added="$(grep -E '>' <<<"${@}")"
-	if [ "${#_added}" != "0" ]; then
-		mapfile -t _added_list <<<"${_added//> /}"
-		let _index=0
-		until [ "${#_added_list[@]}" = "${_index}" ]; do
-			_path_to_check="${Var_enc_parsing_bulk_out_dir}/${_added_list[${_index}]}"
-			if [ -f "${_path_to_check}" ]; then
-				Func_message "# Func_dec_parse_diff running: Func_dec_file_or_dir \"${_path_to_check}\"" '4' '5'
-				Func_dec_file_or_dir "${_path_to_check}"
-			fi
-			let _index++
-		done
-		unset _index
-	fi
-}
 Func_dec_watch_bulk_dir(){
-	_current_listing=""
-	let _diff_count=0
+	_current_sig=""
+	let _watch_count=0
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
-		_new_listing="$(ls "${Var_enc_parsing_bulk_out_dir}")"
-		_diff_listing="$(diff ${Var_dec_diff_opts} <(${Var_echo} "${_current_listing}") <(${Var_echo} "${_new_listing}") | grep -E '>')"
-		if [ "${#_diff_listing}" != "0" ]; then
-			Func_message "# Func_dec_watch_bulk_dir running: Func_dec_parse_diff \"${_diff_listing}\"" '3' '4'
-			Func_dec_parse_diff "${_diff_listing}"
-		else
-			let _diff_count++
+		_new_sig="$(find ${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print $1}' | sort | sha1sum | awk '{print $1}')"
+		if [ "${_current_sig}" != "${_new_sig}" ]; then
+			for _path in $(find ${Var_enc_parsing_bulk_out_dir} -xtype f); do
+				Func_message "# Func_dec_watch_bulk_dir running: Func_dec_file_or_dir \"${Var_enc_parsing_bulk_out_dir}/${_path}\"" '3' '4'
+				Func_dec_file_or_dir "${Var_enc_parsing_bulk_out_dir}/${_path}"
+			done
 		fi
-		_current_listing="${_new_listing}"
+		_current_sig="${_new_sig}"
+		let _watch_count++
 		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_diff_count}" -gt "${Var_dec_diff_count_max}" ]; then
+			unset _watch_count
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
 		fi
-		let _diff_count++
-		Func_message "# Func_dec_watch_bulk_dir [${_diff_count}] running: sleep ${Var_dec_diff_sleep}" '3' '4'
+		Func_message "# Func_dec_watch_bulk_dir [${_watch_count}] running: sleep ${Var_dec_diff_sleep}" '3' '4'
 		sleep ${Var_dec_diff_sleep}
 	done
 }
@@ -1574,37 +1558,22 @@ Func_dec_file_or_dir(){
 	exec 9>&-
 	unset _encrypted_path
 }
-Func_dec_parse_diff(){
-	_added="\$(grep -E '>' <<<"\${@}")"
-	if [ "\${#_added}" != "0" ]; then
-		mapfile -t _added_list <<<"\${_added//> /}"
-		let _index=0
-		until [ "${#_added_list[@]}" = "\${_index}" ]; do
-			_path_to_check="\${Var_enc_parsing_bulk_out_dir}/\${_added_list[\${_index}]}"
-			if [ -f "\${_path_to_check}" ]; then
-				Func_dec_file_or_dir "\${_path_to_check}"
-			fi
-			let _index++
-		done
-		unset _index
-	fi
-}
 Func_dec_watch_bulk_dir(){
-	_current_listing=""
-	let _diff_count=0
+	_current_sig=""
+	let _watch_count=0
 	while [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; do
-		_new_listing="\$(ls "\${Var_enc_parsing_bulk_out_dir}")"
-		_diff_listing="\$(diff \${Var_dec_diff_opts} <(${Var_echo} "\${_current_listing}") <(${Var_echo} "\${_new_listing}") | grep -E '>')"
-		if [ "\${#_diff_listing}" != "0" ]; then
-			Func_dec_parse_diff "\${_diff_listing}"
-		else
-			let _diff_count++
+		_new_sig="\$(find \${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
+		if [ "\${_current_sig}" != "\${_new_sig}" ]; then
+			for _path in \$(find \${Var_enc_parsing_bulk_out_dir} -xtype f); do
+				Func_dec_file_or_dir "\${Var_enc_parsing_bulk_out_dir}/\${_path}"
+			done
 		fi
-		_current_listing="${_new_listing}"
+		_current_sig="\${_new_sig}"
+		let _watch_count++
 		if [ "\${Var_dec_diff_count_max}" != "0" ] && [ "\${_diff_count}" -gt "\${Var_dec_diff_count_max}" ]; then
+			unset _watch_count
 			break
 		fi
-		let _diff_count++
 		sleep \${Var_dec_diff_sleep}
 	done
 }
