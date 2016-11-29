@@ -128,6 +128,12 @@ Func_enc_main(){
 		Y|y|Yes|yes|YES)
 			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
 			Func_enc_write_script_copy
+			if [-e "${Var_enc_copy_save_path}" ]; then
+				Func_message "# Func_main running: ${Var_enc_copy_save_path}" '2' '3'
+				${Var_enc_copy_save_path}
+			else
+				Func_message "# Func_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+			fi
 		;;
 		*)
 			Func_message "# Func_main running: Func_enc_make_named_pipe" '2' '3'
@@ -163,12 +169,13 @@ Func_dec_main(){
 				y|Y|yes|Yes)
 					if ! [ -f "${Var_dec_parsing_output_file}" ]; then
 						touch "${Var_dec_parsing_output_file}"
+						chmod 660 "${Var_dec_parsing_output_file}"
 					fi
 				;;
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '2' '3'
+					Func_message "# Func_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
 					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
@@ -182,7 +189,7 @@ Func_dec_main(){
 					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_main running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '2' '3'
+					Func_message "# Func_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}"
 					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir
@@ -278,7 +285,7 @@ Func_check_args(){
 			--enc-copy-save-path|Var_enc_copy_save_path)
 				Func_assign_arg "Var_enc_copy_save_path" "${_arg#*=}"
 			;;
-			--enc-copy-save-path|Var_enc_copy_save_ownership)
+			--enc-copy-save-ownership|Var_enc_copy_save_ownership)
 				Func_assign_arg "Var_enc_copy_save_ownership" "${_arg#*=}"
 			;;
 			--enc-copy-save-permissions|Var_enc_copy_save_permissions)
@@ -1099,7 +1106,6 @@ Func_dec_pass_the_pass(){
 Func_dec_remove_padding_from_output(){
 	_input=( "$@" )
 	let _count=0
-	let _padding_count=0
 	until [ "${_count}" = "${#_input[@]}" ]; do
 		if grep -qE "append|prepend" <<<"${Var_enc_padding_placement//,/ }"; then
 			if grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_enc_padding_placement//,/ }"; then
@@ -1134,11 +1140,14 @@ Func_dec_remove_padding_from_output(){
 				esac
 				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			fi
+		else
+			_line[${_count}]=( "${_input[${_count}]}" )
 		fi
-		${Var_echo} "${_line[@]}"
+		let _count++
 	done
-	let _padding_count++
-	let _count++
+	${Var_echo} "${_line[@]}"
+	unset -v _input[@]
+	unset -v _line[@]
 }
 Func_dec_expand_array_to_block(){
 	_input=( "$@" )
@@ -1152,7 +1161,7 @@ Func_dec_expand_array_to_block(){
 }
 Func_dec_do_stuff_with_lines(){
 	_enc_block=( "$@" )
-	_enc_input=$(Func_dec_expand_array_to_block "${_enc_block[@]}" )
+	_enc_input=$(Func_dec_expand_array_to_block "${_enc_block[@]}")
 	Func_message "# Func_dec_do_stuff_with_lines running: Func_dec_pass_the_pass \"\${Var_dec_pass}\"" '3' '4'
 	Func_dec_pass_the_pass "${Var_dec_pass}"
 	if [ -p "${Var_dec_parsing_output_file}" ]; then
@@ -1237,6 +1246,7 @@ Func_dec_spoon_feed_armored_packets(){
 }
 Func_dec_file_or_dir(){
 	_encrypted_path="${1}"
+	Func_message "# Func_dec_file_or_dir running: Func_dec_pass_the_pass \"${Var_dec_pass}\"" '5' '6'
 	Func_dec_pass_the_pass "${Var_dec_pass}"
 	case "${_encrypted_path}" in
 		*.tar.gpg)
@@ -1244,69 +1254,45 @@ Func_dec_file_or_dir(){
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tar.gpg*}"
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '3' '4'
+				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
 				mkdir -p "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '5' '6'
+				cd "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xf -" '5' '6'
+				${Var_gpg} ${Var_dec_gpg_opts}  "${_encrypted_path}" | tar -xf -
+				Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '5' '6'
+				cd "${_old_pwd}"
 			fi
-			Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '3' '4'
-			cd "${_output_dir}"
-			Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xf -" '3' '4'
-			${Var_gpg} ${Var_dec_gpg_opts}  "${_encrypted_path}" | tar -xf -
-			Func_message "# Func_dec_file_or_dir parsing: ${_output_dir}" '3' '4'
-			if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${Var_debug_level}" -gt "${_debug_level}" ]; then
-				_dir_list="$(ls "${_output_dir}")"
-				for _posible_dir in ${_dir_list}; do
-					if [ -d "${_output_dir}/${_posible_dir}" ]; then
-						Func_message "# Func_dec_file_or_dir running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
-						ls -hal "${_output_dir}/${_posible_dir}"
-					else
-						Func_message "# Func_dec_file_or_dir reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
-					fi
-				done
-			fi
-			Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '3' '4'
-			cd "${_old_pwd}"
 			unset _old_pwd
-			unset _dir_list
 		;;
 		*.tgz.gpg)
 			_old_pwd="${PWD}"
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tgz.gpg*}"
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '3' '4'
+				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
 				mkdir -p "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '5' '6'
+				cd "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xzf -" '5' '6'
+				${Var_gpg} ${Var_dec_gpg_opts} "${_encrypted_path}" | tar -xzf -
+				Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '5' '6'
+				cd "${_old_pwd}"
 			fi
-			Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '3' '4'
-			cd "${_output_dir}"
-			Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xzf -" '3' '4'
-			${Var_gpg} ${Var_dec_gpg_opts} "${_encrypted_path}" | tar -xzf -
-			Func_message "# Func_dec_file_or_dir parsing: ${_output_dir}" '3' '4'
-			if [ "${_debug_level}" = "${Var_debug_level}" ] || [ "${Var_debug_level}" -gt "${_debug_level}" ]; then
-				_dir_list="$(ls "${_output_dir}")"
-				for _posible_dir in ${_dir_list}; do
-					if [ -d "${_output_dir}/${_posible_dir}" ]; then
-						Func_message "# Func_dec_file_or_dir running: ls -hal \"${_output_dir}/${_posible_dir}\"" '3' '4'
-						ls -hal "${_output_dir}/${_posible_dir}"
-					else
-						Func_message "# Func_dec_file_or_dir reports: not a directory ${_output_dir}/${_posible_dir}" '3' '4'
-					fi
-				done
-			fi
-			Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '3' '4'
-			cd "${_old_pwd}"
 			unset _old_pwd
-			unset _dir_list
 		;;
 		*.gpg)
 			if ! [ -d "${Var_dec_parsing_bulk_out_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${Var_dec_parsing_bulk_out_dir}\"" '3' '4'
+				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${Var_dec_parsing_bulk_out_dir}\"" '5' '6'
 				mkdir -p "${Var_dec_parsing_bulk_out_dir}"
 			fi
 			_output_file="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			Func_message "# Func_dec_file_or_dir running: ${Var_cat} \"${_encrypted_path}\" | ${Var_gpg} ${Var_dec_gpg_opts} > \"${_output_file}\"" '3' '4'
-			${Var_cat} "${_encrypted_path}" | ${Var_gpg} ${Var_dec_gpg_opts} > "${_output_file}"
-			unset _output_file
+			if ! [ -f "${_output_file}" ]; then
+				Func_message "# Func_dec_file_or_dir running: ${Var_cat} \"${_encrypted_path}\" | ${Var_gpg} ${Var_dec_gpg_opts} > \"${_output_file}\"" '5' '6'
+				${Var_cat} "${_encrypted_path}" | ${Var_gpg} ${Var_dec_gpg_opts} > "${_output_file}"
+				unset _output_file
+			fi
 		;;
 	esac
 	exec 9>&-
@@ -1320,6 +1306,7 @@ Func_dec_parse_diff(){
 		until [ "${#_added_list[@]}" = "${_index}" ]; do
 			_path_to_check="${Var_enc_parsing_bulk_out_dir}/${_added_list[${_index}]}"
 			if [ -f "${_path_to_check}" ]; then
+				Func_message "# Func_dec_parse_diff running: Func_dec_file_or_dir \"${_path_to_check}\"" '4' '5'
 				Func_dec_file_or_dir "${_path_to_check}"
 			fi
 			let _index++
@@ -1329,25 +1316,41 @@ Func_dec_parse_diff(){
 }
 Func_dec_watch_bulk_dir(){
 	_current_listing=""
+	_diff_count=0
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_listing="$(ls "${Var_enc_parsing_bulk_out_dir}")"
 		_diff_listing="$(diff ${Var_dec_diff_opts} <(${Var_echo} "${_current_listing}") <(${Var_echo} "${_new_listing}"))"
 		if [ "${_diff_listing}" != "0" ]; then
+			Func_message "# Func_dec_watch_bulk_dir running: Func_dec_parse_diff \"${_diff_listing}\"" '3' '4'
 			Func_dec_parse_diff "${_diff_listing}"
+		else
+			let _diff_count++
 		fi
 		_current_listing="${_new_listing}"
+		if [ "${_count}" -gt "3" ]; then
+			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
+			break
+		fi
+		Func_message "# Func_dec_watch_bulk_dir running: sleep ${Var_dec_diff_sleep}" '3' '4'
 		sleep ${Var_dec_diff_sleep}
 	done
 }
 Func_dec_watch_file(){
 	_enc_parsing_output_file="${1:-${Var_enc_parsing_output_file}}"
+	Func_message "# Func_dec_watch_file parsing: ${_enc_parsing_output_file}" '3' '4'
 	if [ -p "${_enc_parsing_output_file}" ]; then
+		Func_message "# Func_dec_watch_file detected pipe: ${_enc_parsing_output_file} " '3' '4'
 		while [ -p "${_enc_parsing_output_file}" ]; do
 			Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
+			if ! [ -p "${_enc_parsing_output_file}" ]; then
+				break
+			fi
 		done
 	elif [ -f "${_enc_parsing_output_file}" ]; then
+		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"${_enc_parsing_output_file}\"" '3' '4'
 		Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
 	else
+		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"\${_enc_parsing_output_file}\"" '3' '4'
 		Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
 	fi
 }
@@ -1716,7 +1719,4 @@ EOF
 ## Call main function to get things started...
 Func_message "# ${Var_script_name} running: Func_main \"\$@\"" '0' '1'
 Func_main "$@"
-Func_message "# ${Var_script_dir}${Var_script_name} finished at: $(date)" '0' '1'
-## End of script
-
-#								
+Func_message "# ${Var_script_dir}/${Var_script_name} finished at: $(date)" '0' '1'
