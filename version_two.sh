@@ -1315,14 +1315,15 @@ Func_dec_watch_bulk_dir(){
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_sig="$(find ${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print $1}' | sort | sha1sum | awk '{print $1}')"
 		if [ "${_current_sig}" != "${_new_sig}" ]; then
-			for _path in $(find ${Var_enc_parsing_bulk_out_dir} -xtype f); do
+			## This funy way of piping into a while loop should silence SheckCheck
+			find "${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
 				Func_message "# Func_dec_watch_bulk_dir running: Func_dec_file_or_dir \"${Var_enc_parsing_bulk_out_dir}/${_path}\"" '3' '4'
 				Func_dec_file_or_dir "${Var_enc_parsing_bulk_out_dir}/${_path}"
 			done
 		fi
 		_current_sig="${_new_sig}"
 		let _watch_count++
-		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_diff_count}" -gt "${Var_dec_diff_count_max}" ]; then
+		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_watch_count}" -gt "${Var_dec_diff_count_max}" ]; then
 			unset _watch_count
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
@@ -1564,7 +1565,7 @@ Func_dec_watch_bulk_dir(){
 	while [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_sig="\$(find \${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
 		if [ "\${_current_sig}" != "\${_new_sig}" ]; then
-			for _path in \$(find \${Var_enc_parsing_bulk_out_dir} -xtype f); do
+			find "\${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
 				Func_dec_file_or_dir "\${Var_enc_parsing_bulk_out_dir}/\${_path}"
 			done
 		fi
