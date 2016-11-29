@@ -70,6 +70,7 @@ Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
 Var_dec_pass=""
 Var_dec_search_string=""
 ## Special variables
+Var_dec_diff_count_max="0"
 Var_dec_diff_opts="--suppress-common-lines"
 Var_dec_diff_sleep="120"
 
@@ -163,6 +164,12 @@ Func_dec_main(){
 		Y|y|Yes|yes|YES)
 			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
 			Func_dec_write_script_copy
+			if [ -e "${Var_dec_copy_save_path}" ]; then
+				Func_message "# Func_main running: ${Var_dec_copy_save_path}" '2' '3'
+				${Var_dec_copy_save_path}
+			else
+				Func_message "# Func_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+			fi
 		;;
 		*)
 			case "${Var_dec_parsing_save_output_yn}" in
@@ -226,6 +233,9 @@ Func_check_args(){
 			;;
 			--dec-copy-save-path|Var_dec_copy_save_path)
 				Func_assign_arg "Var_dec_copy_save_path" "${_arg#*=}"
+			;;
+			--dec-diff-count-max|Var_dec_diff_count_max)
+				Func_assign_arg "Var_dec_diff_count_max" "${_arg#*=}"
 			;;
 			--dec-diff-opts|Var_dec_diff_opts)
 				Func_assign_arg "Var_dec_diff_opts" "${_arg#*=}"
@@ -401,6 +411,7 @@ Func_help(){
 	echo "# --dec-yn				Var_dec_yn=\"${Var_dec_yn}\""
 	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
 	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
+	echo "# --dec-diff-count-max			Var_dec_diff_count_max=\"${Var_dec_diff_count_max}\""
 	echo "# --dec-diff-opts			Var_dec_diff_opts=\"${Var_dec_diff_opts}\""
 	echo "# --dec-diff-sleep			Var_dec_diff_sleep=\"${Var_dec_diff_sleep}\""
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
@@ -1246,7 +1257,7 @@ Func_dec_spoon_feed_armored_packets(){
 }
 Func_dec_file_or_dir(){
 	_encrypted_path="${1}"
-	Func_message "# Func_dec_file_or_dir running: Func_dec_pass_the_pass \"${Var_dec_pass}\"" '5' '6'
+	Func_message "# Func_dec_file_or_dir running: Func_dec_pass_the_pass \"\${Var_dec_pass}\"" '5' '6'
 	Func_dec_pass_the_pass "${Var_dec_pass}"
 	case "${_encrypted_path}" in
 		*.tar.gpg)
@@ -1319,15 +1330,15 @@ Func_dec_watch_bulk_dir(){
 	let _diff_count=0
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_listing="$(ls "${Var_enc_parsing_bulk_out_dir}")"
-		_diff_listing="$(diff ${Var_dec_diff_opts} <(${Var_echo} "${_current_listing}") <(${Var_echo} "${_new_listing}"))"
-		if [ "${_diff_listing}" != "0" ]; then
+		_diff_listing="$(diff ${Var_dec_diff_opts} <(${Var_echo} "${_current_listing}") <(${Var_echo} "${_new_listing}") | grep -E '>')"
+		if [ "${#_diff_listing}" != "0" ]; then
 			Func_message "# Func_dec_watch_bulk_dir running: Func_dec_parse_diff \"${_diff_listing}\"" '3' '4'
 			Func_dec_parse_diff "${_diff_listing}"
 		else
 			let _diff_count++
 		fi
 		_current_listing="${_new_listing}"
-		if [ "${_diff_count}" -gt "3" ]; then
+		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_diff_count}" -gt "3" ]; then
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
 		fi
@@ -1378,6 +1389,7 @@ Var_enc_padding_enable_yn="${Var_enc_padding_enable_yn}"
 Var_enc_padding_length="${Var_enc_padding_length}"
 Var_enc_padding_placement="${Var_enc_padding_placement}"
 Var_dec_parsing_disown_yn="${Var_dec_parsing_disown_yn}"
+Var_dec_diff_count_max="${Var_dec_diff_count_max}"
 Var_dec_diff_opts="${Var_dec_diff_opts}"
 Var_dec_diff_sleep="${Var_dec_diff_sleep}"
 Var_dev_null="${Var_dev_null}"
@@ -1392,7 +1404,6 @@ Func_dec_pass_the_pass(){
 Func_dec_remove_padding_from_output(){
 	_input=( "\$@" )
 	let _count=0
-	let _padding_count=0
 	until [ "\${_count}" = "\${#_input[@]}" ]; do
 		if grep -qE "append|prepend" <<<"\${Var_enc_padding_placement//,/ }"; then
 			if grep -qE "append"  <<<"\${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"\${Var_enc_padding_placement//,/ }"; then
@@ -1427,11 +1438,14 @@ Func_dec_remove_padding_from_output(){
 				esac
 				_line[\${_count}]=( "\${_input[\${_count}]:\${_padding_length}}" )
 			fi
+		else
+			_line[\${_count}]=( "\${_input[\${_count}]}" )
 		fi
-		${Var_echo} "\${_line[@]}"
+		let _count++
 	done
-	let _padding_count++
-	let _count++
+	${Var_echo} "\${_line[@]}"
+	unset -v _input[@]
+	unset -v _line[@]
 }
 Func_dec_expand_array_to_block(){
 	_input=( "\$@" )
@@ -1577,13 +1591,20 @@ Func_dec_parse_diff(){
 }
 Func_dec_watch_bulk_dir(){
 	_current_listing=""
+	let _diff_count=0
 	while [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_listing="\$(ls "\${Var_enc_parsing_bulk_out_dir}")"
-		_diff_listing="\$(diff \${Var_dec_diff_opts} <(${Var_echo} "\${_current_listing}") <(${Var_echo} "\${_new_listing}"))"
-		if [ "\${_diff_listing}" != "0" ]; then
+		_diff_listing="\$(diff \${Var_dec_diff_opts} <(${Var_echo} "\${_current_listing}") <(${Var_echo} "\${_new_listing}") | grep -E '>')"
+		if [ "\${#_diff_listing}" != "0" ]; then
 			Func_dec_parse_diff "\${_diff_listing}"
+		else
+			let _diff_count++
 		fi
-		_current_listing="\${_new_listing}"
+		_current_listing="${_new_listing}"
+		if [ "\${Var_dec_diff_count_max}" != "0" ] && [ "\${_diff_count}" -gt "\${Var_dec_diff_count_max}" ]; then
+			break
+		fi
+		let _diff_count++
 		sleep \${Var_dec_diff_sleep}
 	done
 }
@@ -1614,6 +1635,9 @@ Func_check_args(){
 		case "\${_arg%=*}" in
 			--dec-diff-opts|Var_dec_diff_opts)
 				Func_assign_arg "Var_dec_diff_opts" "\${_arg#*=}"
+			;;
+			--dec-diff-count-max|Var_dec_diff_count_max)
+				Func_assign_arg "Var_dec_diff_count_max" "\${_arg#*=}"
 			;;
 			--dec-diff-sleep|Var_dec_diff_sleep)
 				Func_assign_arg "Var_dec_diff_sleep" "\${_arg#*=}"
