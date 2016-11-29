@@ -128,7 +128,7 @@ Func_enc_main(){
 		Y|y|Yes|yes|YES)
 			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
 			Func_enc_write_script_copy
-			if [-e "${Var_enc_copy_save_path}" ]; then
+			if [ -e "${Var_enc_copy_save_path}" ]; then
 				Func_message "# Func_main running: ${Var_enc_copy_save_path}" '2' '3'
 				${Var_enc_copy_save_path}
 			else
