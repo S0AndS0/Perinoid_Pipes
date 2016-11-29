@@ -1316,7 +1316,7 @@ Func_dec_parse_diff(){
 }
 Func_dec_watch_bulk_dir(){
 	_current_listing=""
-	_diff_count=0
+	let _diff_count=0
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_listing="$(ls "${Var_enc_parsing_bulk_out_dir}")"
 		_diff_listing="$(diff ${Var_dec_diff_opts} <(${Var_echo} "${_current_listing}") <(${Var_echo} "${_new_listing}"))"
@@ -1327,11 +1327,12 @@ Func_dec_watch_bulk_dir(){
 			let _diff_count++
 		fi
 		_current_listing="${_new_listing}"
-		if [ "${_count}" -gt "3" ]; then
+		if [ "${_diff_count}" -gt "3" ]; then
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
 		fi
-		Func_message "# Func_dec_watch_bulk_dir running: sleep ${Var_dec_diff_sleep}" '3' '4'
+		let _diff_count++
+		Func_message "# Func_dec_watch_bulk_dir [${_diff_count}] running: sleep ${Var_dec_diff_sleep}" '3' '4'
 		sleep ${Var_dec_diff_sleep}
 	done
 }
