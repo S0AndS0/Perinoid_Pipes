@@ -25,7 +25,7 @@ else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_v2_name}"
 	exit 1
 fi
-_background_processes="$(ps aux | grep "${Var_install_v2_name}" | grep -v grep)"
+_background_processes="$(ps aux | grep "${Var_script_copy_three_name_encrypt}" | grep -v grep)"
 if [ "${#_background_processes}" -gt '0' ]; then
 	echo "# ${Var_script_name} detected the following background processes"
 	echo "${_background_processes}"
@@ -111,7 +111,7 @@ else
 	echo "# ${Var_script_name} will cleanup: ${Var_encrypt_pipe_three_location}"
 	rm -v "${Var_encrypt_pipe_three_location}"
 fi
-_background_processes="$(ps aux | grep "${Var_install_v2_name}" | grep -v grep)"
+_background_processes="$(ps aux | grep "${Var_script_copy_three_name_encrypt}" | grep -v grep)"
 if [ "${#_background_processes}" -gt '0' ]; then
 	echo -e "# ${Var_script_name} reports background processes still running:\n#\n$(ps aux | grep "${Var_install_v2_name}" | grep -v grep)\n#"
 	_background_pid="$(ps aux | grep "${Var_install_v2_name}" | grep -v grep | awk '{print $2}')"
