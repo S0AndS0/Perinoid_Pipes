@@ -196,5 +196,8 @@ elif ! [ -r "${Var_raw_test_three_location}" ]; then
 elif ! [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	echo "# ${Var_script_name} could not read directory: ${Var_bulk_decryption_three_dir}"
 	exit 1
+else
+	echo "# ${Var_script_name} could not proceed"
+	exit 2
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

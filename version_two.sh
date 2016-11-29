@@ -1338,7 +1338,7 @@ Func_dec_watch_bulk_dir(){
 			let _diff_count++
 		fi
 		_current_listing="${_new_listing}"
-		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_diff_count}" -gt "3" ]; then
+		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_diff_count}" -gt "${Var_dec_diff_count_max}" ]; then
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
 		fi
