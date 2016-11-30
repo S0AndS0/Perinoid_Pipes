@@ -1123,8 +1123,10 @@ Func_dec_remove_padding_from_output(){
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
-				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
+				_line[${_count}]="${_input[${_count}]::-${_padding_length}}"
+				_line[${_count}]="${_input[${_count}]:${_padding_length}}"
+#				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
+#				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			elif grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }"; then
 				case "${Var_enc_padding_length}" in
 					adaptive)
@@ -1134,7 +1136,8 @@ Func_dec_remove_padding_from_output(){
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
+				_line[${_count}]="${_input[${_count}]::-${_padding_length}}"
+#				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
 			else
 				case "${Var_enc_padding_length}" in
 					adaptive)
@@ -1144,10 +1147,12 @@ Func_dec_remove_padding_from_output(){
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
+				_line[${_count}]="${_input[${_count}]:${_padding_length}}"
+#				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			fi
 		else
-			_line[${_count}]=( "${_input[${_count}]}" )
+			_line[${_count}]="${_input[${_count}]}"
+#			_line[${_count}]=( "${_input[${_count}]}" )
 		fi
 		let _count++
 	done
