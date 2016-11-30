@@ -1120,52 +1120,63 @@ Func_dec_remove_padding_from_output(){
 	_input=( "$@" )
 	let _count=0
 	until [ "${_count}" = "${#_input[@]}" ]; do
-		if grep -qE "append|prepend" <<<"${Var_enc_padding_placement//,/ }"; then
-			if grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_enc_padding_placement//,/ }"; then
+		_search_for_append="$(grep -E "append" <<<"${Var_enc_padding_placement//,/ }")"
+		_search_for_prepend="$(grep -E "append|prepend" <<<"${Var_enc_padding_placement//,/ }")"
+		_line="${_input[${_count}]}"
+		if [ "${#_search_for_append}" != "0" ] || [ "${#_search_for_prepend}" != "0" ]; then
+#		if grep -qE "append|prepend" <<<"${Var_enc_padding_placement//,/ }"; then
+			if [ "${#_search_for_append}" != "0" ] && [ "${#_search_for_prepend}" != "0" ]; then
+#			if grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_enc_padding_placement//,/ }"; then
 				case "${Var_enc_padding_length}" in
 					adaptive)
-						_padding_length="$((${#_input[${_count}]}/3))"
+						_padding_length="$((${#_line}/3))"
+#						_padding_length="$((${#_input[${_count}]}/3))"
 					;;
 					*)
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]="${_input[${_count}]::-${_padding_length}}"
-				_line[${_count}]="${_input[${_count}]:${_padding_length}}"
+				_line="${_line::-${_padding_length}}"
+				_line="${_line:${_padding_length}}"
 #				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
 #				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
-			elif grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }"; then
+			elif [ "${#_search_for_prepend}" != "0" ]; then
+#			elif grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }"; then
 				case "${Var_enc_padding_length}" in
 					adaptive)
-						_padding_length="$((${#_input[${_count}]}/2))"
+						_padding_length="$((${#_line}/2))"
+#						_padding_length="$((${#_input[${_count}]}/2))"
 					;;
 					*)
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]="${_input[${_count}]::-${_padding_length}}"
+				_line="${_line::-${_padding_length}}"
 #				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
 			else
 				case "${Var_enc_padding_length}" in
 					adaptive)
-						_padding_length="$((${#_input[${_count}]}/2))"
+						_padding_length="$((${#_line}/2))"
+#						_padding_length="$((${#_input[${_count}]}/2))"
 					;;
 					*)
 						_padding_length="${Var_enc_padding_length}"
 					;;
 				esac
-				_line[${_count}]="${_input[${_count}]:${_padding_length}}"
+				_line="${_line:${_padding_length}}"
 #				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
 			fi
 		else
-			_line[${_count}]="${_input[${_count}]}"
+			_line="${_line}"
 #			_line[${_count}]=( "${_input[${_count}]}" )
 		fi
 		let _count++
 	done
-	${Var_echo} "${_line[@]}"
+	${Var_echo} "${_line}"
+#	${Var_echo} "${_line[@]}"
 	unset -v _input[@]
-	unset -v _line[@]
+	unset _line
+#	unset -v _line[@]
 }
 Func_dec_expand_array_to_block(){
 	_input=( "$@" )
