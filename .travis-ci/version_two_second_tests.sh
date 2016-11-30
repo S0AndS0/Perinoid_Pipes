@@ -41,7 +41,7 @@ if [ -e "${Var_install_v2_name}" ]; then
  --dec-yn="yes"\
  --dec-parsing-disown-yn="yes"\
  --dec-bulk-check-sleep="5"\
- --dec-bulk-check-count-max='5'\
+ --dec-bulk-check-count-max='1'\
  --script-log-path="${Var_decrypt_four_log}"\
  --dec-pass="${Var_pass_location}"\
  --dec-parsing-save-output-yn="yes"\
@@ -71,24 +71,32 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" >> "${Var_raw_test_four_location}"
-	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" >> "${Var_raw_test_four_location}"
-	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	if [ -p "${Var_encrypted_four_location}" ]; then
+		echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypted_four_location}\""
+		echo "quit" > "${Var_encrypted_four_location}"
+		_exit_status=$?
+		Func_check_exit_status "${_exit_status}"
+	fi
+	if [ -r "${Var_decrypt_raw_four_location}" ] && [ -r "${Var_raw_test_four_location}" ]; then
+		_decrypted_strings="$(cat "${Var_decrypt_raw_four_location}")"
+		_raw_strings="$(cat "${Var_raw_test_four_location}")"
+		_diff_results="$(diff <(cat "${Var_decrypt_raw_four_location}") <(cat "${Var_raw_test_four_location}"))"
+		echo -e "# Contence of decrypted strings #\n${_decrypted_strings}"
+		echo -e "# Contence of un-encrypted strings #\n${_raw_strings}"
+		if [ "${#_diff_results}" != "0" ]; then
+			echo -e "# Diff results #\n${_diff_results}"
+		else
+			echo "# ${Var_script_name} reports: no differance between strings!"
+		fi
+	fi
+	if [ -r "${Var_decrypt_four_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
+		cat "${Var_decrypt_four_log}"
+	fi
 	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
 		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
 		cat "${Var_encrypt_pipe_four_log}"
@@ -121,31 +129,6 @@ if [ "${#_background_processes}" -gt '0' ]; then
 	done
 else
 	echo "# ${Var_script_name} did not detect any background processes"
-fi
-if [ -r "${Var_decrypt_raw_four_location}" ] && [ -r "${Var_raw_test_four_location}" ]; then
-	_decrypted_strings="$(cat "${Var_decrypt_raw_four_location}")"
-	_raw_strings="$(cat "${Var_raw_test_four_location}")"
-	_diff_results="$(diff <(cat "${Var_decrypt_raw_four_location}") <(cat "${Var_raw_test_four_location}"))"
-	echo -e "# Contence of decrypted strings #\n${_decrypted_strings}"
-	echo -e "# Contence of un-encrypted strings #\n${_raw_strings}"
-	if [ "${#_diff_results}" != "0" ]; then
-		echo -e "# Diff results #\n${_diff_results}"
-	else
-		echo "# ${Var_script_name} reports: no differance between strings!"
-	fi
-	if [ -r "${Var_decrypt_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-		cat "${Var_decrypt_four_log}"
-	fi
-elif ! [ -r "${Var_decrypt_raw_four_location}" ]; then
-	echo "# ${Var_script_name} could not read file: ${Var_decrypt_raw_four_location}"
-	exit 1
-elif ! [ -r "${Var_raw_test_four_location}" ]; then
-	echo "# ${Var_script_name} could not read file: ${Var_raw_test_four_location}"
-	exit 1
-else
-	echo "# ${Var_script_name} could not proceed"
-	exit 2
 fi
 echo "# ${Var_script_name} reports encryption to decryption: Passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"

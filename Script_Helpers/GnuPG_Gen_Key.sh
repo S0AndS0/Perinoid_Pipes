@@ -6,7 +6,7 @@ Var_save_pass_yn="no"
 Var_save_pass_location="${Var_current_working_dir}/GnuPG_${USER}.pass"
 ## How many characters for passphrase as well as length of test strings?
 Var_auto_pass_length='64'
-Var_auto_pass_phrase="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_auto_pass_length}")"
+Var_auto_pass_phrase="$(cat /dev/urandom | tr -cd '[:print:]' | head -c"${Var_auto_pass_length}")"
 Var_prompt_for_pass_yn="yes"
 Var_gnupg_revoke_cert_yn="yes"
 Var_gnupg_conf_save_yn="no"

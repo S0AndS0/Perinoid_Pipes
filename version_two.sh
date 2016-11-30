@@ -71,6 +71,7 @@ Var_dec_pipe_make_yn="no"
 Var_dec_pipe_file="${PWD}/Decryption_Named.pipe"
 Var_dec_pipe_permissions="${USER}:${USER}"
 Var_dec_pipe_ownership="600"
+Var_dec_parsing_quit_string="quit"
 Var_dec_search_string=""
 Var_dec_bulk_check_count_max="0"
 Var_dec_bulk_check_sleep="120"
@@ -188,8 +189,8 @@ Func_dec_main(){
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_dec_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
-					Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
+					Func_message "# Func_dec_main running: Func_dec_watch_file " '2' '3'
+					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
 					Func_message "# Func_dec_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
@@ -202,8 +203,8 @@ Func_dec_main(){
 					Func_message "# Func_dec_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_dec_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
-					Func_dec_watch_file "${Var_enc_parsing_output_file}"
+					Func_message "# Func_dec_main running: Func_dec_watch_file" '2' '3'
+					Func_dec_watch_file
 					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir
 				;;
@@ -272,6 +273,9 @@ Func_check_args(){
 			;;
 			--dec-parsing-output-file|Var_dec_parsing_output_file)
 				Func_assign_arg "Var_dec_parsing_output_file" "${_arg#*=}"
+			;;
+			--dec-parsing-quit-string|Var_dec_parsing_quit_string)
+				Func_assign_arg "Var_dec_parsing_quit_string" "${_arg#*=}"
 			;;
 			--dec-pass|Var_dec_pass)
 				Func_assign_arg "Var_dec_pass" "${_arg#*=}"
@@ -428,6 +432,7 @@ Func_help(){
 	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
 	echo "# --dec-parsing-save-output-yn	Var_dec_parsing_save_output_yn=\"${Var_dec_parsing_save_output_yn}\""
 	echo "# --dec-parsing-output-file		Var_dec_parsing_output_file=\"${Var_dec_parsing_output_file}\""
+	echo "# --dec-parsing-quit-string		Var_dec_parsing_quit_string=\"${Var_dec_parsing_quit_string}\""
 	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
 	echo "# --dec-search-string			Var_dec_search_string=\"${Var_dec_search_string}\""
 	echo "## Encryption command line options"
@@ -670,8 +675,9 @@ Func_enc_pipe_parser_loop(){
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_enc_trap_command}" '2' '3'
-						${Var_enc_trap_command}
+						Func_message "# Func_enc_pipe_parser_loop running: ${Var_rm} \"${Var_enc_pipe_file}\"" '2' '3'
+						#${Var_enc_trap_command}
+						${Var_rm} "${Var_enc_pipe_file}"
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
 					fi
@@ -850,7 +856,8 @@ Func_enc_pipe_parser_loop(){
 			case "\${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
-						\${Var_enc_trap_command}
+						${Var_rm} "\${Var_enc_pipe_file}"
+						#\${Var_enc_trap_command}
 					else
 						${Var_echo} "# ...No pipe to remove at [\${Var_enc_pipe_file}]"
 					fi
@@ -1082,7 +1089,12 @@ Func_dec_spoon_feed_armored_packets(){
 	fi
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
-		if [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
+		if [ "${Var_dec_parsing_quit_string}" = "${_arr_input[${_count}]}" ]; then
+			if [ -p "${_enc_parsing_output_file}" ]; then
+				${Var_rm} "${_enc_parsing_output_file}"
+			fi
+			break
+		elif [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
 			_arr_to_parse+=( "${_arr_input[${_count}]}" )
 			let _count++
 			Func_message "# Func_dec_spoon_feed_armored_packets running: Func_dec_do_stuff_with_lines \"\${_arr_to_parse[@]}\"" '2' '3'
@@ -1179,22 +1191,21 @@ Func_dec_watch_bulk_dir(){
 	done
 }
 Func_dec_watch_file(){
-	_enc_parsing_output_file="${1:-${Var_enc_parsing_output_file}}"
-	Func_message "# Func_dec_watch_file parsing: ${_enc_parsing_output_file}" '3' '4'
-	if [ -p "${_enc_parsing_output_file}" ]; then
-		Func_message "# Func_dec_watch_file detected pipe: ${_enc_parsing_output_file} " '3' '4'
-		while [ -p "${_enc_parsing_output_file}" ]; do
-			Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
-			if ! [ -p "${_enc_parsing_output_file}" ]; then
+	Func_message "# Func_dec_watch_file parsing: ${Var_enc_parsing_output_file}" '3' '4'
+	if [ -p "${Var_enc_parsing_output_file}" ]; then
+		Func_message "# Func_dec_watch_file detected pipe: ${Var_enc_parsing_output_file}" '3' '4'
+		while [ -p "${Var_enc_parsing_output_file}" ]; do
+			Func_dec_spoon_feed_armored_packets "${Var_enc_parsing_output_file}"
+			if ! [ -p "${Var_enc_parsing_output_file}" ]; then
 				break
 			fi
 		done
-	elif [ -f "${_enc_parsing_output_file}" ]; then
-		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"${_enc_parsing_output_file}\"" '3' '4'
-		Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
+	elif [ -f "${Var_enc_parsing_output_file}" ]; then
+		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"${Var_enc_parsing_output_file}\"" '3' '4'
+		Func_dec_spoon_feed_armored_packets "${Var_enc_parsing_output_file}"
 	else
-		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"\${_enc_parsing_output_file}\"" '3' '4'
-		Func_dec_spoon_feed_armored_packets "${_enc_parsing_output_file}"
+		Func_message "# Func_dec_watch_file running: Func_dec_spoon_feed_armored_packets \"\${Var_enc_parsing_output_file}\"" '3' '4'
+		Func_dec_spoon_feed_armored_packets "${Var_enc_parsing_output_file}"
 	fi
 }
 Func_dec_write_script_copy(){
@@ -1224,6 +1235,7 @@ Var_dec_pipe_make_yn="${Var_dec_pipe_make_yn}"
 Var_dec_pipe_file="${Var_dec_pipe_file}"
 Var_dec_pipe_permissions="${Var_dec_pipe_permissions}"
 Var_dec_pipe_ownership="${Var_dec_pipe_ownership}"
+Var_dec_parsing_quit_string="${Var_dec_parsing_quit_string}"
 Func_dec_make_named_pipe(){
 	if ! [ -p "\${Var_dec_pipe_file}" ]; then
 		${Var_mkfifo} "\${Var_dec_pipe_file}" || exit 1
@@ -1283,7 +1295,12 @@ Func_dec_spoon_feed_armored_packets(){
 	fi
 	let _count=0
 	until [ "\${_count}" = "\${#_arr_input[@]}" ]; do
-		if [ "\${_end_of_line}" = "\${_arr_input[\${_count}]}" ]; then
+		if [ "\${Var_dec_parsing_quit_string}" = "\${_arr_input[\${_count}]}" ]; then
+			if [ -p "\${Var_enc_parsing_output_file}" ]; then
+				${Var_rm} "\${Var_enc_parsing_output_file}"
+			fi
+			break
+		elif [ "\${_end_of_line}" = "\${_arr_input[\${_count}]}" ]; then
 			_arr_to_parse+=( "\${_arr_input[\${_count}]}" )
 			let _count++
 			Func_dec_do_stuff_with_lines "\${_arr_to_parse[@]}"
@@ -1364,15 +1381,14 @@ Func_dec_watch_bulk_dir(){
 	done
 }
 Func_dec_watch_file(){
-	_enc_parsing_output_file="\${1:-\${Var_enc_parsing_output_file}}"
-	if [ -p "\${_enc_parsing_output_file}" ]; then
+	if [ -p "\${Var_enc_parsing_output_file}" ]; then
 		while [ -p "\${_enc_parsing_output_file}" ]; do
-			Func_dec_spoon_feed_armored_packets "\${_enc_parsing_output_file}"
+			Func_dec_spoon_feed_armored_packets "\${Var_enc_parsing_output_file}"
 		done
-	elif [ -f "\${_enc_parsing_output_file}" ]; then
-		Func_dec_spoon_feed_armored_packets "\${_enc_parsing_output_file}"
+	elif [ -f "\${Var_enc_parsing_output_file}" ]; then
+		Func_dec_spoon_feed_armored_packets "\${Var_enc_parsing_output_file}"
 	else
-		Func_dec_spoon_feed_armored_packets "\${_enc_parsing_output_file}"
+		Func_dec_spoon_feed_armored_packets "\${Var_enc_parsing_output_file}"
 	fi
 }
 Func_assign_arg(){
@@ -1433,6 +1449,9 @@ Func_check_args(){
 			--dec-parsing-bulk-out-dir|Var_dec_parsing_bulk_out_dir)
 				Func_assign_arg "Var_dec_parsing_bulk_out_dir" "\${_arg#*=}"
 			;;
+			--dec-parsing-quit-string|Var_dec_parsing_quit_string)
+				Func_assign_arg "Var_dec_parsing_quit_string" "\${_arg#*=}"
+			;;
 			--source-var-file|Var_source_var_file)
 				Func_assign_arg "Var_source_var_file" "\${_arg#*=}"
 				if [ -f "\${Var_source_var_file}" ]; then
@@ -1471,7 +1490,7 @@ Func_main(){
 	esac
 	case "\${Var_dec_parsing_disown_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_dec_watch_file "\${Var_enc_parsing_output_file}" >"\${Var_dev_null}" 2>&1 &
+			Func_dec_watch_file >"\${Var_dev_null}" 2>&1 &
 			PID_Func_enc_pipe_parser_loop=\$!
 			disown "\${PID_Func_enc_pipe_parser_loop}"
 			Func_dec_watch_bulk_dir >"\${Var_dev_null}" 2>&1 &
@@ -1479,7 +1498,7 @@ Func_main(){
 			disown "\${PID_Func_enc_pipe_parser_loop}"
 		;;
 		*)
-			Func_dec_watch_file "\${Var_enc_parsing_output_file}"
+			Func_dec_watch_file
 			Func_dec_watch_bulk_dir
 		;;
 	esac
