@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 export Var_script_dir="${0%/*}"
 export Var_script_name="${0##*/}"
-Var_padding_length='adaptive'
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
@@ -15,11 +14,11 @@ if [ -z "${Var_check_path}" ]; then
 fi
 Func_run_sanely "${Var_install_path}/${Var_install_v2_name} --version" "${USER}"
 if [ -e "${Var_install_v2_name}" ]; then
-	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" --enc-padding-enabled-yn='yes' --enc-padding-length="${Var_padding_length}" --enc-padding-placement='prepend,append'
+	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_v2_name}" ]; then
-	${Var_install_path}/${Var_install_v2_name} --debug-level="6" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" --enc-padding-enabled-yn='yes' --enc-padding-length="${Var_padding_length}" --enc-padding-placement='prepend,append'
+	${Var_install_path}/${Var_install_v2_name} --debug-level="6" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -129,9 +128,7 @@ else
 	fi
 fi
 ## Check decryption within version two of main script processes
-#${Var_install_v2_name} --debug-level="0" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
-# --enc-padding-enabled-yn='yes' --enc-padding-length="${Var_padding_length}" --enc-padding-placement='prepend,append'
-${Var_install_v2_name} --debug-level="0" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" --enc-padding-enabled-yn='yes' --enc-padding-length="${Var_padding_length}" --enc-padding-placement='prepend,append'
+${Var_install_v2_name} --debug-level="0" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
 if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ]; then

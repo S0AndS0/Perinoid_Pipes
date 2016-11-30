@@ -34,9 +34,6 @@ Var_enc_copy_save_permissions="750"
 ## Variables for encryption processes
 Var_enc_yn=""
 Var_enc_gpg_opts="--always-trust --armor --batch --no-tty --encrypt"
-Var_enc_padding_enable_yn="no"
-Var_enc_padding_length="adaptive"
-Var_enc_padding_placement="append,prepend"
 Var_enc_parsing_bulk_out_dir="${PWD}/Bulk_Encrypted"
 Var_enc_parsing_bulk_output_suffix=".gpg"
 Var_enc_parsing_disown_yn="yes"
@@ -300,15 +297,6 @@ Func_check_args(){
 			--enc-gpg-opts|Var_enc_gpg_opts)
 				Func_assign_arg "Var_enc_gpg_opts" "${_arg#*=}"
 			;;
-			--enc-padding-enabled-yn|Var_enc_padding_enable_yn)
-				Func_assign_arg "Var_enc_padding_enable_yn" "${_arg#*=}"
-			;;
-			--enc-padding-length|Var_enc_padding_length)
-				Func_assign_arg "Var_enc_padding_length" "${_arg#*=}"
-			;;
-			--enc-padding-placement|Var_enc_padding_placement)
-				Func_assign_arg "Var_enc_padding_placement" "${_arg#*=}"
-			;;
 			--enc-parsing-bulk-out-dir|Var_enc_parsing_bulk_out_dir)
 				Func_assign_arg "Var_enc_parsing_bulk_out_dir" "${_arg#*=}"
 			;;
@@ -423,9 +411,6 @@ Func_help(){
 	echo "# --enc-copy-save-ownership		Var_enc_copy_save_ownership=\"${Var_enc_copy_save_ownership}\""
 	echo "# --enc-copy-save-permissions		Var_enc_copy_save_permissions=\"${Var_enc_copy_save_permissions}\""
 	echo "# --enc-gpg-opts			Var_enc_gpg_opts=\"${Var_enc_gpg_opts}\""
-	echo "# --enc-padding-enabled-yn		Var_enc_padding_enable_yn=\"${Var_enc_padding_enable_yn}\""
-	echo "# --enc-padding-length			Var_enc_padding_length=\"${Var_enc_padding_length}\""
-	echo "# --enc-padding-placement		Var_enc_padding_placement=\"${Var_enc_padding_placement}\""
 	echo "# --enc-parsing-bulk-out-dir		Var_enc_parsing_bulk_out_dir=\"${Var_enc_parsing_bulk_out_dir}\""
 	echo "# --enc-parsing-bulk-output-suffix	Var_enc_parsing_bulk_output_suffix=\"${Var_enc_parsing_bulk_output_suffix}\""
 	echo "# --enc-parsing-disown-yn		Var_enc_parsing_disown_yn=\"${Var_enc_parsing_disown_yn}\""
@@ -587,72 +572,21 @@ Func_enc_map_read_array_to_output(){
 			${Var_cat} <<<"${_line[${_count}]}"
 			break
 		else
-			case "${Var_enc_padding_enable_yn}" in
+			case "${Var_enc_parsing_filter_input_yn}" in
 				y|Y|yes|Yes|YES)
-					_line="${_lines[${_count}]}"
-#					_line=( "${_lines[${_count}]}" )
-					case "${Var_enc_padding_length}" in
-						adaptive)
-							_padding_length="${#_line}"
-#							_padding_length="${#_line[${_count}]}"
+					case "${_lines[${_count}]}" in
+						${Var_enc_parsing_filter_comment_pattern})
+							${Var_cat} <<<"${_lines[${_count}]//${Var_enc_parsing_filter_allowed_chars}/}"
 						;;
 						*)
-							_padding_length="${Var_enc_padding_length}"
+							${Var_cat} <<<"# ${_lines[${_count}]//${Var_enc_parsing_filter_allowed_chars}/}"
 						;;
 					esac
-					for _option in ${Var_enc_padding_placement//,/ }; do
-						case "${_option}" in
-							append)
-								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-								_line="${_line}${Var_padding_command}"
-#								_line+=( "${Var_padding_command}" )
-							;;
-							prepend)
-								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-								_line="${Var_padding_command}${_line}"
-#								_line=( "${Var_padding_command}" "${_line[${_count}]}" )
-							;;
-						esac
-					done
-					case "${Var_enc_parsing_filter_input_yn}" in
-						y|Y|yes|Yes|YES)
-							case "${_lines[${_count}]}" in
-								${Var_enc_parsing_filter_comment_pattern})
-									${Var_cat} <<<"${_line//${Var_enc_parsing_filter_allowed_chars}/}"
-#									${Var_cat} <<<"${_line[@]//${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-								*)
-									${Var_cat} <<<"# ${_line//${Var_enc_parsing_filter_allowed_chars}/}"
-#									${Var_cat} <<<"# ${_line[*]//${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-							esac
-							let _count++
-						;;
-						*)
-							${Var_cat} <<<"${_line}"
-#							${Var_cat} <<<"${_line[@]}"
-							let _count++
-						;;
-					esac
+					let _count++
 				;;
 				*)
-					case "${Var_enc_parsing_filter_input_yn}" in
-						y|Y|yes|Yes|YES)
-							case "${_lines[${_count}]}" in
-								${Var_enc_parsing_filter_comment_pattern})
-									${Var_cat} <<<"${_lines[${_count}]//${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-								*)
-									${Var_cat} <<<"# ${_lines[${_count}]//${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-							esac
-							let _count++
-						;;
-						*)
-							${Var_cat} <<<"${_lines[${_count}]}"
-							let _count++
-						;;
-					esac
+					${Var_cat} <<<"${_lines[${_count}]}"
+					let _count++
 				;;
 			esac
 		fi
@@ -740,9 +674,6 @@ set +o history
 Var_script_dir="\${0%/*}"
 Var_script_name="\${0##*/}"
 Var_enc_gpg_opts="${Var_enc_gpg_opts}"
-Var_enc_padding_enable_yn="${Var_enc_padding_enable_yn}"
-Var_enc_padding_length="${Var_enc_padding_length}"
-Var_enc_padding_placement="${Var_enc_padding_placement}"
 Var_enc_parsing_bulk_out_dir="${Var_enc_parsing_bulk_out_dir}"
 Var_enc_parsing_bulk_output_suffix="${Var_enc_parsing_bulk_output_suffix}"
 Var_enc_parsing_disown_yn="${Var_enc_parsing_disown_yn}"
@@ -831,65 +762,21 @@ Func_enc_map_read_array_to_output(){
 			${Var_cat} <<<"\${_line[\${_count}]}"
 			break
 		else
-			case "\${Var_enc_padding_enable_yn}" in
+			case "\${Var_enc_parsing_filter_input_yn}" in
 				y|Y|yes|Yes|YES)
-					_line=( "\${_lines[\${_count}]}" )
-					case "\${Var_enc_padding_length}" in
-						adaptive)
-							_padding_length="\${#_lines[\${_count}]}"
+					case "\${_lines[\${_count}]}" in
+						\${Var_enc_parsing_filter_comment_pattern})
+							${Var_cat} <<<"\${_lines[\${_count}]//\${Var_enc_parsing_filter_allowed_chars}/}"
 						;;
 						*)
-							_padding_length="\${Var_enc_padding_length}"
+							${Var_cat} <<<"# \${_lines[\${_count}]//\${Var_enc_parsing_filter_allowed_chars}/}"
 						;;
 					esac
-					for _option in \${Var_enc_padding_placement//,/ }; do
-						case "\${_option}" in
-							append)
-								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-								_line+=( "\${Var_padding_command}" )
-							;;
-							prepend)
-								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-								_line=( "\${Var_padding_command}" "\${_lines[\${_count}]}" )
-							;;
-						esac
-					done
-					case "\${Var_enc_parsing_filter_input_yn}" in
-						y|Y|yes|Yes|YES)
-							case "\${_lines[\${_count}]}" in
-								\${Var_enc_parsing_filter_comment_pattern})
-									${Var_cat} <<<"\${_line[@]//\${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-								*)
-									${Var_cat} <<<"# \${_line[*]//\${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-							esac
-							let _count++
-						;;
-						*)
-							${Var_cat} <<<"\${_line[@]}"
-							let _count++
-						;;
-					esac
+					let _count++
 				;;
 				*)
-					case "\${Var_enc_parsing_filter_input_yn}" in
-						y|Y|yes|Yes|YES)
-							case "\${_lines[\${_count}]}" in
-								\${Var_enc_parsing_filter_comment_pattern})
-									${Var_cat} <<<"\${_lines[\${_count}]//\${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-								*)
-									${Var_cat} <<<"# \${_lines[\${_count}]//\${Var_enc_parsing_filter_allowed_chars}/}"
-								;;
-							esac
-							let _count++
-						;;
-						*)
-							${Var_cat} <<<"\${_lines[\${_count}]}"
-							let _count++
-						;;
-					esac
+					${Var_cat} <<<"\${_lines[\${_count}]}"
+					let _count++
 				;;
 			esac
 		fi
@@ -967,15 +854,6 @@ Func_check_args(){
 		case "\${_arg%=*}" in
 			--enc-gpg-opts|Var_enc_gpg_opts)
 				Func_assign_arg "Var_enc_gpg_opts" "\${_arg#*=}"
-			;;
-			--enc-padding-enable-yn|Var_enc_padding_enable_yn)
-				Func_assign_arg "Var_enc_padding_enable_yn" "\${_arg#*=}"
-			;;
-			--enc-padding-length|Var_enc_padding_length)
-				Func_assign_arg "Var_enc_padding_length" "\${_arg#*=}"
-			;;
-			--enc-padding-placement|Var_enc_padding_placement)
-				Func_assign_arg "Var_enc_padding_placement" "\${_arg#*=}"
 			;;
 			--enc-parsing-bulk-out-dir|Var_enc_parsing_bulk_out_dir)
 				Func_assign_arg "Var_enc_parsing_bulk_out_dir" "\${_arg#*=}"
@@ -1116,68 +994,6 @@ Func_dec_pass_the_pass(){
 		exec 9<(${Var_echo} "${_pass[@]}")
 	fi
 }
-Func_dec_remove_padding_from_output(){
-	_input=( "$@" )
-	let _count=0
-	until [ "${_count}" = "${#_input[@]}" ]; do
-		_search_for_append="$(grep -E "append" <<<"${Var_enc_padding_placement//,/ }")"
-		_search_for_prepend="$(grep -E "append|prepend" <<<"${Var_enc_padding_placement//,/ }")"
-		_line="${_input[${_count}]}"
-		if [ "${#_search_for_append}" != "0" ] || [ "${#_search_for_prepend}" != "0" ]; then
-#		if grep -qE "append|prepend" <<<"${Var_enc_padding_placement//,/ }"; then
-			if [ "${#_search_for_append}" != "0" ] && [ "${#_search_for_prepend}" != "0" ]; then
-#			if grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"${Var_enc_padding_placement//,/ }"; then
-				case "${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="$((${#_line}/3))"
-#						_padding_length="$((${#_input[${_count}]}/3))"
-					;;
-					*)
-						_padding_length="${Var_enc_padding_length}"
-					;;
-				esac
-				_line="${_line::-${_padding_length}}"
-				_line="${_line:${_padding_length}}"
-#				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
-#				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
-			elif [ "${#_search_for_prepend}" != "0" ]; then
-#			elif grep -qE "append"  <<<"${Var_enc_padding_placement//,/ }"; then
-				case "${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="$((${#_line}/2))"
-#						_padding_length="$((${#_input[${_count}]}/2))"
-					;;
-					*)
-						_padding_length="${Var_enc_padding_length}"
-					;;
-				esac
-				_line="${_line::-${_padding_length}}"
-#				_line[${_count}]=( "${_input[${_count}]::-${_padding_length}}" )
-			else
-				case "${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="$((${#_line}/2))"
-#						_padding_length="$((${#_input[${_count}]}/2))"
-					;;
-					*)
-						_padding_length="${Var_enc_padding_length}"
-					;;
-				esac
-				_line="${_line:${_padding_length}}"
-#				_line[${_count}]=( "${_input[${_count}]:${_padding_length}}" )
-			fi
-		else
-			_line="${_line}"
-#			_line[${_count}]=( "${_input[${_count}]}" )
-		fi
-		let _count++
-	done
-	${Var_echo} "${_line}"
-#	${Var_echo} "${_line[@]}"
-	unset -v _input[@]
-	unset _line
-#	unset -v _line[@]
-}
 Func_dec_expand_array_to_block(){
 	_input=( "$@" )
 	let _count=0
@@ -1197,47 +1013,21 @@ Func_dec_do_stuff_with_lines(){
 		Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" > \"${Var_dec_parsing_output_file}\"" '3' '4'
 		${Var_cat} <<<"${_enc_input}" > "${Var_dec_parsing_output_file}"
 	elif [ -f "${Var_dec_parsing_output_file}" ]; then
-		case "${Var_enc_padding_enable_yn}" in
-			Y|y|Yes|yes|YES)
-				if [ "${#Var_dec_search_string}" = "0" ]; then
-					Func_message "# Func_dec_do_stuff_with_lines running: Func_dec_remove_padding_from_output \"\$(${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts})\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-					Func_dec_remove_padding_from_output "$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts})" >> "${Var_dec_parsing_output_file}"
-				else
-					Func_message "# ${Var_script_name} running: Func_dec_remove_padding_from_output \"\$(${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\")\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-					Func_dec_remove_padding_from_output "$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}")" >> "${Var_dec_parsing_output_file}"
-				fi
-			;;
-			*)
-				if [ "${#Var_dec_search_string}" = "0" ]; then
-					Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-					${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} >> "${Var_dec_parsing_output_file}"
-				else
-					Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-					${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
-				fi
-			;;
-		esac
+		if [ "${#Var_dec_search_string}" = "0" ]; then
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} >> \"${Var_dec_parsing_output_file}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} >> "${Var_dec_parsing_output_file}"
+		else
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
+		fi
 	else
-		case "${Var_enc_padding_enable_yn}" in
-			Y|y|Yes|yes|YES)
-				if [ "${#Var_dec_search_string}" = "0" ]; then
-					Func_message "# Func_dec_do_stuff_with_lines running: Func_dec_remove_padding_from_output \"\$(${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts})\"" '3' '4'
-					Func_dec_remove_padding_from_output "$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts})"
-				else
-					Func_message "# Func_dec_do_stuff_with_lines running: Func_dec_remove_padding_from_output \"\$(${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\")\"" '3' '4'
-					Func_dec_remove_padding_from_output "$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}")"
-				fi
-			;;
-			*)
-				if [ "${#Var_dec_search_string}" = "0" ]; then
-					Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts}" '3' '4'
-					${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts}
-				else
-					Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\"" '3' '4'
-					${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}"
-				fi
-			;;
-		esac
+		if [ "${#Var_dec_search_string}" = "0" ]; then
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts}" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts}
+		else
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}"
+		fi
 	fi
 	unset -v _enc_block[@]
 	unset _enc_input
@@ -1388,9 +1178,6 @@ Var_dec_search_string="${Var_dec_search_string}"
 Var_dec_gpg_opts="${Var_dec_gpg_opts}"
 Var_enc_parsing_bulk_out_dir="${Var_enc_parsing_bulk_out_dir}"
 Var_dec_parsing_bulk_out_dir="${Var_dec_parsing_bulk_out_dir}"
-Var_enc_padding_enable_yn="${Var_enc_padding_enable_yn}"
-Var_enc_padding_length="${Var_enc_padding_length}"
-Var_enc_padding_placement="${Var_enc_padding_placement}"
 Var_dec_parsing_disown_yn="${Var_dec_parsing_disown_yn}"
 Var_dec_bulk_check_count_max="${Var_dec_bulk_check_count_max}"
 Var_dec_bulk_check_sleep="${Var_dec_bulk_check_sleep}"
@@ -1402,52 +1189,6 @@ Func_dec_pass_the_pass(){
 	else
 		exec 9<(${Var_echo} "\${_pass[@]}")
 	fi
-}
-Func_dec_remove_padding_from_output(){
-	_input=( "\$@" )
-	let _count=0
-	until [ "\${_count}" = "\${#_input[@]}" ]; do
-		if grep -qE "append|prepend" <<<"\${Var_enc_padding_placement//,/ }"; then
-			if grep -qE "append"  <<<"\${Var_enc_padding_placement//,/ }" && grep -qE "prepend"  <<<"\${Var_enc_padding_placement//,/ }"; then
-				case "\${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="\$((\${#_input[\${_count}]}/3))"
-					;;
-					*)
-						_padding_length="\${Var_enc_padding_length}"
-					;;
-				esac
-				_line[\${_count}]=( "\${_input[\${_count}]::-\${_padding_length}}" )
-				_line[\${_count}]=( "\${_input[\${_count}]:\${_padding_length}}" )
-			elif grep -qE "append"  <<<"\${Var_enc_padding_placement//,/ }"; then
-				case "\${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="\$((\${#_input[\${_count}]}/2))"
-					;;
-					*)
-						_padding_length="\${Var_enc_padding_length}"
-					;;
-				esac
-				_line[\${_count}]=( "\${_input[\${_count}]::-\${_padding_length}}" )
-			else
-				case "\${Var_enc_padding_length}" in
-					adaptive)
-						_padding_length="\$((\${#_input[\${_count}]}/2))"
-					;;
-					*)
-						_padding_length="\${Var_enc_padding_length}"
-					;;
-				esac
-				_line[\${_count}]=( "\${_input[\${_count}]:\${_padding_length}}" )
-			fi
-		else
-			_line[\${_count}]=( "\${_input[\${_count}]}" )
-		fi
-		let _count++
-	done
-	${Var_echo} "\${_line[@]}"
-	unset -v _input[@]
-	unset -v _line[@]
 }
 Func_dec_expand_array_to_block(){
 	_input=( "\$@" )
@@ -1466,39 +1207,17 @@ Func_dec_do_stuff_with_lines(){
 	if [ -p "\${Var_dec_parsing_output_file}" ]; then
 		${Var_cat} <<<"\${_enc_input}" > "\${Var_dec_parsing_output_file}"
 	elif [ -f "\${Var_dec_parsing_output_file}" ]; then
-		case "\${Var_enc_padding_enable_yn}" in
-			Y|y|Yes|yes|YES)
-				if [ "\${#Var_dec_search_string}" = "0" ]; then
-					Func_dec_remove_padding_from_output "\$(${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts})" >> "\${Var_dec_parsing_output_file}"
-				else
-					Func_dec_remove_padding_from_output "\$(${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}")" >> "\${Var_dec_parsing_output_file}"
-				fi
-			;;
-			*)
-				if [ "\${#Var_dec_search_string}" = "0" ]; then
-					${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} >> "\${Var_dec_parsing_output_file}"
-				else
-					${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}" >> "\${Var_dec_parsing_output_file}"
-				fi
-			;;
-		esac
+		if [ "\${#Var_dec_search_string}" = "0" ]; then
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} >> "\${Var_dec_parsing_output_file}"
+		else
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}" >> "\${Var_dec_parsing_output_file}"
+		fi
 	else
-		case "\${Var_enc_padding_enable_yn}" in
-			Y|y|Yes|yes|YES)
-				if [ "\${#Var_dec_search_string}" = "0" ]; then
-					Func_dec_remove_padding_from_output "\$(${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts})"
-				else
-					Func_dec_remove_padding_from_output "\$(${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}")"
-				fi
-			;;
-			*)
-				if [ "\${#Var_dec_search_string}" = "0" ]; then
-					${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts}
-				else
-					${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}"
-				fi
-			;;
-		esac
+		if [ "\${#Var_dec_search_string}" = "0" ]; then
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts}
+		else
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -E "\${Var_dec_search_string}"
+		fi
 	fi
 	unset -v _enc_block[@]
 	unset _enc_input
@@ -1643,15 +1362,6 @@ Func_check_args(){
 			;;
 			--dec-search-string|Var_dec_search_string)
 				Func_assign_arg "Var_dec_search_string" "\${_arg#*=}"
-			;;
-			--enc-padding-enable-yn|Var_enc_padding_enable_yn)
-				Func_assign_arg "Var_enc_padding_enable_yn" "\${_arg#*=}"
-			;;
-			--enc-padding-length|Var_enc_padding_length)
-				Func_assign_arg "Var_enc_padding_length" "\${_arg#*=}"
-			;;
-			--enc-padding-placement|Var_enc_padding_placement)
-				Func_assign_arg "Var_enc_padding_placement" "\${_arg#*=}"
 			;;
 			--enc-parsing-output-file|Var_enc_parsing_output_file)
 				Func_assign_arg "Var_enc_parsing_output_file" "\${_arg#*=}"
