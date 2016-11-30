@@ -61,7 +61,7 @@ export Var_script_copy_three_name_encrypt="${PWD}/encryption_listener_three.sh"
 ## Variables for testing experomental features of version two
 export Var_encrypt_pipe_four_location="${PWD}/encrypt_four.pipe"
 export Var_encrypt_pipe_four_log="${PWD}/encrypt_four.log"
-export Var_encrypted_four_location="${PWD}/encrypt_four.gpg"
+export Var_encrypted_four_location="${PWD}/decrypt_four.pipe"
 export Var_encrypted_four_bulk_dir="${PWD}/bulk_encryption_four"
 export Var_raw_test_four_location="${PWD}/raw_strings_four.txt"
 export Var_encrypt_file_four_path="${PWD}/ReadMe.md"
