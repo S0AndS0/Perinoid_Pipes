@@ -143,13 +143,14 @@ if [ -d "${Var_encrypted_three_bulk_dir}" ]; then
 	echo "# ${Var_script_name} reports: all encryption checks passed"
 else
 	echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_three_bulk_dir}"
-	exit 1
+#	exit 1
 fi
 ## Check decryption within version two of main script processes
 ${Var_install_v2_name} --debug-level="0" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"  --enc-padding-enabled-yn='yes' --enc-padding-length='adaptive' --enc-padding-placement='prepend,append'
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
-if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_three_dir}" ]; then
+if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ]; then
+#if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_location}" ] && [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	_decrypted_strings="$(cat "${Var_decrypt_raw_three_location}")"
 	_raw_strings="$(cat "${Var_raw_test_three_location}")"
 	_diff_results="$(diff <(cat "${Var_decrypt_raw_three_location}") <(cat "${Var_raw_test_three_location}"))"
@@ -195,7 +196,7 @@ elif ! [ -r "${Var_raw_test_three_location}" ]; then
 	exit 1
 elif ! [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	echo "# ${Var_script_name} could not read directory: ${Var_bulk_decryption_three_dir}"
-	exit 1
+#	exit 1
 else
 	echo "# ${Var_script_name} could not proceed"
 	exit 2
