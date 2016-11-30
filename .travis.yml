@@ -62,7 +62,9 @@ script:
  - chmod +x .travis-ci/script_encrypt_copy.sh
  - .travis-ci/script_encrypt_copy.sh
 ## Setps to complete after success or falure
-## Re-enabled script copy encryption tests for builds
+## - Run version two of main script encryption/decryption tests
+##  this effectivly bundles both main script and decryption
+##  helper script operations into one script that can do either.
 after_success:
  - chmod u+x .travis-ci/version_two_tests.sh
  - .travis-ci/version_two_tests.sh

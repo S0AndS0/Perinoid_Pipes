@@ -70,9 +70,8 @@ Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
 Var_dec_pass=""
 Var_dec_search_string=""
 ## Special variables
-Var_dec_diff_count_max="0"
-Var_dec_diff_opts="--suppress-common-lines"
-Var_dec_diff_sleep="120"
+Var_dec_bulk_check_count_max="0"
+Var_dec_bulk_check_sleep="120"
 
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
 Func_enc_clean_up_trap(){
@@ -234,14 +233,11 @@ Func_check_args(){
 			--dec-copy-save-path|Var_dec_copy_save_path)
 				Func_assign_arg "Var_dec_copy_save_path" "${_arg#*=}"
 			;;
-			--dec-diff-count-max|Var_dec_diff_count_max)
-				Func_assign_arg "Var_dec_diff_count_max" "${_arg#*=}"
+			--dec-bulk-check-count-max|Var_dec_bulk_check_count_max)
+				Func_assign_arg "Var_dec_bulk_check_count_max" "${_arg#*=}"
 			;;
-			--dec-diff-opts|Var_dec_diff_opts)
-				Func_assign_arg "Var_dec_diff_opts" "${_arg#*=}"
-			;;
-			--dec-diff-sleep|Var_dec_diff_sleep)
-				Func_assign_arg "Var_dec_diff_sleep" "${_arg#*=}"
+			--dec-bulk-check-sleep|Var_dec_bulk_check_sleep)
+				Func_assign_arg "Var_dec_bulk_check_sleep" "${_arg#*=}"
 			;;
 			--dec-gpg-opts|Var_dec_gpg_opts)
 				Func_assign_arg "Var_dec_gpg_opts" "${_arg#*=}"
@@ -411,9 +407,8 @@ Func_help(){
 	echo "# --dec-yn				Var_dec_yn=\"${Var_dec_yn}\""
 	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
 	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
-	echo "# --dec-diff-count-max			Var_dec_diff_count_max=\"${Var_dec_diff_count_max}\""
-	echo "# --dec-diff-opts			Var_dec_diff_opts=\"${Var_dec_diff_opts}\""
-	echo "# --dec-diff-sleep			Var_dec_diff_sleep=\"${Var_dec_diff_sleep}\""
+	echo "# --dec-bulk-check-count-max			Var_dec_bulk_check_count_max=\"${Var_dec_bulk_check_count_max}\""
+	echo "# --dec-bulk-check-sleep			Var_dec_bulk_check_sleep=\"${Var_dec_bulk_check_sleep}\""
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
 	echo "# --dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=\"${Var_dec_parsing_bulk_out_dir}\""
 	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
@@ -1323,13 +1318,13 @@ Func_dec_watch_bulk_dir(){
 		fi
 		_current_sig="${_new_sig}"
 		let _watch_count++
-		if [ "${Var_dec_diff_count_max}" != "0" ] && [ "${_watch_count}" -gt "${Var_dec_diff_count_max}" ]; then
+		if [ "${Var_dec_bulk_check_count_max}" != "0" ] && [ "${_watch_count}" -gt "${Var_dec_bulk_check_count_max}" ]; then
 			unset _watch_count
 			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
 			break
 		fi
-		Func_message "# Func_dec_watch_bulk_dir [${_watch_count}] running: sleep ${Var_dec_diff_sleep}" '3' '4'
-		sleep ${Var_dec_diff_sleep}
+		Func_message "# Func_dec_watch_bulk_dir [${_watch_count}] running: sleep ${Var_dec_bulk_check_sleep}" '3' '4'
+		sleep ${Var_dec_bulk_check_sleep}
 	done
 }
 Func_dec_watch_file(){
@@ -1374,9 +1369,8 @@ Var_enc_padding_enable_yn="${Var_enc_padding_enable_yn}"
 Var_enc_padding_length="${Var_enc_padding_length}"
 Var_enc_padding_placement="${Var_enc_padding_placement}"
 Var_dec_parsing_disown_yn="${Var_dec_parsing_disown_yn}"
-Var_dec_diff_count_max="${Var_dec_diff_count_max}"
-Var_dec_diff_opts="${Var_dec_diff_opts}"
-Var_dec_diff_sleep="${Var_dec_diff_sleep}"
+Var_dec_bulk_check_count_max="${Var_dec_bulk_check_count_max}"
+Var_dec_bulk_check_sleep="${Var_dec_bulk_check_sleep}"
 Var_dev_null="${Var_dev_null}"
 Func_dec_pass_the_pass(){
 	_pass=( "\$@" )
@@ -1571,11 +1565,11 @@ Func_dec_watch_bulk_dir(){
 		fi
 		_current_sig="\${_new_sig}"
 		let _watch_count++
-		if [ "\${Var_dec_diff_count_max}" != "0" ] && [ "\${_diff_count}" -gt "\${Var_dec_diff_count_max}" ]; then
+		if [ "\${Var_dec_bulk_check_count_max}" != "0" ] && [ "\${_diff_count}" -gt "\${Var_dec_bulk_check_count_max}" ]; then
 			unset _watch_count
 			break
 		fi
-		sleep \${Var_dec_diff_sleep}
+		sleep \${Var_dec_bulk_check_sleep}
 	done
 }
 Func_dec_watch_file(){
@@ -1603,14 +1597,11 @@ Func_check_args(){
 	until [ "\${#_arr_input[@]}" = "\${_arr_count}" ]; do
 		_arg="\${_arr_input[\${_arr_count}]}"
 		case "\${_arg%=*}" in
-			--dec-diff-opts|Var_dec_diff_opts)
-				Func_assign_arg "Var_dec_diff_opts" "\${_arg#*=}"
+			--dec-bulk-check-count-max|Var_dec_bulk_check_count_max)
+				Func_assign_arg "Var_dec_bulk_check_count_max" "\${_arg#*=}"
 			;;
-			--dec-diff-count-max|Var_dec_diff_count_max)
-				Func_assign_arg "Var_dec_diff_count_max" "\${_arg#*=}"
-			;;
-			--dec-diff-sleep|Var_dec_diff_sleep)
-				Func_assign_arg "Var_dec_diff_sleep" "\${_arg#*=}"
+			--dec-bulk-check-sleep|Var_dec_bulk_check_sleep)
+				Func_assign_arg "Var_dec_bulk_check_sleep" "\${_arg#*=}"
 			;;
 			--dec-gpg-opts|Var_dec_gpg_opts)
 				Func_assign_arg "Var_dec_gpg_opts" "\${_arg#*=}"
