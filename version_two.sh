@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+## Check builds with: shellcheck -e SC2004,SH2086 <scriptname>
 set +o history
 ## Assign name of this script and file path to variables for latter use
 Var_script_dir="${0%/*}"
@@ -49,9 +50,9 @@ Var_enc_parsing_output_max_size="4096"
 Var_enc_parsing_output_check_frequency="100"
 Var_enc_parsing_save_output_yn="yes"
 Var_enc_parsing_quit_string="quit"
-Var_enc_pipe_permissions="600"
-Var_enc_pipe_ownership="${USER}:${USER}"
 Var_enc_pipe_file="${PWD}/Encryption_Named.pipe"
+Var_enc_pipe_ownership="${USER}:${USER}"
+Var_enc_pipe_permissions="600"
 Var_enc_trap_command="/bin/rm -f ${Var_enc_pipe_file}"
 Var_enc_parsing_output_permissions="640"
 Var_enc_parsing_output_ownership="${USER}:${USER}"
@@ -65,11 +66,14 @@ Var_dec_parsing_disown_yn="no"
 Var_dec_parsing_save_output_yn="yes"
 Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
 Var_dec_pass=""
-Var_dec_search_string=""
 ## Special variables
+Var_dec_pipe_make_yn="no"
+Var_dec_pipe_file="${PWD}/Decryption_Named.pipe"
+Var_dec_pipe_permissions="${USER}:${USER}"
+Var_dec_pipe_ownership="600"
+Var_dec_search_string=""
 Var_dec_bulk_check_count_max="0"
 Var_dec_bulk_check_sleep="120"
-
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
 Func_enc_clean_up_trap(){
 	_exit_code="$1"
@@ -123,51 +127,57 @@ Func_main(){
 Func_enc_main(){
 	case "${Var_enc_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
+			Func_message "# Func_enc_main running: Func_enc_write_script_copy" '2' '3'
 			Func_enc_write_script_copy
 			if [ -e "${Var_enc_copy_save_path}" ]; then
-				Func_message "# Func_main running: ${Var_enc_copy_save_path}" '2' '3'
+				Func_message "# Func_enc_main running: ${Var_enc_copy_save_path}" '2' '3'
 				${Var_enc_copy_save_path}
 			else
-				Func_message "# Func_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+				Func_message "# Func_enc_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
 			fi
 		;;
 		*)
-			Func_message "# Func_main running: Func_enc_make_named_pipe" '2' '3'
+			Func_message "# Func_enc_main running: Func_enc_make_named_pipe" '2' '3'
 			Func_enc_make_named_pipe
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '2' '3'
+					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '2' '3'
 					Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
+					Func_message "# Func_enc_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					Func_message "# Func_enc_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_main running: Func_enc_pipe_parser_loop" '2' '3'
+					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop" '2' '3'
 					Func_enc_pipe_parser_loop
-					Func_message "# Func_main quitting: Func_enc_pipe_parser_loop" '2' '3'
+					Func_message "# Func_enc_main quitting: Func_enc_pipe_parser_loop" '2' '3'
 					set -o history
 				;;
 			esac
-			Func_message "# Func_main exiting encryption checks with: [$?]" '2' '3'
+			Func_message "# Func_enc_main exiting encryption checks with: [$?]" '2' '3'
 		;;
 	esac
 }
 Func_dec_main(){
 	case "${Var_dec_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_message "# Func_main running: Func_enc_write_script_copy" '2' '3'
+			Func_message "# Func_dec_main running: Func_enc_write_script_copy" '2' '3'
 			Func_dec_write_script_copy
 			if [ -e "${Var_dec_copy_save_path}" ]; then
-				Func_message "# Func_main running: ${Var_dec_copy_save_path}" '2' '3'
+				Func_message "# Func_dec_main running: ${Var_dec_copy_save_path}" '2' '3'
 				${Var_dec_copy_save_path}
 			else
-				Func_message "# Func_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+				Func_message "# Func_dec_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
 			fi
 		;;
 		*)
+			case "${Var_dec_pipe_make_yn}" in
+				y|Y|yes|Yes)
+					Func_message "# Func_dec_main running: Func_dec_make_named_pipe" '2' '3'
+					Func_dec_make_named_pipe
+				;;
+			esac
 			case "${Var_dec_parsing_save_output_yn}" in
 				y|Y|yes|Yes)
 					if ! [ -f "${Var_dec_parsing_output_file}" ]; then
@@ -178,23 +188,23 @@ Func_dec_main(){
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}" >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
+					Func_message "# Func_dec_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
-					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '2' '3'
+					Func_message "# Func_dec_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
 					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
+					Func_message "# Func_dec_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
 					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					Func_message "# Func_dec_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
 				;;
 				*)
-					Func_message "# Func_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_file \"${Var_enc_parsing_output_file}\"" '2' '3'
 					Func_dec_watch_file "${Var_enc_parsing_output_file}"
-					Func_message "# Func_main running: Func_dec_watch_bulk_dir" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir" '2' '3'
 					Func_dec_watch_bulk_dir
 				;;
 			esac
@@ -238,6 +248,18 @@ Func_check_args(){
 			;;
 			--dec-gpg-opts|Var_dec_gpg_opts)
 				Func_assign_arg "Var_dec_gpg_opts" "${_arg#*=}"
+			;;
+			--dec-pipe-make-yn|Var_dec_pipe_make_yn)
+				Func_assign_arg "Var_dec_pipe_make_yn" "${_arg#*=}"
+			;;
+			--dec-pipe-file|Var_dec_pipe_file)
+				Func_assign_arg "Var_dec_pipe_file" "${_arg#*=}"
+			;;
+			--dec-pipe-permissions|Var_dec_pipe_permissions)
+				Func_assign_arg "Var_dec_pipe_permissions" "${_arg#*=}"
+			;;
+			--dec-pipe-ownership|Var_dec_pipe_ownership)
+				Func_assign_arg "Var_dec_pipe_ownership" "${_arg#*=}"
 			;;
 			--dec-parsing-bulk-out-dir|Var_dec_parsing_bulk_out_dir)
 				Func_assign_arg "Var_dec_parsing_bulk_out_dir" "${_arg#*=}"
@@ -398,6 +420,10 @@ Func_help(){
 	echo "# --dec-bulk-check-count-max			Var_dec_bulk_check_count_max=\"${Var_dec_bulk_check_count_max}\""
 	echo "# --dec-bulk-check-sleep			Var_dec_bulk_check_sleep=\"${Var_dec_bulk_check_sleep}\""
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
+	echo "# --dec-pipe-make-yn		Var_dec_pipe_make_yn=\"Var_dec_pipe_make_yn}\""
+	echo "# --dec-pipe-file			Var_dec_pipe_file=\"${Var_dec_pipe_file}\""
+	echo "# --dec-pipe-permissions		Var_dec_pipe_permissions=\"${Var_dec_pipe_permissions}\""
+	echo "# --dec-pipe-ownership		Var_dec_pipe_ownership=\"${Var_dec_pipe_ownership}\""
 	echo "# --dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=\"${Var_dec_parsing_bulk_out_dir}\""
 	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
 	echo "# --dec-parsing-save-output-yn	Var_dec_parsing_save_output_yn=\"${Var_dec_parsing_save_output_yn}\""
@@ -504,6 +530,7 @@ EOF
 		;;
 	esac
 }
+## Encryption functions
 Func_enc_make_named_pipe(){
 	if ! [ -p "${Var_enc_pipe_file}" ]; then
 		Func_message "# Func_enc_make_named_pipe running: ${Var_mkfifo} \"${Var_enc_pipe_file}\" || exit 1" '2' '3'
@@ -616,7 +643,7 @@ Func_enc_pipe_parser_loop(){
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_tar} -cz - \"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > ${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}" '2' '3'
 						${Var_tar} -cz - "${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}"
 					else
-						if ! [ -f "${Var_enc_parsing_output_file}" ]; then
+						if ! [ -f "${Var_enc_parsing_output_file}" ] || ! [ -p "${Var_enc_parsing_output_file}" ]; then
 							Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
 							touch "${Var_enc_parsing_output_file}"
 							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
@@ -802,7 +829,7 @@ Func_enc_pipe_parser_loop(){
 						Var_star_date="\$(date -u +%s)"
 						${Var_tar} -cz - "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz\${Var_enc_parsing_bulk_output_suffix}"
 					else
-						if ! [ -f "\${Var_enc_parsing_output_file}" ]; then
+						if ! [ -f "\${Var_enc_parsing_output_file}" ] || ! [ -p "\${Var_enc_parsing_output_file}" ]; then
 							touch "\${Var_enc_parsing_output_file}"
 							${Var_chmod} "\${Var_enc_parsing_output_permissions}" "\${Var_enc_parsing_output_file}"
 							${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
@@ -983,6 +1010,17 @@ EOF
 			Func_message "# Func_enc_write_script_copy skipping writing of: ${Var_enc_copy_save_path}" '2' '3'
 		;;
 	esac
+}
+## Functions for decryption
+Func_dec_make_named_pipe(){
+	if ! [ -p "${Var_dec_pipe_file}" ]; then
+		Func_message "# Func_dec_make_named_pipe running: ${Var_mkfifo} \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
+		${Var_mkfifo} "${Var_dec_pipe_file}" || exit 1
+	fi
+	Func_message "# Func_dec_make_named_pipe running: ${Var_chmod} \"${Var_dec_pipe_permissions}\" \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
+	${Var_chmod} "${Var_dec_pipe_permissions}" "${Var_dec_pipe_file}" || exit 1
+	Func_message "# Func_dec_make_named_pipe running: ${Var_chown} \"${Var_dec_pipe_ownership}\" \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
+	${Var_chown} "${Var_dec_pipe_ownership}" "${Var_dec_pipe_file}" || exit 1
 }
 Func_dec_pass_the_pass(){
 	_pass=( "$@" )
@@ -1182,6 +1220,17 @@ Var_dec_parsing_disown_yn="${Var_dec_parsing_disown_yn}"
 Var_dec_bulk_check_count_max="${Var_dec_bulk_check_count_max}"
 Var_dec_bulk_check_sleep="${Var_dec_bulk_check_sleep}"
 Var_dev_null="${Var_dev_null}"
+Var_dec_pipe_make_yn="${Var_dec_pipe_make_yn}"
+Var_dec_pipe_file="${Var_dec_pipe_file}"
+Var_dec_pipe_permissions="${Var_dec_pipe_permissions}"
+Var_dec_pipe_ownership="${Var_dec_pipe_ownership}"
+Func_dec_make_named_pipe(){
+	if ! [ -p "\${Var_dec_pipe_file}" ]; then
+		${Var_mkfifo} "\${Var_dec_pipe_file}" || exit 1
+	fi
+	${Var_chmod} "\${Var_dec_pipe_permissions}" "\${Var_dec_pipe_file}" || exit 1
+	${Var_chown} "\${Var_dec_pipe_ownership}" "\${Var_dec_pipe_file}" || exit 1
+}
 Func_dec_pass_the_pass(){
 	_pass=( "\$@" )
 	if [ -f "\${_pass[@]}" ]; then
@@ -1348,6 +1397,18 @@ Func_check_args(){
 			--dec-gpg-opts|Var_dec_gpg_opts)
 				Func_assign_arg "Var_dec_gpg_opts" "\${_arg#*=}"
 			;;
+			--dec-pipe-make-yn|Var_dec_pipe_make_yn)
+				Func_assign_arg "Var_dec_pipe_make_yn" "\${_arg#*=}"
+			;;
+			--dec-pipe-file|Var_dec_pipe_file)
+				Func_assign_arg "Var_dec_pipe_file" "\${_arg#*=}"
+			;;
+			--dec-pipe-permissions|Var_dec_pipe_permissions)
+				Func_assign_arg "Var_dec_pipe_permissions" "\${_arg#*=}"
+			;;
+			--dec-pipe-ownership|Var_dec_pipe_ownership)
+				Func_assign_arg "Var_dec_pipe_ownership" "\${_arg#*=}"
+			;;
 			--dec-parsing-save-output-yn|Var_dec_parsing_save_output_yn)
 				Func_assign_arg "Var_dec_parsing_save_output_yn" "\${_arg#*=}"
 			;;
@@ -1396,6 +1457,11 @@ Func_main(){
 	if [ "\${#_input[@]}" != "0" ]; then
 		Func_check_args "\${_input[@]}"
 	fi
+	case "\${Var_dec_pipe_make_yn}" in
+		y|Y|yes|Yes)
+			Func_dec_make_named_pipe
+		;;
+	esac
 	case "\${Var_dec_parsing_save_output_yn}" in
 		y|Y|yes|Yes)
 			if ! [ -f "\${Var_dec_parsing_output_file}" ]; then
