@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 export Var_script_dir="${0%/*}"
 export Var_script_name="${0##*/}"
-Var_padding_length='32'
+Var_padding_length='adaptive'
 source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
@@ -64,8 +64,7 @@ if [ -p "${Var_encrypt_pipe_three_location}" ]; then
 	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_three_location}\""
 	chmod 660 "${Var_raw_test_three_location}"
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" > "${Var_raw_test_three_location}"
-#	echo "${_test_string}" >> "${Var_raw_test_three_location}"
+	echo "${_test_string}" >> "${Var_raw_test_three_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_three_location}")"
 	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_three_location}\""
 	echo "${_current_string}" > "${Var_encrypt_pipe_three_location}"

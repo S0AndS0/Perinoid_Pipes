@@ -589,10 +589,12 @@ Func_enc_map_read_array_to_output(){
 		else
 			case "${Var_enc_padding_enable_yn}" in
 				y|Y|yes|Yes|YES)
-					_line=( "${_lines[${_count}]}" )
+					_line="${_lines[${_count}]}"
+#					_line=( "${_lines[${_count}]}" )
 					case "${Var_enc_padding_length}" in
 						adaptive)
-							_padding_length="${#_lines[${_count}]}"
+							_padding_length="${#_line}"
+#							_padding_length="${#_line[${_count}]}"
 						;;
 						*)
 							_padding_length="${Var_enc_padding_length}"
@@ -602,11 +604,13 @@ Func_enc_map_read_array_to_output(){
 						case "${_option}" in
 							append)
 								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-								_line+=( "${Var_padding_command}" )
+								_line+="${Var_padding_command}"
+#								_line+=( "${Var_padding_command}" )
 							;;
 							prepend)
 								Var_padding_command="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c${_padding_length})"
-								_line=( "${Var_padding_command}" "${_line[${_count}]}" )
+								_line"${Var_padding_command}${_line}"
+#								_line=( "${Var_padding_command}" "${_line[${_count}]}" )
 							;;
 						esac
 					done
@@ -614,16 +618,19 @@ Func_enc_map_read_array_to_output(){
 						y|Y|yes|Yes|YES)
 							case "${_lines[${_count}]}" in
 								${Var_enc_parsing_filter_comment_pattern})
-									${Var_cat} <<<"${_line[@]//${Var_enc_parsing_filter_allowed_chars}/}"
+									${Var_cat} <<<"${_line//${Var_enc_parsing_filter_allowed_chars}/}"
+#									${Var_cat} <<<"${_line[@]//${Var_enc_parsing_filter_allowed_chars}/}"
 								;;
 								*)
-									${Var_cat} <<<"# ${_line[*]//${Var_enc_parsing_filter_allowed_chars}/}"
+									${Var_cat} <<<"# ${_line//${Var_enc_parsing_filter_allowed_chars}/}"
+#									${Var_cat} <<<"# ${_line[*]//${Var_enc_parsing_filter_allowed_chars}/}"
 								;;
 							esac
 							let _count++
 						;;
 						*)
-							${Var_cat} <<<"${_line[@]}"
+							${Var_cat} <<<"${_line}"
+#							${Var_cat} <<<"${_line[@]}"
 							let _count++
 						;;
 					esac
@@ -843,7 +850,7 @@ Func_enc_map_read_array_to_output(){
 							;;
 							prepend)
 								Var_padding_command="\$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c\${_padding_length})"
-								_line=( "\${Var_padding_command}" "\${_line[\${_count}]}" )
+								_line=( "\${Var_padding_command}" "\${_lines[\${_count}]}" )
 							;;
 						esac
 					done
