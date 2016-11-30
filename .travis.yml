@@ -52,6 +52,9 @@ before_script:
 ## - Run helper decryption again but this time test features of searching
 ##  decrypted output prior to saving to a file. This is usefull for saving
 ##  space for limited resources bound devices.
+## - Run version two of main script encryption/decryption tests
+##  this effectivly bundles both main script and decryption
+##  helper script operations into one script that can do either.
 script:
  - chmod +x .travis-ci/script_encrypt.sh
  - .travis-ci/script_encrypt.sh
@@ -61,13 +64,13 @@ script:
  - .travis-ci/test_search_script_decrypt.sh
  - chmod +x .travis-ci/script_encrypt_copy.sh
  - .travis-ci/script_encrypt_copy.sh
-## Setps to complete after success or falure
-## - Run version two of main script encryption/decryption tests
-##  this effectivly bundles both main script and decryption
-##  helper script operations into one script that can do either.
-after_success:
  - chmod u+x .travis-ci/version_two_tests.sh
  - .travis-ci/version_two_tests.sh
+## Setps to complete after success or falure
+## - Run version two script with padding and/or other experomental options
+after_success:
+ - chmod u+x .travis-ci/version_two_second_tests.sh
+ - .travis-ci/version_two_second_tests.sh
 # - chmod +x .travis-ci/script_decrypt_copy.sh
 # - .travis-ci/script_decrypt_copy.sh
 #after_failure:
