@@ -71,6 +71,14 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	if [ -r "${Var_decrypt_four_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
+		cat "${Var_decrypt_four_log}"
+	fi
+	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
+		cat "${Var_encrypt_pipe_four_log}"
+	fi
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
@@ -93,14 +101,14 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 			echo "# ${Var_script_name} reports: no differance between strings!"
 		fi
 	fi
-	if [ -r "${Var_decrypt_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-		cat "${Var_decrypt_four_log}"
-	fi
-	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
-		cat "${Var_encrypt_pipe_four_log}"
-	fi
+#	if [ -r "${Var_decrypt_four_log}" ]; then
+#		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
+#		cat "${Var_decrypt_four_log}"
+#	fi
+#	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
+#		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
+#		cat "${Var_encrypt_pipe_four_log}"
+#	fi
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_four_location}"
 	exit 1

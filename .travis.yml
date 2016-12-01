@@ -68,9 +68,9 @@ script:
  - .travis-ci/version_two_tests.sh
 ## Setps to complete after success or falure
 ## - Run version two script with padding and/or other experomental options
-after_success:
- - chmod u+x .travis-ci/version_two_second_tests.sh
- - .travis-ci/version_two_second_tests.sh
+#after_success:
+# - chmod u+x .travis-ci/version_two_second_tests.sh
+# - .travis-ci/version_two_second_tests.sh
 # - chmod +x .travis-ci/script_decrypt_copy.sh
 # - .travis-ci/script_decrypt_copy.sh
 #after_failure:

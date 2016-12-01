@@ -29,7 +29,7 @@ Var_gpg="$(which gpg)"
 Var_mkdir="$(which mkdir)"
 ## Variables for encryption script copy
 Var_enc_copy_save_yn="no"
-Var_enc_copy_save_path="${PWD}/Slim_${Var_script_name}"
+Var_enc_copy_save_path="${PWD}/Encrypter.sh"
 Var_enc_copy_save_ownership="${USER}:${USER}"
 Var_enc_copy_save_permissions="750"
 ## Variables for encryption processes
@@ -59,7 +59,9 @@ Var_enc_parsing_output_ownership="${USER}:${USER}"
 ## Decryption variables
 Var_dec_yn=""
 Var_dec_copy_save_yn="no"
-Var_dec_copy_save_path=""
+Var_dec_copy_save_path="${PWD}/Decrypter.sh"
+Var_enc_copy_save_ownership="${USER}:${USER}"
+Var_enc_copy_save_permissions="750"
 Var_dec_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
 Var_dec_parsing_bulk_out_dir=""
 Var_dec_parsing_disown_yn="no"
@@ -241,6 +243,12 @@ Func_check_args(){
 			--dec-copy-save-path|Var_dec_copy_save_path)
 				Func_assign_arg "Var_dec_copy_save_path" "${_arg#*=}"
 			;;
+			--dec-copy-save-ownership|Var_dec_copy_save_ownership)
+				Func_assign_arg "Var_dec_copy_save_ownership" "${_arg#*=}"
+			;;
+			--dec-copy-save-permissions|Var_dec_copy_save_permissions)
+				Func_assign_arg "Var_dec_copy_save_permissions" "${_arg#*=}"
+			;;
 			--dec-bulk-check-count-max|Var_dec_bulk_check_count_max)
 				Func_assign_arg "Var_dec_bulk_check_count_max" "${_arg#*=}"
 			;;
@@ -421,6 +429,8 @@ Func_help(){
 	echo "# --dec-yn				Var_dec_yn=\"${Var_dec_yn}\""
 	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
 	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
+	echo "# --dec-copy-save-ownership		Var_dec_copy_save_ownership=\"${Var_dec_copy_save_ownership}\""
+	echo "# --dec-copy-save-permissions		Var_dec_copy_save_permissions=\"${Var_dec_copy_save_permissions}\""
 	echo "# --dec-bulk-check-count-max			Var_dec_bulk_check_count_max=\"${Var_dec_bulk_check_count_max}\""
 	echo "# --dec-bulk-check-sleep			Var_dec_bulk_check_sleep=\"${Var_dec_bulk_check_sleep}\""
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
@@ -1212,9 +1222,9 @@ Func_dec_write_script_copy(){
 	case "${Var_dec_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
 			if [ -f "${Var_dec_copy_save_path}" ]; then
-				Func_message "# Func_enc_write_script_copy reports script copy already exsists: ${Var_dec_copy_save_path}" '2' '3'
+				Func_message "# Func_dec_write_script_copy reports script copy already exsists: ${Var_dec_copy_save_path}" '2' '3'
 			else
-				Func_message "# Func_enc_write_script_copy writing script copy: ${Var_dec_copy_save_path}" '2' '3'
+				Func_message "# Func_dec_write_script_copy writing script copy: ${Var_dec_copy_save_path}" '2' '3'
 				${Var_cat} > "${Var_dec_copy_save_path}" <<EOF
 #!/usr/bin/env bash
 Var_script_dir="\${0%/*}"
@@ -1508,14 +1518,14 @@ ${Var_echo} "## \${Var_script_name} exited with \$? at \$(date)"
 
 EOF
 
-				Func_message "# Func_enc_write_script_copy running: ${Var_chown} \"${Var_enc_copy_save_ownership}\" \"${Var_dec_copy_save_path}\"" '2' '3'
-				${Var_chown} "${Var_enc_copy_save_ownership}" "${Var_dec_copy_save_path}"
-				Func_message "# Func_enc_write_script_copy running: ${Var_chmod} \"${Var_enc_copy_save_permissions}\" \"${Var_dec_copy_save_path}\"" '2' '3'
-				${Var_chmod} "${Var_enc_copy_save_permissions}" "${Var_dec_copy_save_path}"
+				Func_message "# Func_dec_write_script_copy running: ${Var_chown} \"${Var_dec_copy_save_ownership}\" \"${Var_dec_copy_save_path}\"" '2' '3'
+				${Var_chown} "${Var_dec_copy_save_ownership}" "${Var_dec_copy_save_path}"
+				Func_message "# Func_dec_write_script_copy running: ${Var_chmod} \"${Var_dec_copy_save_permissions}\" \"${Var_dec_copy_save_path}\"" '2' '3'
+				${Var_chmod} "${Var_dec_copy_save_permissions}" "${Var_dec_copy_save_path}"
 			fi
 		;;
 		*)
-			Func_message "# Func_enc_write_script_copy skipping writing of: ${Var_dec_copy_save_path}" '2' '3'
+			Func_message "# Func_dec_write_script_copy skipping writing of: ${Var_dec_copy_save_path}" '2' '3'
 		;;
 	esac
 

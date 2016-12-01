@@ -58,6 +58,7 @@ export Var_decrypt_raw_three_location="${PWD}/decrypt_three.txt"
 export Var_decrypt_three_log="${PWD}/decrypt_three.log"
 export Var_bulk_decryption_three_dir="${PWD}/bulk_decryption_three"
 export Var_script_copy_three_name_encrypt="${PWD}/encryption_listener_three.sh"
+export Var_script_copy_three_name_decrypt="${PWD}/decryption_listener_three.sh"
 ## Variables for testing experomental features of version two
 export Var_encrypt_pipe_four_location="${PWD}/encrypt_four.pipe"
 export Var_encrypt_pipe_four_log="${PWD}/encrypt_four.log"
