@@ -1061,7 +1061,7 @@ Func_dec_expand_array_to_block(){
 }
 Func_dec_do_stuff_with_lines(){
 	_enc_block=( "$@" )
-	_enc_input=$(Func_dec_expand_array_to_block "${_enc_block[@]}")
+	_enc_input="$(Func_dec_expand_array_to_block "${_enc_block[@]}")"
 	Func_message "# Func_dec_do_stuff_with_lines running: Func_dec_pass_the_pass \"\${Var_dec_pass}\"" '3' '4'
 	Func_dec_pass_the_pass "${Var_dec_pass}"
 	if [ -p "${Var_dec_parsing_output_file}" ]; then
@@ -1100,8 +1100,8 @@ Func_dec_spoon_feed_armored_packets(){
 	let _count=0
 	until [ "${_count}" = "${#_arr_input[@]}" ]; do
 		if [ "${Var_dec_parsing_quit_string}" = "${_arr_input[${_count}]}" ]; then
-			if [ -p "${_enc_parsing_output_file}" ]; then
-				${Var_rm} "${_enc_parsing_output_file}"
+			if [ -p "${Var_enc_parsing_output_file}" ]; then
+				${Var_rm} "${Var_enc_parsing_output_file}"
 			fi
 			break
 		elif [ "${_end_of_line}" = "${_arr_input[${_count}]}" ]; then
@@ -1273,7 +1273,7 @@ Func_dec_expand_array_to_block(){
 }
 Func_dec_do_stuff_with_lines(){
 	_enc_block=( "\$@" )
-	_enc_input=$(Func_dec_expand_array_to_block "\${_enc_block[@]}" )
+	_enc_input="\$(Func_dec_expand_array_to_block "\${_enc_block[@]}")"
 	Func_dec_pass_the_pass "\${Var_dec_pass}"
 	if [ -p "\${Var_dec_parsing_output_file}" ]; then
 		${Var_cat} <<<"\${_enc_input}" > "\${Var_dec_parsing_output_file}"
@@ -1338,12 +1338,11 @@ Func_dec_file_or_dir(){
 			_output_dir="\${_output_dir%.tar.gpg*}"
 			if ! [ -d "\${_output_dir}" ]; then
 				mkdir -p "\${_output_dir}"
+				cd "\${_output_dir}"
+				${Var_gpg} \${Var_dec_gpg_opts}  "\${_encrypted_path}" | tar -xf -
+				cd "\${_old_pwd}"
 			fi
-			cd "\${_output_dir}"
-			${Var_cat} "\${_encrypted_path}" | ${Var_gpg} \${Var_dec_gpg_opts} | tar -xf -
-			cd "\${_old_pwd}"
 			unset _old_pwd
-			unset _dir_list
 		;;
 		*.tgz.gpg)
 			_old_pwd="\${PWD}"
@@ -1351,12 +1350,11 @@ Func_dec_file_or_dir(){
 			_output_dir="\${_output_dir%.tgz.gpg*}"
 			if ! [ -d "\${_output_dir}" ]; then
 				mkdir -p "\${_output_dir}"
+				cd "\${_output_dir}"
+				${Var_gpg} \${Var_dec_gpg_opts} "\${_encrypted_path}" | tar -xzf -
+				cd "\${_old_pwd}"
 			fi
-			cd "\${_output_dir}"
-			${Var_cat} "\${_encrypted_path}" | ${Var_gpg} \${Var_dec_gpg_opts} | tar -xzf -
-			cd "\${_old_pwd}"
 			unset _old_pwd
-			unset _dir_list
 		;;
 		*.gpg)
 			if ! [ -d "\${Var_dec_parsing_bulk_out_dir}" ]; then
@@ -1364,8 +1362,10 @@ Func_dec_file_or_dir(){
 			fi
 			_output_file="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_file="\${_output_file%.gpg*}"
-			${Var_cat} "\${_encrypted_path}" | ${Var_gpg} \${Var_dec_gpg_opts} > "\${_output_file}"
-			unset _output_file
+			if ! [ -f "\${_output_file}" ]; then
+				${Var_cat} "\${_encrypted_path}" | ${Var_gpg} \${Var_dec_gpg_opts} > "\${_output_file}"
+				unset _output_file
+			fi
 		;;
 	esac
 	exec 9>&-
@@ -1377,6 +1377,7 @@ Func_dec_watch_bulk_dir(){
 	while [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; do
 		_new_sig="\$(find \${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
 		if [ "\${_current_sig}" != "\${_new_sig}" ]; then
+			## This funy way of piping into a while loop should silence SheckCheck
 			find "\${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
 				Func_dec_file_or_dir "\${_path}"
 			done
@@ -1392,8 +1393,11 @@ Func_dec_watch_bulk_dir(){
 }
 Func_dec_watch_file(){
 	if [ -p "\${Var_enc_parsing_output_file}" ]; then
-		while [ -p "\${_enc_parsing_output_file}" ]; do
+		while [ -p "\${Var_enc_parsing_output_file}" ]; do
 			Func_dec_spoon_feed_armored_packets "\${Var_enc_parsing_output_file}"
+			if ! [ -p "\${Var_enc_parsing_output_file}" ]; then
+				break
+			fi
 		done
 	elif [ -f "\${Var_enc_parsing_output_file}" ]; then
 		Func_dec_spoon_feed_armored_packets "\${Var_enc_parsing_output_file}"
