@@ -34,7 +34,7 @@ if [ -e "${Var_install_v2_name}" ]; then
  --debug-level="8"\
  --log-level="9"\
  --dec-yn="yes"\
- --dec-parsing-disown-yn="yes"\
+ --dec-parsing-disown-yn="no"\
  --dec-bulk-check-sleep="5"\
  --dec-bulk-check-count-max='1'\
  --script-log-path="${Var_decrypt_four_log}"\
@@ -47,8 +47,8 @@ if [ -e "${Var_install_v2_name}" ]; then
  --dec-pipe-make-yn='yes'\
  --dec-pipe-file="${Var_enc_dec_shared_pipe}"\
  --dec-pipe-permissions="660"\
- --dec-pipe-ownership="${USER}:${USER}"\
- ---Var_dev_null="${PWD}/null.log"
+ --dec-pipe-ownership="${USER}:${USER}" >>"${PWD}/null.log" 2>&1 &
+# ---Var_dev_null=""
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
