@@ -137,6 +137,7 @@ Func_enc_main(){
 				${Var_enc_copy_save_path}
 			else
 				Func_message "# Func_enc_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+				cat "${Var_enc_copy_save_path}"
 			fi
 		;;
 		*)
@@ -146,10 +147,9 @@ Func_enc_main(){
 				Y|y|Yes|yes|YES)
 					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '2' '3'
 					Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
-					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_enc_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
-					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_enc_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					PID_loop=$!
+					disown "${PID_loop}"
+					Func_message "# Func_enc_main disowned PID ${PID_loop} parsing loops" '2' '3'
 				;;
 				*)
 					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop" '2' '3'
@@ -165,13 +165,14 @@ Func_enc_main(){
 Func_dec_main(){
 	case "${Var_dec_copy_save_yn}" in
 		Y|y|Yes|yes|YES)
-			Func_message "# Func_dec_main running: Func_enc_write_script_copy" '2' '3'
+			Func_message "# Func_dec_main running: Func_dec_write_script_copy" '2' '3'
 			Func_dec_write_script_copy
 			if [ -e "${Var_dec_copy_save_path}" ]; then
 				Func_message "# Func_dec_main running: ${Var_dec_copy_save_path}" '2' '3'
 				${Var_dec_copy_save_path}
 			else
-				Func_message "# Func_dec_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
+				Func_message "# Func_dec_main could not exicute: ${Var_dec_copy_save_path}" '2' '3'
+				cat "${Var_dec_copy_save_path}"
 			fi
 		;;
 		*)
@@ -191,18 +192,18 @@ Func_dec_main(){
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_dec_main running: Func_dec_watch_file " '2' '3'
-					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
-					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_dec_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
-					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_dec_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
-					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir" '2' '3'
-					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
-					PID_Func_enc_pipe_parser_loop=$!
-					Func_message "# Func_dec_main running: disown \"${PID_Func_enc_pipe_parser_loop}\"" '2' '3'
-					disown "${PID_Func_enc_pipe_parser_loop}"
-					Func_message "# Func_dec_main disowned PID ${PID_Func_enc_pipe_parser_loop} parsing loops" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_file >\"${Var_dev_null}\" &" '2' '3'
+					Func_dec_watch_file >"${Var_dev_null}" &
+#					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
+					PID_loop=$!
+#					disown "${PID_loop}"
+					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
+					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir >\"${Var_dev_null}\" &" '2' '3'
+					Func_dec_watch_bulk_dir >"${Var_dev_null}" &
+#					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
+					PID_loop=$!
+#					disown "${PID_loop}"
+					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
 				;;
 				*)
 					Func_message "# Func_dec_main running: Func_dec_watch_file" '2' '3'
@@ -211,7 +212,7 @@ Func_dec_main(){
 					Func_dec_watch_bulk_dir
 				;;
 			esac
-			Func_message "# Func_main exiting decryption checks with: [$?]" '2' '3'
+			Func_message "# Func_dec_main exiting decryption checks with: [$?]" '2' '3'
 		;;
 	esac
 }
@@ -636,6 +637,7 @@ Func_enc_map_read_array_to_output(){
 }
 Func_enc_pipe_parser_loop(){
 	_enc_gpg_opts="${Var_enc_gpg_opts} --recipient ${Var_enc_parsing_recipient// / --recipient }"
+	let _check_count=0
 	while [ -p "${Var_enc_pipe_file}" ]; do
 		_mapped_array="$(Func_enc_map_read_array_to_output "${Var_enc_pipe_file}")"
 		if [ "${#_mapped_array}" != "0" ] && [ "${Var_enc_parsing_quit_string}" != "${_mapped_array}" ]; then
@@ -668,17 +670,16 @@ Func_enc_pipe_parser_loop(){
 						fi
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
 						${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
-						let _count++
-						if [ "${_count}" -gt "${Var_enc_parsing_output_check_frequency}" ] || [ "${_count}" = "${Var_enc_parsing_output_check_frequency}" ]; then
+						if [ "${_check_count}" -gt "${Var_enc_parsing_output_check_frequency}" ] || [ "${_check_count}" = "${Var_enc_parsing_output_check_frequency}" ]; then
 							Func_message "# Func_enc_pipe_parser_loop running: Func_enc_rotate_output_file \"${Var_enc_parsing_output_file}\" \"${Var_enc_parsing_output_rotate_yn}\" \"${Var_enc_parsing_output_max_size}\" \"${Var_enc_parsing_output_rotate_actions}\" \"${Var_enc_parsing_output_rotate_recipient}\"" '2' '3'
 							Func_enc_rotate_output_file "${Var_enc_parsing_output_file}" "${Var_enc_parsing_output_rotate_yn}" "${Var_enc_parsing_output_max_size}" "${Var_enc_parsing_output_rotate_actions}" "${Var_enc_parsing_output_rotate_recipient}"
 						fi
+						let _check_count++
 					fi
 				;;
 				*)
 					Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts}" '2' '3'
 					${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts}
-					let _count++
 				;;
 			esac
 		elif [ "${Var_enc_parsing_quit_string}" = "${_mapped_array}" ]; then
@@ -686,7 +687,6 @@ Func_enc_pipe_parser_loop(){
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_rm} \"${Var_enc_pipe_file}\"" '2' '3'
-						#${Var_enc_trap_command}
 						${Var_rm} "${Var_enc_pipe_file}"
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
@@ -701,8 +701,8 @@ Func_enc_pipe_parser_loop(){
 			Func_message "# Func_enc_pipe_parser_loop reports: missing pipe ${Var_enc_pipe_file}" '2' '3'
 			break
 		fi
-		unset _exit_status
 	done
+	unset _check_count
 }
 Func_enc_write_script_copy(){
 	case "${Var_enc_copy_save_yn}" in
@@ -827,6 +827,7 @@ Func_enc_map_read_array_to_output(){
 }
 Func_enc_pipe_parser_loop(){
 	_enc_gpg_opts="\${Var_enc_gpg_opts} --recipient \${Var_enc_parsing_recipient// / --recipient }"
+	let _check_count=0
 	while [ -p "\${Var_enc_pipe_file}" ]; do
 		_mapped_array="\$(Func_enc_map_read_array_to_output "\${Var_enc_pipe_file}")"
 		if [ "\${#_mapped_array}" != "0" ] && [ "\${Var_enc_parsing_quit_string}" != "\${_mapped_array}" ]; then
@@ -851,15 +852,14 @@ Func_enc_pipe_parser_loop(){
 							${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
 						fi
 						${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_output_file}"
-						let _count++
-						if [ "\${_count}" -gt "\${Var_enc_parsing_output_check_frequency}" ] || [ "\${_count}" = "\${Var_enc_parsing_output_check_frequency}" ]; then
+						if [ "\${_check_count}" -gt "\${Var_enc_parsing_output_check_frequency}" ] || [ "\${_check_count}" = "\${Var_enc_parsing_output_check_frequency}" ]; then
 							Func_enc_rotate_output_file "\${Var_enc_parsing_output_file}" "\${Var_enc_parsing_output_rotate_yn}" "\${Var_enc_parsing_output_max_size}" "\${Var_enc_parsing_output_rotate_actions}" "\${Var_enc_parsing_output_rotate_recipient}"
 						fi
+						let _check_count++
 					fi
 				;;
 				*)
 					${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts}
-					let _count++
 				;;
 			esac
 		elif [ "\${Var_enc_parsing_quit_string}" = "\${_mapped_array}" ]; then
@@ -867,21 +867,15 @@ Func_enc_pipe_parser_loop(){
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
 						${Var_rm} "\${Var_enc_pipe_file}"
-						#\${Var_enc_trap_command}
-					else
-						${Var_echo} "# ...No pipe to remove at [\${Var_enc_pipe_file}]"
 					fi
-				;;
-				*)
-					${Var_echo} "# \${Var_script_name} trap set outside [Map_read_input_to_array] function parsing loop"
 				;;
 			esac
 			break
 		elif ! [ -p "\${Var_enc_pipe_file}" ]; then
 			break
 		fi
-		unset _exit_status
 	done
+	unset _check_count
 }
 Func_assign_arg(){
 	_variable="\${1}"
@@ -1000,9 +994,9 @@ Func_main(){
 	case "\${Var_enc_parsing_disown_yn}" in
 		Y|y|Yes|yes|YES)
 			Func_enc_pipe_parser_loop >"\${Var_dev_null}" 2>&1 &
-			PID_Func_enc_pipe_parser_loop=\$!
-			disown "\${PID_Func_enc_pipe_parser_loop}"
-			${Var_echo} "## \${Var_script_name} disowned PID [\${PID_Func_enc_pipe_parser_loop}] parsing loops"
+			PID_loop=\$!
+			disown "\${PID_loop}"
+			${Var_echo} "## \${Var_script_name} disowned PID [\${PID_loop}] parsing loops"
 		;;
 		*)
 			${Var_echo} "## \${Var_script_name} will start parsing loop in this terminal"
@@ -1505,11 +1499,11 @@ Func_main(){
 	case "\${Var_dec_parsing_disown_yn}" in
 		Y|y|Yes|yes|YES)
 			Func_dec_watch_file >"\${Var_dev_null}" 2>&1 &
-			PID_Func_enc_pipe_parser_loop=\$!
-			disown "\${PID_Func_enc_pipe_parser_loop}"
+			PID_loop=\$!
+			disown "\${PID_loop}"
 			Func_dec_watch_bulk_dir >"\${Var_dev_null}" 2>&1 &
-			PID_Func_enc_pipe_parser_loop=\$!
-			disown "\${PID_Func_enc_pipe_parser_loop}"
+			PID_loop=\$!
+			disown "\${PID_loop}"
 		;;
 		*)
 			Func_dec_watch_file

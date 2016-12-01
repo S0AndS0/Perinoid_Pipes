@@ -30,7 +30,7 @@ if [ -e "${Var_install_v2_name}" ]; then
  --enc-parsing-recipient="${Var_gnupg_email}"\
  --enc-parsing-output-rotate-recipient="${Var_gnupg_email}"\
  --enc-pipe-file="${Var_encrypt_pipe_four_location}"\
- --enc-parsing-output-file="${Var_encrypted_four_location}"\
+ --enc-parsing-output-file="${Var_enc_dec_shared_pipe}"\
  --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
@@ -46,11 +46,11 @@ if [ -e "${Var_install_v2_name}" ]; then
  --dec-pass="${Var_pass_location}"\
  --dec-parsing-save-output-yn="yes"\
  --dec-parsing-output-file="${Var_decrypt_raw_four_location}"\
- --enc-parsing-output-file="${Var_encrypted_four_location}"\
+ --enc-parsing-output-file="${Var_enc_dec_shared_pipe}"\
  --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}"\
  --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"\
  --dec-pipe-make-yn='yes'\
- --dec-pipe-file="${Var_encrypted_four_location}"\
+ --dec-pipe-file="${Var_enc_dec_shared_pipe}"\
  --dec-pipe-permissions="660"\
  --dec-pipe-ownership="${USER}:${USER}"
 	_exit_status=$?
@@ -59,6 +59,17 @@ else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_v2_name}"
 	exit 1
 fi
+## Check logs before and after write redirections
+#	
+if [ -r "${Var_decrypt_four_log}" ]; then
+	echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
+	cat "${Var_decrypt_four_log}"
+fi
+if [ -r "${Var_encrypt_pipe_four_log}" ]; then
+	echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
+	cat "${Var_encrypt_pipe_four_log}"
+fi
+#	
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
 	touch "${Var_raw_test_four_location}"
@@ -83,9 +94,9 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	if [ -p "${Var_encrypted_four_location}" ]; then
-		echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypted_four_location}\""
-		echo "quit" > "${Var_encrypted_four_location}"
+	if [ -p "${Var_enc_dec_shared_pipe}" ]; then
+		echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_enc_dec_shared_pipe}\""
+		echo "quit" > "${Var_enc_dec_shared_pipe}"
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 	fi
@@ -121,11 +132,11 @@ else
 	echo "# ${Var_script_name} will cleanup: ${Var_encrypt_pipe_four_location}"
 	rm -v "${Var_encrypt_pipe_four_location}"
 fi
-if [ -p "${Var_encrypted_four_location}" ]; then
-	echo "# ${Var_script_name} detected remaining pipe: ${Var_encrypted_four_location}"
-	rm -vf "${Var_encrypted_four_location}"
+if [ -p "${Var_enc_dec_shared_pipe}" ]; then
+	echo "# ${Var_script_name} detected remaining pipe: ${Var_enc_dec_shared_pipe}"
+	rm -vf "${Var_enc_dec_shared_pipe}"
 else
-	echo "# ${Var_script_name} did not detect remaining pipe: ${Var_encrypted_four_location}"
+	echo "# ${Var_script_name} did not detect remaining pipe: ${Var_enc_dec_shared_pipe}"
 fi
 _background_processes="$(ps aux | grep "${Var_install_v2_name}" | grep -v grep)"
 if [ "${#_background_processes}" -gt '0' ]; then
