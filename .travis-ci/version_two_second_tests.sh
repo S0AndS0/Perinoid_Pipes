@@ -8,11 +8,6 @@ Var_install_v2_name="${Var_install_v2_name}"
 Func_run_sanely "cp -va ${Var_install_v2_name} ${Var_install_path}/${Var_install_v2_name}" "0"
 Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_v2_name}" "0"
 Var_check_path="$(echo "${PATH}" | grep -q "${Var_install_path}")"
-if [ -z "${Var_check_path}" ]; then
-	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
-	export PATH+=":${Var_install_path}"
-fi
-Func_run_sanely "${Var_install_path}/${Var_install_v2_name} --version" "${USER}"
 if [ -e "${Var_install_v2_name}" ]; then
 ## Encryption listener
 	${Var_install_v2_name}\
@@ -36,8 +31,8 @@ if [ -e "${Var_install_v2_name}" ]; then
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
 	${Var_install_v2_name}\
- --debug-level="0"\
- --log-level="8"\
+ --debug-level="8"\
+ --log-level="9"\
  --dec-yn="yes"\
  --dec-parsing-disown-yn="yes"\
  --dec-bulk-check-sleep="5"\
@@ -65,10 +60,6 @@ if [ -r "${Var_decrypt_four_log}" ]; then
 	echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
 	cat "${Var_decrypt_four_log}"
 fi
-if [ -r "${Var_encrypt_pipe_four_log}" ]; then
-	echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
-	cat "${Var_encrypt_pipe_four_log}"
-fi
 #	
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
@@ -90,6 +81,8 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
 		cat "${Var_encrypt_pipe_four_log}"
 	fi
+	## exit premeturly
+	exit 0
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?

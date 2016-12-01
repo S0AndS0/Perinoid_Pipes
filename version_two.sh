@@ -192,17 +192,17 @@ Func_dec_main(){
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_dec_main running: Func_dec_watch_file >\"${Var_dev_null}\" &" '2' '3'
-					Func_dec_watch_file >"${Var_dev_null}" &
+					Func_message "# Func_dec_main running: Func_dec_watch_file &" '2' '3'
+					Func_dec_watch_file &
 #					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
 					PID_loop=$!
-#					disown "${PID_loop}"
+					disown "${PID_loop}"
 					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
-					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir >\"${Var_dev_null}\" &" '2' '3'
-					Func_dec_watch_bulk_dir >"${Var_dev_null}" &
+					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir &" '2' '3'
+					Func_dec_watch_bulk_dir &
 #					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
 					PID_loop=$!
-#					disown "${PID_loop}"
+					disown "${PID_loop}"
 					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
 				;;
 				*)

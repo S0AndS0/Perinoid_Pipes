@@ -87,10 +87,6 @@ if [ -p "${Var_encrypt_pipe_three_location}" ]; then
 	echo "quit" > "${Var_encrypt_pipe_three_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	if [ -r "${Var_encrypt_pipe_three_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_three_log}\""
-		cat "${Var_encrypt_pipe_three_log}"
-	fi
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_three_location}"
 	exit 1
@@ -135,9 +131,10 @@ if [ -d "${Var_encrypted_three_bulk_dir}" ]; then
 	echo "# ${Var_script_name} reports: all encryption checks passed"
 else
 	echo "# ${Var_script_name} reports: FAILED to find ${Var_encrypted_three_bulk_dir}"
-	exit 1
+#	exit 1
 fi
 ## Check decryption within version two of main script processes
+Var_search_string_four="$(head -n2 "${Var_raw_test_three_location}" | tail -n1)"
 ${Var_install_v2_name} --debug-level="0" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" --dec-copy-save-yn="yes" --dec-copy-save-path="${Var_script_copy_three_name_decrypt}" --dec-copy-save-ownership="${USER}:${USER}" --dec-copy-save-permissions="750"
 _exit_status=$?
 Func_check_exit_status "${_exit_status}"
@@ -173,10 +170,6 @@ if [ -r "${Var_decrypt_raw_three_location}" ] && [ -r "${Var_raw_test_three_loca
 		done
 	else
 		echo "# ${Var_script_name} did not detect any background processes"
-		if [ -r "${Var_decrypt_three_log}" ]; then
-			echo "# ${Var_script_name} running: cat \"${Var_decrypt_three_log}\""
-			cat "${Var_decrypt_three_log}"
-		fi
 		echo "# ${Var_script_name} reports: all internal decryption checks passed"
 	fi
 elif ! [ -r "${Var_decrypt_raw_three_location}" ]; then
@@ -187,9 +180,22 @@ elif ! [ -r "${Var_raw_test_three_location}" ]; then
 	exit 1
 elif ! [ -d "${Var_bulk_decryption_three_dir}" ]; then
 	echo "# ${Var_script_name} could not read directory: ${Var_bulk_decryption_three_dir}"
-	exit 1
+#	exit 1
 else
 	echo "# ${Var_script_name} could not proceed"
 	exit 2
+fi
+## Check decryption within version two of main script processes
+Var_search_string_four="$(head -n2 "${Var_raw_test_three_location}" | tail -n1)"
+${Var_install_v2_name} --debug-level="7" --log-level="8" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_three_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_three_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" --dec-search-string="${Var_search_string_four}"
+_exit_status=$?
+Func_check_exit_status "${_exit_status}"
+Var_results_string_four="$(tail -n1 "${Var_decrypt_raw_three_location}")"
+if [ "${Var_search_string_four}" = "${Var_results_string_four}" ]; then
+	echo "# ${Var_script_name} reports: search tests Passed!"
+	echo "# [${Var_search_string_four}] = [${Var_results_string_four}]"
+else
+	echo "# ${Var_script_name} reports: search tests Failed!"
+	echo "# [${Var_search_string_four}] != [${Var_results_string_four}]"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
