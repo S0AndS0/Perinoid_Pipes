@@ -1383,7 +1383,7 @@ Func_dec_watch_bulk_dir(){
 		fi
 		_current_sig="\${_new_sig}"
 		let _watch_count++
-		if [ "\${Var_dec_bulk_check_count_max}" != "0" ] && [ "\${_diff_count}" -gt "\${Var_dec_bulk_check_count_max}" ]; then
+		if [ "\${Var_dec_bulk_check_count_max}" != "0" ] && [ "\${_watch_count}" -gt "\${Var_dec_bulk_check_count_max}" ]; then
 			unset _watch_count
 			break
 		fi
