@@ -47,7 +47,8 @@ if [ -e "${Var_install_v2_name}" ]; then
  --dec-pipe-make-yn='yes'\
  --dec-pipe-file="${Var_enc_dec_shared_pipe}"\
  --dec-pipe-permissions="660"\
- --dec-pipe-ownership="${USER}:${USER}"
+ --dec-pipe-ownership="${USER}:${USER}"\
+ ---Var_dev_null="${PWD}/null.log"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -77,22 +78,20 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
 		cat "${Var_decrypt_four_log}"
 	fi
-	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
-		cat "${Var_encrypt_pipe_four_log}"
+	if [ -r "${PWD}/null.log" ]; then
+		echo "# ${Var_script_name} running: cat \"${PWD}/null.log\""
+		cat "${PWD}/null.log"
 	fi
-	## exit premeturly
-	exit 0
-	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "quit" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	if [ -p "${Var_enc_dec_shared_pipe}" ]; then
-		echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_enc_dec_shared_pipe}\""
-		echo "quit" > "${Var_enc_dec_shared_pipe}"
-		_exit_status=$?
-		Func_check_exit_status "${_exit_status}"
-	fi
+#	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
+#	echo "quit" > "${Var_encrypt_pipe_four_location}"
+#	_exit_status=$?
+#	Func_check_exit_status "${_exit_status}"
+#	if [ -p "${Var_enc_dec_shared_pipe}" ]; then
+#		echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_enc_dec_shared_pipe}\""
+#		echo "quit" > "${Var_enc_dec_shared_pipe}"
+#		_exit_status=$?
+#		Func_check_exit_status "${_exit_status}"
+#	fi
 	if [ -r "${Var_decrypt_raw_four_location}" ] && [ -r "${Var_raw_test_four_location}" ]; then
 		_decrypted_strings="$(cat "${Var_decrypt_raw_four_location}")"
 		_raw_strings="$(cat "${Var_raw_test_four_location}")"

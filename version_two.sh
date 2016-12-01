@@ -192,15 +192,13 @@ Func_dec_main(){
 			esac
 			case "${Var_dec_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
-					Func_message "# Func_dec_main running: Func_dec_watch_file &" '2' '3'
-					Func_dec_watch_file &
-#					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
+					Func_message "# Func_dec_main running: Func_dec_watch_file >\"${Var_dev_null}\" 2>&1 &" '2' '3'
+					Func_dec_watch_file >"${Var_dev_null}" 2>&1 &
 					PID_loop=$!
 					disown "${PID_loop}"
 					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
-					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir &" '2' '3'
-					Func_dec_watch_bulk_dir &
-#					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
+					Func_message "# Func_dec_main running: Func_dec_watch_bulk_dir >\"${Var_dev_null}\" 2>&1 &" '2' '3'
+					Func_dec_watch_bulk_dir >"${Var_dev_null}" 2>&1 &
 					PID_loop=$!
 					disown "${PID_loop}"
 					Func_message "# Func_dec_main disowned PID ${PID_loop} parsing loops" '2' '3'
@@ -1066,8 +1064,12 @@ Func_dec_do_stuff_with_lines(){
 			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} >> \"${Var_dec_parsing_output_file}\"" '3' '4'
 			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} >> "${Var_dec_parsing_output_file}"
 		else
-			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
+			if grep -qE "${Var_dec_search_string}" <<<"$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts})"; then
+				Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
+				${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
+			else
+				Func_message "# Func_dec_do_stuff_with_lines ignoring un-matched input" '3' '4'
+			fi
 		fi
 	else
 		if [ "${#Var_dec_search_string}" = "0" ]; then
