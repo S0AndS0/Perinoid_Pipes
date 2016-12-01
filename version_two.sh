@@ -1064,12 +1064,8 @@ Func_dec_do_stuff_with_lines(){
 			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} >> \"${Var_dec_parsing_output_file}\"" '3' '4'
 			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} >> "${Var_dec_parsing_output_file}"
 		else
-			if grep -qE "${Var_dec_search_string}" <<<"$(${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts})"; then
-				Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-				${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
-			else
-				Func_message "# Func_dec_do_stuff_with_lines ignoring un-matched input" '3' '4'
-			fi
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -E "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
 		fi
 	else
 		if [ "${#Var_dec_search_string}" = "0" ]; then
@@ -1089,6 +1085,8 @@ Func_dec_spoon_feed_armored_packets(){
 	_beginning_of_line='-----BEGIN PGP MESSAGE-----'
 	_end_of_line='-----END PGP MESSAGE-----'
 	if [ -f "${_input[@]}" ]; then
+		mapfile -t _arr_input < "${_input[@]}"
+	elif [ -p "${_input[@]}" ]; then
 		mapfile -t _arr_input < "${_input[@]}"
 	else
 		mapfile -t _arr_input <<<"${_input[@]}"
@@ -1295,6 +1293,8 @@ Func_dec_spoon_feed_armored_packets(){
 	_beginning_of_line='-----BEGIN PGP MESSAGE-----'
 	_end_of_line='-----END PGP MESSAGE-----'
 	if [ -f "\${_input[@]}" ]; then
+		mapfile -t _arr_input < "\${_input[@]}"
+	elif [ -p "\${_input[@]}" ]; then
 		mapfile -t _arr_input < "\${_input[@]}"
 	else
 		mapfile -t _arr_input <<<"\${_input[@]}"

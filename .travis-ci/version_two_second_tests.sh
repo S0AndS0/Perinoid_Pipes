@@ -5,50 +5,13 @@ source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Var_install_v2_name="${Var_install_v2_name}"
-Func_run_sanely "cp -va ${Var_install_v2_name} ${Var_install_path}/${Var_install_v2_name}" "0"
-Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_v2_name}" "0"
-Var_check_path="$(echo "${PATH}" | grep -q "${Var_install_path}")"
 if [ -e "${Var_install_v2_name}" ]; then
 ## Encryption listener
-	${Var_install_v2_name}\
- --debug-level="0"\
- --log-level="7"\
- --enc-yn="yes"\
- --enc-parsing-disown="yes"\
- --enc-copy-save-yn="no"\
- --enc-copy-save-path="${Var_script_copy_four_name_encrypt}"\
- --enc-copy-save-ownership="${USER}:${USER}"\
- --enc-copy-save-permissions="750"\
- --script-log-path="${Var_encrypt_pipe_four_log}"\
- --enc-pipe-permissions="660"\
- --enc-parsing-output-permissions="660"\
- --enc-parsing-recipient="${Var_gnupg_email}"\
- --enc-parsing-output-rotate-recipient="${Var_gnupg_email}"\
- --enc-pipe-file="${Var_encrypt_pipe_four_location}"\
- --enc-parsing-output-file="${Var_enc_dec_shared_pipe}"\
- --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
+	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_four_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
-	${Var_install_v2_name}\
- --debug-level="8"\
- --log-level="9"\
- --dec-yn="yes"\
- --dec-parsing-disown-yn="no"\
- --dec-bulk-check-sleep="5"\
- --dec-bulk-check-count-max='1'\
- --script-log-path="${Var_decrypt_four_log}"\
- --dec-pass="${Var_pass_location}"\
- --dec-parsing-save-output-yn="yes"\
- --dec-parsing-output-file="${Var_decrypt_raw_four_location}"\
- --enc-parsing-output-file="${Var_enc_dec_shared_pipe}"\
- --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}"\
- --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"\
- --dec-pipe-make-yn='yes'\
- --dec-pipe-file="${Var_enc_dec_shared_pipe}"\
- --dec-pipe-permissions="660"\
- --dec-pipe-ownership="${USER}:${USER}" >>"${PWD}/null.log" 2>&1 &
-# ---Var_dev_null=""
+	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}" >"${PWD}/null.log" 2>&1 &
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
