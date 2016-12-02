@@ -11,20 +11,13 @@ if [ -e "${Var_install_v2_name}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
-	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="no" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}" >"${PWD}/null.log" 2>&1 &
+	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}" ---Var_dev_null="${PWD}/null.log"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_v2_name}"
 	exit 1
 fi
-## Check logs before and after write redirections
-#	
-if [ -r "${Var_decrypt_four_log}" ]; then
-	echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-	cat "${Var_decrypt_four_log}"
-fi
-#	
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
 	touch "${Var_raw_test_four_location}"
@@ -37,14 +30,6 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	if [ -r "${Var_decrypt_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-		cat "${Var_decrypt_four_log}"
-	fi
-	if [ -r "${PWD}/null.log" ]; then
-		echo "# ${Var_script_name} running: cat \"${PWD}/null.log\""
-		cat "${PWD}/null.log"
-	fi
 #	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 #	echo "quit" > "${Var_encrypt_pipe_four_location}"
 #	_exit_status=$?
@@ -66,15 +51,21 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		else
 			echo "# ${Var_script_name} reports: no differance between strings!"
 		fi
+	else
+		echo -e "# ${Var_script_name} could not find\n#${Var_decrypt_raw_four_location}\n#or\n#${Var_raw_test_four_location}"
 	fi
-#	if [ -r "${Var_decrypt_four_log}" ]; then
-#		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-#		cat "${Var_decrypt_four_log}"
-#	fi
-#	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
-#		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
-#		cat "${Var_encrypt_pipe_four_log}"
-#	fi
+	if [ -r "${Var_decrypt_four_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
+		cat "${Var_decrypt_four_log}"
+	fi
+	if [ -r "${PWD}/null.log" ]; then
+		echo "# ${Var_script_name} running: cat \"${PWD}/null.log\""
+		cat "${PWD}/null.log"
+	fi
+	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
+		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
+		cat "${Var_encrypt_pipe_four_log}"
+	fi
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_four_location}"
 	exit 1
@@ -104,5 +95,5 @@ if [ "${#_background_processes}" -gt '0' ]; then
 else
 	echo "# ${Var_script_name} did not detect any background processes"
 fi
-echo "# ${Var_script_name} reports encryption to decryption: Passed"
+#echo "# ${Var_script_name} reports encryption to decryption: Passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
