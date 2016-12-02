@@ -848,8 +848,10 @@ Func_enc_pipe_parser_loop(){
 						if ! [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir} -p "\${Var_enc_parsing_bulk_out_dir}"
 						fi
+						_dir_name="\${_mapped_array##*/}"
+						_dir_name="\${_dir_name%/*}"
 						Var_star_date="\$(date -u +%s)"
-						${Var_tar} -cz - "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz\${Var_enc_parsing_bulk_output_suffix}"
+						${Var_tar} -cz - "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_\${_dir_name}.tgz\${Var_enc_parsing_bulk_output_suffix}"
 					else
 						if [ -p "\${Var_enc_parsing_output_file}" ]; then
 							${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_output_file}"
@@ -1196,10 +1198,12 @@ Func_dec_watch_bulk_dir(){
 		fi
 		_current_sig="${_new_sig}"
 		let _watch_count++
-		if [ "${Var_dec_bulk_check_count_max}" != "0" ] && [ "${_watch_count}" -gt "${Var_dec_bulk_check_count_max}" ]; then
-			unset _watch_count
-			Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
-			break
+		if [ "${Var_dec_bulk_check_count_max}" != "0" ]; then
+			if [ "${_watch_count}" -gt "${Var_dec_bulk_check_count_max}" ]; then
+				unset _watch_count
+				Func_message "# Func_dec_watch_bulk_dir running: break" '3' '4'
+				break
+			fi
 		fi
 		Func_message "# Func_dec_watch_bulk_dir [${_watch_count}] running: sleep ${Var_dec_bulk_check_sleep}" '3' '4'
 		sleep ${Var_dec_bulk_check_sleep}
