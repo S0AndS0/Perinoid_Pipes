@@ -654,9 +654,11 @@ Func_enc_pipe_parser_loop(){
 							Func_message "# Func_enc_pipe_parser_loop running: ${Var_mkdir} -p \"${Var_enc_parsing_bulk_out_dir}\"" '2' '3'
 							${Var_mkdir} -p "${Var_enc_parsing_bulk_out_dir}"
 						fi
+						_dir_name="${_mapped_array##*/}"
+						_dir_name="${_dir_name%/*}"
 						Var_star_date="$(date -u +%s)"
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_tar} -cz - \"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > ${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}" '2' '3'
-						${Var_tar} -cz - "${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}"
+						Func_message "# Func_enc_pipe_parser_loop running: ${Var_tar} -cz - \"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > ${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_${_dir_name}.tgz${Var_enc_parsing_bulk_output_suffix}" '2' '3'
+						${Var_tar} -cz - "${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_${_dir_name}.tgz${Var_enc_parsing_bulk_output_suffix}"
 					else
 						if [ -p "${Var_enc_parsing_output_file}" ]; then
 							Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > \"${Var_enc_parsing_output_file}\"" '2' '3'
