@@ -44,8 +44,8 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-#	echo "# ${Var_script_name} running: sleep 5"
-#	sleep 5
+	echo "# ${Var_script_name} running: sleep 2"
+	sleep 2
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
