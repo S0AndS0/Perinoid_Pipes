@@ -18,7 +18,7 @@ if [ -e "${Var_install_v2_name}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_v2_name}" ]; then
-	${Var_install_path}/${Var_install_v2_name} --debug-level="6" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+	${Var_install_path}/${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else

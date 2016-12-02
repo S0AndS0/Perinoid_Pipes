@@ -6,30 +6,29 @@ Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Var_install_v2_name="${Var_install_v2_name}"
 if [ -e "${Var_install_v2_name}" ]; then
-## Encryption listener
-	${Var_install_v2_name} --debug-level="0" --log-level="0" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_four_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
+## Make bulk encryption directory prematurly so that decrypter
+##  processes that watch it will attach to it.
+if ! [ -d "${Var_encrypted_four_bulk_dir}" ]; then
+	mkdir -vp "${Var_encrypted_four_bulk_dir}"
+fi
+## Encryption & Decryption listeners combined
+	${Var_install_v2_name} --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --debug-level="0" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="3" --dec-bulk-check-count-max='0' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-## Push file and/or directory paths before starting listeners for decryption
-	if [ -p "${Var_encrypt_pipe_four_location}" ]; then
-		if [ -f "${Var_encrypt_file_four_path}" ]; then
-			echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
-			echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
-		fi
-		if [ -d "${Var_encrypt_dir_four_path}" ]; then
-			echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
-			echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
-		fi
-	fi
 ## Decryption listener
-	${Var_install_v2_name} --debug-level="0" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="3" --dec-bulk-check-count-max='0' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
+#	${Var_install_v2_name} --debug-level="0" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="3" --dec-bulk-check-count-max='0' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
+#	_exit_status=$?
+#	Func_check_exit_status "${_exit_status}"
 else
 	echo "# ${Var_script_name} could not find: ${Var_install_path}/${Var_install_v2_name}"
 	exit 1
 fi
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
+## Push file path
+	if [ -f "${Var_encrypt_file_four_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+		echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
+	fi
 ## Push abatrary strings into pipe that writes to shared pipe being listened too
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
 	touch "${Var_raw_test_four_location}"
@@ -49,6 +48,13 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+	echo "# ${Var_script_name} running: sleep 5"
+	sleep 5
+## Push directory path
+	if [ -d "${Var_encrypt_dir_four_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+		echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
+	fi
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
 	echo "${_test_string}" >> "${Var_raw_test_four_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
@@ -56,8 +62,9 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} running: sleep 10"
-	sleep 10
+	echo "# ${Var_script_name} running: sleep 5"
+	sleep 5
+## Send quit strings to named pipes
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
