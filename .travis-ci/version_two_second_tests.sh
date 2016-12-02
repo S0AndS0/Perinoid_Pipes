@@ -12,7 +12,6 @@ if [ -e "${Var_install_v2_name}" ]; then
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
 	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
-# ---Var_dev_null="${PWD}/null.log"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -31,8 +30,22 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} running: sleep 5"
-	sleep 5
+	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
+	echo "${_test_string}" >> "${Var_raw_test_four_location}"
+	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
+	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
+	echo "${_test_string}" >> "${Var_raw_test_four_location}"
+	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
+	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
+	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
+	_exit_status=$?
+	Func_check_exit_status "${_exit_status}"
+#	echo "# ${Var_script_name} running: sleep 5"
+#	sleep 5
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
@@ -56,18 +69,6 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		fi
 	else
 		echo -e "# ${Var_script_name} could not find\n#${Var_decrypt_raw_four_location}\n#or\n#${Var_raw_test_four_location}"
-	fi
-	if [ -r "${Var_decrypt_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_decrypt_four_log}\""
-		cat "${Var_decrypt_four_log}"
-	fi
-#	if [ -r "${PWD}/null.log" ]; then
-#		echo "# ${Var_script_name} running: cat \"${PWD}/null.log\""
-#		cat "${PWD}/null.log"
-#	fi
-	if [ -r "${Var_encrypt_pipe_four_log}" ]; then
-		echo "# ${Var_script_name} running: cat \"${Var_encrypt_pipe_four_log}\""
-		cat "${Var_encrypt_pipe_four_log}"
 	fi
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_four_location}"
