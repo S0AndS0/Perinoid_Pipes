@@ -11,7 +11,7 @@ if [ -e "${Var_install_v2_name}" ]; then
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
-	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='1' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
+	${Var_install_v2_name} --debug-level="8" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="5" --dec-bulk-check-count-max='0' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -19,6 +19,14 @@ else
 	exit 1
 fi
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
+	if [ -f "${Var_encrypt_file_four_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+		echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
+	fi
+	if [ -d "${Var_encrypt_dir_four_path}" ]; then
+		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+		echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
+	fi
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
 	touch "${Var_raw_test_four_location}"
 	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_four_location}\""
@@ -44,8 +52,8 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
-	echo "# ${Var_script_name} running: sleep 2"
-	sleep 2
+	echo "# ${Var_script_name} running: sleep 5"
+	sleep 5
 	echo "# ${Var_script_name} running as ${USER}: echo \"quit\" > \"${Var_encrypt_pipe_four_location}\""
 	echo "quit" > "${Var_encrypt_pipe_four_location}"
 	_exit_status=$?
@@ -69,6 +77,12 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		fi
 	else
 		echo -e "# ${Var_script_name} could not find\n#${Var_decrypt_raw_four_location}\n#or\n#${Var_raw_test_four_location}"
+	fi
+	if [ -d "${Var_encrypted_four_bulk_dir}" ]; then
+		echo "# ${Var_script_name} found decryption bulk directory: ${Var_encrypted_four_bulk_dir}"
+		ls -hal "${Var_encrypted_four_bulk_dir}"
+	else
+		echo "# ${Var_script_name} reports no bulk decryption directory: ${Var_encrypted_four_bulk_dir}"
 	fi
 else
 	echo "# Error - ${Var_script_name} could not find: ${Var_encrypt_pipe_four_location}"
