@@ -149,7 +149,8 @@ Func_check_args(){
 }
 Func_gen_gnupg_keys(){
 	_pass_phrase=( "$@" )
-	gpg --batch --gen-key <<EOF
+	if [ "${#Var_gnupg_comment}" != "0" ]; then
+		gpg --batch --gen-key <<EOF
 Key-Type: ${Var_gnupg_key_type}
 Key-Length: ${Var_gnupg_key_length}
 Subkey-Type: ${Var_gnupg_sub_key_type}
@@ -164,6 +165,21 @@ Passphrase: ${_pass_phrase[*]}
 %commit
 %echo finished
 EOF
+	else
+		gpg --batch --gen-key <<EOF
+Key-Type: ${Var_gnupg_key_type}
+Key-Length: ${Var_gnupg_key_length}
+Subkey-Type: ${Var_gnupg_sub_key_type}
+Subkey-Length: ${Var_gnupg_sub_key_length}
+Name-Real: ${Var_gnupg_name}
+name-Email: ${Var_gnupg_email}
+Expire-Date: ${Var_gnupg_expire_date}
+Passphrase: ${_pass_phrase[*]}
+%commit
+%echo finished
+EOF
+	fi
+
 	unset _pass_phrase
 }
 Func_gnupg_configuration(){
@@ -269,24 +285,32 @@ Func_export_keys(){
 }
 Func_report_on_exports(){
 	if [ -f "${Var_gnupg_revoke_location}" ]; then
+		chown ${USER}:${USER} "${Var_gnupg_revoke_location}"
+		chmod 400 "${Var_gnupg_revoke_location}"
 		echo "# ${Var_script_name} reports that the following should be backup: ${Var_gnupg_revoke_location}"
 		ls -hal ${Var_gnupg_revoke_location}
 	else
 		echo "# ${Var_script_name} reports that there is no revoke cert to backup."
 	fi
 	if [ -f "${Var_gnupg_export_public_key_location}" ]; then
+		chown ${USER}:${USER} "${Var_gnupg_export_public_key_location}"
+		chmod 444 "${Var_gnupg_export_public_key_location}"
 		echo "# ${Var_script_name} reports to share public key file: ${Var_gnupg_export_public_key_location}"
 		ls -hal ${Var_gnupg_export_public_key_location}
 	else
 		echo "# ${Var_script_name} reports no public key has been exported"
 	fi
 	if [ -f "${Var_gnupg_export_private_key_location}" ]; then
+		chown ${USER}:${USER} "${Var_gnupg_export_private_key_location}"
+		chmod 400 "${Var_gnupg_export_private_key_location}"
 		echo "# ${Var_script_name} reports to backup private key file: ${Var_gnupg_export_private_key_location}"
 		ls -hal ${Var_gnupg_export_private_key_location}
 	else
 		echo "# ${Var_script_name} reports no private key has been exported"
 	fi
 	if [ -f "${Var_save_pass_location}" ]; then
+		chown ${USER}:${USER} "${Var_save_pass_location}"
+		chmod 400 "${Var_save_pass_location}"
 		echo "# ${Var_script_name} reports to backup passphrase file: ${Var_save_pass_location}"
 		ls -hal ${Var_save_pass_location}
 	else
