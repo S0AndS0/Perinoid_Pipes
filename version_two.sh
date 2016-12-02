@@ -610,7 +610,7 @@ Func_enc_map_read_array_to_output(){
 	let _count=0
 	until [ "${_count}" = "${#_lines[@]}" ]; do
 		if [ "${Var_enc_parsing_quit_string}" = "${_lines[${_count}]}" ]; then
-			${Var_cat} <<<"${_line[${_count}]}"
+			${Var_cat} <<<"${_lines[${_count}]}"
 			break
 		else
 			case "${Var_enc_parsing_filter_input_yn}" in
@@ -807,7 +807,7 @@ Func_enc_map_read_array_to_output(){
 	let _count=0
 	until [ "\${_count}" = "\${#_lines[@]}" ]; do
 		if [ "\${Var_enc_parsing_quit_string}" = "\${_lines[\${_count}]}" ]; then
-			${Var_cat} <<<"\${_line[\${_count}]}"
+			${Var_cat} <<<"\${_lines[\${_count}]}"
 			break
 		else
 			case "\${Var_enc_parsing_filter_input_yn}" in
@@ -1188,7 +1188,7 @@ Func_dec_watch_bulk_dir(){
 	_current_sig=""
 	let _watch_count=0
 	while [ -d "${Var_enc_parsing_bulk_out_dir}" ]; do
-		_new_sig="$(find ${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print $1}' | sort | sha1sum | awk '{print $1}')"
+		_new_sig="$(find "${Var_enc_parsing_bulk_out_dir}" -xtype f -print0 | xargs -0 sha1sum | awk '{print $1}' | sort | sha1sum | awk '{print $1}')"
 		if [ "${_current_sig}" != "${_new_sig}" ]; then
 			## This funy way of piping into a while loop should silence SheckCheck
 			find "${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do

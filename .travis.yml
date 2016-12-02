@@ -28,9 +28,9 @@ before_install:
 ## Steps for successful install once dependencies are met. Simply copies the
 ##  main script of this project to common install path and runs '--help'
 ##  command line option against it. Currently passing and operating correctly.
-install:
- - chmod +x .travis-ci/install.sh
- - .travis-ci/install.sh
+#install:
+# - chmod +x .travis-ci/install.sh
+# - .travis-ci/install.sh
 ## Steps to complete prior to running further tests.
 ##  The first sets up temperary passphrase file as well as GPG key pare.
 ##  The second test the new key pare by encrypting a string as well as
@@ -40,8 +40,8 @@ install:
 before_script:
  - chmod +x .travis-ci/before_script_gen_key.sh
  - .travis-ci/before_script_gen_key.sh
- - chmod +x .travis-ci/before_script_test_key.sh
- - .travis-ci/before_script_test_key.sh
+# - chmod +x .travis-ci/before_script_test_key.sh
+# - .travis-ci/before_script_test_key.sh
 ## Run tests that report 'Passing' or 'Failing' build states
 ## - Run main script encryption tests. This will start the main script with the
 ##  internal listening loop in the background, then write to the related named
