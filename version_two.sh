@@ -843,7 +843,7 @@ Func_enc_pipe_parser_loop(){
 							${Var_mkdir} -p "\${Var_enc_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="\$(date -u +%s)"
-						${Var_cat} "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_${_mapped_array##*/}\${Var_enc_parsing_bulk_output_suffix}"
+						${Var_cat} "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}\${Var_enc_parsing_bulk_output_suffix}"
 					elif [ -d "\${_mapped_array}" ]; then
 						if ! [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir} -p "\${Var_enc_parsing_bulk_out_dir}"
