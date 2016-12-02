@@ -776,7 +776,6 @@ Func_enc_rotate_output_file(){
 				_file_size="\$(du --bytes "\${_parsing_output_file}" | awk '{print \$1}' | head -n1)"
 				if [ "\${_file_size}" -gt "\${_output_max_size}" ]; then
 					_timestamp="\$(date -u +%s)"
-					## Split commas into spaces and use case to match action options
 					for _actions in \${_output_rotate_actions//,/ }; do
 						case "\${_actions}" in
 							mv|move)
@@ -1406,7 +1405,7 @@ Func_dec_file_or_dir(){
 			_output_file="\${_output_file%.gpg*}"
 			case "\${Var_dec_trim_date_yn}" in
 				y|Y|yes|Yes|YES)
-					_output_dir="\${_output_file:11}"
+					_output_file="\${_output_file:11}"
 				;;
 			esac
 			if ! [ -f "\${_output_file}" ]; then
@@ -1422,7 +1421,7 @@ Func_dec_watch_bulk_dir(){
 	_current_sig=""
 	let _watch_count=0
 	while [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; do
-		_new_sig="\$(find \${Var_enc_parsing_bulk_out_dir} -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
+		_new_sig="\$(find "\${Var_enc_parsing_bulk_out_dir}" -xtype f -print0 | xargs -0 sha1sum | awk '{print \$1}' | sort | sha1sum | awk '{print \$1}')"
 		if [ "\${_current_sig}" != "\${_new_sig}" ]; then
 			## This funy way of piping into a while loop should silence SheckCheck
 			find "\${Var_enc_parsing_bulk_out_dir}" -xtype f | while read _path; do
@@ -1431,9 +1430,11 @@ Func_dec_watch_bulk_dir(){
 		fi
 		_current_sig="\${_new_sig}"
 		let _watch_count++
-		if [ "\${Var_dec_bulk_check_count_max}" != "0" ] && [ "\${_watch_count}" -gt "\${Var_dec_bulk_check_count_max}" ]; then
-			unset _watch_count
-			break
+		if [ "\${Var_dec_bulk_check_count_max}" != "0" ]; then
+			if [ "\${_watch_count}" -gt "\${Var_dec_bulk_check_count_max}" ]; then
+				unset _watch_count
+				break
+			fi
 		fi
 		sleep \${Var_dec_bulk_check_sleep}
 	done

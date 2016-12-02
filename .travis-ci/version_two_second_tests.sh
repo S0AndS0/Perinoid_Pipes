@@ -32,24 +32,8 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
 	fi
 ## Push abatrary strings into pipe that writes to shared pipe being listened too
-	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
-	touch "${Var_raw_test_four_location}"
-	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_four_location}\""
-	chmod 660 "${Var_raw_test_four_location}"
-	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" >> "${Var_raw_test_four_location}"
-	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
-	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" >> "${Var_raw_test_four_location}"
-	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
+	Func_write_and_log_lines_to_pipe "${Var_raw_test_four_location}" "${Var_encrypt_pipe_four_location}" "32"
+	Func_write_and_log_lines_to_pipe "${Var_raw_test_four_location}" "${Var_encrypt_pipe_four_location}" "16"
 	echo "# ${Var_script_name} running: sleep 5"
 	sleep 5
 ## Push directory path
@@ -57,13 +41,8 @@ if [ -p "${Var_encrypt_pipe_four_location}" ]; then
 		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
 		echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
 	fi
-	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
-	echo "${_test_string}" >> "${Var_raw_test_four_location}"
-	_current_string="$(tail -n1 "${Var_raw_test_four_location}")"
-	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_four_location}\""
-	echo "${_current_string}" > "${Var_encrypt_pipe_four_location}"
-	_exit_status=$?
-	Func_check_exit_status "${_exit_status}"
+	Func_write_and_log_lines_to_pipe "${Var_raw_test_four_location}" "${Var_encrypt_pipe_four_location}" "36"
+	Func_write_and_log_lines_to_pipe "${Var_raw_test_four_location}" "${Var_encrypt_pipe_four_location}" "8"
 	echo "# ${Var_script_name} running: sleep 5"
 	sleep 5
 ## Send quit strings to named pipes
@@ -138,3 +117,4 @@ if [ -r "${Var_decrypt_four_log}" ]; then
 fi
 #echo "# ${Var_script_name} reports encryption to decryption: Passed"
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
+
