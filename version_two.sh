@@ -658,13 +658,15 @@ Func_enc_pipe_parser_loop(){
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_tar} -cz - \"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > ${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}" '2' '3'
 						${Var_tar} -cz - "${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}"
 					else
-						if ! [ -p "${Var_enc_parsing_output_file}" ] || ! [ -f "${Var_enc_parsing_output_file}" ]; then
-							Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
-							touch "${Var_enc_parsing_output_file}"
-							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-							${Var_chmod} "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_file}"
-							Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-							${Var_chown} "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
+						if ! [ -f "${Var_enc_parsing_output_file}" ]; then
+							if ! [ -p "${Var_enc_parsing_output_file}" ]; then
+								Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
+								touch "${Var_enc_parsing_output_file}"
+								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
+								${Var_chmod} "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_file}"
+								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
+								${Var_chown} "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
+							fi
 						fi
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
 						${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
