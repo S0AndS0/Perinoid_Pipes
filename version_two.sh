@@ -77,7 +77,6 @@ Var_dec_parsing_quit_string="quit"
 Var_dec_search_string=""
 Var_dec_bulk_check_count_max="0"
 Var_dec_bulk_check_sleep="120"
-Var_dec_trim_date_yn="no"
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
 Func_enc_clean_up_trap(){
 	_exit_code="$1"
@@ -291,9 +290,6 @@ Func_check_args(){
 			--dec-search-string|Var_dec_search_string)
 				Func_assign_arg "Var_dec_search_string" "${_arg#*=}"
 			;;
-			--dec-trim-date-yn|Var_dec_trim_date_yn)
-				Func_assign_arg "Var_dec_trim_date_yn" "${_arg#*=}"
-			;;
 			--help|help)
 				Func_message "# Func_check_args read variable [${_arg%=*}] with value [${_arg#*=}]" '2' '3'
 				Func_help
@@ -448,7 +444,6 @@ Func_help(){
 	echo "# --dec-parsing-quit-string		Var_dec_parsing_quit_string=\"${Var_dec_parsing_quit_string}\""
 	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
 	echo "# --dec-search-string			Var_dec_search_string=\"${Var_dec_search_string}\""
-	echo "# --dec-trim-date-yn		Var_dec_trim_date_yn=\"${Var_dec_trim_date_yn}\""
 	echo "## Encryption command line options"
 	echo "# --enc-yn				Var_enc_yn=\"${Var_enc_yn}\""
 	echo "# --enc-copy-save-yn			Var_enc_copy_save_yn=\"${Var_enc_copy_save_yn}\""
@@ -1143,11 +1138,6 @@ Func_dec_file_or_dir(){
 			_old_pwd="${PWD}"
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tar.gpg*}"
-			case "${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_dir="${_output_dir:11}"
-				;;
-			esac
 			if ! [ -d "${_output_dir}" ]; then
 				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
 				mkdir -p "${_output_dir}"
@@ -1164,11 +1154,6 @@ Func_dec_file_or_dir(){
 			_old_pwd="${PWD}"
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tgz.gpg*}"
-			case "${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_dir="${_output_dir:11}"
-				;;
-			esac
 			if ! [ -d "${_output_dir}" ]; then
 				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
 				mkdir -p "${_output_dir}"
@@ -1188,11 +1173,6 @@ Func_dec_file_or_dir(){
 			fi
 			_output_file="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
-			case "${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_file="${_output_file:11}"
-				;;
-			esac
 			if ! [ -f "${_output_file}" ]; then
 				Func_message "# Func_dec_file_or_dir running: ${Var_cat} \"${_encrypted_path}\" | ${Var_gpg} ${Var_dec_gpg_opts} > \"${_output_file}\"" '5' '6'
 				${Var_cat} "${_encrypted_path}" | ${Var_gpg} ${Var_dec_gpg_opts} > "${_output_file}"
@@ -1274,7 +1254,6 @@ Var_dec_pipe_file="${Var_dec_pipe_file}"
 Var_dec_pipe_permissions="${Var_dec_pipe_permissions}"
 Var_dec_pipe_ownership="${Var_dec_pipe_ownership}"
 Var_dec_parsing_quit_string="${Var_dec_parsing_quit_string}"
-Var_dec_trim_date_yn="${Var_dec_trim_date_yn}"
 Func_dec_make_named_pipe(){
 	if ! [ -p "\${Var_dec_pipe_file}" ]; then
 		${Var_mkfifo} "\${Var_dec_pipe_file}" || exit 1
@@ -1367,11 +1346,6 @@ Func_dec_file_or_dir(){
 			_old_pwd="\${PWD}"
 			_output_dir="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_dir="\${_output_dir%.tar.gpg*}"
-			case "\${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_dir="\${_output_dir:11}"
-				;;
-			esac
 			if ! [ -d "\${_output_dir}" ]; then
 				mkdir -p "\${_output_dir}"
 				cd "\${_output_dir}"
@@ -1384,11 +1358,6 @@ Func_dec_file_or_dir(){
 			_old_pwd="\${PWD}"
 			_output_dir="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_dir="\${_output_dir%.tgz.gpg*}"
-			case "\${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_dir="\${_output_dir:11}"
-				;;
-			esac
 			if ! [ -d "\${_output_dir}" ]; then
 				mkdir -p "\${_output_dir}"
 				cd "\${_output_dir}"
@@ -1403,11 +1372,6 @@ Func_dec_file_or_dir(){
 			fi
 			_output_file="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_file="\${_output_file%.gpg*}"
-			case "\${Var_dec_trim_date_yn}" in
-				y|Y|yes|Yes|YES)
-					_output_file="\${_output_file:11}"
-				;;
-			esac
 			if ! [ -f "\${_output_file}" ]; then
 				${Var_cat} "\${_encrypted_path}" | ${Var_gpg} \${Var_dec_gpg_opts} > "\${_output_file}"
 				unset _output_file
@@ -1513,9 +1477,6 @@ Func_check_args(){
 			;;
 			--dec-parsing-quit-string|Var_dec_parsing_quit_string)
 				Func_assign_arg "Var_dec_parsing_quit_string" "\${_arg#*=}"
-			;;
-			--dec-trim-date-yn|Var_dec_trim_date_yn)
-				Func_assign_arg "Var_dec_trim_date_yn" "\${_arg#*=}"
 			;;
 			--source-var-file|Var_source_var_file)
 				Func_assign_arg "Var_source_var_file" "\${_arg#*=}"
