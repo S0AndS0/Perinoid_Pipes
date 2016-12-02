@@ -658,8 +658,11 @@ Func_enc_pipe_parser_loop(){
 						Func_message "# Func_enc_pipe_parser_loop running: ${Var_tar} -cz - \"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > ${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}" '2' '3'
 						${Var_tar} -cz - "${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_bulk_out_dir}/${Var_star_date}_dir.tgz${Var_enc_parsing_bulk_output_suffix}"
 					else
-						if ! [ -f "${Var_enc_parsing_output_file}" ]; then
-							if ! [ -p "${Var_enc_parsing_output_file}" ]; then
+						if [ -p "${Var_enc_parsing_output_file}" ]; then
+							Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} > \"${Var_enc_parsing_output_file}\"" '2' '3'
+							${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_output_file}"
+						else
+							if ! [ -f "${Var_enc_parsing_output_file}" ]; then
 								Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
 								touch "${Var_enc_parsing_output_file}"
 								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
@@ -667,14 +670,14 @@ Func_enc_pipe_parser_loop(){
 								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
 								${Var_chown} "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
 							fi
+							Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
+							${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
+							if [ "${_check_count}" -gt "${Var_enc_parsing_output_check_frequency}" ] || [ "${_check_count}" = "${Var_enc_parsing_output_check_frequency}" ]; then
+								Func_message "# Func_enc_pipe_parser_loop running: Func_enc_rotate_output_file \"${Var_enc_parsing_output_file}\" \"${Var_enc_parsing_output_rotate_yn}\" \"${Var_enc_parsing_output_max_size}\" \"${Var_enc_parsing_output_rotate_actions}\" \"${Var_enc_parsing_output_rotate_recipient}\"" '2' '3'
+								Func_enc_rotate_output_file "${Var_enc_parsing_output_file}" "${Var_enc_parsing_output_rotate_yn}" "${Var_enc_parsing_output_max_size}" "${Var_enc_parsing_output_rotate_actions}" "${Var_enc_parsing_output_rotate_recipient}"
+							fi
+							let _check_count++
 						fi
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
-						${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
-						if [ "${_check_count}" -gt "${Var_enc_parsing_output_check_frequency}" ] || [ "${_check_count}" = "${Var_enc_parsing_output_check_frequency}" ]; then
-							Func_message "# Func_enc_pipe_parser_loop running: Func_enc_rotate_output_file \"${Var_enc_parsing_output_file}\" \"${Var_enc_parsing_output_rotate_yn}\" \"${Var_enc_parsing_output_max_size}\" \"${Var_enc_parsing_output_rotate_actions}\" \"${Var_enc_parsing_output_rotate_recipient}\"" '2' '3'
-							Func_enc_rotate_output_file "${Var_enc_parsing_output_file}" "${Var_enc_parsing_output_rotate_yn}" "${Var_enc_parsing_output_max_size}" "${Var_enc_parsing_output_rotate_actions}" "${Var_enc_parsing_output_rotate_recipient}"
-						fi
-						let _check_count++
 					fi
 				;;
 				*)
@@ -838,7 +841,7 @@ Func_enc_pipe_parser_loop(){
 							${Var_mkdir} -p "\${Var_enc_parsing_bulk_out_dir}"
 						fi
 						Var_star_date="\$(date -u +%s)"
-						${Var_cat} "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_\${_mapped_array##*/}\${Var_enc_parsing_bulk_output_suffix}"
+						${Var_cat} "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_${_mapped_array##*/}\${Var_enc_parsing_bulk_output_suffix}"
 					elif [ -d "\${_mapped_array}" ]; then
 						if ! [ -d "\${Var_enc_parsing_bulk_out_dir}" ]; then
 							${Var_mkdir} -p "\${Var_enc_parsing_bulk_out_dir}"
@@ -846,16 +849,20 @@ Func_enc_pipe_parser_loop(){
 						Var_star_date="\$(date -u +%s)"
 						${Var_tar} -cz - "\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_bulk_out_dir}/\${Var_star_date}_dir.tgz\${Var_enc_parsing_bulk_output_suffix}"
 					else
-						if ! [ -f "\${Var_enc_parsing_output_file}" ] || ! [ -p "\${Var_enc_parsing_output_file}" ]; then
-							touch "\${Var_enc_parsing_output_file}"
-							${Var_chmod} "\${Var_enc_parsing_output_permissions}" "\${Var_enc_parsing_output_file}"
-							${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
+						if [ -p "\${Var_enc_parsing_output_file}" ]; then
+							${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_output_file}"
+						else
+							if ! [ -f "\${Var_enc_parsing_output_file}" ]; then
+								touch "\${Var_enc_parsing_output_file}"
+								${Var_chmod} "\${Var_enc_parsing_output_permissions}" "\${Var_enc_parsing_output_file}"
+								${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
+							fi
+							${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_output_file}"
+							if [ "\${_check_count}" -gt "\${Var_enc_parsing_output_check_frequency}" ] || [ "\${_check_count}" = "\${Var_enc_parsing_output_check_frequency}" ]; then
+								Func_enc_rotate_output_file "\${Var_enc_parsing_output_file}" "\${Var_enc_parsing_output_rotate_yn}" "\${Var_enc_parsing_output_max_size}" "\${Var_enc_parsing_output_rotate_actions}" "\${Var_enc_parsing_output_rotate_recipient}"
+							fi
+							let _check_count++
 						fi
-						${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} >> "\${Var_enc_parsing_output_file}"
-						if [ "\${_check_count}" -gt "\${Var_enc_parsing_output_check_frequency}" ] || [ "\${_check_count}" = "\${Var_enc_parsing_output_check_frequency}" ]; then
-							Func_enc_rotate_output_file "\${Var_enc_parsing_output_file}" "\${Var_enc_parsing_output_rotate_yn}" "\${Var_enc_parsing_output_max_size}" "\${Var_enc_parsing_output_rotate_actions}" "\${Var_enc_parsing_output_rotate_recipient}"
-						fi
-						let _check_count++
 					fi
 				;;
 				*)
