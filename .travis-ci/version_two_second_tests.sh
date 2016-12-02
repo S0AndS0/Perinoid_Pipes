@@ -10,6 +10,17 @@ if [ -e "${Var_install_v2_name}" ]; then
 	${Var_install_v2_name} --debug-level="0" --log-level="0" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_four_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
+## Push file and/or directory paths before starting listeners for decryption
+	if [ -p "${Var_encrypt_pipe_four_location}" ]; then
+		if [ -f "${Var_encrypt_file_four_path}" ]; then
+			echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+			echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
+		fi
+		if [ -d "${Var_encrypt_dir_four_path}" ]; then
+			echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
+			echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
+		fi
+	fi
 ## Decryption listener
 	${Var_install_v2_name} --debug-level="0" --log-level="9" --dec-yn="yes" --dec-parsing-disown-yn="yes" --dec-bulk-check-sleep="3" --dec-bulk-check-count-max='0' --script-log-path="${Var_decrypt_four_log}" --dec-pass="${Var_pass_location}" --dec-parsing-save-output-yn="yes" --dec-parsing-output-file="${Var_decrypt_raw_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --dec-parsing-bulk-out-dir="${Var_bulk_decryption_four_dir}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" --dec-pipe-make-yn='yes' --dec-pipe-file="${Var_enc_dec_shared_pipe}" --dec-pipe-permissions="660" --dec-pipe-ownership="${USER}:${USER}"
 	_exit_status=$?
@@ -19,14 +30,7 @@ else
 	exit 1
 fi
 if [ -p "${Var_encrypt_pipe_four_location}" ]; then
-	if [ -f "${Var_encrypt_file_four_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_file_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
-		echo "${Var_encrypt_file_four_path}" > "${Var_encrypt_pipe_four_location}"
-	fi
-	if [ -d "${Var_encrypt_dir_four_path}" ]; then
-		echo "# ${Var_script_name} running: echo \"${Var_encrypt_dir_four_path}\" > \"${Var_encrypt_pipe_four_location}\""
-		echo "${Var_encrypt_dir_four_path}" > "${Var_encrypt_pipe_four_location}"
-	fi
+## Push abatrary strings into pipe that writes to shared pipe being listened too
 	echo "# ${Var_script_name} running: touch \"${Var_raw_test_four_location}\""
 	touch "${Var_raw_test_four_location}"
 	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_four_location}\""
