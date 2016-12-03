@@ -543,7 +543,7 @@ Func_save_variables(){
 	case "${Var_save_variables_yn}" in
 		Y|y|Yes|yes|YES)
 			${Var_cat} >> "${Var_source_var_file}" <<EOF
-${_variable}="${_value}"
+declare -g ${_variable}="${_value}"
 EOF
 		;;
 	esac
@@ -1011,9 +1011,6 @@ Func_main(){
 			PID_loop=\$!
 			disown "\${PID_loop}"
 			${Var_echo} "## \${Var_script_name} disowned PID [\${PID_loop}] parsing loops"
-			if [ "\${#Arr_extra_input[@]}" != "0" ] && [ -p "\${Var_enc_pipe_file}" ]; then
-				${Var_cat} <<<"\${Arr_extra_input[*]}" > "\${Var_enc_pipe_file}"
-			fi
 		;;
 		*)
 			${Var_echo} "## \${Var_script_name} will start parsing loop in this terminal"
@@ -1022,6 +1019,9 @@ Func_main(){
 			set -o history
 		;;
 	esac
+	if [ "\${#Arr_extra_input[@]}" != "0" ] && [ -p "\${Var_enc_pipe_file}" ]; then
+		${Var_cat} <<<"\${Arr_extra_input[*]}" > "\${Var_enc_pipe_file}"
+	fi
 }
 Func_main "\$@"
 ${Var_echo} "# \${Var_script_dir}/\${Var_script_name} exited [\$?] at: \$(date)"

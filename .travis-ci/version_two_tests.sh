@@ -13,12 +13,23 @@ if [ -z "${Var_check_path}" ]; then
 	export PATH+=":${Var_install_path}"
 fi
 Func_run_sanely "${Var_install_path}/${Var_install_v2_name} --version" "${USER}"
+echo "# ${Var_script_name} running: touch \"${Var_raw_test_three_location}\""
+touch "${Var_raw_test_three_location}"
+echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_three_location}\""
+chmod 660 "${Var_raw_test_three_location}"
+_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
+echo "${_test_string}" >> "${Var_raw_test_three_location}"
+_current_string="$(tail -n1 "${Var_raw_test_three_location}")"
+#	echo "# ${Var_script_name} running as ${USER}: echo \"${_current_string}\" > \"${Var_encrypt_pipe_three_location}\""
+#	echo "${_current_string}" > "${Var_encrypt_pipe_three_location}"
+#	_exit_status=$?
+#	Func_check_exit_status "${_exit_status}"
 if [ -e "${Var_install_v2_name}" ]; then
-	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" "${_current_string}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 elif [ -e "${Var_install_path}/${Var_install_v2_name}" ]; then
-	${Var_install_path}/${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
+	${Var_install_path}/${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-parsing-disown="yes" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}" "${_current_string}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else
@@ -58,10 +69,10 @@ if [ -p "${Var_encrypt_pipe_three_location}" ]; then
 		_exit_status=$?
 		Func_check_exit_status "${_exit_status}"
 	fi
-	echo "# ${Var_script_name} running: touch \"${Var_raw_test_three_location}\""
-	touch "${Var_raw_test_three_location}"
-	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_three_location}\""
-	chmod 660 "${Var_raw_test_three_location}"
+#	echo "# ${Var_script_name} running: touch \"${Var_raw_test_three_location}\""
+#	touch "${Var_raw_test_three_location}"
+#	echo "# ${Var_script_name} running: chmod 660 \"${Var_raw_test_three_location}\""
+#	chmod 660 "${Var_raw_test_three_location}"
 	_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_length}")"
 	echo "${_test_string}" >> "${Var_raw_test_three_location}"
 	_current_string="$(tail -n1 "${Var_raw_test_three_location}")"
