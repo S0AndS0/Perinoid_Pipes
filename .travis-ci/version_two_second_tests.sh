@@ -11,10 +11,11 @@ if [ -e "${Var_install_v2_name}" ]; then
 if ! [ -d "${Var_encrypted_four_bulk_dir}" ]; then
 	mkdir -vp "${Var_encrypted_four_bulk_dir}"
 fi
-echo "Test line of extra input" > "${Var_raw_test_four_location}"
-_current_line="$(tail -n1 "${Var_raw_test_four_location}")"
+#echo "Test line of extra input" > "${Var_raw_test_four_location}"
+#_current_line="$(tail -n1 "${Var_raw_test_four_location}")"
 ## Encryption listener
-	${Var_install_v2_name} --debug-level="0" --log-level="9" --script-log-path="${Var_decrypt_four_log}" --enc-yn="yes" --enc-parsing-disown-yn="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}" "${_current_line}"
+	${Var_install_v2_name} --debug-level="0" --log-level="9" --script-log-path="${Var_decrypt_four_log}" --enc-yn="yes" --enc-parsing-disown-yn="yes" --enc-copy-save-yn="no" --enc-copy-save-path="${Var_script_copy_four_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_four_location}" --enc-parsing-output-file="${Var_enc_dec_shared_pipe}" --enc-parsing-bulk-out-dir="${Var_encrypted_four_bulk_dir}"
+# "${_current_line}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 ## Decryption listener
