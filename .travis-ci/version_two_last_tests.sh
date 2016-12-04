@@ -10,7 +10,8 @@ _test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${Var_pass_le
 echo "${_test_string}" >> "${Var_raw_test_last_location}"
 _current_string="$(tail -n1 "${Var_raw_test_last_location}")"
 if [ -e "${Var_install_v2_name}" ]; then
-	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown-yn="yes" --script-log-path="${Var_encrypt_last_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_last_location}" --enc-parsing-output-file="${Var_encrypted_last_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_last_bulk_dir}" "${_current_string}"
+#${Var_import_key_id}
+	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown-yn="yes" --script-log-path="${Var_encrypt_last_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email} ${Var_import_key_id}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_last_location}" --enc-parsing-output-file="${Var_encrypted_last_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_last_bulk_dir}" "${_current_string}"
 	_exit_status=$?
 	Func_check_exit_status "${_exit_status}"
 else

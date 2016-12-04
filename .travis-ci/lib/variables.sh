@@ -6,14 +6,16 @@ export Var_install_name="Paranoid_Pipes.sh"
 export Var_dependency_list="gnupg,haveged"
 ## What email address to assign to GPG test keys & use for GnuPG operations?
 export Var_gnupg_email="${USER}@hostname.local"
-## How many charicters for passphrase as well as length of test strings?
+## How many charicters for passphrase
 export Var_pass_length='32'
 ## What file paths to use when testing new GPG keys?
 export Var_pass_location="${PWD}/gpg_test_keys.pass"
 export Var_test_gpg_location="${PWD}/test_encrypt.gpg"
 export Var_test_raw_location="${PWD}/test_raw.txt"
 export Var_test_location="${PWD}/test_string_raw.txt"
-## What directories to use with script tests?
+## What key to try to import and the trust level to assign
+export Var_import_key_id="strangerthanbland@gmail.com"
+export Var_import_key_trust="1"
 ##  The following block of variables is used in 'script_encrypt.sh' file.
 export Var_encrypt_pipe_location="${PWD}/encrypt_one.pipe"
 export Var_encrypt_pipe_log="${PWD}/encrypt_one.log"
@@ -82,3 +84,6 @@ Var_encrypt_file_last_path="${PWD}/ReadMe.md"
 Var_decrypt_last_log="${PWD}/decrypt_last.log"
 Var_decrypt_raw_last_location="${PWD}/last_dec_tests.txt"
 Var_bulk_decryption_last_dir="${PWD}/last_dec_tests_bulk"
+
+#${Var_import_key_id}
+#${Var_import_key_trust}

@@ -27,6 +27,8 @@ Var_gnupg_export_private_key_yn="no"
 Var_gnupg_export_private_key_location="${Var_current_working_dir}/GnuPG_${USER}_private.asc"
 Var_gnupg_revoke_reason="Auto-generated revoke cert at $(date -u +%s)"
 Var_gnupg_upload_key_yn="no"
+Var_gnupg_import_key=""
+Var_gnupg_import_key_trust="1"
 Arr_options=( "$@" )
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Func_help(){
@@ -54,6 +56,8 @@ Func_help(){
 	echo "# --gnupt-sub-key-type	Var_gnupg_sub_key_type=${Var_gnupg_sub_key_type}"
 	echo "# --gnupg-sub-key-length	Var_gnupg_sub_key_length=${Var_gnupg_sub_key_length}"
 	echo "# --gnupg-name		Var_gnupg_name=${Var_gnupg_name}"
+	echo "# --gnupg-import-key	Var_gnupg_import_key=\"${Var_gnupg_import_key}\""
+	echo "# --gnupg-import-key-trust	Var_gnupg_import_key_trust=\"${Var_gnupg_import_key_trust}\""
 	echo "# --prompt-for-pass-yn	Var_prompt_for_pass_yn=${Var_prompt_for_pass_yn}"
 	exit 0
 }
@@ -137,6 +141,12 @@ Func_check_args(){
 			--gnupg-name|Var_gnupg_name)
 				Func_assign_arg '--gnupg-name' "Var_gnupg_name" "${_arg#*=}"
 			;;
+			--gnupg-import-key|Var_gnupg_import_key)
+				Func_assign_arg '--gnupg-import-key' "Var_gnupg_import_key" "${_arg#*=}"
+			;;
+			--gnupg-import-key-trust|Var_gnupg_import_key_trust)
+				Func_assign_arg '--gnupg-import-key-trust' "Var_gnupg_import_key_trust" "${_arg#*=}"
+			;;
 			--prompt-for-pass-yn|Var_prompt_for_pass_yn)
 				Func_assign_arg '--prompt-for-pass-yn' "Var_prompt_for_pass_yn" "${_arg#*=}"
 			;;
@@ -146,6 +156,36 @@ Func_check_args(){
 		esac
 		let _arr_count++
 	done
+}
+Func_import_gnupg_key_edit_trust(){
+	_gnupg_import_key="${1:-${Var_gnupg_import_key}}"
+	gpg --no-tty --command-fd 0 --edit-key ${_gnupg_import_key} <<EOF
+trust
+${Var_gnupg_import_key_trust}
+quit
+EOF
+}
+Func_import_gnupg_key(){
+	_gnupg_import_key="${1:-${Var_gnupg_import_key}}"
+	if [ -f "${_gnupg_import_key}" ]; then
+		echo "# ${Var_script_name} reports: importing key file [${_gnupg_import_key}]"
+		gpg --no-tty --command-fd 0 --import ${_gnupg_import_key} <<EOF
+trust
+${Var_gnupg_import_key_trust}
+quit
+EOF
+	else
+		_grep_string='not found on keyserver'
+		gpg --dry-run --batch --search-keys ${_gnupg_import_key} --keyserver ${Var_gnupg_key_server} | grep -qE "${_grep_string}"
+		_exit_status=$?
+		if [ "${_exit_status}" != "0" ]; then
+			echo "# ${Var_script_name} reports: importing key [${_gnupg_import_key}] from keyserver [${Var_gnupg_key_server}]"
+			gpg --keyserver ${Var_gnupg_key_server} --recv ${_gnupg_import_key}
+			Func_import_gnupg_key_edit_trust "${_gnupg_import_key}"
+		else
+			echo "# ${Var_script_name} reports: error no public key [${_gnupg_import_key}] as file or on key server [${Var_gnupg_key_server}]"
+		fi
+	fi
 }
 Func_gen_gnupg_keys(){
 	_pass_phrase=( "$@" )
@@ -388,6 +428,11 @@ Func_main(){
 	unset _current_pass_phrase
 	Func_check_collision
 	Func_report_on_exports
+	if [ "${#Var_gnupg_import_key}" != "0" ]; then
+		for _gnupg_import_key in ${Var_gnupg_import_key//,/ }; do
+			Func_import_gnupg_key "${_gnupg_import_key}"
+		done
+	fi
 }
 if [ "${#Arr_options[@]}" = "0" ]; then
 	Func_check_args '--help'
