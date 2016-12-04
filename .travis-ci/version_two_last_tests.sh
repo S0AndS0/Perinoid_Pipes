@@ -150,22 +150,10 @@ else
 	echo "# ${Var_script_name} reports: search tests Failed!"
 	echo "# [${Var_search_string_four}] != [${Var_results_string_four}]"
 fi
-if [ -r "${Var_encrypt_pipe_last_log}" ]; then
-	cat "${Var_encrypt_pipe_last_log}"
+if [ -r "${Var_encrypt_last_log}" ]; then
+	cat "${Var_encrypt_last_log}"
 fi
 if [ -r "${Var_decrypt_last_log}" ]; then
 	cat "${Var_decrypt_last_log}"
 fi
 echo "# ${Var_script_name} finished at: $(date -u +%s)"
-#Var_raw_test_last_location
-#Var_encrypt_last_log
-#Var_gnupg_email
-#Var_encrypt_pipe_last_location
-#Var_encrypted_last_location
-#Var_encrypted_last_bulk_dir
-#Var_encrypt_dir_last_path
-#Var_encrypt_file_last_path
-#Var_decrypt_last_log
-#Var_pass_location
-#Var_decrypt_raw_last_location
-#Var_bulk_decryption_last_dir

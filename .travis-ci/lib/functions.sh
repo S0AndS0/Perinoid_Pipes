@@ -48,8 +48,8 @@ Func_write_and_log_lines_to_pipe(){
 		chmod "${_log_file}"
 	fi
 	if [ -p "${_pipe_file}" ]; then
-		_test_string="$(cat /dev/urandom | tr -cd '[:print:]' | head -c"${_line_length}")"
-#		_test_string="$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c"${_line_length}")"
+#		_test_string="$(cat /dev/urandom | tr -cd '[:print:]' | head -c"${_line_length}")"
+		_test_string="$(base64 /dev/urandom | tr -cd '[:print:]' | head -c"${_line_length}")"
 		echo "${_test_string}" >> "${_log_file}"
 		_current_string="$(tail -n1 ${_log_file})"
 		echo "${_current_string}" > "${_pipe_file}"
