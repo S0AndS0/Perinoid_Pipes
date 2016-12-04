@@ -158,13 +158,13 @@ Func_enc_main(){
 					set -o history
 				;;
 			esac
-			if [ "${#Arr_extra_input[@]}" != "0" ] && [ -p "${Var_enc_pipe_file}" ]; then
-				Func_message "# Func_enc_main writing extra input [\${#Arr_extra_input[@]}] to [${Var_enc_pipe_file}]" '2' '3'
-				${Var_cat} <<<"${Arr_extra_input[*]}" > "${Var_enc_pipe_file}"
-			fi
-			Func_message "# Func_enc_main exiting encryption checks with: [$?]" '2' '3'
 		;;
 	esac
+	if [ "${#Arr_extra_input[@]}" != "0" ] && [ -p "${Var_enc_pipe_file}" ]; then
+		Func_message "# Func_enc_main writing extra input [\${#Arr_extra_input[@]}] to [${Var_enc_pipe_file}]" '2' '3'
+		${Var_cat} <<<"${Arr_extra_input[*]}" > "${Var_enc_pipe_file}"
+	fi
+	Func_message "# Func_enc_main exiting encryption checks with: [$?]" '2' '3'
 }
 Func_dec_main(){
 	case "${Var_dec_copy_save_yn}" in
@@ -1011,6 +1011,9 @@ Func_main(){
 			PID_loop=\$!
 			disown "\${PID_loop}"
 			${Var_echo} "## \${Var_script_name} disowned PID [\${PID_loop}] parsing loops"
+			if [ "\${#Arr_extra_input[@]}" != "0" ] && [ -p "\${Var_enc_pipe_file}" ]; then
+				${Var_cat} <<<"\${Arr_extra_input[*]}" > "\${Var_enc_pipe_file}"
+			fi
 		;;
 		*)
 			${Var_echo} "## \${Var_script_name} will start parsing loop in this terminal"
@@ -1019,9 +1022,6 @@ Func_main(){
 			set -o history
 		;;
 	esac
-	if [ "\${#Arr_extra_input[@]}" != "0" ] && [ -p "\${Var_enc_pipe_file}" ]; then
-		${Var_cat} <<<"\${Arr_extra_input[*]}" > "\${Var_enc_pipe_file}"
-	fi
 }
 Func_main "\$@"
 ${Var_echo} "# \${Var_script_dir}/\${Var_script_name} exited [\$?] at: \$(date)"
