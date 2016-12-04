@@ -179,9 +179,15 @@ EOF
 		gpg --dry-run --batch --search-keys ${_gnupg_import_key} --keyserver ${Var_gnupg_key_server} | grep -qE "${_grep_string}"
 		_exit_status=$?
 		if [ "${_exit_status}" != "0" ]; then
-			echo "# ${Var_script_name} reports: importing key [${_gnupg_import_key}] from keyserver [${Var_gnupg_key_server}]"
-			gpg --keyserver ${Var_gnupg_key_server} --recv ${_gnupg_import_key}
-			Func_import_gnupg_key_edit_trust "${_gnupg_import_key}"
+			_key_fingerprint="$(gpg --no-tty --batch --dry-run --search-keys ${_gnupg_import_key} | awk '/key /{print $5}' | tail -n1)"
+			_key_fingerprint="${_key_fingerprint//,/}"
+			if [ "${#_key_fingerprint}" != "0" ]; then
+				echo "# ${Var_script_name} reports: importing key [${_key_fingerprint}] from keyserver [${Var_gnupg_key_server}]"
+				gpg --keyserver ${Var_gnupg_key_server} --recv-keys ${_key_fingerprint}
+				Func_import_gnupg_key_edit_trust "${_gnupg_import_key}"
+			else
+				echo "# ${Var_script_name} reports: error no public key [${_gnupg_import_key}] as file or on key server [${Var_gnupg_key_server}]"
+			fi
 		else
 			echo "# ${Var_script_name} reports: error no public key [${_gnupg_import_key}] as file or on key server [${Var_gnupg_key_server}]"
 		fi
