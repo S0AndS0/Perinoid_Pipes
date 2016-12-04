@@ -393,8 +393,8 @@ Func_check_args(){
 				exit 0
 			;;
 			*)
-				Func_message "# Func_check_args running: declare -ag Arr_extra_input+=( \"\${_arg}\" )" '2' '3'
-				declare -ag Arr_extra_input+=( "${_arg}" )
+				Func_message "# Func_check_args running: declare -ag \"Arr_extra_input+=( \${_arg} )\"" '2' '3'
+				declare -ag "Arr_extra_input+=( ${_arg} )"
 			;;
 		esac
 		let _arr_count++
@@ -954,7 +954,7 @@ Func_check_args(){
 				Func_assign_arg "\${_extra_var/---/}" "\${_extra_arg}"
 			;;
 			*)
-				declare -ag Arr_extra_input+=( "\${_arg}" )
+				declare -ag "Arr_extra_input+=( \${_arg} )"
 			;;
 		esac
 		let _arr_count++
@@ -1468,7 +1468,7 @@ Func_check_args(){
 				Func_assign_arg "\${_extra_var/---/}" "\${_extra_arg}"
 			;;
 			*)
-				declare -ag Arr_extra_input+=( "\${_arg}" )
+				declare -ag "Arr_extra_input+=( \${_arg} )"
 			;;
 		esac
 		let _arr_count++
