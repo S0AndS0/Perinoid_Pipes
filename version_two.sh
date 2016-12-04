@@ -531,8 +531,9 @@ Func_message(){
 Func_assign_arg(){
 	_variable="${1}"
 	_value="${2}"
-	Func_message "# Func_assign_arg running: declare -g \"${_variable}=${_value}\"" '3' '4'
-	declare -g "${_variable}=${_value}"
+	Func_message "# Func_assign_arg running: declare -g \"${_variable}\"=\"${_value}\"" '3' '4'
+	declare -g "${_variable}"="${_value}"
+#	declare -g "${_variable}=${_value}"
 	Func_save_variables "${_variable}" "${_value}"
 	unset _variable
 	unset _value
@@ -1085,16 +1086,16 @@ Func_dec_do_stuff_with_lines(){
 			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} >> \"${Var_dec_parsing_output_file}\"" '3' '4'
 			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} >> "${Var_dec_parsing_output_file}"
 		else
-			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -aE \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
-			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -aE "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep \"${Var_dec_search_string}\" >> \"${Var_dec_parsing_output_file}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep "${Var_dec_search_string}" >> "${Var_dec_parsing_output_file}"
 		fi
 	else
 		if [ "${#Var_dec_search_string}" = "0" ]; then
 			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts}" '3' '4'
 			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts}
 		else
-			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -aE \"${Var_dec_search_string}\"" '3' '4'
-			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep -aE "${Var_dec_search_string}"
+			Func_message "# Func_dec_do_stuff_with_lines running: ${Var_cat} <<<\"\${_enc_input}\" | ${Var_gpg} ${Var_dec_gpg_opts} | grep \"${Var_dec_search_string}\"" '3' '4'
+			${Var_cat} <<<"${_enc_input}" | ${Var_gpg} ${Var_dec_gpg_opts} | grep "${Var_dec_search_string}"
 		fi
 	fi
 	unset -v _enc_block[@]
@@ -1298,13 +1299,13 @@ Func_dec_do_stuff_with_lines(){
 		if [ "\${#Var_dec_search_string}" = "0" ]; then
 			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} >> "\${Var_dec_parsing_output_file}"
 		else
-			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -aE "\${Var_dec_search_string}" >> "\${Var_dec_parsing_output_file}"
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep "\${Var_dec_search_string}" >> "\${Var_dec_parsing_output_file}"
 		fi
 	else
 		if [ "\${#Var_dec_search_string}" = "0" ]; then
 			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts}
 		else
-			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep -aE "\${Var_dec_search_string}"
+			${Var_cat} <<<"\${_enc_input}" | ${Var_gpg} \${Var_dec_gpg_opts} | grep "\${Var_dec_search_string}"
 		fi
 	fi
 	unset -v _enc_block[@]
