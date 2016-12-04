@@ -695,8 +695,9 @@ Func_enc_pipe_parser_loop(){
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_rm} \"${Var_enc_pipe_file}\"" '2' '3'
-						${Var_rm} "${Var_enc_pipe_file}"
+						Func_message "# Func_enc_pipe_parser_loop running: ${Var_enc_trap_command}" '2' '3'
+						${Var_enc_trap_command}
+#						${Var_rm} "${Var_enc_pipe_file}"
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
 					fi
@@ -880,7 +881,8 @@ Func_enc_pipe_parser_loop(){
 			case "\${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
-						${Var_rm} "\${Var_enc_pipe_file}"
+						\${Var_enc_trap_command}
+#						${Var_rm} "\${Var_enc_pipe_file}"
 					fi
 				;;
 			esac
