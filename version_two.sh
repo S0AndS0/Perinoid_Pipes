@@ -53,7 +53,6 @@ Var_enc_parsing_quit_string="quit"
 Var_enc_pipe_file="${PWD}/Encryption_Named.pipe"
 Var_enc_pipe_ownership="${USER}:${USER}"
 Var_enc_pipe_permissions="600"
-Var_enc_trap_command="/bin/rm -f ${Var_enc_pipe_file}"
 Var_enc_parsing_output_permissions="640"
 Var_enc_parsing_output_ownership="${USER}:${USER}"
 ## Decryption variables
@@ -78,14 +77,6 @@ Var_dec_search_string=""
 Var_dec_bulk_check_count_max="0"
 Var_dec_bulk_check_sleep="120"
 ${Var_echo} "### ... Starting [${Var_script_name}] at $(date) ... ###"
-Func_enc_clean_up_trap(){
-	_exit_code="$1"
-	${Var_echo} "## ${Var_script_name} detected [${_exit_code}] exit code, cleaning up before quiting..."
-	if [ -p "${Var_enc_pipe_file}" ]; then
-		${Var_enc_trap_command}
-	fi
-	${Var_echo} -n "### ... Finished [${Var_script_name}] at $(date) press [Enter] to resume terminal ... ###"
-}
 ## Wrap up function operations inside bellow function
 Func_main(){
 	_input=( "$@" )
@@ -95,15 +86,6 @@ Func_main(){
 	else
 		Func_message "# Func_main running: Func_check_args \"${_input[*]}\"" '1' '2'
 		Func_check_args "${_input[@]}"
-		case "${Var_enc_parsing_disown_yn}" in
-			Y|y|Yes|yes|YES)
-				${Var_echo} "## ${Var_script_name} will differ cleanup trap assignment until after reading has from named pipe [${Var_enc_pipe_file}] has finished..."
-			;;
-			*)
-				${Var_echo} "## ${Var_script_name} will set exit trap now."
-				trap 'Func_enc_clean_up_trap ${?}' EXIT
-			;;
-		esac
 		## Functions for encryption
 		case "${Var_enc_yn}" in
 			Y|y|Yes|yes|YES)
@@ -145,6 +127,7 @@ Func_enc_main(){
 			Func_enc_make_named_pipe
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
+					Func_message "## \${Var_script_name} will differ cleanup trap assignment until reading from named pipe [\${Var_enc_pipe_file}] has finished..." '2' '3'
 					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop >\"${Var_dev_null}\" 2>&1 &" '2' '3'
 					Func_enc_pipe_parser_loop >"${Var_dev_null}" 2>&1 &
 					PID_loop=$!
@@ -152,6 +135,8 @@ Func_enc_main(){
 					Func_message "# Func_enc_main disowned PID ${PID_loop} parsing loops" '2' '3'
 				;;
 				*)
+					Func_message "## \${Var_script_name} will set exit trap now." '2' '3'
+					trap '${Var_rm} "\${Var_enc_pipe_file}"' EXIT
 					Func_message "# Func_enc_main running: Func_enc_pipe_parser_loop" '2' '3'
 					Func_enc_pipe_parser_loop
 					Func_message "# Func_enc_main quitting: Func_enc_pipe_parser_loop" '2' '3'
@@ -217,6 +202,10 @@ Func_dec_main(){
 			Func_message "# Func_dec_main exiting decryption checks with: [$?]" '2' '3'
 		;;
 	esac
+	if [ "${#Arr_extra_input[@]}" != "0" ] && [ -p "${Var_dec_pipe_file}" ]; then
+		Func_message "# Func_enc_main writing extra input [\${#Arr_extra_input[@]}] to [${Var_dec_pipe_file}]" '2' '3'
+		${Var_cat} <<<"${Arr_extra_input[*]}" > "${Var_dec_pipe_file}"
+	fi
 }
 Func_check_args(){
 	_arr_input=( "${@}" )
@@ -393,10 +382,6 @@ Func_check_args(){
 			;;
 			--enc-pipe-file|Var_enc_pipe_file)
 				Func_assign_arg "Var_enc_pipe_file" "${_arg#*=}"
-				Func_assign_arg "Var_enc_trap_command" "${Var_rm} ${_arg#*=}"
-			;;
-			--enc-trap-command|Var_enc_trap_command)
-				Func_assign_arg "Var_enc_trap_command" "${_arg#*=}"
 			;;
 			---*)
 				_extra_var="${_arg%=*}"
@@ -408,8 +393,8 @@ Func_check_args(){
 				exit 0
 			;;
 			*)
-				Func_message "# Func_check_args running: declare -ag \"Arr_extra_input+=( \${_arg} )\"" '2' '3'
-				declare -ag "Arr_extra_input+=( ${_arg} )"
+				Func_message "# Func_check_args running: declare -ag Arr_extra_input+=( \"\${_arg}\" )" '2' '3'
+				declare -ag Arr_extra_input+=( "${_arg}" )
 			;;
 		esac
 		let _arr_count++
@@ -473,7 +458,6 @@ Func_help(){
 	echo "# --enc-pipe-permissions		Var_enc_pipe_permissions=\"${Var_enc_pipe_permissions}\""
 	echo "# --enc-pipe-ownership			Var_enc_pipe_ownership=\"${Var_enc_pipe_ownership}\""
 	echo "# --enc-pipe-file			Var_enc_pipe_file=\"${Var_enc_pipe_file}\""
-	echo "# --enc-trap-command			Var_enc_trap_command=\"${Var_enc_trap_command}\""
 	echo "# --enc-parsing-output-permissions	Var_enc_parsing_output_permissions=\"${Var_enc_parsing_output_permissions}\""
 	echo "# --enc-parsing-output-ownership	Var_enc_parsing_output_ownership=\"${Var_enc_parsing_output_ownership}\""
 	echo "## File path variables"
@@ -533,7 +517,6 @@ Func_assign_arg(){
 	_value="${2}"
 	Func_message "# Func_assign_arg running: declare -g \"${_variable}\"=\"${_value}\"" '3' '4'
 	declare -g "${_variable}"="${_value}"
-#	declare -g "${_variable}=${_value}"
 	Func_save_variables "${_variable}" "${_value}"
 	unset _variable
 	unset _value
@@ -696,9 +679,8 @@ Func_enc_pipe_parser_loop(){
 			case "${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "${Var_enc_pipe_file}" ]; then
-						Func_message "# Func_enc_pipe_parser_loop running: ${Var_enc_trap_command}" '2' '3'
-						${Var_enc_trap_command}
-#						${Var_rm} "${Var_enc_pipe_file}"
+						Func_message "# Func_enc_pipe_parser_loop running: ${Var_rm} \"${Var_enc_pipe_file}\"" '2' '3'
+						${Var_rm} "${Var_enc_pipe_file}"
 					else
 						Func_message "# Func_enc_pipe_parser_loop reports: no pipe to remove at [${Var_enc_pipe_file}]" '2' '3'
 					fi
@@ -746,18 +728,9 @@ Var_enc_parsing_quit_string="${Var_enc_parsing_quit_string}"
 Var_enc_pipe_permissions="${Var_enc_pipe_permissions}"
 Var_enc_pipe_ownership="${Var_enc_pipe_ownership}"
 Var_enc_pipe_file="${Var_enc_pipe_file}"
-Var_enc_trap_command="${Var_enc_trap_command}"
 #Var_enc_parsing_output_permissions="${Var_enc_parsing_output_permissions}
 Var_dev_null="${Var_dev_null}"
 ${Var_echo} "### ... Starting [\${Var_script_name}] at \$(date) ... ###"
-Func_enc_clean_up_trap(){
-	_exit_code="\$1"
-	${Var_echo} "## \${Var_script_name} detected [\${_exit_code}] exit code, cleaning up before quiting..."
-	if [ -p "\${Var_enc_pipe_file}" ]; then
-		\${Var_enc_trap_command}
-	fi
-	${Var_echo} -n "### ... Finished [\${Var_script_name}] at \$(date) press [Enter] to resume terminal ... ###"
-}
 Func_enc_make_named_pipe(){
 	if ! [ -p "\${Var_enc_pipe_file}" ]; then
 		${Var_mkfifo} "\${Var_enc_pipe_file}" || exit 1
@@ -882,8 +855,7 @@ Func_enc_pipe_parser_loop(){
 			case "\${Var_enc_parsing_disown_yn}" in
 				Y|y|Yes|yes|YES)
 					if [ -p "\${Var_enc_pipe_file}" ]; then
-						\${Var_enc_trap_command}
-#						${Var_rm} "\${Var_enc_pipe_file}"
+						${Var_rm} "\${Var_enc_pipe_file}"
 					fi
 				;;
 			esac
@@ -969,10 +941,6 @@ Func_check_args(){
 			;;
 			--enc-pipe-file|Var_enc_pipe_file)
 				Func_assign_arg "Var_enc_pipe_file" "\${_arg#*=}"
-				Func_assign_arg "Var_enc_trap_command" "${Var_rm} \${_arg#*=}"
-			;;
-			--enc-trap-command|Var_enc_trap_command)
-				Func_assign_arg "Var_enc_trap_command" "\${_arg#*=}"
 			;;
 			--source-var-file|Var_source_var_file)
 				Func_assign_arg "Var_source_var_file" "\${_arg#*=}"
@@ -986,7 +954,7 @@ Func_check_args(){
 				Func_assign_arg "\${_extra_var/---/}" "\${_extra_arg}"
 			;;
 			*)
-				declare -ag "Arr_extra_input+=( \${_arg} )"
+				declare -ag Arr_extra_input+=( "\${_arg}" )
 			;;
 		esac
 		let _arr_count++
@@ -1004,7 +972,7 @@ Func_main(){
 		;;
 		*)
 			${Var_echo} "## \${Var_script_name} will set exit trap now."
-			trap 'Func_enc_clean_up_trap \${?}' EXIT
+			trap '${Var_rm} "\${Var_enc_pipe_file}"' EXIT
 		;;
 	esac
 	Func_enc_make_named_pipe
@@ -1500,7 +1468,7 @@ Func_check_args(){
 				Func_assign_arg "\${_extra_var/---/}" "\${_extra_arg}"
 			;;
 			*)
-				declare -ag "Arr_extra_input+=( \${_arg} )"
+				declare -ag Arr_extra_input+=( "\${_arg}" )
 			;;
 		esac
 		let _arr_count++
@@ -1532,6 +1500,9 @@ Func_main(){
 			Func_dec_watch_bulk_dir >"\${Var_dev_null}" 2>&1 &
 			PID_loop=\$!
 			disown "\${PID_loop}"
+			if [ "\${#Arr_extra_input[@]}" != "0" ] && [ -p "\${Var_dec_pipe_file}" ]; then
+				${Var_cat} <<<"\${Arr_extra_input[*]}" > "\${Var_dec_pipe_file}"
+			fi
 		;;
 		*)
 			Func_dec_watch_file
