@@ -27,13 +27,14 @@ Var_tar="$(which tar)"
 Var_cat="$(which cat)"
 Var_gpg="$(which gpg)"
 Var_mkdir="$(which mkdir)"
+Var_touch="$(which touch)"
 ## Variables for encryption script copy
 Var_enc_copy_save_yn="no"
 Var_enc_copy_save_path="${PWD}/Encrypter.sh"
-Var_enc_copy_save_ownership="${USER}:${USER}"
+Var_enc_copy_save_ownership="$(id -un):$(id -gn)"
 Var_enc_copy_save_permissions="750"
 ## Variables for encryption processes
-Var_enc_yn=""
+Var_enc_yn="no"
 Var_enc_gpg_opts="--always-trust --armor --batch --no-tty --encrypt"
 Var_enc_parsing_bulk_out_dir="${PWD}/Bulk_Encrypted"
 Var_enc_parsing_bulk_output_suffix=".gpg"
@@ -41,28 +42,28 @@ Var_enc_parsing_disown_yn="yes"
 Var_enc_parsing_filter_input_yn="no"
 Var_enc_parsing_filter_comment_pattern='\#*'
 Var_enc_parsing_filter_allowed_chars='[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]'
-Var_enc_parsing_recipient="${USER}@${HOSTNAME}.local"
+Var_enc_parsing_recipient="$(id -un)@${HOSTNAME}.local"
 Var_enc_parsing_output_file="${PWD}/Encrypted_Results.gpg"
 Var_enc_parsing_output_rotate_yn="yes"
 Var_enc_parsing_output_rotate_actions="compress-encrypt,remove-old"
-Var_enc_parsing_output_rotate_recipient="${USER}@${HOSTNAME}.local"
+Var_enc_parsing_output_rotate_recipient="$(id -un)@${HOSTNAME}.local"
 Var_enc_parsing_output_max_size="4096"
 Var_enc_parsing_output_check_frequency="100"
 Var_enc_parsing_save_output_yn="yes"
 Var_enc_parsing_quit_string="quit"
 Var_enc_pipe_file="${PWD}/Encryption_Named.pipe"
-Var_enc_pipe_ownership="${USER}:${USER}"
+Var_enc_pipe_ownership="$(id -un):$(id -gn)"
 Var_enc_pipe_permissions="600"
 Var_enc_parsing_output_permissions="640"
-Var_enc_parsing_output_ownership="${USER}:${USER}"
+Var_enc_parsing_output_ownership="$(id -un):$(id -gn)"
 ## Decryption variables
-Var_dec_yn=""
+Var_dec_yn="no"
 Var_dec_copy_save_yn="no"
 Var_dec_copy_save_path="${PWD}/Decrypter.sh"
-Var_enc_copy_save_ownership="${USER}:${USER}"
+Var_enc_copy_save_ownership="$(id -un):$(id -gn)"
 Var_enc_copy_save_permissions="750"
 Var_dec_gpg_opts="--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"
-Var_dec_parsing_bulk_out_dir=""
+Var_dec_parsing_bulk_out_dir="${PWD}/Bulk_Decrypted"
 Var_dec_parsing_disown_yn="no"
 Var_dec_parsing_save_output_yn="yes"
 Var_dec_parsing_output_file="${PWD}/Decrypted_Results.txt"
@@ -70,8 +71,8 @@ Var_dec_pass=""
 ## Special variables
 Var_dec_pipe_make_yn="no"
 Var_dec_pipe_file="${PWD}/Decryption_Named.pipe"
-Var_dec_pipe_permissions="${USER}:${USER}"
-Var_dec_pipe_ownership="600"
+Var_dec_pipe_permissions="600"
+Var_dec_pipe_ownership="$(id -un):$(id -gn)"
 Var_dec_parsing_quit_string="quit"
 Var_dec_search_string=""
 Var_dec_bulk_check_count_max="0"
@@ -119,7 +120,7 @@ Func_enc_main(){
 				${Var_enc_copy_save_path}
 			else
 				Func_message "# Func_enc_main could not exicute: ${Var_enc_copy_save_path}" '2' '3'
-				cat "${Var_enc_copy_save_path}"
+				${Var_cat} "${Var_enc_copy_save_path}"
 			fi
 		;;
 		*)
@@ -161,7 +162,7 @@ Func_dec_main(){
 				${Var_dec_copy_save_path}
 			else
 				Func_message "# Func_dec_main could not exicute: ${Var_dec_copy_save_path}" '2' '3'
-				cat "${Var_dec_copy_save_path}"
+				${Var_cat} "${Var_dec_copy_save_path}"
 			fi
 		;;
 		*)
@@ -174,8 +175,8 @@ Func_dec_main(){
 			case "${Var_dec_parsing_save_output_yn}" in
 				y|Y|yes|Yes)
 					if ! [ -f "${Var_dec_parsing_output_file}" ]; then
-						touch "${Var_dec_parsing_output_file}"
-						chmod 660 "${Var_dec_parsing_output_file}"
+						${Var_touch} "${Var_dec_parsing_output_file}"
+						${Var_chmod} 660 "${Var_dec_parsing_output_file}"
 					fi
 				;;
 			esac
@@ -404,31 +405,31 @@ Func_check_args(){
 Func_help(){
 	echo "# ${Var_script_dir}/${Var_script_name} knows the following command line options"
 	echo "## Standard command line options"
-	echo "# --columns			Var_columns=\"${Var_columns}\""
-	echo "# --debug-level			Var_debug_level=\"${Var_debug_level}\""
-	echo "# --log-level			Var_log_level=\"${Var_log_level}\""
-	echo "# --script-log-path		Var_script_log_path=\"${Var_script_log_path}\""
-	echo "# --save-variables-yn		Var_save_variables_yn=\"${Var_save_variables_yn}\""
-	echo "# --source-var-file		Var_source_var_file=\"${Var_source_var_file}\""
-	echo "# --license			Display the license for this script."
-	echo "# --help			Display this message."
-	echo "# --version			Display version for this script."
+	echo "# --columns				Var_columns=\"${Var_columns}\""
+	echo "# --debug-level				Var_debug_level=\"${Var_debug_level}\""
+	echo "# --log-level				Var_log_level=\"${Var_log_level}\""
+	echo "# --script-log-path			Var_script_log_path=\"${Var_script_log_path}\""
+	echo "# --save-variables-yn			Var_save_variables_yn=\"${Var_save_variables_yn}\""
+	echo "# --source-var-file			Var_source_var_file=\"${Var_source_var_file}\""
+	echo "# --license				Display the license for this script."
+	echo "# --help				Display this message."
+	echo "# --version				Display version for this script."
 	echo "## Decryption command line options"
 	echo "# --dec-yn				Var_dec_yn=\"${Var_dec_yn}\""
 	echo "# --dec-copy-save-yn			Var_dec_copy_save_yn=\"${Var_dec_copy_save_yn}\""
 	echo "# --dec-copy-save-path			Var_dec_copy_save_path=\"${Var_dec_copy_save_path}\""
 	echo "# --dec-copy-save-ownership		Var_dec_copy_save_ownership=\"${Var_dec_copy_save_ownership}\""
 	echo "# --dec-copy-save-permissions		Var_dec_copy_save_permissions=\"${Var_dec_copy_save_permissions}\""
-	echo "# --dec-bulk-check-count-max			Var_dec_bulk_check_count_max=\"${Var_dec_bulk_check_count_max}\""
-	echo "# --dec-bulk-check-sleep			Var_dec_bulk_check_sleep=\"${Var_dec_bulk_check_sleep}\""
+	echo "# --dec-bulk-check-count-max		Var_dec_bulk_check_count_max=\"${Var_dec_bulk_check_count_max}\""
+	echo "# --dec-bulk-check-sleep		Var_dec_bulk_check_sleep=\"${Var_dec_bulk_check_sleep}\""
 	echo "# --dec-gpg-opts			Var_dec_gpg_opts=\"${Var_dec_gpg_opts}\""
-	echo "# --dec-pipe-make-yn		Var_dec_pipe_make_yn=\"Var_dec_pipe_make_yn}\""
+	echo "# --dec-pipe-make-yn			Var_dec_pipe_make_yn=\"${Var_dec_pipe_make_yn}\""
 	echo "# --dec-pipe-file			Var_dec_pipe_file=\"${Var_dec_pipe_file}\""
 	echo "# --dec-pipe-permissions		Var_dec_pipe_permissions=\"${Var_dec_pipe_permissions}\""
-	echo "# --dec-pipe-ownership		Var_dec_pipe_ownership=\"${Var_dec_pipe_ownership}\""
+	echo "# --dec-pipe-ownership			Var_dec_pipe_ownership=\"${Var_dec_pipe_ownership}\""
 	echo "# --dec-parsing-bulk-out-dir		Var_dec_parsing_bulk_out_dir=\"${Var_dec_parsing_bulk_out_dir}\""
 	echo "# --dec-parsing-disown-yn		Var_dec_parsing_disown_yn=\"${Var_dec_parsing_disown_yn}\""
-	echo "# --dec-parsing-save-output-yn	Var_dec_parsing_save_output_yn=\"${Var_dec_parsing_save_output_yn}\""
+	echo "# --dec-parsing-save-output-yn		Var_dec_parsing_save_output_yn=\"${Var_dec_parsing_save_output_yn}\""
 	echo "# --dec-parsing-output-file		Var_dec_parsing_output_file=\"${Var_dec_parsing_output_file}\""
 	echo "# --dec-parsing-quit-string		Var_dec_parsing_quit_string=\"${Var_dec_parsing_quit_string}\""
 	echo "# --dec-pass				Var_dec_pass=\"${Var_dec_pass}\""
@@ -464,7 +465,7 @@ Func_help(){
 	echo "# ---Var_dev_null			Var_dev_null=\"${Var_dev_null}\""
 }
 Func_script_license_customizer(){
-	Func_message "## Salutations ${Var_script_current_user:-${USER}}, the following license" '0' '42'
+	Func_message "## Salutations ${Var_script_current_user:-$(id -un)}, the following license" '0' '42'
 	Func_message "#  only applies to this script [${Var_script_title}]. Software external to but" '0' '42'
 	Func_message "#  used by [${Var_script_name}] are protected under their own licensing" '0' '42'
 	Func_message "#  usage agreements. The authors of this project assume **no** rights" '0' '42'
@@ -516,7 +517,7 @@ Func_assign_arg(){
 	_variable="${1}"
 	_value="${2}"
 	Func_message "# Func_assign_arg running: declare -g \"${_variable}\"=\"${_value}\"" '3' '4'
-	declare -g "${_variable}"="${_value}"
+	declare -g "${_variable}=${_value}"
 	Func_save_variables "${_variable}" "${_value}"
 	unset _variable
 	unset _value
@@ -653,8 +654,8 @@ Func_enc_pipe_parser_loop(){
 							${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} > "${Var_enc_parsing_output_file}"
 						else
 							if ! [ -f "${Var_enc_parsing_output_file}" ]; then
-								Func_message "# Func_enc_pipe_parser_loop running: touch \"${Var_enc_parsing_output_file}\"" '2' '3'
-								touch "${Var_enc_parsing_output_file}"
+								Func_message "# Func_enc_pipe_parser_loop running: ${Var_touch} \"${Var_enc_parsing_output_file}\"" '2' '3'
+								${Var_touch} "${Var_enc_parsing_output_file}"
 								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
 								${Var_chmod} "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_file}"
 								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
@@ -835,7 +836,7 @@ Func_enc_pipe_parser_loop(){
 							${Var_cat} <<<"\${_mapped_array}" | ${Var_gpg} \${_enc_gpg_opts} > "\${Var_enc_parsing_output_file}"
 						else
 							if ! [ -f "\${Var_enc_parsing_output_file}" ]; then
-								touch "\${Var_enc_parsing_output_file}"
+								${Var_touch} "\${Var_enc_parsing_output_file}"
 								${Var_chmod} "\${Var_enc_parsing_output_permissions}" "\${Var_enc_parsing_output_file}"
 								${Var_chown} "\${Var_enc_parsing_output_ownership}" "\${Var_enc_parsing_output_file}"
 							fi
@@ -1117,12 +1118,12 @@ Func_dec_file_or_dir(){
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tar.gpg*}"
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
-				mkdir -p "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: ${Var_mkdir} -p \"${_output_dir}\"" '5' '6'
+				${Var_mkdir} -p "${_output_dir}"
 				Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '5' '6'
 				cd "${_output_dir}"
-				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xf -" '5' '6'
-				${Var_gpg} ${Var_dec_gpg_opts}  "${_encrypted_path}" | tar -xf -
+				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | ${Var_tar} -xf -" '5' '6'
+				${Var_gpg} ${Var_dec_gpg_opts}  "${_encrypted_path}" | ${Var_tar} -xf -
 				Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '5' '6'
 				cd "${_old_pwd}"
 			fi
@@ -1133,12 +1134,12 @@ Func_dec_file_or_dir(){
 			_output_dir="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_dir="${_output_dir%.tgz.gpg*}"
 			if ! [ -d "${_output_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${_output_dir}\"" '5' '6'
-				mkdir -p "${_output_dir}"
+				Func_message "# Func_dec_file_or_dir running: ${Var_mkdir} -p \"${_output_dir}\"" '5' '6'
+				${Var_mkdir} -p "${_output_dir}"
 				Func_message "# Func_dec_file_or_dir running: cd \"${_output_dir}\"" '5' '6'
 				cd "${_output_dir}"
-				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | tar -xzf -" '5' '6'
-				${Var_gpg} ${Var_dec_gpg_opts} "${_encrypted_path}" | tar -xzf -
+				Func_message "# Func_dec_file_or_dir running: ${Var_gpg} ${Var_dec_gpg_opts} \"${_encrypted_path}\" | ${Var_tar} -xzf -" '5' '6'
+				${Var_gpg} ${Var_dec_gpg_opts} "${_encrypted_path}" | ${Var_tar} -xzf -
 				Func_message "# Func_dec_file_or_dir running: cd \"${_old_pwd}\"" '5' '6'
 				cd "${_old_pwd}"
 			fi
@@ -1146,8 +1147,8 @@ Func_dec_file_or_dir(){
 		;;
 		*.gpg)
 			if ! [ -d "${Var_dec_parsing_bulk_out_dir}" ]; then
-				Func_message "# Func_dec_file_or_dir running: mkdir -p \"${Var_dec_parsing_bulk_out_dir}\"" '5' '6'
-				mkdir -p "${Var_dec_parsing_bulk_out_dir}"
+				Func_message "# Func_dec_file_or_dir running: ${Var_mkdir} -p \"${Var_dec_parsing_bulk_out_dir}\"" '5' '6'
+				${Var_mkdir} -p "${Var_dec_parsing_bulk_out_dir}"
 			fi
 			_output_file="${Var_dec_parsing_bulk_out_dir}/${_encrypted_path##*/}"
 			_output_file="${_output_file%.gpg*}"
@@ -1325,9 +1326,9 @@ Func_dec_file_or_dir(){
 			_output_dir="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_dir="\${_output_dir%.tar.gpg*}"
 			if ! [ -d "\${_output_dir}" ]; then
-				mkdir -p "\${_output_dir}"
+				${Var_mkdir} -p "\${_output_dir}"
 				cd "\${_output_dir}"
-				${Var_gpg} \${Var_dec_gpg_opts}  "\${_encrypted_path}" | tar -xf -
+				${Var_gpg} \${Var_dec_gpg_opts}  "\${_encrypted_path}" | ${Var_tar} -xf -
 				cd "\${_old_pwd}"
 			fi
 			unset _old_pwd
@@ -1337,16 +1338,16 @@ Func_dec_file_or_dir(){
 			_output_dir="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_dir="\${_output_dir%.tgz.gpg*}"
 			if ! [ -d "\${_output_dir}" ]; then
-				mkdir -p "\${_output_dir}"
+				${Var_mkdir} -p "\${_output_dir}"
 				cd "\${_output_dir}"
-				${Var_gpg} \${Var_dec_gpg_opts} "\${_encrypted_path}" | tar -xzf -
+				${Var_gpg} \${Var_dec_gpg_opts} "\${_encrypted_path}" | ${Var_tar} -xzf -
 				cd "\${_old_pwd}"
 			fi
 			unset _old_pwd
 		;;
 		*.gpg)
 			if ! [ -d "\${Var_dec_parsing_bulk_out_dir}" ]; then
-				mkdir -p "\${Var_dec_parsing_bulk_out_dir}"
+				${Var_mkdir} -p "\${Var_dec_parsing_bulk_out_dir}"
 			fi
 			_output_file="\${Var_dec_parsing_bulk_out_dir}/\${_encrypted_path##*/}"
 			_output_file="\${_output_file%.gpg*}"
@@ -1488,7 +1489,7 @@ Func_main(){
 	case "\${Var_dec_parsing_save_output_yn}" in
 		y|Y|yes|Yes)
 			if ! [ -f "\${Var_dec_parsing_output_file}" ]; then
-				touch "\${Var_dec_parsing_output_file}"
+				${Var_touch} "\${Var_dec_parsing_output_file}"
 			fi
 		;;
 	esac
