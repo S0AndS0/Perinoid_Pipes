@@ -4,12 +4,14 @@ set +o history
 ## Assign name of this script and file path to variables for latter use
 Var_script_dir="${0%/*}"
 Var_script_name="${0##*/}"
+Var_script_description='maker of named pipe parsing template Bash scripts for GnuPG.'
 Var_debug_level="0"
 Var_log_level="0"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
-Var_columns="$(tput cols)"
-Var_columns="${COLUMNS:-${Var_columns:-80}}"
+Var_columns="${COLUMNS:-$(tput cols)}"
+Var_columns="${Var_columns:-80}"
 Var_authors_contact='strangerthanbland@gmail.com'
+Var_authors_name='S0AndS0'
 Var_save_variables_yn="no"
 Var_source_var_file=""
 Var_script_version_main="2"
@@ -471,8 +473,8 @@ Func_script_license_customizer(){
 	Func_message "#  usage agreements. The authors of this project assume **no** rights" '0' '42'
 	Func_message "#  to modify software licensing agreements external to [${Var_script_name}]" '0' '42'
 	Func_message '## GNU AGPL v3 Notice start' '0' '42'
-	Func_message "# ${Var_script_name}, maker of named pipe parsing template Bash scripts." '0' '42'
-	Func_message "#  Copyright (C) 2016 S0AndS0" '0' '42'
+	Func_message "# ${Var_script_name}, ${Var_script_description}" '0' '42'
+	Func_message "#  Copyright (C) 2016 ${Var_authors_name}" '0' '42'
 	Func_message '# This program is free software: you can redistribute it and/or modify' '0' '42'
 	Func_message '#  it under the terms of the GNU Affero General Public License as' '0' '42'
 	Func_message '#  published by the Free Software Foundation, version 3 of the' '0' '42'

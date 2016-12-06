@@ -1,6 +1,6 @@
 # Code issues & Markdown formatting statistics
 
-[![Version](https://img.shields.io/badge/Version-1--1477518852-blue.svg)](Paranoid_Pipes.sh)
+[![Version](https://img.shields.io/badge/Version-2--0-blue.svg)](Paranoid_Pipes.sh)
  [![Code Climate](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/gpa.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
  [![Build Status](https://travis-ci.org/S0AndS0/Perinoid_Pipes.svg?branch=master)](https://travis-ci.org/S0AndS0/Perinoid_Pipes)
 
@@ -37,7 +37,7 @@
 > should be allowed access. Furthermore, your data should be unreadable to
 > those that do gain unauthorized access.
 
-## Help documentation for version two
+## Help documentation for version_two.sh
 
 ### Standard command line options
 

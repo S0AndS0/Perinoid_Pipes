@@ -5,8 +5,11 @@ Var_script_name="${0##*/}"
 Var_debug_level="0"
 Var_log_level="0"
 Var_script_log_path="${PWD}/${Var_script_name%.sh*}.log"
-Var_columns="${COLUMNS:-80}"
+Var_columns="${COLUMNS:-$(tput cols)}"
+Var_columns="${Var_columns:-80}"
 Var_authors_contact='strangerthanbland@gmail.com'
+Var_authors_name='S0AndS0'
+Var_script_description='Does some spicific tasks'
 Var_source_var_file=""
 Var_script_version_main="0"
 Var_script_version_sub="1111111"
@@ -71,11 +74,11 @@ Func_check_args(){
 }
 Func_help(){
 	echo "# ${Var_script_dir}/${Var_script_name} knows the following command line options"
-	echo "# --columns		Var_columns${Var_columns}"
-	echo "# --debug-level		Var_debug_level=${Var_debug_level}"
-	echo "# --log-level		Var_log_level=${Var_log_level}"
-	echo "# --script-log-level	Var_script_log_path=${Var_script_log_path}"
-	echo "# --source-var-file	Var_source_var_file=${Var_source_var_file}"
+	echo "# --columns		Var_columns=\"${Var_columns}\""
+	echo "# --debug-level		Var_debug_level=\"${Var_debug_level}\""
+	echo "# --log-level		Var_log_level=\"${Var_log_level}\""
+	echo "# --script-log-level	Var_script_log_path=\"${Var_script_log_path}\""
+	echo "# --source-var-file	Var_source_var_file=\"${Var_source_var_file}\""
 	echo "# --license		Display the license for this script."
 	echo "# --help			Display this message."
 	echo "# --version		Display version for this script."
@@ -88,8 +91,8 @@ Func_script_license_customizer(){
 	Func_message "#  usage agreements. The authors of this project assume **no** rights" '0' '42'
 	Func_message '#  to modify software licensing agreements external to [${Var_script_name}]' '0' '42'
 	Func_message '## GNU AGPL v3 Notice start' '0' '42'
-	Func_message "# ${Var_script_name}, maker of named pipe parsing template Bash scripts." '0' '42'
-	Func_message "#  Copyright (C) 2016 S0AndS0" '0' '42'
+	Func_message "# ${Var_script_name}, ${Var_script_description}" '0' '42'
+	Func_message "#  Copyright (C) 2016 ${Var_authors_name}" '0' '42'
 	Func_message '# This program is free software: you can redistribute it and/or modify' '0' '42'
 	Func_message '#  it under the terms of the GNU Affero General Public License as' '0' '42'
 	Func_message '#  published by the Free Software Foundation, version 3 of the' '0' '42'
