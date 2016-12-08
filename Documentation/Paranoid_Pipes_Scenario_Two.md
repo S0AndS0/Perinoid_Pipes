@@ -56,7 +56,7 @@ gpg --homedir /tmp/.gnupg --export-secret-keys --output /tmp/.gnupg/server_secre
 
 > This will also import the public key so login to the user account you will
 > have running the pipe listening scripts prior to the following command; ie
-> the one defined by `--copy-save-ownership="notwwwuser:notwwwgroup"`
+> the one defined by `--enc-copy-save-ownership="notwwwuser:notwwwgroup"`
 > command line option in next section.
 
 ```
@@ -89,21 +89,21 @@ rm -Irf /tmp/.gnupg
 ### First is a pipe to pipe encryption named pipe listening script
 
 ```
-/script/path/script_name.sh --copy-save-yn='yes'\
- --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
- --copy-save-ownership="notwwwuser:notwwwgroup"\
- --copy-save-permissions='100'\
+/script/path/script_name.sh --enc-copy-save-yn='yes'\
+ --enc-copy-save-path="/jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
+ --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe"\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name="/jailed_logs/website_host/www_access.pipe"\
+ --enc-pipe-file="/jailed_servers/website_host/var/log/www/access.log.pipe"\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.pipe"\
  --output-parse-recipient="user@host.domain"\
- --output-rotate-yn='no'\
- --output-save-yn='yes'\
- --disown-yn='yes' --help
+ --enc-parsing-output-rotate-yn='no'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes' --help
 ```
 
 ### Second pipe will decrypt
@@ -114,25 +114,25 @@ rm -Irf /tmp/.gnupg
 > least your logs only live in plan text for a short time on the public server.
 
 ```
-/script/path/script_name.sh --copy-save-yn='yes'\
- --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
- --copy-save-ownership="notwwwuser:notwwwgroup"\
- --copy-save-permissions='100'\
+/script/path/script_name.sh --enc-copy-save-yn='yes'\
+ --enc-copy-save-path="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
+ --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name="/jailed_logs/website_host/www_access.pipe"\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name="/jailed_logs/website_host/www_access.log"\
+ --enc-pipe-file="/jailed_logs/website_host/www_access.pipe"\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.log"\
  --output-parse-recipient="user@host.domain"\
- --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-frequency='250'\
- --output-rotate-max-bites='8046'\
- --output-rotate-recipient="user@host.domain"\
- --output-rotate-yn='yes'\
- --output-save-yn='yes'\
- --disown-yn='yes' --help
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-check-frequency='250'\
+ --enc-parsing-output-max-size='8046'\
+ --enc-parsing-output-rotate-recipient="user@host.domain"\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes' --help
 ```
 
 ### Modify the second pipe listener's `Var_parsing_command` variable
@@ -178,15 +178,15 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 ### Input -> output first script options
 
 ```
---named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe" \
---output-parse-name="/jailed_logs/website_host/www_access.pipe" \
+--enc-pipe-file="/jailed_servers/website_host/var/log/www/access.log.pipe" \
+--enc-parsing-output-file="/jailed_logs/website_host/www_access.pipe" \
 ```
 
 ### Input -> output second script options
 
 ```
---named-pipe-name="/jailed_logs/website_host/www_access.pipe" \
---output-parse-name="/jailed_logs/website_host/www_access.log" \
+--enc-pipe-file="/jailed_logs/website_host/www_access.pipe" \
+--enc-parsing-output-file="/jailed_logs/website_host/www_access.log" \
 ```
 
 > Above outlines taking input written by web server logging service on pipe
@@ -207,21 +207,21 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 ### Input -> output pre-parsing and log rotation options in the first script
 
 ```
---output-pre-parse-yn='yes' \
---output-rotate-yn='no' \
---output-save-yn='yes' \
+--enc-parsing-filter-input-yn='yes' \
+--enc-parsing-output-rotate-yn='no' \
+--enc-parsing-save-output-yn='yes' \
 ```
 
 ### Input -> output pre-parsing and log rotation options in the second script
 
 ```
---output-pre-parse-yn='no' \
---output-rotate-actions='compress-encrypt,remove-old' \
---output-rotate-check-frequency='250' \
---output-rotate-max-bites='8046' \
---output-rotate-recipient="user@host.domain" \
---output-rotate-yn='yes' \
---output-save-yn='yes' \
+--enc-parsing-filter-input-yn='no' \
+--enc-parsing-output-rotate-actions='compress-encrypt,remove-old' \
+--enc-parsing-output-check-frequency='250' \
+--enc-parsing-output-max-size='8046' \
+--enc-parsing-output-rotate-recipient="user@host.domain" \
+--enc-parsing-output-rotate-yn='yes' \
+--enc-parsing-save-output-yn='yes' \
 ```
 
 > Above we're disabling the log rotation for the first script because it's
@@ -233,7 +233,7 @@ echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_serv
 > or sys admin's email to become quite full unless they've setup some form of
 > auto retrieval script to handle the traffic automatically. This is a balance
 > your team must strike between threat modal vs administrating the log shuffle
-> over-head described. The `--output-pre-parse-yn='`*yes/no*`'` option
+> over-head described. The `--enc-parsing-filter-input-yn='`*yes/no*`'` option
 > differences between first and second scripts are; in the first script we set
 > this to `yes` to restrict what input is read and encrypted, and in the second
 > script to prevent GnuPG decryption from failing to decrypt we set this to `no`

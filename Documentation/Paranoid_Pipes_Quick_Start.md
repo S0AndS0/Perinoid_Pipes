@@ -113,14 +113,14 @@ pipe_writer.sh -h
 > modifying bellow command.
 
 ```
-pipe_writer.sh --copy-save-yn=no\
- --output-save-yn=no\
- --disown-yn=no\
+pipe_writer.sh --enc-copy-save-yn=no\
+ --enc-parsing-save-output-yn=no\
+ --enc-parsing-disown-yn=no\
  --debug-level=5 --log-level=0\
- --output-bulk-dir=/tmp/test_bulk\
- --named-pipe-name=/tmp/test.pipe\
+ --enc-parsing-bulk-out-dir=/tmp/test_bulk\
+ --enc-pipe-file=/tmp/test.pipe\
  --output-parse-recipient=youremail@host.domain\
- --output-rotate-recipient=youremail@host.domain -h
+ --enc-parsing-output-rotate-recipient=youremail@host.domain -h
 ```
 
 > Remove the '-h' option from above command to have parsed output read from
@@ -177,7 +177,7 @@ echo '/etc/rc.local' > /tmp/test.pipe
  script (and those that it writes) will detect this and treat'em special; even
  more special treatment is used on known directory paths.
 
-> Note if you have changed the '--output-bulk-dir=/tmp/test_bulk' command
+> Note if you have changed the '--enc-parsing-bulk-out-dir=/tmp/test_bulk' command
 > line option above then this directory file path will be that which was defined.
 
 #### Example of providing file directory path

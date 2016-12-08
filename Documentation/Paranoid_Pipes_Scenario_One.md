@@ -27,25 +27,25 @@ This scenario was written with the following link's questions as it's
 > the following command line options being used on the project's script that is...
 
 ```
-/script/path/script_name.sh --copy-save-yn='yes'\
- --copy-save-name="/jailer_scripts/website_host/Web_log_encrypter.sh"\
- --copy-save-ownership="notwwwuser:notwwwgroup"\
- --copy-save-permissions='100'\
+/script/path/script_name.sh --enc-copy-save-yn='yes'\
+ --enc-copy-save-path="/jailer_scripts/website_host/Web_log_encrypter.sh"\
+ --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name="/jailed_servers/website_host/var/log/www/access.log.pipe"\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name="/jailed_logs/website_host/www_access.gpg"\
+ --enc-pipe-file="/jailed_servers/website_host/var/log/www/access.log.pipe"\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.gpg"\
  --output-parse-recipient="user@host.domain"\
- --output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
  --output-rotate-check-requency='25000'\
- --output-rotate-max-bites='8388608'\
- --output-rotate-recipient="user@host.domain"\
- --output-rotate-yn='yes'\
- --output-save-yn='yes'\
- --disown-yn='yes' --help
+ --enc-parsing-output-max-size='8388608'\
+ --enc-parsing-output-rotate-recipient="user@host.domain"\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes' --help
 ```
 
 > Note, if you've setup the web server within a chroot (as is assumed by
@@ -60,11 +60,11 @@ This scenario was written with the following link's questions as it's
 ### Summery of logging data flow
 
 1. Client interacts with server such that logs are generated. Modify the server
- or daemon to use the same file path as defined by `--named-pipe-name` option
+ or daemon to use the same file path as defined by `--enc-pipe-file` option
  for output of it's logs.
 
 1. Written data to named pipe is read by Bash loops contained in customized
- script copy defined by `--copy-save-name` option.
+ script copy defined by `--enc-copy-save-path` option.
 
 1. Using public key defined by `--output-parse-recipient` option, every data
  block read by the script copy will be encrypted. Note this script is capable
@@ -73,30 +73,30 @@ This scenario was written with the following link's questions as it's
  then the entire write action is captured up to a few thousand lines at a time.
 
 1. The encrypted data is then saved (appended) to file defined by
- `--output-parse-name` option and the Bash loop checks it's internal write
- count against the count defined by `--output-rotate-check-frequency` option
+ `--enc-parsing-output-file` option and the Bash loop checks it's internal write
+ count against the count defined by `--enc-parsing-output-check-frequency` option
  and usually restarts processes that listen to named pipe for more writes.
 
 > If the internal write count matches that of
-> `--output-rotate-check-frequency` or is greater then the
-> `--output-rotate-max-bites` value is used to check the encrypted log file size.
-> If the encrypted log file size matches that of `--output-rotate-max-bites`
-> or is greater then the actions defined by `--output-rotate-actions` option is
+> `--enc-parsing-output-check-frequency` or is greater then the
+> `--enc-parsing-output-max-size` value is used to check the encrypted log file size.
+> If the encrypted log file size matches that of `--enc-parsing-output-max-size`
+> or is greater then the actions defined by `--enc-parsing-output-rotate-actions` option is
 > considered.
-> Note the more actions listed in the `--output-rotate-actions` option the
+> Note the more actions listed in the `--enc-parsing-output-rotate-actions` option the
 > longer that the named pipe will be blocked for writing/parsing actions.
 > Note if your server has `mutt` installed and configured to send emails you
 > may wish to use the following instead. Additionally when emailed log rotation
-> is enabled it will be the address defined by `--output-rotate-recipient`
+> is enabled it will be the address defined by `--enc-parsing-output-rotate-recipient`
 > option that receives attached encrypted logs.
 
 ## Enable emailed log rotation instead
 
 ```
---output-rotate-actions='encrypted-email,remove-old'
+--enc-parsing-output-rotate-actions='encrypted-email,remove-old'
 ```
 
-> If no line matches `--listener-quit-string` option then reading named pipe
+> If no line matches `--enc-parsing-quit-string` option then reading named pipe
 > for write actions from server or logging daemon is resumed and step `1`
 > above starts again.
 
@@ -105,10 +105,10 @@ This scenario was written with the following link's questions as it's
 #### Enable saving script copy saving operation
 
 > all customized options are then saved by the main script to the script copy
-> saved to the path defined by `--copy-save-name` option.
+> saved to the path defined by `--enc-copy-save-path` option.
 
 ```
---copy-save-yn='yes'
+--enc-copy-save-yn='yes'
 ```
 
 #### The `<user>:<group>` allowed to run script copy
@@ -118,7 +118,7 @@ This scenario was written with the following link's questions as it's
 > with unknown motives.
 
 ```
---copy-save-ownership="notwwwuser:notwwwgroup"
+--enc-copy-save-ownership="notwwwuser:notwwwgroup"
 ```
 
 #### Set execute permissions for script owner only
@@ -128,7 +128,7 @@ This scenario was written with the following link's questions as it's
 > `su -u notwwuser -c "/jailer_scripts/website_host/Web_log_encrypter.sh"`.
 
 ```
---copy-save-permissions='100'
+--enc-copy-save-permissions='100'
 ```
 
 #### Set debug levels really high
@@ -159,7 +159,7 @@ This scenario was written with the following link's questions as it's
 > as one that the chrooted web server's logger is apart of.
 
 ```
---named-pipe-ownership='notwwwuser:wwwgroup'
+--enc-pipe-ownership='notwwwuser:wwwgroup'
 ```
 
 #### Read and write permissions
@@ -168,7 +168,7 @@ This scenario was written with the following link's questions as it's
 > copy's owner, writable by logging group, and nothing more.
 
 ```
---named-pipe-permissions='420'
+--enc-pipe-permissions='420'
 ```
 
 > The combination of these above ownership and permission options **must**
@@ -185,7 +185,7 @@ This scenario was written with the following link's questions as it's
 > in above example options that will be written to the script copy.
 
 ```
---disown-yn='yes'
+--enc-parsing-disown-yn='yes'
 ```
 
 #### Printing set options & exit without writing scirpt copy

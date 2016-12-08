@@ -16,26 +16,26 @@
 > to read.
 
 ```
-Script_options="--copy-save-yn='yes'\
- --copy-save-name='/jailer_scripts/website_host/Web_log_encrypter.sh'\
- --copy-save-ownership='notwwwuser:notwwwgroup'\
- --copy-save-permissions='100'\
+Script_options="--enc-copy-save-yn='yes'\
+ --enc-copy-save-path='/jailer_scripts/website_host/Web_log_encrypter.sh'\
+ --enc-copy-save-ownership='notwwwuser:notwwwgroup'\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name='/jailed_servers/website_host/var/log/www/access.log.pipe'\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name='/jailed_logs/website_host/www_access.gpg'\
+ --enc-pipe-file='/jailed_servers/website_host/var/log/www/access.log.pipe'\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file='/jailed_logs/website_host/www_access.gpg'\
  --output-parse-recipient='user@host.domain'\
- --output-pre-parse-yn='yes'\
- --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-frequency='25000'\
- --output-rotate-max-bites='8388608'\
- --output-rotate-recipient='user@host.domain'\
- --output-rotate-yn='yes'\
- --output-save-yn='yes'\
- --disown-yn='yes'"
+ --enc-parsing-filter-input-yn='yes'\
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-check-frequency='25000'\
+ --enc-parsing-output-max-size='8388608'\
+ --enc-parsing-output-rotate-recipient='user@host.domain'\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes'"
 ```
 
 > Note the use of `\` (back-slashes) for escaping new lines above, these are not
@@ -163,11 +163,11 @@ Script_save_rotate_recipient='user@host.suffix'
 ## Variable defined options that change per-host assigned to each script copy
 
 ```
---copy-save-name='${Script_save_dir}/${_host_name}_log_encrypter.sh'
---named-pipe-name='${Script_save_output_dir}/${_host_name}_access.log.pipe'
---named-pipe-ownership='${_host_name}:${_host_name}'
---copy-save-ownership='${_host_name}:${_host_name}'
---output-parse-name='${Script_save_output_dir}/${_host_name}_access.gpg'
+--enc-copy-save-path='${Script_save_dir}/${_host_name}_log_encrypter.sh'
+--enc-pipe-file='${Script_save_output_dir}/${_host_name}_access.log.pipe'
+--enc-pipe-ownership='${_host_name}:${_host_name}'
+--enc-copy-save-ownership='${_host_name}:${_host_name}'
+--enc-parsing-output-file='${Script_save_output_dir}/${_host_name}_access.gpg'
 ```
 
 ## Variable defined options that do not change per-host
@@ -176,24 +176,24 @@ Script_save_rotate_recipient='user@host.suffix'
 
 ```
 --output-parse-recipient='${Script_save_parse_recipient}'
---output-rotate-recipient='${Script_save_rotate_recipient}'
+--enc-parsing-output-rotate-recipient='${Script_save_rotate_recipient}'
 ```
 
 ## List of options that do not change per-host assigned to each script copy
 
 ```
---copy-save-yn='yes'
---copy-save-permissions='100'
+--enc-copy-save-yn='yes'
+--enc-copy-save-permissions='100'
 --debug-level='6'
 --log-level='0'
---named-pipe-permissions='420'
---output-pre-parse-yn='yes'
---output-rotate-actions='compress-encrypt,remove-old'
---output-rotate-check-frequency='25000'
---output-rotate-max-bites='8388608'
---output-rotate-yn='yes'
---output-save-yn='yes'
---disown-yn='yes'
+--enc-pipe-permissions='420'
+--enc-parsing-filter-input-yn='yes'
+--enc-parsing-output-rotate-actions='compress-encrypt,remove-old'
+--enc-parsing-output-check-frequency='25000'
+--enc-parsing-output-max-size='8388608'
+--enc-parsing-output-rotate-yn='yes'
+--enc-parsing-save-output-yn='yes'
+--enc-parsing-disown-yn='yes'
 ```
 
 > After modifying and running the above script you should have a log file on the
@@ -202,7 +202,7 @@ Script_save_rotate_recipient='user@host.suffix'
 > above `for` loop.
 
 ```
---listener-quit-string='${_random_quit_string}'
+--enc-parsing-quit-string='${_random_quit_string}'
 ```
 
 > Sample output log file

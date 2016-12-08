@@ -39,11 +39,11 @@
 > text at some obscure location; kinda defeats the porous of keeping secrets if
 > your reader tattles on you.
 
-5. Only enable `--output-pre-parse-yn` and/or `--padding-enable-yn` options when
+5. Only enable `--enc-parsing-filter-input-yn` and/or `--padding-enable-yn` options when
  you are certain as to what those options do. Default values for each are `no`
  so do not worry about manually disabling them.
 
-> the `--output-pre-parse-yn` option if enabled will cause the listening loop
+> the `--enc-parsing-filter-input-yn` option if enabled will cause the listening loop
 > to perpend `#` to read lines that do not have them at the start of the line
 > already
 > the `--padding-enable-yn` option if enabled will cause lines read to also
@@ -62,7 +62,7 @@
 > is low.
 > or build an entropy seeder.
 
-7. `--output-parse-recipient` and `--output-rotate-recipient` options are
+7. `--output-parse-recipient` and `--enc-parsing-output-rotate-recipient` options are
  **required** if `--help` option is excluded from script command line options.
 
 > these email addresses maybe the same or different, but must be passed via

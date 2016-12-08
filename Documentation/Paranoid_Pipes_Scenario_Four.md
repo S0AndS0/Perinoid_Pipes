@@ -211,49 +211,49 @@ cp ${Var_gnupg_pubkey_file} ${Var_mount_point}/${Var_ssh_user}
 ### Setup named pipe listener for decryption on local
 
 ```
-/script/path/script_name.sh --copy-save-yn='yes'\
- --copy-save-name="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
- --copy-save-ownership="notwwwuser:notwwwgroup"\
- --copy-save-permissions='100'\
+/script/path/script_name.sh --enc-copy-save-yn='yes'\
+ --enc-copy-save-path="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
+ --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name="${Var_mount_point}/website_host/www_access.pipe"\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name="/jailed_logs/website_host/www_access.log"\
+ --enc-pipe-file="${Var_mount_point}/website_host/www_access.pipe"\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.log"\
  --output-parse-recipient="user@host.domain"\
- --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-frequency='250'\
- --output-rotate-max-bites='8046'\
- --output-rotate-recipient="user@host.domain"\
- --output-rotate-yn='yes'\
- --output-save-yn='yes'\
- --disown-yn='yes' --help
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-check-frequency='250'\
+ --enc-parsing-output-max-size='8046'\
+ --enc-parsing-output-rotate-recipient="user@host.domain"\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes' --help
 ```
 
 ### Setup named pipe for remote server encryption
 
 ```
-/script/path/script_name.sh --copy-save-yn='yes'\
- --copy-save-name="${Var_mount_point}/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
- --copy-save-ownership="notwwwuser:notwwwgroup"\
- --copy-save-permissions='100'\
+/script/path/script_name.sh --enc-copy-save-yn='yes'\
+ --enc-copy-save-path="${Var_mount_point}/website_host/Web_log_pipe_to_pipe_encrypter.sh"\
+ --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --enc-copy-save-permissions='100'\
  --debug-level='6'\
- --listener-quit-string='sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-quit-string='sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --named-pipe-name="${Var_sftp_chroot}/website_host/var/log/www/access.log.pipe"\
- --named-pipe-ownership='notwwwuser:wwwgroup'\
- --named-pipe-permissions='420'\
- --output-parse-name="${Var_sftp_chroot}/website_host/www_access.pipe"\
+ --enc-pipe-file="${Var_sftp_chroot}/website_host/var/log/www/access.log.pipe"\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file="${Var_sftp_chroot}/website_host/www_access.pipe"\
  --output-parse-recipient="${Var_gnupg_email}"\
- --output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-frequency='250'\
- --output-rotate-max-bites='8046'\
- --output-rotate-recipient="user@host.domain"\
- --output-rotate-yn='yes'\
- --output-save-yn='yes'\
- --disown-yn='yes' --help
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-check-frequency='250'\
+ --enc-parsing-output-max-size='8046'\
+ --enc-parsing-output-rotate-recipient="user@host.domain"\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes' --help
 ```
 
 ## Licensing notice for this file
