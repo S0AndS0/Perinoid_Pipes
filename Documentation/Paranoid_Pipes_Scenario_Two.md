@@ -100,9 +100,10 @@ rm -Irf /tmp/.gnupg
  --enc-pipe-ownership='notwwwuser:wwwgroup'\
  --enc-pipe-permissions='420'\
  --enc-parsing-output-file="/jailed_logs/website_host/www_access.pipe"\
- --output-parse-recipient="user@host.domain"\
+ --enc-parsing-recipient="user@host.domain"\
  --enc-parsing-output-rotate-yn='no'\
  --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-bulk-output-dir="/jailed_logs/host_backups"\
  --enc-parsing-disown-yn='yes' --help
 ```
 
@@ -114,46 +115,23 @@ rm -Irf /tmp/.gnupg
 > least your logs only live in plan text for a short time on the public server.
 
 ```
-/script/path/script_name.sh --enc-copy-save-yn='yes'\
- --enc-copy-save-path="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
- --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
- --enc-copy-save-permissions='100'\
+/script/path/script_name.sh --dec-copy-save-yn='yes'\
+ --dec-copy-save-path="/jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh"\
+ --dec-copy-save-ownership="notwwwuser:notwwwgroup"\
+ --dec-copy-save-permissions='100'\
+ --dec-pass="private-key-passphrase-or-file-path-to-passphrase"\
  --debug-level='6'\
- --enc-parsing-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
  --log-level='0'\
- --enc-pipe-file="/jailed_logs/website_host/www_access.pipe"\
- --enc-pipe-ownership='notwwwuser:wwwgroup'\
- --enc-pipe-permissions='420'\
- --enc-parsing-output-file="/jailed_logs/website_host/www_access.log"\
- --output-parse-recipient="user@host.domain"\
- --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
- --enc-parsing-output-check-frequency='250'\
- --enc-parsing-output-max-size='8046'\
- --enc-parsing-output-rotate-recipient="user@host.domain"\
- --enc-parsing-output-rotate-yn='yes'\
- --enc-parsing-save-output-yn='yes'\
- --enc-parsing-disown-yn='yes' --help
+ --dec-pipe-file="/jailed_logs/website_host/www_access.pipe"\
+ --dec-pipe-ownership='notwwwuser:wwwgroup'\
+ --dec-pipe-permissions='420'\
+ --dec-parsing-save-output-yn='yes'\
+ --dec-parsing-output-file="/jailed_logs/website_host/www_access.log"\
+ --dec-parsing-quit-string='SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.pipe"\
+ --enc-parsing-bulk-output-dir="/jailed_logs/host_backups"\
+ --dec-parsing-disown-yn='yes' --help
 ```
-
-### Modify the second pipe listener's `Var_parsing_command` variable
-
-> And command it to decrypt instead of encrypt.
-
-```
-Var_parsing_command="gpg --decrypt"
-```
-
-### or for specific user with their own key ring
-
-```
-Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
-```
-
-> Automation is similar to `Scenario one`, however, order of operation is very
-> important! The encryption pipe to pipe listener should be started **after**
-> the decryption pipe listening script. Shutting down order is just as important
-> as start order; stop encryption before stopping decryption to avoid writing
-> logs to plan text file under the same name as named pipe.
 
 #### Start stop lines for decryption pipe to log file
 
@@ -161,7 +139,7 @@ Var_parsing_command='su notwwwuser -c "gpg --decrypt"'
 # Start decryption pipe listener
 /jailer_scripts/website_host/Web_log_pipe_to_pipe_decrypter.sh
 # Stop decryption pipe listener
-echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs/website_host/www_access.pipe
+echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe
 ```
 
 #### Start stop lines for encryption pipe to pipe files
@@ -170,7 +148,7 @@ echo 'SoMe_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs
 ## Start encryption pipe listener
 /jailer_scripts/website_host/Web_log_pipe_to_pipe_encrypter.sh
 # Stop decryption pipe listener
-echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_servers/website_host/var/log/www/access.log.pipe
+echo 'sOmE_rAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD' > /jailed_logs/website_host/www_access.pipe
 ```
 
 ## Notes on differences between written script's options used above

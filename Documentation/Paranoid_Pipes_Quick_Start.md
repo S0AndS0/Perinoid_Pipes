@@ -113,13 +113,12 @@ pipe_writer.sh -h
 > modifying bellow command.
 
 ```
-pipe_writer.sh --enc-copy-save-yn=no\
- --enc-parsing-save-output-yn=no\
+pipe_writer.sh --enc-parsing-save-output-yn=no\
  --enc-parsing-disown-yn=no\
  --debug-level=5 --log-level=0\
  --enc-parsing-bulk-out-dir=/tmp/test_bulk\
  --enc-pipe-file=/tmp/test.pipe\
- --output-parse-recipient=youremail@host.domain\
+ --enc-parsing-recipient=youremail@host.domain\
  --enc-parsing-output-rotate-recipient=youremail@host.domain -h
 ```
 

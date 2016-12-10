@@ -7,413 +7,440 @@
 > if instead you wish to pass values via the related "Variable name" then
 > just pass the variable and value without prefixed. The first command line/
 > variable assignment example bellow will include examples of both usage.
+> Within most interactive scripts of this project you may also set veriables
+> that do not have a related command line option by prefixing the veriable
+> with `---` as show much further on within this document.
 
-## Recognized command line options, their variables and default values
+Standard command line options for most scripts
 
-### Command line option: `--enc-copy-save-yn`
+### Command line option : `--columns`
 
-- Variable name: `Var_enc_copy_save_yn`
-- Default value: `no`
-- Regex restrictions: `a-zA-Z`
+- Variable name: `Var_columns`
+- Default value: `${COLUMNS:-$(tput cols)}`
 
-> Acceptable values: `'Yes'` or `'No'` Enable or disable writing script copy.
+> Expected values: `80`
 
-#### Example use of command line option: `--enc-copy-save-yn`
+### Command line option : `--debug-level`
 
-```
-Paranoid_Pipes.sh --enc-copy-save-yn="no"
-```
+- Variable name: `Var_debug_level`
+- Default value: `0`
 
-#### Example use of variable name: `Var_enc_copy_save_yn`
+> Expected values: `0` - `9`
 
-```
-Paranoid_Pipes.sh Var_enc_copy_save_yn="no"
-```
-
-### Command line option: `--enc-copy-save-path`
-
-- Variable name: `Var_enc_copy_save_path`
-- Default value: `${0%/*}/disownable_pipe_listener.sh`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
-
-> Acceptable values: `'/tmp/test_pipe_listener.sh'` Path and file name to save
-> script copy under
-
-### Command line option: `--enc-copy-save-permissions`
-
-- Variable name: `Var_enc_copy_save_permissions`
-- Default value: `100`
-- Regex restrictions: `0-9`
-
-> Acceptable values: `'100'` or `'110'` Executable permissions only are
-> sufficient.
-
-### Command line option: `--enc-copy-save-ownership`
-
-- Variable name: `Var_enc_copy_save_ownership`
-- Default value: `${USER}:${USER}`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
-
-> Acceptable values: `<user>`:`<group>` allowed to read named pipe and execute
-> script copy.
-
-### Command line option: `--debug-level`
-
-- Variable name: `Var_debuging`
-- Default value: `6`
-- Regex restrictions: `0-9`
-
-> Acceptable values: `'0'` - `'6'` Lower the number silences main script only.
-
-### Command line option: `--enc-parsing-disown-yn`
-
-- Variable name: `Var_enc_parsing_disown_yn`
-- Default value: `yes`
-- Regex restrictions: `a-zA-Z`
-
-> Acceptable values: 'Yes' or 'No' Enable or disable running named pipe in
-> background.
-
-### Command line option: `--log-level`
+### Command line option : `--log-level`
 
 - Variable name: `Var_log_level`
 - Default value: `0`
-- Regex restrictions: `0-9`
 
-> Acceptable values: `'0'` - `'6'` Lower the number to log less of main script
-> run time.
+> Expected values: `0` - `9`
+
+### Command line option : `--version`
+
+- Variable name: null
+- Default value: Display version for this script.
+
+### Command line option: `--help` or `-h`
+
+- Variable name: `Var_help_val`
+- Default value: null
+
+> Expected values: ``
+
+### Command line option: `--save-variables-yn`
+
+- Variable name: `Var_save_variables_yn`
+- Default value: `no`
+
+> Expected values: ``
+
+### Command line option: `--source-var-file`
+
+- Variable name: `Var_source_var_file`
+- Default value: null
+
+> Expected values: ``
+> Note using `--source-var-file` CLI option maybe used to assign variable names
+> found in Recognized command line options, their variables and default values
+> table's middle column. This allows for
+> `script_name.sh --source-var-file=/some/path/to/vars`
+> to be used to assign script variables instead of defining them at run-time.
 
 ### Command line option: `--script-log-path`
 
 - Variable name: `Var_script_log_path`
 - Default value: `${0%/*}/${Var_script_name%.*}.log`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
 
-> Acceptable values: `'/var/log/named_pipe_writer.log'` Path and file name for
-> the main script's logs to be written out to.
+> Expected values: ``
 
-### Command line option: `--log-file-permissions`
+### Command line option: `--license`
 
-- Variable name: `Var_log_file_permissions`
+- Variable name: null
+- Default value: null
+
+> Expected values: `null` Prints and exits with `0` script's current license
+> and license of scripts that this project writes.
+
+Decryption command line options
+
+### Command line option : `--dec-yn`
+
+- Variable name: `Var_dec_yn`
+- Default value: `no`
+
+> Expected values: ``
+
+### Command line option : `--dec-copy-save-yn`
+
+- Variable name: `Var_dec_copy_save_yn`
+- Default value: `no`
+
+> Expected values: ``
+
+### Command line option : `--dec-copy-save-path`
+
+- Variable name: `Var_dec_copy_save_path`
+- Default value: `${PWD}/Decrypter.sh`
+
+> Expected values: ``
+
+### Command line option : `--dec-copy-save-ownership`
+
+- Variable name: `Var_dec_copy_save_ownership`
+- Default value: `$(id -un):$(id -gn)`
+
+> Expected values: ``
+
+### Command line option : `--dec-copy-save-permissions`
+
+- Variable name: `Var_dec_copy_save_permissions`
+- Default value: `750`
+
+> Expected values: ``
+
+### Command line option : `--dec-bulk-check-count-max`
+
+- Variable name: `Var_dec_bulk_check_count_max`
+- Default value: `0`
+
+> Expected values: ``
+
+### Command line option : `--dec-bulk-check-sleep`
+
+- Variable name: `Var_dec_bulk_check_sleep`
+- Default value: `120`
+
+> Expected values: ``
+
+### Command line option : `--dec-gpg-opts`
+
+- Variable name: `Var_dec_gpg_opts`
+- Default value: `"--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"`
+
+> Expected values: ``
+
+### Command line option : `--dec-pipe-make-yn`
+
+- Variable name: `Var_dec_pipe_make_yn`
+- Default value: `no`
+
+> Expected values: `yes` or `no`
+
+### Command line option : `--dec-pipe-file`
+
+- Variable name: `Var_dec_pipe_file`
+- Default value: `${PWD}/Decryption_Named.pipe`
+
+> Expected values: `null`
+
+### Command line option : `--dec-pipe-permissions`
+
+- Variable name: `Var_dec_pipe_permissions`
 - Default value: `600`
-- Regex restrictions: `0-9`
 
-> Acceptable values: `'600'` or `'660'` Read+write permissions are great for
-> debugging.
+> Expected values: ``
 
-### Command line option: `--log-file-ownership`
+### Command line option : `--dec-pipe-ownership`
 
-- Variable name: `Var_log_file_ownership`
-- Default value: `${USER}:${USER}`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Variable name: `Var_dec_pipe_ownership`
+- Default value: `$(id -un):$(id -gn)`
 
-> Acceptable values: `user`:`group` Allowed to read and write to main script's
-> log file.
+> Expected values: ``
 
-### Command line option: `--log-auto-delete-yn`
+### Command line option : `--dec-parsing-bulk-out-dir`
 
-- Variable name: `Var_remove_script_log_on_exit_yn`
+- Variable name: `Var_dec_parsing_bulk_out_dir`
+- Default value: `${PWD}/Bulk_Decrypted`
+
+> Expected values: ``
+
+### Command line option : `--dec-parsing-disown-yn`
+
+- Variable name: `Var_dec_parsing_disown_yn`
+- Default value: `no`
+
+> Expected values: ``
+
+### Command line option : `--dec-parsing-save-output-yn`
+
+- Variable name: `Var_dec_parsing_save_output_yn`
+- Default value: ``
+
+> Expected values: `yes`
+
+### Command line option : `--dec-parsing-output-file`
+
+- Variable name: `Var_dec_parsing_output_file`
+- Default value: `${PWD}/Decrypted_Results.txt`
+
+> Expected values: ``
+
+### Command line option : `--dec-parsing-quit-string`
+
+- Variable name: `Var_dec_parsing_quit_string`
+- Default value: `quit`
+
+> Expected values: `string-of-charicters-not-normally-seen`
+
+### Command line option : `--dec-pass`
+
+- Variable name: `Var_dec_pass`
+- Default value: `null`
+
+> Expected values: `/path/to/pass.txt` or `some-passphrase`
+
+### Command line option : `--dec-search-string`
+
+- Variable name: `Var_dec_search_string`
+- Default value: `null`
+
+> Expected values: `Searchable_string`
+
+Encryption command line options
+
+### Command line option : `--enc-yn`
+
+- Variable name: `Var_enc_yn`
+- Default value: `no`
+
+> Expected values: '`yes`' or '`no`' Enable or disable encryption processes
+> within the script.
+
+### Command line option: `--enc-copy-save-yn`
+
+- Variable name: `Var_enc_copy_save_yn`
+- Default value: `no`
+
+> Expected values: `'Yes'` or `'No'` Enable or disable writing script copy.
+
+### Command line option: `--enc-copy-save-path`
+
+- Variable name: `Var_enc_copy_save_path`
+- Default value: `${PWD}/Encrypter.sh`
+
+> Expected values: `'/tmp/test_pipe_listener.sh'` Path and file name to save
+> script copy under
+
+### Command line option: `--enc-copy-save-permissions`
+
+- Variable name: `Var_enc_copy_save_permissions`
+- Default value: `750`
+
+> Expected values: ``
+
+### Command line option: `--enc-copy-save-ownership`
+
+- Variable name: `Var_enc_copy_save_ownership`
+- Default value: `$(id -un):$(id -gn)`
+
+> Expected values: ``
+
+### Command line option: `--enc-parsing-disown-yn`
+
+- Variable name: `Var_enc_parsing_disown_yn`
 - Default value: `yes`
-- Regex restrictions: `a-zA-Z`
 
-> Acceptable values: `'Yes'` or `'No'` Enable or disable persistent logs
-> between main script runs.
+> Expected values: ``
 
 ### Command line option: `--enc-pipe-file`
 
 - Variable name: `Var_enc_pipe_file`
-- Default value: `${0%/*}/${Var_script_name%.*}.pipe`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `${PWD}/Encryption_Named.pipe`
 
-> Acceptable values: `'/tmp/named_test.pipe'` Path and file name to make new
-> named pipe to listen on.
+> Expected values: ``
 
 ### Command line option: `--enc-pipe-permissions`
 
 - Variable name: `Var_enc_pipe_permissions`
 - Default value: `600`
-- Regex restrictions: `0-9`
 
-> Acceptable values: `'460'` or `'640'` Read/Write permissions separated by
-> owner/group are a good idea.
+> Expected values: ``
 
 ### Command line option: `--enc-pipe-ownership`
 
 - Variable name: `Var_enc_pipe_ownership`
-- Default value: `${USER}:${USER}`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `$(id -un):$(id -gn)`
 
-> Acceptable values: `<user>`:`<group>` Allowed to read and write to named
-> pipe file.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-quit-string`
 
 - Variable name: `Var_enc_parsing_quit_string`
 - Default value: `quit`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
 
-> Acceptable values: `'quit'` or
-> `"$(base64 /dev/urandom | tr -cd 'a-zA-Z0-9' | head -c32)"` Non-space
-> separated string that will cause listening loops to exit/break on.
-
-### Command line option: `--listener-trap-command`
-
-- Variable name: `Var_trap_command`
-- Default value: `$(which rm) -f ${Var_enc_pipe_file}`
-- Regex restrictions: null
-
-> Acceptable values: `'rm /tmp/named_test.pipe'` Command to run when named
-> pipe listener reads above string.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-filter-input-yn`
 
 - Variable name: `Var_enc_parsing_filter_input_yn`
 - Default value: `no`
-- Regex restrictions: `a-zA-Z`
 
-> Acceptable values: `'Yes'` or `'No'` Enable or disable reading named pipe
-> input for comments.
+> Expected values: `yes` or `no`
+> Note using `--enc-parsing-filter-input-yn` option above may
+> disable the script's ability to recognize file or directory paths and are
+> available for further securing your encrypted server logs. **Do Not** use
+> pipes with these types of options enabled with bulk file writes because that
+> will corrupt your data, ie `cat picture.file > logging.pipe` will not result
+> in happy decryption. Instead consider using two pipes; one for logging and
+> one for general usage, and naming them such that they're not ever mixed up.
 
 ### Command line option: `--enc-parsing-filter-comment-pattern`
 
 - Variable name: `Var_enc_parsing_filter_comment_pattern`
 - Default value: `\#*`
-- Regex restrictions: `\#*`
 
-> Acceptable values: `"\#*"` or `"\#*|\;*"` A anonymous pipe (`|`) separated
-> list of known line commenting characters.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-filter-allowed-chars`
 
 - Variable name: `Var_enc_parsing_filter_allowed_chars`
-- Default value: `[^a-zA-Z0-9 !#%&:;$\/\^\-\"\(\)\{\}\\]`
-- Regex restrictions: null
+- Default value: `[^a-zA-Z0-9 _.@!#%&:;$\/\^\-\"\(\)\{\}\\]`
 
-> Acceptable values: `[^a-zA-Z0-9 !#%&:;$\/\^\-\"\(\)\{\}\\]` allowed
-> characters in lines not preceded by known comment
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-output-file`
 
 - Variable name: `Var_enc_parsing_output_file`
-- Default value: `${0%/*}/${Var_script_name%.*}.gpg`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `${PWD}/Encrypted_Results.gpg`
 
-> Acceptable values: `/tmp/pipe_read_output.gpg`
+> Expected values: ``
 
-### Command line option: `--output-parse-recipient`
+### Command line option: `--enc-parsing-output-permissions`
+
+- Variable name: `Var_enc_parsing_output_permissions`
+- Default value: `640`
+
+> Expected values: ``
+
+### Command line option: `--enc-parsing-output-ownership`
+
+- Variable name: `Var_enc_parsing_output_ownership`
+- Default value: `$(id -un):$(id -gn)`
+
+> Expected values: ``
+
+### Command line option: `--enc-gpg-opts`
+
+- Variable name: `Var_enc_gpg_opts`
+- Default value: `--always-trust --armor --batch --no-tty --encrypt`
+
+> Expected values: ``
+
+### Command line option: `--enc-parsing-recipient`
 
 - Variable name: `Var_enc_parsing_recipient`
-- Default value: `user@host.domain`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `$(id -un)@${HOSTNAME}.local`
 
-> Acceptable values: `'email_name@email_domain.suffix'` Email address or
-> GPG public key ID to encrypt lines or known file types to.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-save-output-yn`
 
-- Variable name: `Var_save_ecryption_yn`
+- Variable name: `Var_enc_parsing_save_output_yn`
 - Default value: `yes`
-- Regex restrictions: `a-zA-Z`
 
-> Acceptable values: `yes` or `no` Enable or disable writing parsed output
-> options and actions.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-output-rotate-yn`
 
 - Variable name: `Var_enc_parsing_output_rotate_yn`
 - Default value: `yes`
-- Regex restrictions: `a-zA-Z`
 
-> Acceptable values: `yes` or `no` Enable or disable log rotation options and
-> actions.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-output-max-size`
 
 - Variable name: `Var_enc_parsing_output_max_size`
 - Default value: `4096`
-- Regex restrictions: `0-9`
 
-> Acceptable values: `'4096'` or `'8388608'` Output file max size (in bites)
-> before log rotation actions are used.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-output-check-frequency`
 
 - Variable name: `Var_enc_parsing_output_check_frequency`
 - Default value: `100`
-- Regex restrictions: `0-9`
 
-> Acceptable values: `'10'` or `'100000'` Number of output file writes till
-> above file size max vs real file size be checked.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-output-rotate-actions`
 
 - Variable name: `Var_enc_parsing_output_rotate_actions`
 - Default value: `compress-encrypt,remove-old`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
 
-> Acceptable values: `'compress-encrypt,remove-old'` or
+> Expected values: `'compress-encrypt,remove-old'` or
 > `'encrypted-email,remove-old'` List of actions, separated by commas `,` to
 > take when output file's size and write count reaches above values.
 
 ### Command line option: `--enc-parsing-output-rotate-recipient`
 
 - Variable name: `Var_enc_parsing_output_rotate_recipient`
-- Default value: `user@host.domain`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `$(id -un)@${HOSTNAME}.local`
 
-> Acceptable values: `'admin_name@admin_domain.suffix'` Email address of GPG
-> public key ID to re-encrypt and or send compressed output files to.
-
-### Command line option: `--output-parse-command`
-
-- Variable name: `Var_parsing_command`
-- Default value: `$(which gpg) --always-trust --armor --batch --recipient ${Var_enc_parsing_recipient} --encrypt`
-- Regex restrictions: null / disabled
-
-> Acceptable values: Disabled to avoid errors during user input parsing when
-> spaces are present in values.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-bulk-out-dir`
 
 - Variable name: `Var_parcing_bulk_out_dir`
-- Default value: `${0%/*}/Bulk_${Var_script_name%.*}`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
+- Default value: `${PWD}/Bulk_Encrypted`
 
-> Acceptable values: `'/tmp/encrypted_files'` Directory path to save
-> recognized files to. Note these files are not rotated but maybe appended to
-> if not careful.
+> Expected values: ``
 
 ### Command line option: `--enc-parsing-bulk-output-suffix`
 
-- Variable name: `Var_bulk_output_suffix`
+- Variable name: `Var_enc_parsing_bulk_output_suffix`
 - Default value: `.gpg`
-- Regex restrictions: null
 
-> Acceptable values: `'.gpg'` or `'.log'` File suffix to append to bulk
-> encrypted files. Note if decrypting then unset to have previously encrypted
-> file suffixes restored.
-
-### Command line option: `--padding-enable-yn`
-
-- Variable name: `Var_enable_padding_yn`
-- Default value: `no`
-- Regex restrictions: `a-zA-Z`
-
-> Acceptable values: `yes` or `no` default `no`. Used to control if following
-> two options are considered as options for modifying read data.
-
-### Command line option: `--padding-length`
-
-- Variable name: `Var_padding_length`
-- Default value: `adaptive`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
-
-> Acceptable values: `32` or another integer (whole number) default `adaptive`
-> which assumes the same length as line being read through loop.
-
-### Command line option: `--padding-placement`
-
-- Variable name: `Var_padding_placement`
-- Default value: `above`
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
-
-> Acceptable values: Order applied within loop; `append`, `prepend`, `above`,
-> `bellow`
-
-### Command line option: `--source-var-file`
-
-- Variable name: `Var_source_var_file`
-- Default value: null
-- Regex restrictions: `a-zA-Z0-9_@,.:~\/`
-
-> Acceptable values: File to source for variables defined in previous table.
-> Or file to save values to, see next two options bellow.
-
-### Command line option: `--save-options-yn`
-
-- Variable name: `Var_save_options`
-- Default value: `no`
-- Regex restrictions: null
-
-> Acceptable values: `yes` or `no` Enable or disable saving options file to
-> `--source-var-file`'s path
-
-### Command line option: `--save-variables-yn`
-
-- Variable name: `Var_save_variables_yn`
-- Default value: `no`
-- Regex restrictions: null
-
-> Acceptable values: `yes` or `no` Enable or disable saving variables file to
-> `--source-var-file`'s path
-
-### Command line option: `--license`
-
-- Variable name: null
-- Default value: null
-- Regex restrictions: null
-
-> Acceptable values: `null` Prints and exits with `0` script's current license
-> and license of scripts that this project writes.
-
-### Command line option: `--help` or `-h`
-
-- Variable name: `Var_help_val`
-- Default value: null
-- Regex restrictions: null
-
-> Acceptable values: `null` Attempts to search for `-h=value` within host
-> system's help documentation and within main script's detailed documentation.
+> Expected values: ``
 
 ### Command line option: `*`
 
 - Variable name: Arr_extra_input
 - Default value: null
-- Regex restrictions: null
 
-> Acceptable values: `null` Writes any unrecognized arguments as lines or
-> words that should be written to named pipe if available.
+> Expected values: `null` Writes any unrecognized arguments as lines or
+> words that should be written to named pipe if available. This is for
+> advanced users of the main script that wish to have a *header* or set
+> of lines be the first things parsed by the processes of the pipe parser
+> functions or custom script. This is only enabled within the script's main
+> function if `--enc-parsing-disown-yn` option has also been set to a
+> *yes* like value.
 
-## Additional notes about above
+File path variables
 
-### Note one
+> The following maybe set or left at thier default values.
 
-> Note using `--enc-parsing-filter-input-yn` or `--padding-enable-yn` options above
-> will disable the script's ability to recognize file or directory paths and are
-> available for further securing your encrypted server logs. **Do Not** use
-> pipes with these options enabled with bulk file writes because that will
-> corrupt your data, ie `cat picture.file > logging.pipe` will not result in
-> happy decryption. Instead consider using two pipes; one for logging and one
-> for general usage, and naming them such that they're not ever mixed up.
-
-### Note two
-
-> Note using `--source-var-file` CLI option maybe used to assign variable names
-> found in Recognized command line options, their variables and default values
-> table's middle column. This allows for
-> `script_name.sh --source-var-file=/some/path/to/vars`
-> to be used to assign script variables instead of defining them at run-time.
-> Additionally this option maybe combined with `--save-options-yn` and
-> `--save-variables-yn` options for saving values to a file instead; but only
-> if the specified file does **not** already exist.
-
-### Note three
-
-> Note using unknown commands ie
-> `'some string within quotes' some words outside quotes`
-> will cause the main script to write those unrecognized values to the named
-> pipe if/when available. This is for advanced users of the main script that
-> wish to have a *header* or set of lines be the first things parsed by the
-> processes of the pipe parser functions or custom script. This is only enabled
-> within the script's main function if `--enc-parsing-disown-yn` option has also been set
-> to a *yes* like value.
-
-### Note four
-
-> Note using `--help` with additional options may access software external to
-> this script but installed on the same host file system. Additionally if any
-> scripted documentation exists then that will also be presented to the main
-> script's user.
+```
+# ---Var_dev_null			Var_dev_null="/dev/null"
+# ---Var_echo				Var_echo="$(which echo)"
+# ---Var_chmod				Var_chmod="$(which chmod)"
+# ---Var_chown				Var_chown="$(which chown)"
+# ---Var_mkfifo				Var_mkfifo="$(which mkfifo)"
+# ---Var_mv				Var_mv="$(which mv)"
+# ---Var_rm				Var_rm="$(which rm)"
+# ---Var_tar				Var_tar="$(which tar)"
+# ---Var_cat				Var_cat="$(which cat)"
+# ---Var_gpg				Var_gpg="$(which gpg)"
+# ---Var_mkdir				Var_mkdir="$(which mkdir)"
+# ---Var_touch				Var_touch="$(which touch)"
+```
 
 ## Licensing notice for this file
 

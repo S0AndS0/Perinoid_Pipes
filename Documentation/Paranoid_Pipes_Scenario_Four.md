@@ -222,7 +222,7 @@ cp ${Var_gnupg_pubkey_file} ${Var_mount_point}/${Var_ssh_user}
  --enc-pipe-ownership='notwwwuser:wwwgroup'\
  --enc-pipe-permissions='420'\
  --enc-parsing-output-file="/jailed_logs/website_host/www_access.log"\
- --output-parse-recipient="user@host.domain"\
+ --enc-parsing-recipient="user@host.domain"\
  --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
  --enc-parsing-output-check-frequency='250'\
  --enc-parsing-output-max-size='8046'\
@@ -246,7 +246,7 @@ cp ${Var_gnupg_pubkey_file} ${Var_mount_point}/${Var_ssh_user}
  --enc-pipe-ownership='notwwwuser:wwwgroup'\
  --enc-pipe-permissions='420'\
  --enc-parsing-output-file="${Var_sftp_chroot}/website_host/www_access.pipe"\
- --output-parse-recipient="${Var_gnupg_email}"\
+ --enc-parsing-recipient="${Var_gnupg_email}"\
  --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
  --enc-parsing-output-check-frequency='250'\
  --enc-parsing-output-max-size='8046'\

@@ -27,7 +27,7 @@ Script_options="--enc-copy-save-yn='yes'\
  --enc-pipe-ownership='notwwwuser:wwwgroup'\
  --enc-pipe-permissions='420'\
  --enc-parsing-output-file='/jailed_logs/website_host/www_access.gpg'\
- --output-parse-recipient='user@host.domain'\
+ --enc-parsing-recipient='user@host.domain'\
  --enc-parsing-filter-input-yn='yes'\
  --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
  --enc-parsing-output-check-frequency='25000'\

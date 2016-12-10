@@ -38,9 +38,9 @@ This scenario was written with the following link's questions as it's
  --enc-pipe-ownership='notwwwuser:wwwgroup'\
  --enc-pipe-permissions='420'\
  --enc-parsing-output-file="/jailed_logs/website_host/www_access.gpg"\
- --output-parse-recipient="user@host.domain"\
+ --enc-parsing-recipient="user@host.domain"\
  --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
- --output-rotate-check-requency='25000'\
+ --enc-output-rotate-check-requency='25000'\
  --enc-parsing-output-max-size='8388608'\
  --enc-parsing-output-rotate-recipient="user@host.domain"\
  --enc-parsing-output-rotate-yn='yes'\
