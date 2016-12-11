@@ -5,14 +5,6 @@ source "${Var_script_dir}/lib/functions.sh"
 Func_source_file "${Var_script_dir}/lib/variables.sh"
 echo "# ${Var_script_name} started at: $(date -u +%s)"
 Var_install_v2_name="${Var_install_v2_name}"
-Func_run_sanely "cp -va ${Var_install_v2_name} ${Var_install_path}/${Var_install_v2_name}" "0"
-Func_run_sanely "chmod 754 ${Var_install_path}/${Var_install_v2_name}" "0"
-Var_check_path="$(echo "${PATH}" | grep -q "${Var_install_path}")"
-if [ -z "${Var_check_path}" ]; then
-	echo "${Var_script_name}: PATH+=\":${Var_install_path}\""
-	export PATH+=":${Var_install_path}"
-fi
-Func_run_sanely "${Var_install_path}/${Var_install_v2_name} --version" "${USER}"
 if [ -e "${Var_install_v2_name}" ]; then
 	${Var_install_v2_name} --debug-level="0" --log-level="7" --enc-yn="yes" --enc-parsing-disown-yn="yes" --enc-copy-save-yn="yes" --enc-copy-save-path="${Var_script_copy_three_name_encrypt}" --enc-copy-save-ownership="${USER}:${USER}" --enc-copy-save-permissions="750" --script-log-path="${Var_encrypt_pipe_three_log}" --enc-pipe-permissions="660" --enc-parsing-output-permissions="660" --enc-parsing-recipient="${Var_gnupg_email}" --enc-parsing-output-rotate-recipient="${Var_gnupg_email}" --enc-pipe-file="${Var_encrypt_pipe_three_location}" --enc-parsing-output-file="${Var_encrypted_three_location}" --enc-parsing-bulk-out-dir="${Var_encrypted_three_bulk_dir}"
 	_exit_status=$?

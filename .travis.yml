@@ -28,9 +28,9 @@ before_install:
 ## Steps for successful install once dependencies are met. Simply copies the
 ##  main script of this project to common install path and runs '--help'
 ##  command line option against it. Currently passing and operating correctly.
-#install:
-# - chmod +x .travis-ci/install.sh
-# - .travis-ci/install.sh
+install:
+ - chmod +x .travis-ci/install.sh
+ - .travis-ci/install.sh
 ## Steps to complete prior to running further tests.
 ##  The first sets up temperary passphrase file as well as GPG key pare.
 ##  The second test the new key pare by encrypting a string as well as
@@ -40,27 +40,6 @@ before_install:
 before_script:
  - chmod +x .travis-ci/before_script_gen_key.sh
  - .travis-ci/before_script_gen_key.sh
-# - chmod +x .travis-ci/before_script_test_key.sh
-# - .travis-ci/before_script_test_key.sh
-## Run tests that report 'Passing' or 'Failing' build states
-## - Run main script encryption tests. This will start the main script with the
-##  internal listening loop in the background, then write to the related named
-##  pipe file a few sudo-random lines of data to process before sending the
-##  default quit string.
-## - Run helper script with options to decrypt the multi-block/message file
-##  that the previous script encrypted and appended to.
-## - Run helper decryption again but this time test features of searching
-##  decrypted output prior to saving to a file. This is usefull for saving
-##  space for limited resources bound devices.
-#script:
-# - chmod +x .travis-ci/script_encrypt.sh
-# - .travis-ci/script_encrypt.sh
-# - chmod +x .travis-ci/script_decrypt.sh
-# - .travis-ci/script_decrypt.sh
-# - chmod +x .travis-ci/test_search_script_decrypt.sh
-# - .travis-ci/test_search_script_decrypt.sh
-# - chmod +x .travis-ci/script_encrypt_copy.sh
-# - .travis-ci/script_encrypt_copy.sh
 ## - Run version two of main script encryption/decryption tests
 ##  this effectivly bundles both main script and decryption
 ##  helper script operations into one script that can do either.
@@ -74,8 +53,6 @@ script:
 after_success:
  - chmod u+x .travis-ci/version_two_last_tests.sh
  - .travis-ci/version_two_last_tests.sh
-# - chmod +x .travis-ci/script_decrypt_copy.sh
-# - .travis-ci/script_decrypt_copy.sh
 #after_failure:
 ## Steps to run for deployment of build if any
 #before_deploy:
