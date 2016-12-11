@@ -48,7 +48,7 @@ export Var_decrypt_raw_location_copy="${PWD}/decrypt_two.txt"
 export Var_encrypt_dir_path_copy="${PWD}/Script_Helpers"
 export Var_encrypt_file_path_copy="${PWD}/Paranoid_Pipes.sh"
 ## Variables for verision two of main script copies
-export Var_install_v2_name="version_two.sh"
+export Var_install_v2_name="Paranoid_Pipes.sh"
 export Var_encrypt_pipe_three_location="${PWD}/encrypt_three.pipe"
 export Var_encrypt_pipe_three_log="${PWD}/encrypt_three.log"
 export Var_encrypted_three_location="${PWD}/encrypt_three.gpg"
