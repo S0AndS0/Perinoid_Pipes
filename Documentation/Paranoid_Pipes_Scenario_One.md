@@ -27,7 +27,8 @@ This scenario was written with the following link's questions as it's
 > the following command line options being used on the project's script that is...
 
 ```
-/script/path/script_name.sh --enc-copy-save-yn='yes'\
+./Paranoid_Pipes.sh\
+ --enc-copy-save-yn='yes'\
  --enc-copy-save-path="/jailer_scripts/website_host/Web_log_encrypter.sh"\
  --enc-copy-save-ownership="notwwwuser:notwwwgroup"\
  --enc-copy-save-permissions='100'\
@@ -46,6 +47,7 @@ This scenario was written with the following link's questions as it's
  --enc-parsing-output-rotate-yn='yes'\
  --enc-parsing-save-output-yn='yes'\
  --enc-parsing-disown-yn='yes' --help
+ --enc-parsing-bulk-out-dir="/server/backups/website_host"
 ```
 
 > Note, if you've setup the web server within a chroot (as is assumed by
@@ -251,8 +253,25 @@ After clients reconnect you'll see the `~.gpg` logs start filling up, use
 > Now at some point in the future you or your web-admin will need access to the
 > logs, first decrypt the rolled logs with the second key used to encrypt them
 > and then have your web-admin run something like the following to have
-> encrypted data *chunks* shoved through decryption commands. This *helper* script
-> can now be found named [Paranoid_Pipes_Scenario_One.sh](../Script_Helpers/Paranoid_Pipes_Scenario_One.sh)
+> encrypted data *chunks* shoved through decryption commands.
+
+```
+./Paranoid_Pipes.sh\
+ --debug-level="9"\
+ --dec-yn="yes"\
+ --dec-parsing-disown-yn="no"\
+ --dec-bulk-check-sleep="2"\
+ --dec-bulk-check-count-max='1'\
+ --dec-pass="/path/to/passphrase.file"\
+ --dec-parsing-save-output-yn="yes"\
+ --dec-parsing-output-file="/path/to/decrypted.log"\
+ --enc-parsing-output-file="/jailed_logs/website_host/www_access.gpg"\
+ --dec-parsing-bulk-out-dir="/path/to/decrypted/backups"\
+ --enc-parsing-bulk-out-dir="/server/backups/website_host"
+```
+
+> This portion of the main script maybe verified by checing logs for
+> [version_two_last_tests.sh](../.travis-ci/version_two_last_tests.sh)
 > and used by your decrypting server to accomplish this goal. Which should (for
 > medium to small log files) pull each encrypted section within a previously
 > appended to encrypted log file out into an array of arrays, then push those
