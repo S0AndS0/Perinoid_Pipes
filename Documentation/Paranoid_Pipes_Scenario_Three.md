@@ -175,7 +175,7 @@ Script_save_rotate_recipient='user@host.suffix'
 > assigned to each script copy
 
 ```
---output-parse-recipient='${Script_save_parse_recipient}'
+--enc-parsing-recipient='${Script_save_parse_recipient}'
 --enc-parsing-output-rotate-recipient='${Script_save_rotate_recipient}'
 ```
 
