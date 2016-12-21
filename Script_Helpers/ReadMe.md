@@ -55,24 +55,6 @@ git commit -S -am "Title of changes" -m "$(Fold_Message.sh "really long text str
 > pretty it **does** work. Use command line option `--help` to print available
 > options and their current values.
 
-### `Paranoid_Pipes_Scenario_One.sh`
-
-[![Status](https://img.shields.io/badge/Status-Passing-blue.svg)](Paranoid_Pipes_Scenario_One.sh)
-
-> This script is referenced within
-> [../Documentation/Paranoid_Pipes_Scenario_One.md](../Documentation/Paranoid_Pipes_Scenario_One.md)
-> as an example of using customized named pipe listener scripts to decrypt log
-> files that have appended encrypted contents. However a named pipe does not
-> necessarily need to be present for this script to operate; hint, try running
-> with `--help` command line option to find out what input it accepts and the
-> output it produces. This helper script is indented as a *work-around* for
-> limitations within GnuPG when using `--armor` option to encrypt files or
-> streams of data, if your encrypted logs where made without this option then
-> you may try `--allow-multiple-messages` as a `gpg` command line option added
-> to your own command to recover log files encrypted with this project's main
-> script with one exception for right now, if the main script had the padding
-> option enabled there will still be padded data within the decrypted output.
-
 ### `Paranoid_Pipes_Scenario_Three.sh`
 
 [![Status](https://img.shields.io/badge/Status-Untested-yellow.svg)](Paranoid_Pipes_Scenario_Three.sh)

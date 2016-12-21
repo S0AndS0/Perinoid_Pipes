@@ -101,9 +101,9 @@ git diff master..branch_name ReadMe.md
 
 > A: Are you a privacy conserned individual? Are you a sys-admin that must for
 > some business reason handle information that should be restricted or
-> confidential in some way?. If `no` to either then you'll not likely need this
+> confidential in some way? If `no` to either then you'll not likely need this
 > project's services just yet. So far as the authors of this project can find
-> evidence for, few attacks escalating to the point that this project could
+> evidence for, very few attacks escalate to the point that this project could
 > be considered useful or *needed*. That said, based off the speed at which
 > attacks are evolving, a tool like this may one day be the only thing left
 > denying unauthorized access to a successful attacker. Else if `yes` consider
