@@ -535,16 +535,44 @@ EOF
 		;;
 	esac
 }
+## Support functions
+#Func_set_owner_permissions "perm" "own" "file"
+Func_set_owner_permissions(){
+	_desired_permissions="${1}"
+	_desired_ownership="${2}"
+	_path_to_check="${3}"
+	if [ -f "${_path_to_check}" ] || [ -d "${_path_to_check}" ] || [ -p "${_path_to_check}" ]; then
+		_current_permissions="$(stat -c "%a" "${_path_to_check}")"
+		_current_owner_username="$(stat -c "%U" "${_path_to_check}")"
+		_current_owner_groupname="$(stat -c "%G" "${_path_to_check}")"
+		_current_owner_userid="$(stat -c "%u" "${_path_to_check}")"
+		_current_owner_groupid="$(stat -c "%g" "${_path_to_check}")"
+		if [ "${_desired_permissions}" != "${_current_permissions}" ]; then
+			Func_message "# Func_set_owner_permissions running: ${Var_chmod} ${_desired_permissions} \"${_path_to_check}\"" '3' '4'
+			${Var_chmod} ${_desired_permissions} "${_path_to_check}"
+		else
+			Func_message "# Func_set_owner_permissions reports permissions [${_desired_permissions}=${_current_permissions}] for file: ${_path_to_check}" '3' '4'
+		fi
+		if [ "${_desired_ownership}" != "${_current_owner_username}:${_current_owner_groupname}" ] || [ "${_desired_ownership}" != "${_current_owner_userid}:${_current_owner_groupid}" ]; then
+			Func_message "# Func_set_owner_permissions running: ${Var_chown} ${_desired_ownership} \"${_path_to_check}\"" '3' '4'
+			${Var_chown} ${_desired_ownership} "${_path_to_check}"
+		else
+			Func_message "# Func_set_owner_permissions reports ownership [${_desired_ownership}=${_current_owner_username}:${_current_owner_groupname} or ${_current_owner_userid}:${_current_owner_groupid}] for file: ${_path_to_check}" '3' '4'
+		fi
+	else
+		Func_message "# Func_set_owner_permissions can not find: ${_path_to_check}" '3' '4'
+		Func_message "# Func_set_owner_permissions running: exit 1" '3' '4'
+		exit 1
+	fi
+}
 ## Encryption functions
 Func_enc_make_named_pipe(){
 	if ! [ -p "${Var_enc_pipe_file}" ]; then
 		Func_message "# Func_enc_make_named_pipe running: ${Var_mkfifo} \"${Var_enc_pipe_file}\" || exit 1" '2' '3'
 		${Var_mkfifo} "${Var_enc_pipe_file}" || exit 1
 	fi
-	Func_message "# Func_enc_make_named_pipe running: ${Var_chmod} \"${Var_enc_pipe_permissions}\" \"${Var_enc_pipe_file}\" || exit 1" '2' '3'
-	${Var_chmod} "${Var_enc_pipe_permissions}" "${Var_enc_pipe_file}" || exit 1
-	Func_message "# Func_enc_make_named_pipe running: ${Var_chown} \"${Var_enc_pipe_ownership}\" \"${Var_enc_pipe_file}\" || exit 1" '2' '3'
-	${Var_chown} "${Var_enc_pipe_ownership}" "${Var_enc_pipe_file}" || exit 1
+	Func_message "# Func_enc_make_named_pipe running: Func_set_owner_permissions \"${Var_enc_pipe_permissions}\" \"${Var_enc_pipe_ownership}\" \"${Var_enc_pipe_file}\"" '2' '3'
+	Func_set_owner_permissions "${Var_enc_pipe_permissions}" "${Var_enc_pipe_ownership}" "${Var_enc_pipe_file}"
 }
 Func_enc_rotate_output_file(){
 	_parsing_output_file="${1:-${Var_enc_parsing_output_file}}"
@@ -658,10 +686,8 @@ Func_enc_pipe_parser_loop(){
 							if ! [ -f "${Var_enc_parsing_output_file}" ]; then
 								Func_message "# Func_enc_pipe_parser_loop running: ${Var_touch} \"${Var_enc_parsing_output_file}\"" '2' '3'
 								${Var_touch} "${Var_enc_parsing_output_file}"
-								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chmod} \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-								${Var_chmod} "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_file}"
-								Func_message "# Func_enc_pipe_parser_loop running: ${Var_chown} \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
-								${Var_chown} "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
+								Func_message "# Func_enc_pipe_parser_loop running: Func_set_owner_permissions \"${Var_enc_parsing_output_permissions}\" \"${Var_enc_parsing_output_ownership}\" \"${Var_enc_parsing_output_file}\"" '2' '3'
+								Func_set_owner_permissions "${Var_enc_parsing_output_permissions}" "${Var_enc_parsing_output_ownership}" "${Var_enc_parsing_output_file}"
 							fi
 							Func_message "# Func_enc_pipe_parser_loop running: ${Var_cat} <<<\"\${_mapped_array}\" | ${Var_gpg} ${_enc_gpg_opts} >> \"${Var_enc_parsing_output_file}\"" '2' '3'
 							${Var_cat} <<<"${_mapped_array}" | ${Var_gpg} ${_enc_gpg_opts} >> "${Var_enc_parsing_output_file}"
@@ -1002,10 +1028,8 @@ ${Var_echo} "# \${Var_script_dir}/\${Var_script_name} exited [\$?] at: \$(date)"
 
 EOF
 
-				Func_message "# Func_enc_write_script_copy running: ${Var_chown} \"${Var_enc_copy_save_ownership}\" \"${Var_enc_copy_save_path}\"" '2' '3'
-				${Var_chown} "${Var_enc_copy_save_ownership}" "${Var_enc_copy_save_path}"
-				Func_message "# Func_enc_write_script_copy running: ${Var_chmod} \"${Var_enc_copy_save_permissions}\" \"${Var_enc_copy_save_path}\"" '2' '3'
-				${Var_chmod} "${Var_enc_copy_save_permissions}" "${Var_enc_copy_save_path}"
+				Func_message "# Func_enc_write_script_copy running: Func_set_owner_permissions \"${Var_enc_copy_save_permissions}\" \"${Var_enc_copy_save_ownership}\" \"${Var_enc_copy_save_path}\"" '2' '3'
+				Func_set_owner_permissions "${Var_enc_copy_save_permissions}" "${Var_enc_copy_save_ownership}" "${Var_enc_copy_save_path}"
 			fi
 		;;
 		*)
@@ -1019,10 +1043,8 @@ Func_dec_make_named_pipe(){
 		Func_message "# Func_dec_make_named_pipe running: ${Var_mkfifo} \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
 		${Var_mkfifo} "${Var_dec_pipe_file}" || exit 1
 	fi
-	Func_message "# Func_dec_make_named_pipe running: ${Var_chmod} \"${Var_dec_pipe_permissions}\" \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
-	${Var_chmod} "${Var_dec_pipe_permissions}" "${Var_dec_pipe_file}" || exit 1
-	Func_message "# Func_dec_make_named_pipe running: ${Var_chown} \"${Var_dec_pipe_ownership}\" \"${Var_dec_pipe_file}\" || exit 1" '2' '3'
-	${Var_chown} "${Var_dec_pipe_ownership}" "${Var_dec_pipe_file}" || exit 1
+	Func_message "# Func_dec_make_named_pipe running: Func_set_owner_permissions \"${Var_dec_pipe_permissions}\" \"${Var_dec_pipe_ownership}\" \"${Var_dec_pipe_file}\"" '2' '3'
+	Func_set_owner_permissions "${Var_dec_pipe_permissions}" "${Var_dec_pipe_ownership}" "${Var_dec_pipe_file}"
 }
 Func_dec_pass_the_pass(){
 	_pass=( "$@" )
@@ -1518,10 +1540,8 @@ ${Var_echo} "## \${Var_script_name} exited with \$? at \$(date)"
 
 EOF
 
-				Func_message "# Func_dec_write_script_copy running: ${Var_chown} \"${Var_dec_copy_save_ownership}\" \"${Var_dec_copy_save_path}\"" '2' '3'
-				${Var_chown} "${Var_dec_copy_save_ownership}" "${Var_dec_copy_save_path}"
-				Func_message "# Func_dec_write_script_copy running: ${Var_chmod} \"${Var_dec_copy_save_permissions}\" \"${Var_dec_copy_save_path}\"" '2' '3'
-				${Var_chmod} "${Var_dec_copy_save_permissions}" "${Var_dec_copy_save_path}"
+				Func_message "# Func_dec_write_script_copy running: Func_set_owner_permissions \"${Var_dec_copy_save_permissions}\" \"${Var_dec_copy_save_ownership}\" \"${Var_dec_copy_save_path}\"" '2' '3'
+				Func_set_owner_permissions "${Var_dec_copy_save_permissions}" "${Var_dec_copy_save_ownership}" "${Var_dec_copy_save_path}"
 			fi
 		;;
 		*)
@@ -1534,3 +1554,6 @@ EOF
 Func_message "# ${Var_script_name} running: Func_main \"\$@\"" '0' '1'
 Func_main "$@"
 Func_message "# ${Var_script_dir}/${Var_script_name} finished at: $(date)" '0' '1'
+
+#		
+
