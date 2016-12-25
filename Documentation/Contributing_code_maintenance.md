@@ -125,6 +125,19 @@ When and if merge conflicts happen see [Contributing_code_merge_conflicts.md](Co
  file within the `Documentation/` directory of this project for detailed
  information on how to resolve using `vimdiff` command line text text editor.
 
+When merge conflicts have been resolved or if non-exsisted follow the
+ next set of instructions to merge back to your local branch and push
+ it to GitHub as a new branch for issueing pull requests with. Source
+ of instructions are from [StackOverflow](http://stackoverflow.com/questions/2765421/how-to-push-a-new-local-branch-to-a-remote-git-repository-and-track-it-too/2765459#2765459)
+ and related comments.
+
+> Checkout local branch again
+
+```
+git checkout -b ${Var_local_branch_name}
+git push -u origin HEAD
+```
+
 ## Licensing notice for this file
 
 ```
