@@ -4,6 +4,12 @@
 Bulk_*/*
 bulk_*/*
 
+## Pulled from experiance
+.sass-cache*/*
+*.lock
+_site*/*
+
+
 ## Pulled from: https://gist.github.com/octocat/9257657
 
 # Compilled source #
