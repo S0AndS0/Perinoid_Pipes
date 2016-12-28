@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="frequently-and-perhaps-infrequently-asked-question-faq">Frequently (and perhaps infrequently) asked question (F.A.Q.)</h1>
+
+<h2 id="q-what-is-this-project">Q: What is this project</h2>
+
+<blockquote>
+  <p>A: This project aims to expose encryption operations (currently via GnuPG’s
+PGP encryption applications) to logging daemons and/or user processes.
+Being designed as a <em>cyber defense</em> tool for server administrators and
+privacy concerned users of mobile devices, that wish for one more line of
+defiance against privacy violating attacks.</p>
+</blockquote>
+
+<h2 id="q-why-was-this-project-built">Q: Why was this project built</h2>
+
+<blockquote>
+  <p>A: Encryption of arbitrary data or files is a common enough request that this
+tool was developed. This is not a partition encryption solution (often LUKS
+partitions are the <em>goto</em> for such Kernel level supported encryption where a
+file system can be mounted, read, and written to) instead this is a method of
+file by file and/or line by line encryption at the host OS’s software layer
+that can either be saved to an appended file or sent to another process as a
+stream of encrypted data packets via another named pipe or service listening
+to the main script’s stout.</p>
+</blockquote>
+
+<h2 id="q-what-does-this-encryption-scripted-tool-set-do-for-me">Q: What does this encryption scripted tool set do for me</h2>
+
+<blockquote>
+  <p>A: When properly implemented this project aims to reduce risks associated
+with remote server exploits leading to secondary attacks being easily carried
+out on that server’s clients or admins by parsing plane text logs or other
+information that the server host contains that should not be available to
+unauthorized clients. Alternatively when properly implemented this project
+aims to make authorized access to encrypted logs a simple process. However,
+depending upon your inventiveness this project is capable of much more.</p>
+</blockquote>
+
+<h2 id="q-how-is-the-code-checked-for-bugs">Q: How is the code checked for bugs</h2>
+
+<blockquote>
+  <p>A: Both locally and remotely this repository is checked via a wonderful
+program, <code class="highlighter-rouge">shellcheck</code>, remote tests are facilitate via <a href="https://docs.codeclimate.com/docs/shellcheck">CodeClimate.com</a>
+which is also how this project receives updated <em>badges</em> on the
+main <a href="../ReadMe.md">../ReadMe.md</a> file. Note local checks when passed will <em>bump</em>
+the main script’s sub-version and remote checks, auto-buils, are facilitated
+by <a href="https://travis-ci.org">Travis-CI</a> you may click on the <em><code class="highlighter-rouge">Badges</code></em> on the
+main <a href="../ReadMe.md">../ReadMe.md</a> file of this project to view build histories.</p>
+</blockquote>
+
+<h2 id="q-how-do-i-checkout-a-previously-working-build">Q: How do I checkout a previously working build</h2>
+
+<blockquote>
+  <p>A: Use the following steps for reverting your current working branch to a
+previous build step</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git log --oneline
+##... output example beguin
+549623a Yet more attempts at fixes
+##... output example end
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Find the commit ID, for this example we’ll be using the above <code class="highlighter-rouge">549623a</code> ID from
+above to revert to.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git checkout 549623a
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Check the status and differences with the following to ensure that changes
+reverted are those that are wanted.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git status
+git diff
+</code></pre>
+</div>
+
+<blockquote>
+  <p>To find working vs non-working builds check the build
+<a href="https://travis-ci.org/S0AndS0/Perinoid_Pipes/builds">History</a> provided by
+Travis-CI which will display compatible commit IDs to <code class="highlighter-rouge">checkout</code> to.</p>
+</blockquote>
+
+<h2 id="q-how-do-i-find-differances-in-commits">Q: How do I find differances in commits</h2>
+
+<blockquote>
+  <p>A: Thankfully <code class="highlighter-rouge">git</code> makes this simple enough to accomplish between branches
+and commited changes</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>## Git diff from un-commited changes
+git diff
+## Git diff from last commit
+git diff $(git log | grep commit | head -n2 | tail -n1 | awk '{print $2}')
+## Git diff between branches
+git diff master..branch_name
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Note if mutliple files changed within one commit, for example the <code class="highlighter-rouge">ReadMe.md</code>
+file, the following example commands will show how to reviel changes on single
+files for each of the above</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>## Git diff from un-commited changes
+git diff ReadMe.md
+## Git diff from last commit
+git diff $(git log | grep commit | head -n2 | tail -n1 | awk '{print $2}') ReadMe.md
+## Git diff between branches
+git diff master..branch_name ReadMe.md
+</code></pre>
+</div>
+
+<h2 id="q-do-i-need-this-projects-services">Q: Do I <em>need</em> this project’s services</h2>
+
+<blockquote>
+  <p>A: Are you a privacy conserned individual? Are you a sys-admin that must for
+some business reason handle information that should be restricted or
+confidential in some way? If <code class="highlighter-rouge">no</code> to either then you’ll not likely need this
+project’s services just yet. So far as the authors of this project can find
+evidence for, very few attacks escalate to the point that this project could
+be considered useful or <em>needed</em>. That said, based off the speed at which
+attacks are evolving, a tool like this may one day be the only thing left
+denying unauthorized access to a successful attacker. Else if <code class="highlighter-rouge">yes</code> consider
+this tool as an option (if GnuPG is allowed to you) that maybe used as yet
+another layer within your security modal.</p>
+</blockquote>
+
+<h2 id="q-what-do-you-mean-by-if-gnupg-is-allowed-to-you-statement-above">Q: What do you mean by, if GnuPG is allowed to you, statement above</h2>
+
+<blockquote>
+  <p>A: The authors of this project are not <em>experts</em> in happenings of
+international  <em>legalieze</em>, nor should you consider this advice within that
+realm, to put it simply; look up the laws of your own region in relation to
+the use of GnuPG. If you’re allowed to use GnuPG then there’s no restrictions
+as far as the authors of this project could find for use with this project
+on authorize hardware. However, if your within a region that can’t make use
+of GnuPG then the authors would ask that you refrain from import for now.
+Note, this notice was added do to the recent activity on privacy <em>canneries</em>
+warning this projects’ core authors of confidentiality violation reports being
+generated by third parties accessing what they where not authorized to access.</p>
+</blockquote>
+
+<h2 id="q-what-does-project-abandonment-mean">Q: What does “project abandonment” mean</h2>
+
+<blockquote>
+  <p>A: You must have seen the licensing modification on the forums that this
+project’s core authors has advertised it’s self on. In short it means at any
+point in the future (unless a signed message fitting this project’s core
+author’s writing style is posted there) that this project may have it’s
+licensing for documentation modified such that certain things no longer need
+be included in derivative works. Abandonment as defined by that authorized
+post is any time longer than ninety six (96) hours after the last signed
+push by core authors to this project’s public code repository. This is to
+guaranty further <em>freedoms</em> of this project are implemented if at some
+point in the future this project’s core authors either finish work on it or
+are no longer able to work on this project. This does <strong>not</strong> mean that the
+core authors of this project <em>plan</em> on abandoning this project, only that
+they’ve, as fully as possible, planed for events that may cause core authors
+to no longer be able to maintain this current project’s code or documentation.</p>
+</blockquote>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

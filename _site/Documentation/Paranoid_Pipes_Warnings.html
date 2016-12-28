@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="warnings">Warnings</h1>
+
+<ol>
+  <li>This project, it’s scripts and those contained within this document itself
+ are all without warranty nor will the authors be held liable for damages
+ sustained to users, their hardware or the hardware of others while using this
+ project’s scripts, guides, or examples.</li>
+</ol>
+
+<blockquote>
+  <p>Scripts and code are released under <code class="highlighter-rouge">GNU AGPLv3</code> license found under the
+<code class="highlighter-rouge">Licenses</code> directory. Documentation and guides are released
+under <code class="highlighter-rouge">GNU FDLv1.3</code> license found under the <code class="highlighter-rouge">Licenses</code> directory. allowed
+use, user agreement.</p>
+</blockquote>
+
+<ol>
+  <li>Do not send <strong>all</strong> logging daemon output through this script’s (or the
+ script copy’s) named pipe(s); be selective.</li>
+</ol>
+
+<blockquote>
+  <p>first because this script likely generates system logs so sending all
+<code class="highlighter-rouge">rsyslog</code>’s data into one of these named pipes would be analogous to force
+feeding a snake it’s own tail &amp; the rest of the kitchen along with,
+second because even with filtering this script from your logging daemon’s
+output, logging everything else through an encrypting pipe will likely slow
+down if not crash your system. Be very specific as to what data you send
+through!</p>
+</blockquote>
+
+<ol>
+  <li>Do not send untrusted input into decrypting or encrypting pipes without
+ understanding what this tool is doing!</li>
+</ol>
+
+<blockquote>
+  <p>much care has been taken to provide options towards preventing data passing
+through named pipes from expansion into shell commands still it is possible
+that a devoted attacker could embed malicious code within that is either
+expanded upon while writing or reading.</p>
+</blockquote>
+
+<ol>
+  <li>Do not read decrypted content on an insecure or default configured document
+ reader.</li>
+</ol>
+
+<blockquote>
+  <p>Same reasoning as <code class="highlighter-rouge">Warning 2</code> above and, default configured document readers
+often save caches and/or backups in clear text at some obscure location;
+kinda defeats the porous of keeping secrets if your reader tattles on you.</p>
+</blockquote>
+
+<ol>
+  <li>Only enable <code class="highlighter-rouge">--enc-parsing-filter-input-yn</code> option when you are certain as
+ to what those options do. Default values for any option that could cause data
+ coruption are set to <code class="highlighter-rouge">no</code> by default so do not worry about manually disabling
+ these types of features.</li>
+</ol>
+
+<blockquote>
+  <p>the <code class="highlighter-rouge">--enc-parsing-filter-input-yn</code> option if enabled will cause the listening
+loop to perpend <code class="highlighter-rouge"># </code> to read lines that do not have them at the start of the
+line already. See <code class="highlighter-rouge">CLO Manual and documentation</code> section within this document
+directory for all command line options of this project’s main script explained
+in greater detail. The authors of this project will not aid users in
+recovering corrupted files if experomental options where in use on user’s
+target systems.</p>
+</blockquote>
+
+<ol>
+  <li><code class="highlighter-rouge">--output-parse-recipient</code> and <code class="highlighter-rouge">--enc-parsing-output-rotate-recipient</code>
+ options are <strong>required</strong> if <code class="highlighter-rouge">--help</code> option is excluded from script command
+ line options.</li>
+</ol>
+
+<blockquote>
+  <p>these email addresses maybe the same or different, but must be passed via
+command line or edited in manually to ensure that data being encrypted are
+handled correctly. Note either of these options may accept lists of recipients
+by either seperating email addresses by space (if enclosed with quotes) or
+comma (<code class="highlighter-rouge">,</code>) and each recipient will be added automaticly to encyrption processes</p>
+</blockquote>
+
+<ol>
+  <li>Script examples contained within this project <strong>are</strong> under the same
+ licensing and terms agreement as the main script of this project, <strong>however</strong>,
+ note that the script examples within this document are not as well tested as
+ the main script and they’re meant as general guidance of problem solving with
+ Bash.</li>
+</ol>
+
+<blockquote>
+  <p>See the <code class="highlighter-rouge">.travis.yml</code> file and <code class="highlighter-rouge">.travis-ci</code> directory of this project to find
+what has been tests in automated builds.</p>
+</blockquote>
+
+<ol>
+  <li>Understand what this project will not protect against</li>
+</ol>
+
+<blockquote>
+  <p>Because of the differences in kernel vs software implementation of
+encryption, the authors of this project feel it is worth warning users that
+there is some risk for leakage of data destined for encryption. Often this
+data can be found in the form of system logs or shell history files showing
+the interactions between a program or user and another program, ie
+<code class="highlighter-rouge">tail -n4 ~/.bash_history</code></p>
+</blockquote>
+
+<h2 id="bashs-history-file-output-example">Bash’s history file output example</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>cd /some/file/path
+gpg -r emailuser@host.domain -e some_file -o /tmp/some_file.gpg
+echo 'Email body about attached file' | mutt -s 'Subject of encrypted files attached' -a /tmp/some_file.gpg
+clear
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Known as metadata this amount of information leakage may, or may not, be
+acceptable depending upon your own perceived threat modal, your system
+permission, and physical access levels on the target server. Some logging of
+interactions may not be preventable. For this script’s process ID both
+running in the background or foreground the authors have selected to turn off
+Bash history but have not gone any further to protect users from system
+logging services. User may mitigate logging metadata further by setting up
+custom templates or filters for their logging daemon’s configuration,
+however, this topic is better suited for other documentation;
+hint <code class="highlighter-rouge">man &lt;logging-daemon&gt;</code> may yield exceptional information on how to
+selectively not log this script’s actions… Though that maybe a very bad
+idea, instead consider turning down the verbosity of your logging service for
+this script’s tasks until assured that you’re not leaking data destined for
+encryption. Hint: for both log daemon auditing (and auditing of the script)
+see section ‘CLO Manual and documentation’ within this document for listing
+of every Bash built-in command &amp; external program called listed without
+repeats.</p>
+</blockquote>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

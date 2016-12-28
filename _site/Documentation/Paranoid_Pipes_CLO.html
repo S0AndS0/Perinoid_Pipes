@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="clo-manual-and-documentation">CLO Manual and documentation</h1>
+
+<h2 id="notes-about-bellow-options">Notes about bellow options</h2>
+
+<blockquote>
+  <p>If using a “Command line option” to pass values into this project’s main
+script then they should be prefixed by two dashes (<code class="highlighter-rouge">--</code>) as shown, however,
+if instead you wish to pass values via the related “Variable name” then
+just pass the variable and value without prefixed. The first command line/
+variable assignment example bellow will include examples of both usage.
+Within most interactive scripts of this project you may also set veriables
+that do not have a related command line option by prefixing the veriable
+with <code class="highlighter-rouge">---</code> as show much further on within this document.</p>
+</blockquote>
+
+<p>Standard command line options for most scripts</p>
+
+<h3 id="command-line-option----columns">Command line option : <code class="highlighter-rouge">--columns</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_columns</code></li>
+  <li>Default value: <code class="highlighter-rouge">${COLUMNS:-$(tput cols)}</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">80</code></p>
+</blockquote>
+
+<h3 id="command-line-option----debug-level">Command line option : <code class="highlighter-rouge">--debug-level</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_debug_level</code></li>
+  <li>Default value: <code class="highlighter-rouge">0</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">0</code> - <code class="highlighter-rouge">9</code></p>
+</blockquote>
+
+<h3 id="command-line-option----log-level">Command line option : <code class="highlighter-rouge">--log-level</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_log_level</code></li>
+  <li>Default value: <code class="highlighter-rouge">0</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">0</code> - <code class="highlighter-rouge">9</code></p>
+</blockquote>
+
+<h3 id="command-line-option----version">Command line option : <code class="highlighter-rouge">--version</code></h3>
+
+<ul>
+  <li>Variable name: null</li>
+  <li>Default value: Display version for this script.</li>
+</ul>
+
+<h3 id="command-line-option---help-or--h">Command line option: <code class="highlighter-rouge">--help</code> or <code class="highlighter-rouge">-h</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_help_val</code></li>
+  <li>Default value: null</li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---save-variables-yn">Command line option: <code class="highlighter-rouge">--save-variables-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_save_variables_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---source-var-file">Command line option: <code class="highlighter-rouge">--source-var-file</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_source_var_file</code></li>
+  <li>Default value: null</li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``
+Note using <code class="highlighter-rouge">--source-var-file</code> CLI option maybe used to assign variable names
+found in Recognized command line options, their variables and default values
+table’s middle column. This allows for
+<code class="highlighter-rouge">script_name.sh --source-var-file=/some/path/to/vars</code>
+to be used to assign script variables instead of defining them at run-time.</p>
+</blockquote>
+
+<h3 id="command-line-option---script-log-path">Command line option: <code class="highlighter-rouge">--script-log-path</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_script_log_path</code></li>
+  <li>Default value: <code class="highlighter-rouge">${0%/*}/${Var_script_name%.*}.log</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---license">Command line option: <code class="highlighter-rouge">--license</code></h3>
+
+<ul>
+  <li>Variable name: null</li>
+  <li>Default value: null</li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">null</code> Prints and exits with <code class="highlighter-rouge">0</code> script’s current license
+and license of scripts that this project writes.</p>
+</blockquote>
+
+<p>Decryption command line options</p>
+
+<h3 id="command-line-option----dec-yn">Command line option : <code class="highlighter-rouge">--dec-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-copy-save-yn">Command line option : <code class="highlighter-rouge">--dec-copy-save-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_copy_save_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-copy-save-path">Command line option : <code class="highlighter-rouge">--dec-copy-save-path</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_copy_save_path</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Decrypter.sh</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-copy-save-ownership">Command line option : <code class="highlighter-rouge">--dec-copy-save-ownership</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_copy_save_ownership</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un):$(id -gn)</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-copy-save-permissions">Command line option : <code class="highlighter-rouge">--dec-copy-save-permissions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_copy_save_permissions</code></li>
+  <li>Default value: <code class="highlighter-rouge">750</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-bulk-check-count-max">Command line option : <code class="highlighter-rouge">--dec-bulk-check-count-max</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_bulk_check_count_max</code></li>
+  <li>Default value: <code class="highlighter-rouge">0</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-bulk-check-sleep">Command line option : <code class="highlighter-rouge">--dec-bulk-check-sleep</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_bulk_check_sleep</code></li>
+  <li>Default value: <code class="highlighter-rouge">120</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-gpg-opts">Command line option : <code class="highlighter-rouge">--dec-gpg-opts</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_gpg_opts</code></li>
+  <li>Default value: <code class="highlighter-rouge">"--quiet --no-tty --always-trust --passphrase-fd 9 --decrypt"</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-pipe-make-yn">Command line option : <code class="highlighter-rouge">--dec-pipe-make-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_pipe_make_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">yes</code> or <code class="highlighter-rouge">no</code></p>
+</blockquote>
+
+<h3 id="command-line-option----dec-pipe-file">Command line option : <code class="highlighter-rouge">--dec-pipe-file</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_pipe_file</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Decryption_Named.pipe</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">null</code></p>
+</blockquote>
+
+<h3 id="command-line-option----dec-pipe-permissions">Command line option : <code class="highlighter-rouge">--dec-pipe-permissions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_pipe_permissions</code></li>
+  <li>Default value: <code class="highlighter-rouge">600</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-pipe-ownership">Command line option : <code class="highlighter-rouge">--dec-pipe-ownership</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_pipe_ownership</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un):$(id -gn)</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-parsing-bulk-out-dir">Command line option : <code class="highlighter-rouge">--dec-parsing-bulk-out-dir</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_parsing_bulk_out_dir</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Bulk_Decrypted</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-parsing-disown-yn">Command line option : <code class="highlighter-rouge">--dec-parsing-disown-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_parsing_disown_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-parsing-save-output-yn">Command line option : <code class="highlighter-rouge">--dec-parsing-save-output-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_parsing_save_output_yn</code></li>
+  <li>Default value: ``</li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">yes</code></p>
+</blockquote>
+
+<h3 id="command-line-option----dec-parsing-output-file">Command line option : <code class="highlighter-rouge">--dec-parsing-output-file</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_parsing_output_file</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Decrypted_Results.txt</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option----dec-parsing-quit-string">Command line option : <code class="highlighter-rouge">--dec-parsing-quit-string</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_parsing_quit_string</code></li>
+  <li>Default value: <code class="highlighter-rouge">quit</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">string-of-charicters-not-normally-seen</code></p>
+</blockquote>
+
+<h3 id="command-line-option----dec-pass">Command line option : <code class="highlighter-rouge">--dec-pass</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_pass</code></li>
+  <li>Default value: <code class="highlighter-rouge">null</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">/path/to/pass.txt</code> or <code class="highlighter-rouge">some-passphrase</code></p>
+</blockquote>
+
+<h3 id="command-line-option----dec-search-string">Command line option : <code class="highlighter-rouge">--dec-search-string</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_dec_search_string</code></li>
+  <li>Default value: <code class="highlighter-rouge">null</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">Searchable_string</code></p>
+</blockquote>
+
+<p>Encryption command line options</p>
+
+<h3 id="command-line-option----enc-yn">Command line option : <code class="highlighter-rouge">--enc-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ‘<code class="highlighter-rouge">yes</code>’ or ‘<code class="highlighter-rouge">no</code>’ Enable or disable encryption processes
+within the script.</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-copy-save-yn">Command line option: <code class="highlighter-rouge">--enc-copy-save-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_copy_save_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">'Yes'</code> or <code class="highlighter-rouge">'No'</code> Enable or disable writing script copy.</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-copy-save-path">Command line option: <code class="highlighter-rouge">--enc-copy-save-path</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_copy_save_path</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Encrypter.sh</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">'/tmp/test_pipe_listener.sh'</code> Path and file name to save
+script copy under</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-copy-save-permissions">Command line option: <code class="highlighter-rouge">--enc-copy-save-permissions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_copy_save_permissions</code></li>
+  <li>Default value: <code class="highlighter-rouge">750</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-copy-save-ownership">Command line option: <code class="highlighter-rouge">--enc-copy-save-ownership</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_copy_save_ownership</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un):$(id -gn)</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-disown-yn">Command line option: <code class="highlighter-rouge">--enc-parsing-disown-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_disown_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">yes</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-pipe-file">Command line option: <code class="highlighter-rouge">--enc-pipe-file</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_pipe_file</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Encryption_Named.pipe</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-pipe-permissions">Command line option: <code class="highlighter-rouge">--enc-pipe-permissions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_pipe_permissions</code></li>
+  <li>Default value: <code class="highlighter-rouge">600</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-pipe-ownership">Command line option: <code class="highlighter-rouge">--enc-pipe-ownership</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_pipe_ownership</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un):$(id -gn)</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-quit-string">Command line option: <code class="highlighter-rouge">--enc-parsing-quit-string</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_quit_string</code></li>
+  <li>Default value: <code class="highlighter-rouge">quit</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-filter-input-yn">Command line option: <code class="highlighter-rouge">--enc-parsing-filter-input-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_filter_input_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">no</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">yes</code> or <code class="highlighter-rouge">no</code>
+Note using <code class="highlighter-rouge">--enc-parsing-filter-input-yn</code> option above may
+disable the script’s ability to recognize file or directory paths and are
+available for further securing your encrypted server logs. <strong>Do Not</strong> use
+pipes with these types of options enabled with bulk file writes because that
+will corrupt your data, ie <code class="highlighter-rouge">cat picture.file &gt; logging.pipe</code> will not result
+in happy decryption. Instead consider using two pipes; one for logging and
+one for general usage, and naming them such that they’re not ever mixed up.</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-filter-comment-pattern">Command line option: <code class="highlighter-rouge">--enc-parsing-filter-comment-pattern</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_filter_comment_pattern</code></li>
+  <li>Default value: <code class="highlighter-rouge">\#*</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-filter-allowed-chars">Command line option: <code class="highlighter-rouge">--enc-parsing-filter-allowed-chars</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_filter_allowed_chars</code></li>
+  <li>Default value: <code class="highlighter-rouge">[^a-zA-Z0-9 _.@!#%&amp;:;$\/\^\-\"\(\)\{\}\\]</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-file">Command line option: <code class="highlighter-rouge">--enc-parsing-output-file</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_file</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Encrypted_Results.gpg</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-permissions">Command line option: <code class="highlighter-rouge">--enc-parsing-output-permissions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_permissions</code></li>
+  <li>Default value: <code class="highlighter-rouge">640</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-ownership">Command line option: <code class="highlighter-rouge">--enc-parsing-output-ownership</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_ownership</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un):$(id -gn)</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-gpg-opts">Command line option: <code class="highlighter-rouge">--enc-gpg-opts</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_gpg_opts</code></li>
+  <li>Default value: <code class="highlighter-rouge">--always-trust --armor --batch --no-tty --encrypt</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-recipient">Command line option: <code class="highlighter-rouge">--enc-parsing-recipient</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_recipient</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un)@${HOSTNAME}.local</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-save-output-yn">Command line option: <code class="highlighter-rouge">--enc-parsing-save-output-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_save_output_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">yes</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-rotate-yn">Command line option: <code class="highlighter-rouge">--enc-parsing-output-rotate-yn</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_rotate_yn</code></li>
+  <li>Default value: <code class="highlighter-rouge">yes</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-max-size">Command line option: <code class="highlighter-rouge">--enc-parsing-output-max-size</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_max_size</code></li>
+  <li>Default value: <code class="highlighter-rouge">4096</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-check-frequency">Command line option: <code class="highlighter-rouge">--enc-parsing-output-check-frequency</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_check_frequency</code></li>
+  <li>Default value: <code class="highlighter-rouge">100</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-rotate-actions">Command line option: <code class="highlighter-rouge">--enc-parsing-output-rotate-actions</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_rotate_actions</code></li>
+  <li>Default value: <code class="highlighter-rouge">compress-encrypt,remove-old</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">'compress-encrypt,remove-old'</code> or
+<code class="highlighter-rouge">'encrypted-email,remove-old'</code> List of actions, separated by commas <code class="highlighter-rouge">,</code> to
+take when output file’s size and write count reaches above values.</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-output-rotate-recipient">Command line option: <code class="highlighter-rouge">--enc-parsing-output-rotate-recipient</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_output_rotate_recipient</code></li>
+  <li>Default value: <code class="highlighter-rouge">$(id -un)@${HOSTNAME}.local</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-bulk-out-dir">Command line option: <code class="highlighter-rouge">--enc-parsing-bulk-out-dir</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_parcing_bulk_out_dir</code></li>
+  <li>Default value: <code class="highlighter-rouge">${PWD}/Bulk_Encrypted</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option---enc-parsing-bulk-output-suffix">Command line option: <code class="highlighter-rouge">--enc-parsing-bulk-output-suffix</code></h3>
+
+<ul>
+  <li>Variable name: <code class="highlighter-rouge">Var_enc_parsing_bulk_output_suffix</code></li>
+  <li>Default value: <code class="highlighter-rouge">.gpg</code></li>
+</ul>
+
+<blockquote>
+  <p>Expected values: ``</p>
+</blockquote>
+
+<h3 id="command-line-option-">Command line option: <code class="highlighter-rouge">*</code></h3>
+
+<ul>
+  <li>Variable name: Arr_extra_input</li>
+  <li>Default value: null</li>
+</ul>
+
+<blockquote>
+  <p>Expected values: <code class="highlighter-rouge">null</code> Writes any unrecognized arguments as lines or
+words that should be written to named pipe if available. This is for
+advanced users of the main script that wish to have a <em>header</em> or set
+of lines be the first things parsed by the processes of the pipe parser
+functions or custom script. This is only enabled within the script’s main
+function if <code class="highlighter-rouge">--enc-parsing-disown-yn</code> option has also been set to a
+<em>yes</em> like value.</p>
+</blockquote>
+
+<p>File path variables</p>
+
+<blockquote>
+  <p>The following maybe set or left at thier default values.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># ---Var_dev_null			Var_dev_null="/dev/null"
+# ---Var_echo				Var_echo="$(which echo)"
+# ---Var_chmod				Var_chmod="$(which chmod)"
+# ---Var_chown				Var_chown="$(which chown)"
+# ---Var_mkfifo				Var_mkfifo="$(which mkfifo)"
+# ---Var_mv				Var_mv="$(which mv)"
+# ---Var_rm				Var_rm="$(which rm)"
+# ---Var_tar				Var_tar="$(which tar)"
+# ---Var_cat				Var_cat="$(which cat)"
+# ---Var_gpg				Var_gpg="$(which gpg)"
+# ---Var_mkdir				Var_mkdir="$(which mkdir)"
+# ---Var_touch				Var_touch="$(which touch)"
+</code></pre>
+</div>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

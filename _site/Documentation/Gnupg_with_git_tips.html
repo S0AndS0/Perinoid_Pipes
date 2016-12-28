@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="verifying-signed-commits-and-tags">Verifying signed commits and tags</h1>
+
+<h2 id="import-authors-public-gpg-key">Import author’s public GPG key</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --recv-keys 6E4C46DA15B22310
+</code></pre>
+</div>
+
+<h2 id="assign-trust-levels-to-quite-git">Assign <em>trust</em> levels to quite <code class="highlighter-rouge">git</code></h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --edit-key 6E4C46DA15B22310
+## Within interactive menu
+#&gt; trust
+## Set number value of trust to key id
+#&gt; 5
+## Confirm with 'y' then quit with new trust
+#&gt; quit
+</code></pre>
+</div>
+
+<h3 id="verify-signed-commits-within-log-option-1">Verify signed commits within <code class="highlighter-rouge">log</code> (option 1)</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git log --show-signature --oneline
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The above will show the title of each commit as well as the results from
+GnuPG’s verification of signatures on each commit. Quick and built in this
+is likely more superior to <code class="highlighter-rouge">(option 2)</code> bellow.</p>
+</blockquote>
+
+<h2 id="parse-commit-ids-into-variable-option-2">Parse commit IDs into variable (option 2)</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Var_commit_ids=$(git log --oneline | awk '{print $1}')
+</code></pre>
+</div>
+
+<h2 id="verify-signed-commits">Verify signed commits</h2>
+
+<h3 id="example-syntax">Example syntax</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>git --verify-commit &lt;commit_id&gt;
+</code></pre>
+</div>
+
+<h3 id="looping-though-commit-ids">Looping though commit IDs</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>for _id in ${Var_commit_ids}; do git --verify-commit ${_id}; done
+</code></pre>
+</div>
+
+<h3 id="looping-with-some-logic">Looping with some logic</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>for _id in ${Var_commit_ids}; do
+    if test "git verify-commit ${_id}"; then
+        echo "# Commit ${_id} passed, checking another commit ID now."
+    else
+        echo "# Failed at commit ${_id}, showing verbose output now."
+        ## Do something else such as 'exit 1' instead.
+        git verify-commit -v ${_id}
+    fi
+done
+</code></pre>
+</div>
+
+<h2 id="verifying-much-the-same-for-signed-tags">Verifying much the same for signed tags</h2>
+
+<h3 id="looping-through-tags">Looping through tags</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Var_tag_ids=$(git tag --list | awk 'print $1')
+for _name in ${Var_tag_ids}; do
+    if test "git verify-tag ${_name}"; then
+        echo "# Tag ${_name} passed, checking another commit ID now."
+    else
+        echo "# Failed at tag: ${_name}"
+    fi
+done
+</code></pre>
+</div>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

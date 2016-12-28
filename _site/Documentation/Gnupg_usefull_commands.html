@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="useful-gnupg-command-line-commands-list">Useful GnuPG command line commands list</h1>
+
+<blockquote>
+  <p>There are plenty of advanced command line tricks that can be done with
+GnuPG, the following list of common commands are ordered by least to more
+advanced commands.</p>
+</blockquote>
+
+<h2 id="gnupg-commands-daily-use">GnuPG commands (daily use)</h2>
+
+<h3 id="search-for-a-key-by-email">Search for a key by email</h3>
+
+<blockquote>
+  <p>note if found GnuPG will prompt you on if you wish to import the key</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --search-keys &lt;email_or_pub_finger_print&gt;
+</code></pre>
+</div>
+
+<h3 id="import-a-key-from-file-instead">Import a key from file instead</h3>
+
+<blockquote>
+  <p>note if importing a private key then the public key is automatically
+regenerated.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --import &lt;pub_or_private_key_file&gt;
+</code></pre>
+</div>
+
+<h3 id="encrypt-a-file-to-one-or-more-recipients">Encrypt a file to one or more recipients</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --armor --encrypt &lt;unencrypted_input_file&gt;\
+ --recipient &lt;email_or_pubKeyID&gt;\
+ --output &lt;encrypted_output_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Replace <code class="highlighter-rouge">&lt;email_or_pubKeyID&gt;</code> with the email address or key ID to whom that
+the <code class="highlighter-rouge">&lt;unencrypted_input_file&gt;</code> will be encrypted to, note multiple
+<code class="highlighter-rouge">--recipient</code> arguments maybe passed at this time and this is useful if you
+have multiple people to encrypt a file to. The <code class="highlighter-rouge">&lt;encrypted_output_file&gt;</code>
+should be a new file path/name to save GnuPG’s output to. Once saved the
+output file maybe sent over any network to the recipients, ie over email,
+without having to trust the network or it’s servers.</p>
+</blockquote>
+
+<h3 id="encrypt-a-file-to-one-or-more-recipients--embed-a-signature">Encrypt a file to one or more recipients &amp; embed a signature</h3>
+
+<blockquote>
+  <p>This allows the message to be tracked back to your key ID</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --armor --encrypt &lt;unencrypted_input_file&gt;\
+ --recipient &lt;email_or_pubKeyID&gt;\
+ --clearsign --output &lt;encrypted_output_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The <code class="highlighter-rouge">--clearsign</code> option above will allow any recipient to mathematically
+link the file’s contents with your key ID. This is very useful if the network
+that the file is transmitted over is untrustworthy because any changes to the
+file will cause GnuPG to through errors and warnings that the file was
+tampered with.</p>
+</blockquote>
+
+<h3 id="verify-a-signed-file">Verify a signed file</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --verify &lt;encrypted_output_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Errors about the trustworthiness of the signing key is common output from
+above if you’ve not signed the sender’s public key, really you should be
+looking for if the signature check succeeded or failed. If it failed then the
+file has been tampered with during transit, if the signature check did not
+fail then the file maybe trusted to have been unmodified since signing.</p>
+</blockquote>
+
+<h3 id="decrypt-a-file">Decrypt a file</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --decrypt &lt;encrypted_input_file&gt; --output &lt;decrypted_output_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The <code class="highlighter-rouge">&lt;encrypted_input_file&gt;</code> above will only provide usable output at
+<code class="highlighter-rouge">&lt;decrypted_output_file&gt;</code> if you are the owner of a private key associated
+with a public key used to encrypt the original file. Passphrase prompts are
+expected when this command is run against a private key that is passphrase
+protected, in other words a private key that is set up properly will need it’s
+passphrase to decrypt files.</p>
+</blockquote>
+
+<h3 id="make-a-detached-signature-for-a-file-without-modifying-it">Make a detached signature for a file without modifying it</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --armor --detach-sign &lt;some_legal_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The output should be saved to a file with the same name but with an
+additional <code class="highlighter-rouge">.asc</code> suffix at the end, note if the <code class="highlighter-rouge">--armor</code> option is removed
+the above will still work but the signature will be in non-ASCII format which
+limits what servers will allow for transit or upload. Send the detached
+signature along with the <code class="highlighter-rouge">&lt;some_legal_file&gt;</code>, now any recipient can use the
+following example command to verify that the file came from you un-modified
+during transit.</p>
+</blockquote>
+
+<h3 id="verify-detached-signature">Verify detached signature</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg --verify &lt;signature_file&gt; &lt;some_legal_file&gt;
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The above maybe used by anyone who has access to the public key related to
+the private key used to signed the file. This is very useful when the file
+being transferred cannot be clear signed without corrupting it’s data. Note
+the order of files is important in the above command, the signature file must
+come <strong>before</strong> the file to be verified.</p>
+</blockquote>
+
+<h2 id="gnupg-example-output">GnuPG example output</h2>
+
+<h3 id="good-or-passing-signature-check-output-from-gpg"><code class="highlighter-rouge">Good</code> or passing signature check output from GPG</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg: Signature made Wed Sep  7 20:06:29 2016 UTC
+gpg:                using RSA key 0x2E25E52010AD0E1F
+gpg: Good signature from "Michael NA &lt;strangerthanbland@gmail.com&gt;" [unknown]
+gpg: WARNING: This key is not certified with a trusted signature!
+gpg:          There is no indication that the signature belongs to the owner.
+Primary key fingerprint: D915 790F 273E 2E8E 786F  0470 6E4C 46DA 15B2 2310
+     Subkey fingerprint: 12D6 7DEC 7572 68B6 A30C  C948 2E25 E520 10AD 0E1F
+</code></pre>
+</div>
+
+<h3 id="bad-or-failing-signature-check-output-from-gpg"><code class="highlighter-rouge">Bad</code> or failing signature check output from GPG</h3>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>gpg: Signature made Wed Sep  7 20:06:29 2016 UTC
+gpg:                using RSA key 0x2E25E52010AD0E1F
+gpg: BAD signature from "Michael NA &lt;strangerthanbland@gmail.com&gt;" [unknown]
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Note on Linux the above exit statuses are <code class="highlighter-rouge">0</code> for <code class="highlighter-rouge">Good</code> and <code class="highlighter-rouge">1</code> for <code class="highlighter-rouge">Bad</code>,
+ie run <code class="highlighter-rouge">echo "$?"</code> to view the exit status of the last command or use an
+<code class="highlighter-rouge">if [[ "$?" == "0" ]]; then echo "Good"; else echo "Bad"; fi</code> statement in
+Bash scripts to trap on bad exit status.</p>
+</blockquote>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>

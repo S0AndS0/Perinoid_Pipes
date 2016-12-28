@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link rel="stylesheet" href="/assets/css/style.css?v=6b26304f89141400512e932cdbdd42dbdc347ad2">
+    <title>Perinoid_Pipes by S0AndS0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>Perinoid_Pipes</h1>
+        <h2>Where named pipes are used for encryption</h2>
+
+        <section id="downloads">
+          
+          <a href="http://github.com/S0AndS0/Perinoid_Pipes" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1 id="scenario-three">Scenario three</h1>
+
+<hr />
+
+<blockquote>
+  <p><code class="highlighter-rouge">Save custom script copy over SSH</code> -&gt; <code class="highlighter-rouge">Target host's Logging output</code> -&gt;
+<code class="highlighter-rouge">Pipe (encryption) input</code> -&gt; <code class="highlighter-rouge">Encrypted Log output</code> -&gt;
+<code class="highlighter-rouge">Rotate encrypt and email removing old</code></p>
+</blockquote>
+
+<hr />
+
+<h2 id="write-customized-pipe-listener-script-over-ssh">Write customized pipe listener script over SSH</h2>
+
+<blockquote>
+  <p>These are the options used from <code class="highlighter-rouge">Scenario one</code> so edit as needed and be
+aware that file paths will be relative to that of the SSH server being logged
+into. Note we’re only saving these variables to make the final command easier
+to read.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Script_options="--enc-copy-save-yn='yes'\
+ --enc-copy-save-path='/jailer_scripts/website_host/Web_log_encrypter.sh'\
+ --enc-copy-save-ownership='notwwwuser:notwwwgroup'\
+ --enc-copy-save-permissions='100'\
+ --debug-level='6'\
+ --enc-parsing-quit-string='sOmErAnDoM_sTrInG_wItHoUt_SpAcEs_tHaT_iS_nOt_NoRmAlY_rEaD'\
+ --log-level='0'\
+ --enc-pipe-file='/jailed_servers/website_host/var/log/www/access.log.pipe'\
+ --enc-pipe-ownership='notwwwuser:wwwgroup'\
+ --enc-pipe-permissions='420'\
+ --enc-parsing-output-file='/jailed_logs/website_host/www_access.gpg'\
+ --enc-parsing-recipient='user@host.domain'\
+ --enc-parsing-filter-input-yn='yes'\
+ --enc-parsing-output-rotate-actions='compress-encrypt,remove-old'\
+ --enc-parsing-output-check-frequency='25000'\
+ --enc-parsing-output-max-size='8388608'\
+ --enc-parsing-output-rotate-recipient='user@host.domain'\
+ --enc-parsing-output-rotate-yn='yes'\
+ --enc-parsing-save-output-yn='yes'\
+ --enc-parsing-disown-yn='yes'"
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Note the use of <code class="highlighter-rouge">\</code> (back-slashes) for escaping new lines above, these are not
+neaded when you input the above on one line, in either case do not forget the
+clossing double quote (<code class="highlighter-rouge">"</code>) for the variable’s assignment.</p>
+</blockquote>
+
+<h2 id="run-the-main-script-from-host-using-redirection-and-assigned-variables">Run the main script from host using redirection and assigned variables</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>ssh user@remote "$(&lt;/path/to/main/script.sh ${Script_options})"
+</code></pre>
+</div>
+
+<h2 id="restart-named-pipe-listener-script-over-ssh">Restart named pipe listener script over SSH</h2>
+
+<blockquote>
+  <p>now that it is local to and configured for the target’s file system.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>## Send quit string to named pipe
+ssh user@remote "echo 'sTrInG_wItHoUt_SpAcEs' &gt; /jailed_servers/website_host/var/log/www/access.log.pipe"
+## Start script over SSH
+ssh user@remote "/jailer_scripts/website_host/Web_log_encrypter.sh"
+</code></pre>
+</div>
+
+<blockquote>
+  <p>The above steps maybe repeated for any other servers (or same server
+different but log) that require setup of log encryption, however, if attempting
+to automate this for a large cluster it is advisable to define separate quit
+strings for each remote host. Linked within <code class="highlighter-rouge">../Script_Helpers</code> directory of
+project,
+<a href="../Script_Helpers/Paranoid_Pipes_Scenario_Three.sh">../Script_Helpers/Paranoid_Pipes_Scenario_Three.sh</a>,
+the authors have provided an example of what they would do to setup
+multiple remote hosts in quick succession that each only need one template
+written.</p>
+</blockquote>
+
+<h2 id="important-variables-to-modify-in-above-example-script">Important variables to modify in above example script</h2>
+
+<blockquote>
+  <p>List ‘remote user’ <code class="highlighter-rouge">@</code> ‘remote host’ <code class="highlighter-rouge">:</code> ‘listening server port’ separated
+by <code class="highlighter-rouge">,</code> of servers that should receive a script copy for encrypting logs and
+files via named pipe</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Remote_hosts="webadmin@webhost:22,sqladmin@sqlhost:9823"
+</code></pre>
+</div>
+
+<h2 id="relative-path-on-target-server-to-bash-shell">Relative path on target server to Bash shell</h2>
+
+<blockquote>
+  <p>The following default should work for most systems without modification.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Remote_host_shell="/bin/bash"
+</code></pre>
+</div>
+
+<h2 id="generate-random-characters-of-given-numerical-length">Generate random characters of given numerical length</h2>
+
+<blockquote>
+  <p>for use in making custom quit strings for each named pipe listener script
+that will be written. Note this will be logged on the relative local file
+system for all servers and each target should receive their own randomized
+quit string written to their script copy.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Quit_string_length='32'
+</code></pre>
+</div>
+
+<h2 id="relative-local-file-path-to-save-the-above-scripts-logs-out-to">Relative local file path to save the above script’s logs out to</h2>
+
+<blockquote>
+  <p>Note this maybe an encrypting pipe path on your local file system too if you
+wish to keep quit strings and servers setup private.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Log_file_path='/tmp/ssh_remote_encrypted_setup.log'
+</code></pre>
+</div>
+
+<h2 id="path-to-main-script-downloaded-cloned-on-local-host">Path to main script downloaded (<code class="highlighter-rouge">clone</code>d) on local host</h2>
+
+<blockquote>
+  <p>ei not on your target servers. If this is not set properly then the script’s
+<code class="highlighter-rouge">ssh ${_host} -s ${Remote_host_shell} "$(&lt;${Main_script_path} ${Script_options})"</code>
+command will miss-fire.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Main_script_path='/path/to/writer_script.sh'
+</code></pre>
+</div>
+
+<h2 id="paths-relative-to-each-target-hosts-file-system">Paths relative to each target host’s file system</h2>
+
+<blockquote>
+  <p>target directory path to save script copy to.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Script_save_dir='/usr/local/sbin'
+</code></pre>
+</div>
+
+<blockquote>
+  <p>target directory to save listening script copy’s output to</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Script_save_output_dir='/var/log'
+</code></pre>
+</div>
+
+<h2 id="import-onto-each-target-host-the-related-public-key">Import onto each target host the related public key</h2>
+
+<blockquote>
+  <p>and what each target host will use for line-by-line and recognized file type
+encryption.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Script_save_parse_recipient='user@host.suffix'
+</code></pre>
+</div>
+
+<h2 id="second-pub-keys-email-address-to-import-onto-each-target-host">Second pub key’s email address to import onto each target host</h2>
+
+<blockquote>
+  <p>and what each target host will use for log rotation encryption and emailing
+compressed logs actions.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>Script_save_rotate_recipient='user@host.suffix'
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Above will save an encrypting script to each host defined by the <code class="highlighter-rouge">Remote_hosts</code>
+variable and import the gpg keys defined by <code class="highlighter-rouge">Script_save_parse_recipient and
+</code>Script_save_rotate_recipient variables to each of them. The scripts them
+selves will each have variable names for pipes, output files, and listening
+script by parsing the individual target host. Because the script copies are
+much smaller than the main script of this project, after running above, coping
+and modifying the individual target host’s scripts on a case by case basis is
+the suggested next course of action.
+Bellow is a run-down of what changes per target host and what will remain
+constant.</p>
+</blockquote>
+
+<h2 id="variable-defined-options-that-change-per-host-assigned-to-each-script-copy">Variable defined options that change per-host assigned to each script copy</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>--enc-copy-save-path='${Script_save_dir}/${_host_name}_log_encrypter.sh'
+--enc-pipe-file='${Script_save_output_dir}/${_host_name}_access.log.pipe'
+--enc-pipe-ownership='${_host_name}:${_host_name}'
+--enc-copy-save-ownership='${_host_name}:${_host_name}'
+--enc-parsing-output-file='${Script_save_output_dir}/${_host_name}_access.gpg'
+</code></pre>
+</div>
+
+<h2 id="variable-defined-options-that-do-not-change-per-host">Variable defined options that do not change per-host</h2>
+
+<blockquote>
+  <p>assigned to each script copy</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>--enc-parsing-recipient='${Script_save_parse_recipient}'
+--enc-parsing-output-rotate-recipient='${Script_save_rotate_recipient}'
+</code></pre>
+</div>
+
+<h2 id="list-of-options-that-do-not-change-per-host-assigned-to-each-script-copy">List of options that do not change per-host assigned to each script copy</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>--enc-copy-save-yn='yes'
+--enc-copy-save-permissions='100'
+--debug-level='6'
+--log-level='0'
+--enc-pipe-permissions='420'
+--enc-parsing-filter-input-yn='yes'
+--enc-parsing-output-rotate-actions='compress-encrypt,remove-old'
+--enc-parsing-output-check-frequency='25000'
+--enc-parsing-output-max-size='8388608'
+--enc-parsing-output-rotate-yn='yes'
+--enc-parsing-save-output-yn='yes'
+--enc-parsing-disown-yn='yes'
+</code></pre>
+</div>
+
+<blockquote>
+  <p>After modifying and running the above script you should have a log file on the
+local host of actions preformed as defined by <code class="highlighter-rouge">Log_file_path</code> variable that
+saves each script copy’s quit string as defined by the following option used in
+above <code class="highlighter-rouge">for</code> loop.</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>--enc-parsing-quit-string='${_random_quit_string}'
+</code></pre>
+</div>
+
+<blockquote>
+  <p>Sample output log file</p>
+</blockquote>
+
+<div class="highlighter-rouge"><pre class="highlight"><code># &lt;Host&gt; | &lt;Quit string&gt;
+#--------|--------------
+# webadmin@webhost | somerandomstring
+# sqladmin@sqlhost | someotherrandomstring
+## Finished above at Day Month Day# hh:mm:ss Zone Year
+</code></pre>
+</div>
+
+<h2 id="licensing-notice-for-this-file">Licensing notice for this file</h2>
+
+<div class="highlighter-rouge"><pre class="highlight"><code>    Copyright (C) 2016 S0AndS0.
+    Permission is granted to copy, distribute and/or modify this document under
+    the terms of the GNU Free Documentation License, Version 1.3 published by
+    the Free Software Foundation; with the Invariant Sections being
+    "Title page". A copy of the license is included in the directory entitled
+    "License".
+</code></pre>
+</div>
+
+<p><a href="/Documentation/Contributing_Financially.html">Link to title page</a></p>
+
+<p><a href="/Licenses/GNU_FDLv1.3_Documentation.html">Link to related license</a></p>
+
+      </section>
+    </div>
+
+    
+  </body>
+</html>
