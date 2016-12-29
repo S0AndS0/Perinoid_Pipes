@@ -1,4 +1,85 @@
-title: Perinoid_Pipes
-description: Where named pipes are used for encryption
-show-downloads: true
-theme: jekyll-theme-hacker
+# Source modification from default
+## Referance defaults from documentation hosted at: https://jekyllrb.com/docs/configuration/
+### Defaults that maybe overwritten
+defaults:
+#  -
+#   scope:
+#   path: "projects"
+#   type: "pages"
+  values:
+#   layout: "projects"
+   author: "S0AndS0"
+##   category: "project"
+   title: Perinoid_Pipes
+   description: Where named pipes are used for encryption
+   show-downloads: true
+   theme: jekyll-theme-hacker
+#   google_analytics:
+
+### Where things are
+source: ./Documentation
+destination: ./_site
+##plugins_dir: _plugins
+##layouts_dir: _layouts
+##data_dir: _data
+##collections:
+##  posts:
+##  output: true
+
+### Handling Reading
+##save: false
+##include: [".jekyll_configs/.htaccess"
+exclude: ["node_modules", "vendor/bundle", "vendor/cache/", "vendor/gems/", "vendor/ruby/", "Bulk_*"]
+##keep_files: [".git", ".svn"]
+##encoding: "utf-8"
+##marddown_ext: "markdown,mkdown,mkdn,mkd.md"
+
+### Filtering Content
+##show_drafs: null
+##limit_posts: 0
+##future: false
+##unpublished: false
+
+### Plugins
+##whitelist: []
+##gems: []
+
+### Conversion
+##mardown: kramdown
+##highlighter: rouge
+##lsi: false
+##excerpt_seperator: "\n\n"
+##incremental: false
+
+### Serving
+##detach: false
+##port: 4000
+##host: 127.0.0.1
+##baseurl: "" # Does not include hostname
+##show_dir_listing: false
+
+### Outputting
+##permalink: date
+##paginate_path: /page:num
+##timezone: null
+##quiet: false
+##verbose: false
+##defaults: []
+liquid:
+  error_mode: strict
+## Maybe 'lax' to ignor errors
+##  error_mode: warn
+
+### Markdown Processors
+##rdiscount:
+##  extensions: []
+
+##kramdown
+##  auto_ids:
+##  footnote_nr:
+##  entity_output:
+##  toc_levels:
+##  smart_quotes:
+##  input:
+##  hard_wrap:
+##  footnote_nr:
