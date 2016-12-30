@@ -1,3 +1,7 @@
+---
+title: Warnings related to scripts found within this project
+---
+
 # Warnings
 
 1. This project, it's scripts and those contained within this document itself

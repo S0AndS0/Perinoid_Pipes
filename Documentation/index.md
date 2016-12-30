@@ -1,3 +1,9 @@
+---
+title: Documentation
+permalink: /
+navigation_weight: 1
+---
+
 # Licensing notice for this directory
 
 ```
@@ -14,64 +20,6 @@
 [Link to related license](../Licenses/GNU_FDLv1.3_Documentation.md)
 
 ## Files contained within this directory
-
-### GnuPG installation and configuration
-
-[Gnupg_installation_options.md](Gnupg_installation_options.md)
- Documentation of various options available to non-Linux & Linux based operating
- systems. Note the only platform that this project is known to work on are Linux
- based OSs and the only platform that this project is likely not able to work on
- are IOS based devices.
-
-[Gnupg_configuration.md](Gnupg_configuration.md)
- Documentation of *best practices* configuration of GnuPG, the attached configs
- are very similar to what contributers and authors of this project make use of
- or should make use of. The observent will also find these configs used within
- the [../Script_Helpers/GnuPG_Gen_Key.sh](../Script_Helpers/GnuPG_Gen_Key.sh)
- script which is then used within the build script
- [../.travis-ci/before_script_gen_key.sh](../.travis-ci/before_script_gen_key.sh)
- to enable unattended GnuPG key for this project's auto test builds.
-
-[Gnupg_usefull_commands.md](Gnupg_usefull_commands.md)
- Documentation of daily use command line command for GnuPG; in other words a
- "cheet sheet" for GnuPG.
-
-[Gnupg_key_management.md](Gnupg_key_management.md)
- Documentation of key management command line commands to use with GnuPG. Topics
- covered include; generating new private keys, revocation certificates, signing
- other GnuPG user's public keys, and editing *`trust`* settings for keys.
-
-### Documentation for [Paranoid_Pipes.sh](../Paranoid_Pipes.sh)
-
-[Paranoid_Pipes_Quick_Start.md](Paranoid_Pipes_Quick_Start.md)
- Documentation on getting this project's main script up and running with test
- data. Note the steps documented are only for testing the features available,
- see `Paranoid_Pipes_CLO.md` for a full list of all known command line options.
-
-[Paranoid_Pipes_CLO.md](Paranoid_Pipes_CLO.md)
- Documentation for all recognized command line options (`CLO`) available to the
- `Paranoid_Pipes.sh` script.
-
-[Paranoid_Pipes_Scenario_One.md](Paranoid_Pipes_Scenario_One.md)
- Documentation for setting up web server logging operations to write to one of
- this project's named pipes for encryption.
-
-[Paranoid_Pipes_Scenario_Two.md](Paranoid_Pipes_Scenario_Two.md)
- Documentation for setting up named pipes for both encryption and decryption on
- the same host but on segregated file systems. Much like `Scenario One` but with
- the requirements that an IDS/IPS system is monitoring plain-text logs for the
- brief time that they're allowed to live on that host.
-
-[Paranoid_Pipes_Scenario_Three.md](Paranoid_Pipes_Scenario_Three.md)
- Documentation for how to setup multiple remote servers with customized script
- copies over `ssh`.
-
-[Paranoid_Pipes_Scenario_Four.md](Paranoid_Pipes_Scenario_Four.md)
- Documentation for how to use Paranoid_Pipes_Scenario_Two.md over `sshfs` mounts.
-
-[Paranoid_Pipes_Warnings.md](Paranoid_Pipes_Warnings.md)
- Contains documentation on all know issues that new and current users of this
- project should be aware of.
 
 ### Documentation for code & document contributions to this project
 

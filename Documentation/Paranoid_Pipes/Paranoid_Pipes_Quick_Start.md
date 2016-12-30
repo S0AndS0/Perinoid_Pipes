@@ -1,10 +1,12 @@
+---
+title: Short quick start of how to use the main script of this project
+---
+
 # Quick start
 
-> See guides under the [`Documentation/`](Documentation/) directory for
-> complete explanations of this project's target usage information and command
-> line options. This document only covers downloading and initial testing of
+> This document only covers downloading and initial testing of
 > project features. See the Frequently asked questions
-> document [FAQ.md](Documentation/FAQ.md) for answers to common questions.
+> document [FAQ.md](FAQ.md) for answers to common questions.
 
 ## Step 1
 

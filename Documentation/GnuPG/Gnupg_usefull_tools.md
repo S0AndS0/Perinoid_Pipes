@@ -1,3 +1,7 @@
+---
+title: Other GnuPG tools external to this project
+---
+
 # GnuPG tools
 
 > There are many interesting tools available for GPG, the more note worthy will

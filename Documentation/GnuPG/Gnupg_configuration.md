@@ -1,3 +1,7 @@
+---
+title: Manual GnuPG configurations for this project
+---
+
 # Configuring GnuPG
 
 > Regardless of how GnuPG is installed the following configuration lines should

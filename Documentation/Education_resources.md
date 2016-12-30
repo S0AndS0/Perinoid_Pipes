@@ -1,3 +1,7 @@
+---
+title: Educational resources external to this project
+---
+
 # External links to documentation used within this project
 
 > Note the bellow links are **not** directly related to the project and serve

@@ -1,3 +1,7 @@
+---
+title: Maintaining project code
+---
+
 # Work flow steps that will repeat (code maintenance)
 
 > Note the following instructions assume that your have already completed the

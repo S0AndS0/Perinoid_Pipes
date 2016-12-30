@@ -1,3 +1,7 @@
+---
+title: Useful GnuPG commands
+---
+
 # Useful GnuPG command line commands list
 
 > There are plenty of advanced command line tricks that can be done with

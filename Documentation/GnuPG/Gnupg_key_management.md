@@ -1,3 +1,7 @@
+---
+title: Select GnuPG command line options
+---
+
 # GnuPG commands: key management
 
 ## Generate new key pair

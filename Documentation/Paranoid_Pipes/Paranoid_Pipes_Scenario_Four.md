@@ -1,3 +1,7 @@
+---
+title: Usage scenario four
+---
+
 # Scenario Four
 
 -----

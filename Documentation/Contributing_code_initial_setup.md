@@ -1,3 +1,7 @@
+---
+title: Inital git setup for project
+---
+
 # Initial `git` setup
 
 > skip any steps that have been completed for other code contributions and

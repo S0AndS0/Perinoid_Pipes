@@ -1,3 +1,7 @@
+---
+title: Usage scenario one
+---
+
 # Scenario one
 
 > `Logging output` -> `Pipe (encryption) input` -> `Encrypted log output` ->

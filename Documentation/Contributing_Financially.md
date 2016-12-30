@@ -1,3 +1,7 @@
+---
+title: Title page
+---
+
 # Title page
 
 Support the original authors financially via the following methods

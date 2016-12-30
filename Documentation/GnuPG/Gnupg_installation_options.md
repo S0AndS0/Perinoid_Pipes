@@ -1,3 +1,7 @@
+---
+title: Installation options for GnuPG on verious systems
+---
+
 # GnuPG installation options
 
 > Note the following information for non-Linux based operating systems should be

@@ -1,3 +1,7 @@
+---
+title: Tips for modifying this project privetly
+---
+
 > What follows are instructions on how to make modifications to the source
 > code without making git refuse to download updates as well as how to
 > incorporate updates from the `master` branch into your modified local branch.

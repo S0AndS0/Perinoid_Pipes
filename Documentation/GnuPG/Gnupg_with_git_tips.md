@@ -1,3 +1,7 @@
+---
+title: Useful commands for GnuPG in relation to Git
+---
+
 # Verifying signed commits and tags
 
 ## Import author's public GPG key

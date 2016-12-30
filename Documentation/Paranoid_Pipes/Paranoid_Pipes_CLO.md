@@ -1,3 +1,7 @@
+---
+title: Command line options manual for the main script of this project
+---
+
 # CLO Manual and documentation
 
 ## Notes about bellow options

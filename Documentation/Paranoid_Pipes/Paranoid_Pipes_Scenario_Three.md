@@ -1,3 +1,7 @@
+---
+title: Usage scenario three
+---
+
 # Scenario three
 
 -----

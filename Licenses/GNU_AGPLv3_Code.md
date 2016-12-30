@@ -1,3 +1,8 @@
+---
+title: Licensing for project scripts
+layout: default
+---
+
 ### GNU AFFERO GENERAL PUBLIC LICENSE
 
 Version 3, 19 November 2007

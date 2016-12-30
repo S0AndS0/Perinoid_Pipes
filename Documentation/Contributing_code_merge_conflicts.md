@@ -1,3 +1,7 @@
+---
+title: Resolving merge conflicts for project
+---
+
 # Resolving merge conflicts
 
 ## Install vimdiff or other diff tools

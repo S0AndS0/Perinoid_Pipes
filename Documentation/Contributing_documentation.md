@@ -1,3 +1,7 @@
+---
+title: How documentation for this project is maintained
+---
+
 # Contributing to documentation
 
 > This file assumes that you've already followed directions found within

@@ -1,3 +1,8 @@
+---
+title: Licensing
+navigation_weight: 10
+---
+
 # Licensing explained
 
 > The authors of this project believe that the above two licenses are the most

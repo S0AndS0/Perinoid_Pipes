@@ -1,3 +1,7 @@
+---
+title: Fequently asked questions
+---
+
 # Frequently (and perhaps infrequently) asked question (F.A.Q.)
 
 ## Q: What is this project

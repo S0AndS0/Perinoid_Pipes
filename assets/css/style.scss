@@ -1,0 +1,18 @@
+---
+---
+
+@import 'jekyll-theme-hacker';
+//body { margin: 0; padding: 0; background: #900000; color: #eaeaea; font-size: 16px; line-height: 1.5; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; }
+body { margin: 0; padding: 0;
+// Modifide bellow line with the next three sugested amd modifide from: http://stackoverflow.com/a/28637234/2632107
+// background: #151515 url("../images/bkg.png") 0 0;
+ $colorStart: rgba(51,51,51,51);
+ $colorEnd: rgba(77,77,77,77);
+ background: (linear-gradient(to bottom, $colorStart, $colorEnd));
+ background-repeat: no-repeate, repeate;
+ color: #eaeaea; font-size: 16px; line-height: 1.5; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; }
+
+// Added menu styling in accordance with url: jekyll.tips/jekyll-casts/navigation
+a.active {
+  color: #FFE000;
+}

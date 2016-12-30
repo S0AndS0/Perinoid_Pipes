@@ -1,3 +1,7 @@
+---
+title: Logics of the main script of this project
+---
+
 # Paranoid Pipes Bash Logics
 
 ## Internal `bash` commands used within this project's scripts
