@@ -1,0 +1,26 @@
+<nav class="licensing-nav">
+  <ul>
+    {% assign license_pages = site.html_pages | sort:"license_weight" %}
+    {% for p in license_pages %}
+      {% if p.license_weight %}
+      <li>
+        <a href="{{ p.url }}" {% if p.url == page.url %}class="licensing"{% endif %}>
+          {{ p.title }}
+        </a>
+      </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+</nav>
+    {% if site.google_analytics %}
+      <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+      </script>
+      <script type="text/javascript">
+        try {
+          var pageTracker = _gat._getTracker("{{ site.google_analytics }}");
+        pageTracker._trackPageview();
+        } catch(err) {}
+      </script>
+    {% endif %}

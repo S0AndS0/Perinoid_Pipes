@@ -20,6 +20,7 @@ markdown: kramdown
 gems:
   - jekyll-feed
   - github-pages
+  - jekyll-sitemap
 exclude:
   - Gemfile
   - Gemfile.lock
@@ -30,8 +31,8 @@ exclude:
   - vendor/ruby/
   - Bulk_*
 include:
-  - Documentation
-  - Licenses
+  - _pages
+#  - Licenses
 #  - .jekyll_configs/.htaccess
 keep_files:
   - .git
@@ -59,8 +60,6 @@ defaults:
     github_username: S0AndS0
 #   google_analytics:
 
-
-
 ### Filtering Content
 ##show_drafs: null
 ##limit_posts: 0
@@ -78,7 +77,6 @@ defaults:
 ##detach: false
 ##port: 4000
 ##host: 127.0.0.1
-host: 0.0.0.0
 ##baseurl: "" # Does not include hostname
 ##show_dir_listing: false
 

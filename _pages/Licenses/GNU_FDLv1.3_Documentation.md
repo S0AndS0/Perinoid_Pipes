@@ -1,6 +1,7 @@
 ---
 title: Licensing for project documentation
 layout: default
+license_weight: 3
 ---
 
 ### GNU Free Documentation License

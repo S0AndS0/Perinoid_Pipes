@@ -1,6 +1,7 @@
 ---
 title: Licensing for project scripts
 layout: default
+license_weight: 2
 ---
 
 ### GNU AFFERO GENERAL PUBLIC LICENSE

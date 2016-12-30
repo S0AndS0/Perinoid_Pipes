@@ -1,6 +1,6 @@
 ---
-title: Licensing
-navigation_weight: 10
+title: Licensing explained
+license_weight: 1
 ---
 
 # Licensing explained

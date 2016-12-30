@@ -1,0 +1,35 @@
+{% comment %}
+An amalgom of tips found at: https://thinkshout.com/blog/2014/12/creating-dynamic-menus-in-jekyll
+and found at: http://stackoverflow.com/a/23504519/2632107
+to provide a dynamicly generated preview of content about this project.
+{% endcomment %}
+
+{% assign url_parts = page.url | split: '/' %}
+{% assign url_parts_size = url_parts | size %}
+{% assign rm = url_parts | last %}
+{% assign base_url = page.url %}
+
+{% if rm.size > 0 %}
+  {% assign base_url = page.url | replace: rm %}
+{% endif %}
+
+<div class="container">
+  <section id="nav_menu">
+    <ul>
+      {% for page in site.pages %}
+        {% if page.title %}
+          {% if page.url contains '/_pages' %}
+            <h7><li><a href='{{page.url}}'>{{page.title}}</a></li></h7>
+            {{ page.content | strip_html | truncatewords: 20 }}
+{% comment %}
+            {{ page.content | strip_html | truncatewords: 100 }}
+          {% else %}
+            <h6><a href='{{page.url}}'>{{page.title}}</a></h6>
+            {{ page.excerpt }}
+{% endcomment %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </section>
+</div>
