@@ -54,7 +54,7 @@ defaults:
     email: strangerthanbland@gmail.com
     category: "Scripting"
     description: Where named pipes, GnuPG public key encryption, and other tools are combined.
-    baseurl: /Documentation
+#    baseurl: /Documentation
 #    url: ""
     twitter_username: S0AndS0
     github_username: S0AndS0
