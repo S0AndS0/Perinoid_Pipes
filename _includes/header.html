@@ -24,9 +24,11 @@ Added checks for jekyll enviroment thanks to: https://desiredpersona.com/google-
     {% for p in navigation_pages %}
       {% if p.navigation_weight %}
       <li>
-        <a href="{{ p.url }}" {% if p.url == page.url %}class="active"{% endif %}>
-          {{ p.title }}
-        </a>
+        {% if site.baseurl %}
+          <a href="{{site.baseurl}}{{ p.url }}" {% if p.url == page.url %}class="active"{% endif %}>{{ p.title }}</a>
+        {% else %}
+          <a href="{{ p.url }}" {% if p.url == page.url %}class="active"{% endif %}>{{ p.title }}</a>
+        {% endif %}
       </li>
       {% endif %}
     {% endfor %}

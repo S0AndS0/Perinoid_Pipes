@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+	<head></head>
+
+	<body>
+
+		<script type="text/javascript">
+			// Function to download data to file on local disk
+			// From : http://stackoverflow.com/a/30832210/2632107
+			function downloadToFile(filename, data, type) {
+				var a = document.createElement("a");
+				var file = new Blob([data], {type: type});
+				if (window.navigator.msSaveOrOpenBlob) {
+					// IE10+
+					window.navigator.msSaveOrOpenBlob(file, filename);
+				} else {
+					// non-IE10+ browser
+					var url = URL.createObjectURL(file);
+					a.href = url;
+					a.download = filename;
+					document.body.appendChild(a);
+					a.click();
+					setTimeout(function() {
+						document.body.removeChild(a);
+						window.URL.revokeObjectURL(url);
+					}, 0);
+				}
+			}
+			// Function to redirect user input to a file via above
+			function constructDownload(uiFileName, uiFileData) {
+				var inputFile = uiFileName;
+				var inputData = uiFileData;
+				downloadToFile(inputFile, inputData, 'text/plain');
+			}
+			// Function to pull input data from div IDs
+			function parseDivToFile(idFileName, idFileData) {
+				var fName = document.getElementById(idFileName).value;
+				var fData = document.getElementById(idFileData).value;
+				constructDownload(fName, fData);
+			}
+			// Function to show user input data preview
+			function showPreview(idPreview, idFileData) {
+				var previewData = document.getElementById(idFileData).value;
+				document.getElementById(idPreview).value=previewData;
+				// Call grower function too
+//				growInputDiv(idPreview);
+			}
+			// Function to auto-grow input text box as user types
+			// From : http://stackoverflow.com/a/24676492/2632107
+			function growInputDiv(element) {
+				element.style.height = "5px";
+				element.style.height = (element.scrollHeight+10)+"px";
+			}
+			// Functions to read file from client disk into browser
+			// From http://www.htmlgoodies.com/beyond/javascript/read-text-files-using-the-javascript-filereader.html
+			// Function to retrieve all files from the FileList object
+			function readMultipleFiles(evt) {
+				var files = evt.target.files;
+				if (files) {
+					for (var i=0, f; f=files[i]; i++) {
+						var r = new FileReader();
+						r.onload = (function(f) {
+							return function(e) {
+								var contents = e.target.result;
+								alert( "Got the file.n"
+									+"name: " + f.name + "n"
+									+"type: " + f.type + "n"
+									+"size: " + f.size + " bytesn"
+									+ "starts with: " + contents.substr(1, contents.indexOf("n"))
+								);
+							};
+						})(f);
+						r.readAsText(f);
+					}
+				} else {
+					alert("Failed to load files");
+				}
+			}
+			// Function based off above to show file within browser
+
+			function previewUpload(evt) {
+				var files = evt.target.files;
+				if (files) {
+					for (var i=0, f; f=files[i]; i++) {
+						var r = new FileReader();
+						r.onload = (function(f) {
+							return function(e) {
+								var contents = e.target.result;
+								document.getElementById('uploadPreview').value=contents;
+							//	alert( "Got the file.n"
+							//		+"name: " + f.name + "n"
+							//		+"type: " + f.type + "n"
+							//		+"size: " + f.size + " bytesn"
+							//		+ "starts with: " + contents.substr(1, contents.indexOf("n"))
+							//	);
+							};
+						})(f);
+						r.readAsText(f);
+					}
+				} else {
+					alert("Failed to load files");
+				}
+			}
+
+			// Function to check if API is supported, starts listener for above function
+			function checkFileReader() {
+				if (window.File && window.FileReader && window.FileList && window.Blob) {
+					// Supported, do stuff
+					//document.getElementById('fileinput').addEventListener('change', readMultipleFiles, false);
+					document.getElementById('fileinput').addEventListener('change', previewUpload, false);
+				} else {
+					alert('The File APIs are not fully supported by your browser.');
+				}
+			}
+		</script>
+
+		<style>
+			textarea {
+				min-height: 50px;
+				max-height: 100px;
+			}
+			textarea.inputText {
+				resize: none;
+				min-height: 50px;
+				max-height: 100px;
+				min-width: 50%;
+				max-width: 100%;
+			}
+			textarea.preview {
+				min-height: 20%;
+				max-height: 50%;
+				min-width: 50%;
+				max-width: 100%;
+			}
+		</style>
+
+		<input type="text" name="textboxFileName" id="fileName" value="file_name.txt" />
+		<br/>
+		<textarea wrap="off" name="textboxFileData" class="inputText" id="fileData" onkeyup="growInputDiv(this);"></textarea>
+		<br/>
+		<textarea wrap="off" name="textboxPreview" class="preview" id="filePreview" readonly="true"></textarea>
+		<br/>
+		<textarea wrap="off" name="textboxUpload" class="preview" id="uploadPreview" readonly="true"></textarea>
+		<br/>
+		<input type="submit" name="buttonSave" id="saveFileButton" onclick="parseDivToFile('fileName', 'fileData');" value="Click_to_Save" />
+		<input type="submit" name="buttonPreview" id="previewFileButton" onclick="showPreview('filePreview', 'fileData');" value="Show_Preview" />
+		<br/>
+		<input type="submit" name="buttonSavePreview" id="savePreviewButton" onclick="parseDivToFile('fileName', 'filePreview');" value="Save_Preview" />
+		<br/>
+		<input type="file" id="fileinput" onload="checkFileReader" multiple />
+	</body>
+
+</html>

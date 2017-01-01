@@ -1,0 +1,33 @@
+---
+title: Customized 404 Page
+navigation_weight: 10
+layout: default
+permalink: /404.html
+---
+
+{% assign gh_pages_url = site.github.issues_url %}
+{% assign local_url = page.url %}
+{% assign gh_issues_url = "https://github.com/S0AndS0/Perinoid_Pipes/issues/new" %}
+
+
+{% if gh_pages_url != local_url %}
+  {% assign url_404 = local_url %}
+{% else %}
+  {% assign url_404 = gh_pages_url %}
+{% endif %}
+
+{% if jekyll.environment == 'production' %}
+  <h1><li>{{gh_issues_url}}</li></h1>
+{% else %}
+  <h1><li>Cannot locate issues url</li></h1>
+{% endif %}
+
+{% if url_404 %}
+  {% if gh_pages_url %}
+    <h1><li><a href='{{url_404}}'>{{page.title}}</a></li></h1>
+  {% endif %}
+{% else %}
+  <h1><li>Cannot locate desired url</li></h1>
+{% endif %}
+
+{% include text_input_from_users.html %}

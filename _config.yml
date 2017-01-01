@@ -1,22 +1,10 @@
-# Source modification from default
 ## Referance defaults from documentation hosted at: https://jekyllrb.com/docs/configuration/
-### Defaults that maybe overwritten
 
 ### Where things are
-source: .
-destination: ./_site
-##plugins_dir: _plugins
 layouts_dir: _layouts
-##data_dir: _data
-##collections:
-##  posts:
-##  output: true
 
 ### Build settings
 markdown: kramdown
-##save: false
-### Plugins
-#whitelist: []
 gems:
   - jekyll-feed
   - github-pages
@@ -30,78 +18,32 @@ exclude:
   - vendor/gems/
   - vendor/ruby/
   - Bulk_*
+  - .jekyll_configs/.htaccess
 include:
   - _pages
-#  - Licenses
-#  - .jekyll_configs/.htaccess
 keep_files:
   - .git
   - .svn
 encoding: "utf-8"
 marddown_ext: "markdown,mkdown,mkdn,mkd.md"
 
+## GitHub related settings
+baseurl: /Perinoid_Pipes
+repositiory: https://github.com/S0AndS0/Perinoid_Pipes
+
 defaults:
-#  scope:
-#    path: "Documentation"
-#    type: "pages"
   values:
     theme: jekyll-theme-hacker
-#    theme: minima
     layout: "default"
     author: "S0AndS0"
-    show-downloads: true
+    show-downloads: false
     title: Perinoid Pipes
     email: strangerthanbland@gmail.com
     category: "Scripting"
     description: Where named pipes, GnuPG public key encryption, and other tools are combined.
-#    baseurl: /Documentation
-#    url: ""
     twitter_username: S0AndS0
     github_username: S0AndS0
 #   google_analytics:
 
-### Filtering Content
-##show_drafs: null
-##limit_posts: 0
-##future: false
-##unpublished: false
-
-### Conversion
-##mardown: kramdown
-##highlighter: rouge
-##lsi: false
-##excerpt_seperator: "\n\n"
-##incremental: false
-
-### Serving
-##detach: false
-##port: 4000
-##host: 127.0.0.1
-##baseurl: "" # Does not include hostname
-##show_dir_listing: false
-
-### Outputting
-##permalink: date
-##paginate_path: /page:num
-##timezone: null
-##quiet: false
-##verbose: false
-##defaults: []
 liquid:
   error_mode: strict
-## Maybe 'lax' to ignor errors
-##  error_mode: warn
-
-### Markdown Processors
-##rdiscount:
-##  extensions: []
-
-##kramdown
-##  auto_ids:
-##  footnote_nr:
-##  entity_output:
-##  toc_levels:
-##  smart_quotes:
-##  input:
-##  hard_wrap:
-##  footnote_nr:
