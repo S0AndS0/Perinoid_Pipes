@@ -1,8 +1,9 @@
 ---
-title: GnuPG notes
-permalink: /GnuPG/
+title: GnuPG
 navigation_weight: 5
 ---
+
+{% include nav_gen.html preview_count=20 preview_dir="_pages/Documentation/GnuPG" %}
 
 ### GnuPG installation and configuration
 

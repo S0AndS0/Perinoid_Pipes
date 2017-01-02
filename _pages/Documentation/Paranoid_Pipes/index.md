@@ -1,8 +1,9 @@
 ---
-title: Paranoid_Pipes
-permalink: /Paranoid_Pipes/
+title: Paranoid Pipes
 navigation_weight: 2
 ---
+
+{% include nav_gen.html preview_count=20 preview_dir="_pages/Documentation/Paranoid_Pipes" %}
 
 # Paranoid_Pipes.sh spicific documentation
 
@@ -43,4 +44,3 @@ navigation_weight: 2
 [Paranoid_Pipes_External_Applications.md](Paranoid_Pipes_External_Applications.md)
  Documentation for programs that the main script of this project makes use of
  and how they are used.
-
