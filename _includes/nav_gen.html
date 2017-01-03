@@ -1,24 +1,36 @@
 {% comment %}
+    #
+    # Call this file with an includes command as shown bellow...
+    # ${% include nav_gen.html preview_dir="_pages" preview_count=60 %}
+    #
+    # ... where 'preview_dir' is the first directory to beguin recursivly searching for
+    #  'index' named files and their "nabors" within each directory found. And where
+    #  'preview_count' is the number of words to preview from each index naboring files,
+    #  set to 0 to disable previewing content found.
+    # Note defaults are shown above in example command but also maybe modifide for default
+    #  behaviour within your own project via 'default_directory_to_link' &
+    #  'default_preview_word_count' variables just after this comment section.
+    # See rest of comment section for credits and such...
     # An amalgom of tips found at: https://thinkshout.com/blog/2014/12/creating-dynamic-menus-in-jekyll
     # and found at: http://stackoverflow.com/a/23504519/2632107
     # to provide a dynamicly generated preview of content about this project.
     # Liquid code value assignment simi-dynamic via includes inspired by
     # https://talk.jekyll.com/t/do-parameters-for-includes-allow-liquid-syntax/
-    # Call this file with an includes command as shown bellow
-    # ${% include preview_dir_pages.html preview_dir="_pages" preview_count=60 %}
-    # Note calling with preview_count=0 will disable showing previews entirely
+    #    See _pages/Licenses/GNU_AGPLv3_Code.md for further licensing info for now
 {% endcomment %}
 
 {% assign default_directory_to_link = '_pages' %}
 {% assign default_preview_word_count = '60' %}
 
+{% comment %}
+    # Assign defaults unless values where passed as include agruments.
+{% endcomment %}
 {% assign preview_count_arg = include.preview_count %}
 {% if preview_count_arg %}
   {% assign preview_count = preview_count_arg %}
 {% else %}
   {% assign preview_count = default_preview_word_count %}
 {% endif %}
-
 {% assign preview_dir_arg = include.preview_dir %}
 {% if preview_dir_arg %}
   {% assign preview_dir = preview_dir_arg %}
@@ -32,25 +44,95 @@
 {{preview_dir}}
 {% endcomment %}
 
+{% comment %}
+     # Build array of index files under target directory to iterate over... be warned of
+     #  stack limitations in Liquid/Jekyll rendering if calling this from another for loop.
+{% endcomment %}
 <div class="container">
-  <section id="nav_menu">
+  <section id="nav_gen">
     <ul>
-      {% for p in site.html_pages %}
-        {% if p.title %}
-          {% if p.url contains preview_dir %}
-            {% if site.baseurl %}
-              <h7><li><a href='{{site.baseurl}}{{p.url}}'{% if p.url == page.url %}class="active"{% endif %}>{{p.title}}</a></li></h7>
+      {% for p in site.html_pages reversed %}
+        {% if p.url contains preview_dir %}
+          {% if p.name contains 'index' %}
+            {% unless arr_of_index_dirs %}
+              {% assign arr_of_index_dirs = p.url | split:"," %}
             {% else %}
-              <h7><li><a href='{{p.url}}' {% if p.url == page.url %}class="active"{% endif %}>{{p.title}}</a></li></h7>
-            {% endif %}
-
-            {% if preview_count > 0 %}
-              {{ p.content | strip_html | truncatewords: preview_count }}
-            {% endif %}
-
+              {% assign arr_of_index_dirs = arr_of_index_dirs | push: p.url %}
+            {% endunless %}
           {% endif %}
         {% endif %}
+      {% endfor %}
+
+{% comment %}
+    # Move the endcomment line to show array built by above before next phase beguins
+{{arr_of_index_dirs}}
+{% endcomment %}
+
+      {% for index_dir_list in arr_of_index_dirs %}
+        {% capture index_dir %}{{index_dir_list | remove_first: '/'}}{% endcapture %}
+        {% for s in site.html_pages reversed %}
+          {% if s.url contains index_dir %}
+
+            {% if s.name contains 'index' %}
+              {% if site.baseurl %}
+                {% capture current_url %}<a href='{{site.baseurl}}{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
+              {% else %}
+                {% capture current_url %}<a href='{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
+              {% endif %}
+              <h9><li>{{current_url}}</li></h9>
+
+              {% unless s.url == page.url or site.url %}
+                {% if preview_count > 0 and p.url != page.url %}
+                  {{ s.content | strip_html | truncatewords: preview_count }}
+                {% endif %}
+              {% endunless %}
+
+{% comment %}
+    # Note above matches for current index polulated directory where as bellow does
+    # the inverse plus remains within currently searched path befor parent for loop
+    # is triggered again... kinda fragile and inefishent but it works!!!
+{% endcomment %}
+
+              {% capture index_dir_word_count %}{{s.dir | replace: '/', ' ' | number_of_words}}{% endcapture %}
+
+              {% for l in site.html_pages reversed %}
+                {% capture non_index_dir_word_count %}{{l.dir | replace: '/', ' ' | number_of_words}}{% endcapture %}
+                {% if l.url contains s.dir %}
+
+                  {% if index_dir_word_count == non_index_dir_word_count %}
+
+                    {% capture matched_url %}{{l.url | remove_first: '/'}}{% endcapture %}
+                    {% unless l.name contains 'index' %}
+
+                      {% if site.baseurl %}
+                        {% capture sub_url %}<a href='{{site.baseurl}}{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
+                      {% else %}
+                        {% capture sub_url %}<a href='{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
+                      {% endif %}
+                      <h7><li>{{sub_url}}</li></h7>
+                      {% unless s.url == site.url %}
+                        {% if preview_count > 0 and l.url != page.url %}
+                          {{ l.content | strip_html | truncatewords: preview_count }}
+                        {% endif %}
+                      {% endunless %}
+
+                    {% endunless %}
+
+                  {% endif %}
+
+                {% endif %}
+              {% endfor %}
+
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
       {% endfor %}
     </ul>
   </section>
 </div>
+
+{% comment %}
+    # That was it... hope ya'll enjoyed that nested logic because the authors think that
+    #  the above was sweet.
+{% endcomment %}
