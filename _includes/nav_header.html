@@ -1,0 +1,23 @@
+{% assign navigation_pages = site.html_pages | sort:"navigation_weight" %}
+{% for p in navigation_pages %}
+  {% if p.navigation_weight %}
+{% comment %}
+      {% include nav_mklink.html page_link=p.url page_title=p.title link_format='list unordered' %}
+{% endcomment %}
+    <li>
+
+      {% if site.baseurl %}
+        {% capture current_url %}{{site.baseurl}}{{ p.url }}{% endcapture %}
+      {% else %}
+        {% capture current_url %}{{ p.url }}{% endcapture %}
+      {% endif %}
+
+      {% if page.url == p.url %}
+        <a href="{{current_url}}" class="active">{{ p.title }}</a>
+      {% else %}
+        <a href="{{current_url}}" class="in-active">{{ p.title }}</a>
+      {% endif %}
+    </li>
+
+  {% endif %}
+{% endfor %}
