@@ -1,0 +1,52 @@
+{% comment %}
+{% capture comment_message_one %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message_one %}
+{% endcomment %}
+
+{% capture comment_message_one %}
+    # GitHub API results
+    ## Repository spicific info ##
+    Name: {{site.github.repository_name}}
+    Source: {{site.github.repository_url}}
+    Language: {{site.github.language}}
+    Releases: {{site.github.releases_url}}
+    Build revision: {{site.github.build_revision}}
+    Project tag line: {{site.github.project_tagline}}
+    Project title: {{site.github.project_title}}
+    ## Download links ##
+    Show downloads: {{site.github.show_downloads}}
+    Clone URL: {{site.github.clone_url}}
+    ZIP URL: {{site.github.zip_url}}
+    Tar URL: {{site.github.tar_url}}
+    ## File paths ##
+    Base URL: {{site.github.baseurl}}
+    Issues URL: {{site.github.issues_url}}
+    ## Build enviroment info
+    Enviroment: {{site.github.environment}}
+    Pages enviroment: {{site.github.pages_env}}
+    Pages hostname: {{site.github.pages_hostname}}
+    GitHub API url: {{site.github.api_url}}
+    Site time: {{site.time}}
+    Jekyll version: {{site.github.versions.jekyll}}
+    Theme version: {{site.github.versions.jekyll-theme-hacker}}
+    Ruby version: {{site.github.versions.ruby}}
+    gh-pages version: {{site.github.versions.github-pages}}
+    Is a project page: {{site.github.is_project_page}}
+    Is a user page: {{site.github.is_user_page}}
+    ## Misc. links ##
+    Help URL: {{site.github.help_url}}
+    Owner gravatar URL: {{site.github.owner_gravatar_url}}
+    ## Owner/Author info ##
+    Owner name: {{site.github.owner_name}}
+    Owner site: {{site.github.owner_url}}
+
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message_one %}
+
+{% comment %}
+## Repositories info ##
+{% for repo_info in site.github.public_repositories %}
+  {{repo_info}}
+{% endfor %}
+{% endcomment %}

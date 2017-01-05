@@ -2,32 +2,68 @@
 title: Customized 404 Page
 navigation_weight: 10
 layout: default
-permalink: /404.html
+verbosity: 2
 ---
 
-{% assign gh_pages_url = site.github.issues_url %}
-{% assign local_url = page.url %}
-{% assign gh_issues_url = "https://github.com/S0AndS0/Perinoid_Pipes/issues/new" %}
+{% comment %}
+{% capture comment_message %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+{% endcomment %}
+
+{% comment %}
+{% assign navigation_pages = site.html_pages | sort:"navigation_weight" %}
+<nav class=menu><ul><div class=container><section id=nav_loop><ul>
+{% for p in navigation_pages %}
+  {% if p.navigation_weight %}
+{% capture comment_message %}
+    # Navigation_weight: {{p.navigation_weight}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+    {% for i in p %}
+      {% unless i.content %}
+{% capture comment_message %}
+        # Loop iteration: {{forloop.index0}}
+        # Found info {{i | strip_html | truncatewords: 5}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+      {% endunless %}
+    {% endfor %}
+{% capture comment_message %}
+    Calling {% raw %}{% include nav_mklink.html page_link=p.url link_format='list unordered' %}{% endraw %}
+    with {{p.url}} for "page_link" and 'list unordered' for "link_format"
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+    {% include nav_mklink.html page_link=p.url link_format='list unordered' %}
+  {% endif %}
+{% endfor %}
+</ul></section></div></ul><nav>
+{% endcomment %}
 
 
-{% if gh_pages_url != local_url %}
-  {% assign url_404 = local_url %}
+{% assign gh_pages_test_url = site.github.url %}
+{% if gh_pages_test_url %}
+  {% include nav_mklink.html page_title='Link to issues code' page_link=gh_pages_test_url link_format='unordered' %}
 {% else %}
-  {% assign url_404 = gh_pages_url %}
+  <br>Could not read {% raw %}{{gh_pages_test_url}}{% endraw%}</br>
 {% endif %}
+{% capture comment_message %}
+    Above loop tests finished for listing only index files found under a specifide
+    directory. Moving on to testing embeding of related but externally linked domains.
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
 
 {% if jekyll.environment == 'production' %}
-  <h1><li>{{gh_issues_url}}</li></h1>
+  <h1><li>
+    <a href="{{gh_pages_issues_url}}" class="btn">Open an Issue</a>
+  </li></h1>
 {% else %}
-  <h1><li>Cannot locate issues url</li></h1>
+  <h1><li>
+    <a href="{{fallback_issues_url}}" class="btn">Open an Issue</a>
+  </li></h1>
 {% endif %}
 
-{% if url_404 %}
-  {% if gh_pages_url %}
-    <h1><li><a href='{{url_404}}'>{{page.title}}</a></li></h1>
-  {% endif %}
-{% else %}
-  <h1><li>Cannot locate desired url</li></h1>
-{% endif %}
-
+{% comment %}
+    # Javascript powered text input from client connections
+{% endcomment %}
 {% include text_input_from_users.html %}

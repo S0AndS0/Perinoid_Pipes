@@ -10,7 +10,7 @@
     <ul>
       {% for p in license_pages %}
         {% if p.license_weight %}
-          <li><a href="{{p.url | remove_first:'/'}}" {% if p.url == page.url %}class="active licensing"{% else %}class="in-active licensing"{% endif %}>{{ p.title }}</a></li>
+          <li>{% include nav_mklink.html page_link=p.url page_title=p.title %}</li>
         {% endif %}
       {% endfor %}
     </ul>

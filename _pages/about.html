@@ -1,0 +1,48 @@
+---
+title: About site rendering
+navigation_weight: 7
+layout: default
+verbosity: 20
+---
+
+{% capture current_page_verbose_level %}
+  {{page.title}} ({{page.name}}) verbose level: **{{page.verbosity}}**
+
+  {{site.name}} verbose level: **{{site.verbosity | default: 10}}**
+{% endcapture %}
+{{ current_page_verbose_level | markdownify }}
+
+{% capture comment_message_one %}
+  **Greatings**, if *you* are reading this then you are likely interested
+  in the source code that drives this presintation, enjoy the examples
+  featured here exposing Liquid syntax and logic used to build this site
+  from preexsisting content.
+
+  By default the *functions* that build this site build with comment blocks
+  un-rendered, Liquid uses 
+
+    #{% raw %}{% comment %}Some comment...{% endcomment %}{% endraw %}
+
+  to dinote what should not be displaid on rendering. However this can leed
+  to confustion as to what is actually happending within nested logic loops
+  so the autors of this project have utilized `includes` such that these
+  comments maybe selectivly displaied at build time.
+
+{% raw %}
+    #{% capture comment_message %}
+    #   Some comment that may or may not be displaied at build time
+    #   with some build values captured, such as site domain {{site.domain}}
+    #{% endcapture %}
+    #{% include comment_handler.html comment_message=comment_message_one %}
+{% endraw %}
+
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message_one comment_format='md' %}
+
+{% include build_info.html %}
+
+{% comment %}
+{% capture comment_message %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message comment_format='markdown' %}
+{% endcomment %}

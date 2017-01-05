@@ -25,7 +25,9 @@
   {% case message_formatting %}
     {% when 'md' or 'markdown' or 'markdownify' %}
       {{message_to_handle | markdownify}}
-  {% else %}
+    {% when 'html' %}
+      <p>{{message_to_handle | strip_html}}</p>
+    {% else %}
       {{message_to_handle | upcase}}
   {% endcase %}
 {% endif %}

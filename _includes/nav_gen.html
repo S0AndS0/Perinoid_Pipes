@@ -133,7 +133,7 @@
                       {% unless s.url == site.url %}
                         {% if preview_count > 0 and l.url != page.url %}
                           {% capture comment_message %}{{ l.content | strip_html | truncatewords: preview_count,"" }}{% endcapture %}
-                          {% include comment_handler.html verbose_level=9000 comment_message=comment_message comment_format='nil' %}
+                          {% include comment_handler.html verbose_level=9000 comment_message=comment_message comment_format='html' %}
 
                         {% endif %}
                       {% endunless %}
