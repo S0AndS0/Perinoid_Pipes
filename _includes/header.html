@@ -20,18 +20,12 @@ Added checks for jekyll enviroment thanks to: https://desiredpersona.com/google-
       </div>
 <nav class="main-nav">
   <ul>
-    {% assign navigation_pages = site.html_pages | sort:"navigation_weight" %}
-    {% for p in navigation_pages %}
-      {% if p.navigation_weight %}
-      <li>
-        {% if site.baseurl %}
-          <a href="{{site.baseurl}}{{ p.url }}" {% if p.url == page.url %}class="active"{% endif %}>{{ p.title }}</a>
-        {% else %}
-          <a href="{{ p.url }}" {% if p.url == page.url %}class="active"{% endif %}>{{ p.title }}</a>
-        {% endif %}
-      </li>
-      {% endif %}
-    {% endfor %}
+    {% include nav_header.html %}
   </ul>
 </nav>
     </header>
+{% comment %}
+{% capture comment_message_one %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message_one %}
+{% endcomment %}

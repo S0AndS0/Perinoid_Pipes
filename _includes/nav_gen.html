@@ -19,38 +19,28 @@
     #    See _pages/Licenses/GNU_AGPLv3_Code.md for further licensing info for now
 {% endcomment %}
 
-{% assign default_directory_to_link = '_pages' %}
-{% assign default_preview_word_count = '60' %}
-
 {% comment %}
-    # Assign defaults unless values where passed as include agruments.
-{% endcomment %}
-{% assign preview_count_arg = include.preview_count %}
-{% if preview_count_arg %}
-  {% assign preview_count = preview_count_arg %}
-{% else %}
-  {% assign preview_count = default_preview_word_count %}
-{% endif %}
-{% assign preview_dir_arg = include.preview_dir %}
-{% if preview_dir_arg %}
-  {% assign preview_dir = preview_dir_arg %}
-{% else %}
-  {% assign preview_dir = default_directory_to_link %}
-{% endif %}
-
-{% comment %}
-    # Move the endcomment line to bellow this one to show count and directory passed
-{{preview_count}}
-{{preview_dir}}
+{% capture comment_message %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
 {% endcomment %}
 
-{% comment %}
-     # Build array of index files under target directory to iterate over... be warned of
-     #  stack limitations in Liquid/Jekyll rendering if calling this from another for loop.
-{% endcomment %}
+{% assign preview_count = include.preview_count | default: preview_count_arg | default: 60 %}
+{% assign preview_dir = include.preview_dir | default: preview_dir_arg | default: '_pages' %}
+
+{% capture comment_message %}
+    Number of words to preview: {{preview_count}}
+    Directory to search: {{preview_dir}}
+    Building an array of index files under target directory to iterate over...
+    be warned of stack limitations in Liquid/Jekyll rendering if calling this from
+    another for loop.
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+
 <div class="container">
   <section id="nav_gen">
     <ul>
+
       {% for p in site.html_pages reversed %}
         {% if p.url contains preview_dir %}
           {% if p.name contains 'index' %}
@@ -59,31 +49,43 @@
             {% else %}
               {% assign arr_of_index_dirs = arr_of_index_dirs | push: p.url %}
             {% endunless %}
+{% capture comment_message %}
+    Array index: forloop.index0
+    Array value added: {{arr_of_index_dirs[forloop.index0]}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
           {% endif %}
         {% endif %}
       {% endfor %}
-
-{% comment %}
-    # Move the endcomment line to show array built by above before next phase beguins
-{{arr_of_index_dirs}}
-{% endcomment %}
+{% capture comment_message %}
+    Total array of index directories
+    {{arr_of_index_dirs}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
 
       {% for index_dir_list in arr_of_index_dirs %}
         {% capture index_dir %}{{index_dir_list | remove_first: '/'}}{% endcapture %}
         {% for s in site.html_pages reversed %}
           {% if s.url contains index_dir %}
-
             {% if s.name contains 'index' %}
               {% if site.baseurl %}
                 {% capture current_url %}<a href='{{site.baseurl}}{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
               {% else %}
                 {% capture current_url %}<a href='{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
               {% endif %}
+{% capture comment_message %}
+    Found index: {{current_url}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
               <h9><li>{{current_url}}</li></h9>
-
               {% unless s.url == page.url or site.url %}
                 {% if preview_count > 0 and p.url != page.url %}
-                  {{ s.content | strip_html | truncatewords: preview_count }}
+{% capture comment_message %}
+    Preview of content
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+                  {% capture comment_message %}{{ s.content | strip_html | truncatewords: preview_count,"" }}{% endcapture %}
+                  {% include comment_handler.html verbose_level=9000 comment_message=comment_message %}
                 {% endif %}
               {% endunless %}
 
@@ -94,15 +96,26 @@
 {% endcomment %}
 
               {% capture index_dir_word_count %}{{s.dir | replace: '/', ' ' | number_of_words}}{% endcapture %}
-
               {% for l in site.html_pages reversed %}
                 {% capture non_index_dir_word_count %}{{l.dir | replace: '/', ' ' | number_of_words}}{% endcapture %}
                 {% if l.url contains s.dir %}
 
-                  {% if index_dir_word_count == non_index_dir_word_count %}
+{% comment %}
+    # Above checks if current itteration contains the same directory path
+    # as that of found index files, below checks that we only match the
+    # current depth of directoies matched; in other words sub-directories
+    # without an index file are ignored.
+{% endcomment %}
 
+                  {% if index_dir_word_count == non_index_dir_word_count %}
                     {% capture matched_url %}{{l.url | remove_first: '/'}}{% endcapture %}
                     {% unless l.name contains 'index' %}
+
+{% comment %}
+    # Perent loop has already printed the index file link so we only match on
+    # non-index files within the same directory level. The next if checks
+    # are to insure that links on remote or local builds work reliably.
+{% endcomment %}
 
                       {% if site.baseurl %}
                         {% capture sub_url %}<a href='{{site.baseurl}}{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
@@ -110,23 +123,27 @@
                         {% capture sub_url %}<a href='{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
                       {% endif %}
                       <h7><li>{{sub_url}}</li></h7>
+
+{% comment %}
+    # Unless currently parsed index or non-index page is the current page
+    # and if preview_count is set show a preview of found page content.
+    # then finally loop back to the next index page to find nabors of.
+{% endcomment %}
+
                       {% unless s.url == site.url %}
                         {% if preview_count > 0 and l.url != page.url %}
-                          {{ l.content | strip_html | truncatewords: preview_count }}
+                          {% capture comment_message %}{{ l.content | strip_html | truncatewords: preview_count,"" }}{% endcapture %}
+                          {% include comment_handler.html verbose_level=9000 comment_message=comment_message comment_format='nil' %}
+
                         {% endif %}
                       {% endunless %}
-
                     {% endunless %}
-
                   {% endif %}
-
                 {% endif %}
               {% endfor %}
-
             {% endif %}
           {% endif %}
         {% endfor %}
-
       {% endfor %}
     </ul>
   </section>

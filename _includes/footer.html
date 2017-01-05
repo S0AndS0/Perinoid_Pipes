@@ -1,17 +1,22 @@
-<nav class="licensing-nav">
-  <ul>
-    {% assign license_pages = site.html_pages | sort:"license_weight" %}
-    {% for p in license_pages %}
-      {% if p.license_weight %}
-      <li>
-        <a href="{{ p.url }}" {% if p.url == page.url %}class="licensing"{% endif %}>
-          {{ p.title }}
-        </a>
-      </li>
-      {% endif %}
-    {% endfor %}
-  </ul>
-</nav>
+{% comment %}
+{% capture comment_message_one %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message_one %}
+{% endcomment %}
+
+{% assign license_pages = site.html_pages | sort:"license_weight" %}
+{% if license_pages %}
+  <nav class="licensing-nav">
+    <ul>
+      {% for p in license_pages %}
+        {% if p.license_weight %}
+          <li><a href="{{p.url | remove_first:'/'}}" {% if p.url == page.url %}class="active licensing"{% else %}class="in-active licensing"{% endif %}>{{ p.title }}</a></li>
+        {% endif %}
+      {% endfor %}
+    </ul>
+  </nav>
+{% endif %}
+
     {% if site.google_analytics %}
       <script type="text/javascript">
         var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");

@@ -29,7 +29,8 @@ marddown_ext: "markdown,mkdown,mkdn,mkd.md"
 
 ## GitHub related settings
 baseurl: /Perinoid_Pipes
-repositiory: https://github.com/S0AndS0/Perinoid_Pipes
+#repositiory: https://github.com/S0AndS0/Perinoid_Pipes
+repositiory: S0AndS0/Perinoid_Pipes
 
 defaults:
   values:

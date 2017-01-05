@@ -1,0 +1,147 @@
+{% comment %}
+    # Include with the following ags set or leave unset to have it generate
+    # a link to the including file automaticly.
+##    {% include nav_mklink.html page_link=page.url %}
+    # Or to set a title manually
+##    {% include nav_mklink.html page_link=page.url page_title=page.title %}
+    # Or to set formatting of links, 'inline', 'list', and/or 'unordered'
+##    {% include nav_mklink.html page_link=page.url link_format="list unordered" %}
+    # Note any link assigned with this method will cairy the dual class
+    # of either 'active' or 'in-active' and 'internal' or 'external'
+    # as of local tests this does not cause issues with themes that use
+    # the 'active' status and it allows for further theme customizations
+    # to be preformed on links depending upon their relation to the calling
+    # page.
+{% endcomment %}
+{% comment %}
+{% capture comment_message %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+{% endcomment %}
+
+{% assign assigned_page_link = include.page_link | default: page.url %}
+{% assign assigned_link_format = include.link_format | default: page.format %}
+
+{% capture comment_message %}
+    Assigned page link: {{assigned_page_link}}
+    Assigned link format: {{assigned_link_format}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+
+{% for p in site.html_pages %}
+  {% if p.url == assigned_page_link %}
+    {% assign assigned_page_title = include.page_title | default: p.title %}
+    {% assign page_int_or_ext = 'internal' %}
+    {% if site.baseurl %}
+      {% capture assigned_page_link %}{{site.baseurl}}{{assigned_page_link}}{% endcapture %}
+    {% else %}
+      {% capture assigned_page_link %}{{assigned_page_link}}{% endcapture %}
+    {% endif %}
+
+{% comment %}
+    {% assign assigned_page_link = assigned_page_link %}
+{% endcomment %}
+
+{% capture comment_message %}
+    Assigned page title: {{assigned_page_title}}
+    Assigned internal/external class: {{page_int_or_ext}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+
+
+{% comment %}
+    {% assign assigned_page_link = current_url | remove_first: '/' %}
+    {% assign assigned_page_link = assigned_page_link | remove_first: '/' %}
+    # Note the above break is to mitigate time costs spent building pages.
+{% endcomment %}
+
+    {% break %}
+  {% else %}
+
+    {% if forloop.last %}
+      {% assign assigned_page_title = include.page_title | default: '#LINK' %}
+      {% assign page_int_or_ext = 'external' %}
+{% capture comment_message %}
+    Assigned page title: {{assigned_page_title}}
+    Assigned internal/external class: {{page_int_or_ext}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+    {% endif %}
+
+  {% endif %}
+{% endfor %}
+
+{% comment %}
+{% assign calling_page_link = page.url | remove_first:'/' %}
+{% endcomment %}
+
+{% assign calling_page_link = page.url %}
+{% if assigned_page_link %}
+  {% if calling_page_link == assigned_page_link %}
+    {% capture assigned_page_href %}<a href="{{assinged_page_link}}" class="active {{page_int_or_ext}}">{{assigned_page_title}}</a>{% endcapture %}
+  {% else %}
+    {% capture assigned_page_href %}<a href="{{assigned_page_link}}" class="in-active {{page_int_or_ext}}">{{assigned_page_title}}</a>{% endcapture %}
+  {% endif %}
+{% capture comment_message %}
+    Link path: {{assigned_page_link}}
+    Link path stripped: {{assigned_page_link | remove_first:'/'}}
+    Unformatted link: {{assigned_page_href}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+{% endif %}
+
+{% comment %}
+    # Link and title assigned to a veriable, now to check what formatting
+    # is desired at include time or accept defaults.
+{% endcomment %}
+
+{% assign arr_link_formats = assigned_link_format | split:' ' %}
+{% for linked_format in arr_link_formats %}
+  {% case linked_format %}
+    {% when 'inline' %}
+      {{assigned_page_href}}
+{% capture comment_message %}
+    Inline format detected for: {{assigned_page_href}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+      {% break %}
+    {% when 'list' %}
+      {% assign format_start = format_start | prepend: '<li>' %}
+      {% assign format_end = format_end | append: '</li>' %}
+{% capture comment_message %}
+    List format detected for: {{assigned_page_href}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+    {% when 'unordered' %}
+      {% assign format_start = format_start | prepend: '<ul>' %}
+      {% assign format_end = format_end | append: '</ul>' %}
+{% capture comment_message %}
+    Unordered list format detected for: {{assigned_page_href}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+  {% endcase %}
+{% endfor %}
+
+{% if assigned_page_href %}
+  {% capture rendered_link %}{{format_start}}{{assigned_page_href}}{{format_end}}{% endcapture %}
+  {{rendered_link | strip_new_lines}}
+{% capture comment_message %}
+    Zeroing out veriables that append to themselves because Liquid scope is
+    a bit more persistant than expected
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+  {% assign format_start = nil %}
+  {% assign format_end = nil %}
+  {% assign assigned_page_href = nil %}
+  {% assign assigned_page_link = nil %}
+  {% assign arr_link_formats = nil %}
+{% else %}
+{% capture comment_message %}
+  # Could not parse link provided
+
+    Linked {{assigned_page_title}} to {{assigned_page_link}}
+    with the appended class of {{page_int_or_ext}}
+    Link without further formatting {{assigned_page_href}}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
+{% endif %}

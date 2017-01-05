@@ -1,0 +1,40 @@
+{% comment %}
+    # Save a message/comment to a veriable via the following example from within the
+    # document that will be including this file
+    {% capture comment_message %}Some string of text{% endcapture %}
+    # Include with or without peramiters via the following examples so long as 'comment_message'
+    # was used to save message contence this file should find it
+    {% include comment_handler.html %}
+{% endcomment %}
+
+{% comment %}
+    # Assign internal veriables based off passed peramiters, or default to calling page
+    # frontmatter, or default to known veriable names, or default to simi-ok values.
+{% endcomment %}
+{% assign global_verbosity = site.global_verbosity | default: 10 %}
+{% assign include_verbosity_level = include.verbose_level | default: page.verbosity | default: internal_verbosity %}
+{% assign message_formatting = include.comment_format | default: page.comment_format | default: 'markdownify' %}
+{% assign message_to_handle = include.comment_message | default: page.comment_message | default: comment_message | default: nil %}
+
+{% comment %}
+    # If there is a comment message **and** the calling page verbosity level is equal to
+    # or greater than site global verbosity, then attempt to print message, else quitely
+    # die without input or causing errors in builds.
+{% endcomment %}
+{% if message_to_handle and include_verbosity_level >= global_verbosity %}
+  {% case message_formatting %}
+    {% when 'md' or 'markdown' or 'markdownify' %}
+      {{message_to_handle | markdownify}}
+  {% else %}
+      {{message_to_handle | upcase}}
+  {% endcase %}
+{% endif %}
+
+{% comment %}
+    # Null/nil out local veriables to avoid confusion and scope passing outside of
+    # desired bounds
+{% endcomment %}
+{% assign global_verbosity = nil %}
+{% assign include_verbosity_level = nil %}
+{% assign message_formatting = nil %}
+{% assign message_to_handle = nil %}
