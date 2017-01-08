@@ -13,6 +13,15 @@ body { margin: 0; padding: 0;
  color: #eaeaea; font-size: 16px; line-height: 1.5; font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace; }
 
 // Added menu styling in accordance with url: jekyll.tips/jekyll-casts/navigation
-a.active {
-  color: #FFE000;
+a.external {
+  color: #EE82EE;
+  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+}
+a.active.internal {
+  color: #CCCC00;
+  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
+}
+a.in-active.internal {
+  color: #A6E9C1;
+  text-shadow: 0 0 5px rgba(104, 182, 255, 0.5);
 }

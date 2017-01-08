@@ -3,6 +3,11 @@ title: Documentation
 navigation_weight: 2
 ---
 
+<h2>{{page.title}}</h2>
+
+{% include nav_gen.html preview_count=60 preview_dir="_pages/Documentation" %}
+
+{% comment %}
 ### Documentation for code & document contributions to this project
 
 [Contributing_code_credits.md](Contributing_code_credits.md)
@@ -78,3 +83,4 @@ navigation_weight: 2
  authors of this project believe are worth notifying readers of. While not all
  have been tested by the authors of this project, some where just *too cool* and
  not mentioning'em would be a shame.
+{% endcomment %}

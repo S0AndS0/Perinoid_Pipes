@@ -68,22 +68,11 @@
         {% for s in site.html_pages reversed %}
           {% if s.url contains index_dir %}
             {% if s.name contains 'index' %}
-              {% if site.baseurl %}
-                {% capture current_url %}<a href='{{site.baseurl}}{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
-              {% else %}
-                {% capture current_url %}<a href='{{s.url}}' {% if s.url == page.url %}class="active"{% endif %}>{{s.title}}</a>{% endcapture %}
-              {% endif %}
-{% capture comment_message %}
-    Found index: {{current_url}}
-{% endcapture %}
-{% include comment_handler.html comment_message=comment_message %}
-              <h9><li>{{current_url}}</li></h9>
+
+              {% include nav_mklink.html page_link=s.url page_title=s.title link_format='list unordered' %}
+
               {% unless s.url == page.url or site.url %}
                 {% if preview_count > 0 and p.url != page.url %}
-{% capture comment_message %}
-    Preview of content
-{% endcapture %}
-{% include comment_handler.html comment_message=comment_message %}
                   {% capture comment_message %}{{ s.content | strip_html | truncatewords: preview_count,"" }}{% endcapture %}
                   {% include comment_handler.html verbose_level=9000 comment_message=comment_message %}
                 {% endif %}
@@ -117,12 +106,7 @@
     # are to insure that links on remote or local builds work reliably.
 {% endcomment %}
 
-                      {% if site.baseurl %}
-                        {% capture sub_url %}<a href='{{site.baseurl}}{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
-                      {% else %}
-                        {% capture sub_url %}<a href='{{l.url}}' {% if l.url == page.url %}class="active"{% endif %}>{{l.title}}</a>{% endcapture %}
-                      {% endif %}
-                      <h7><li>{{sub_url}}</li></h7>
+                      {% include nav_mklink.html page_link=l.url page_title=l.title link_format='list unordered' %}
 
 {% comment %}
     # Unless currently parsed index or non-index page is the current page

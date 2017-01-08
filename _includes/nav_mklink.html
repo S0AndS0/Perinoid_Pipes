@@ -12,6 +12,8 @@
     # the 'active' status and it allows for further theme customizations
     # to be preformed on links depending upon their relation to the calling
     # page.
+
+{{extname}}
 {% endcomment %}
 {% comment %}
 {% capture comment_message %}
@@ -32,28 +34,14 @@
   {% if p.url == assigned_page_link %}
     {% assign assigned_page_title = include.page_title | default: p.title %}
     {% assign page_int_or_ext = 'internal' %}
+    {% assign page_suffix = assigned_page_link | split: '.' | last %}
     {% if site.baseurl %}
       {% capture assigned_page_link %}{{site.baseurl}}{{assigned_page_link}}{% endcapture %}
+      {% assign calling_page_link = page.url | prepend: site.baseurl %}
     {% else %}
       {% capture assigned_page_link %}{{assigned_page_link}}{% endcapture %}
+      {% assign calling_page_link = page.url %}
     {% endif %}
-
-{% comment %}
-    {% assign assigned_page_link = assigned_page_link %}
-{% endcomment %}
-
-{% capture comment_message %}
-    Assigned page title: {{assigned_page_title}}
-    Assigned internal/external class: {{page_int_or_ext}}
-{% endcapture %}
-{% include comment_handler.html comment_message=comment_message %}
-
-
-{% comment %}
-    {% assign assigned_page_link = current_url | remove_first: '/' %}
-    {% assign assigned_page_link = assigned_page_link | remove_first: '/' %}
-    # Note the above break is to mitigate time costs spent building pages.
-{% endcomment %}
 
     {% break %}
   {% else %}
@@ -61,21 +49,26 @@
     {% if forloop.last %}
       {% assign assigned_page_title = include.page_title | default: '#LINK' %}
       {% assign page_int_or_ext = 'external' %}
-{% capture comment_message %}
-    Assigned page title: {{assigned_page_title}}
-    Assigned internal/external class: {{page_int_or_ext}}
-{% endcapture %}
-{% include comment_handler.html comment_message=comment_message %}
+      {% assign page_suffix = assigned_page_link | split: '.' | last %}
     {% endif %}
 
   {% endif %}
 {% endfor %}
 
-{% comment %}
-{% assign calling_page_link = page.url | remove_first:'/' %}
-{% endcomment %}
+{% capture comment_message %}
+    Assigned page title: {{assigned_page_title}}
+    Assigned internal/external class: {{page_int_or_ext}}
+    Assigned page suffix: {{page_suffix}}
+    Assigned calling page url: {{calling_page_link}}
+{% case page_suffix %}
+  {% when 'jpeg' or 'png' or 'bmp' or 'gif' %}
+    Detected image link
+  {% else %}
+    Detected non-image link
+{% endcase %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message %}
 
-{% assign calling_page_link = page.url %}
 {% if assigned_page_link %}
   {% if calling_page_link == assigned_page_link %}
     {% capture assigned_page_href %}<a href="{{assinged_page_link}}" class="active {{page_int_or_ext}}">{{assigned_page_title}}</a>{% endcapture %}
