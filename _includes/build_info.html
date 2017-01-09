@@ -1,10 +1,30 @@
 {% comment %}
-{% capture comment_message_one %}
+{% capture comment_message %}
 {% endcapture %}
-{% include comment_handler.html comment_message=comment_message_one %}
+{% include comment_handler.html comment_message=comment_message %}
 {% endcomment %}
 
-{% capture comment_message_one %}
+{% capture comment_message %}
+{% for responce in site.github %}
+  {% unless site.github[responce] == nil %}
+    Variable or array name  | Current value held
+    ------------------------|-------------------
+    forloop.index0          | {{forloop.index0}}
+    responce                | {{responce}}
+    site.github[responce]   | {{site.github[responce]}}
+  {% else %}
+    Variable or array name  | Current value held
+    ------------------------|-------------------
+    forloop.index0          | {{forloop.index0}}
+    responce                | {{responce}}
+    site.github[responce]   | nil
+  {% endunless %}
+{% endfor %}
+{% endcapture %}
+{% include comment_handler.html comment_message=comment_message message_formatting=md %}
+
+{% comment %}
+{% capture comment_message %}
     # GitHub API results
     ## Repository spicific info ##
     Name: {{site.github.repository_name}}
@@ -43,7 +63,8 @@
     Owner site: {{site.github.owner_url}}
 
 {% endcapture %}
-{% include comment_handler.html comment_message=comment_message_one %}
+{% include comment_handler.html comment_message=comment_message %}
+{% endcomment %}
 
 {% comment %}
 ## Repositories info ##
