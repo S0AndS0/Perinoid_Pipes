@@ -3,7 +3,7 @@
 [![Version](https://img.shields.io/badge/Version-2--0-blue.svg)](Paranoid_Pipes.sh)
  [![Code Climate](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes/badges/gpa.svg)](https://codeclimate.com/github/S0AndS0/Perinoid_Pipes)
  [![Build Status](https://travis-ci.org/S0AndS0/Perinoid_Pipes.svg?branch=testing)](https://travis-ci.org/S0AndS0/Perinoid_Pipes)
- [![Documentation](https://img.shields.io/badge/Documentation-gray.svg)](https://s0ands0.github.io/Perinoid_Pipes)
+ [![Documentation](https://img.shields.io/badge/gh--pages-Documentation-gray.svg)](https://s0ands0.github.io/Perinoid_Pipes)
 
 > The version is the main script's version number combined with last date that the
 > authors of this project have tested operations and is provided by [Shields.io](https://shields.io).
