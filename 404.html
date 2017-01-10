@@ -11,18 +11,12 @@ verbosity: 2
 {% include comment_handler.html comment_message=comment_message %}
 {% endcomment %}
 
-{% assign gh_pages_issues_url = site.github.url %}
+{% assign gh_pages_issues_url = site.github.issues_url %}
 {% if gh_pages_issues_url %}
   {% include nav_mklink.html page_title='Link to issues code' page_link=gh_pages_issues_url link_format='unordered' %}
 {% else %}
-  <br>Could not read {% raw %}{{gh_pages_test_url}}{% endraw%}</br>
+  <br>Could not read {% raw %}{{gh_pages_issues_url}}{% endraw %}</br>
 {% endif %}
-{% capture comment_message %}
-    Above loop tests finished for listing only index files found under a specifide
-    directory. Moving on to testing embeding of related but externally linked domains.
-{% endcapture %}
-{% include comment_handler.html comment_message=comment_message %}
-
 
 {% assign fallback_issues_url = site.baseurl %}
 {% if jekyll.environment == 'production' %}
