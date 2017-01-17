@@ -1,4 +1,5 @@
 ___
+title: Setting up Jekyll gh-pages
 ___
 
 ## Install dependancies
